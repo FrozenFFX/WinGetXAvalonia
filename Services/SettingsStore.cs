@@ -22,27 +22,31 @@ public sealed class SettingsStore
         if (!File.Exists(_fileName))
         {
             await SaveAsync();
-            return;
         }
-
-        try
+        else
         {
-            string json = await File.ReadAllTextAsync(_fileName);
+            try
+            {
+                string json = await File.ReadAllTextAsync(_fileName);
 
-            if (string.IsNullOrWhiteSpace(json))
+                if (string.IsNullOrWhiteSpace(json))
+                {
+                    Settings = new();
+                }
+                else
+                {
+                    Settings =
+                        JsonSerializer.Deserialize<AppSettings>(json)
+                        ?? new();
+                }
+            }
+            catch (JsonException)
             {
                 Settings = new();
-                return;
             }
+        }
 
-            Settings =
-                JsonSerializer.Deserialize<AppSettings>(json)
-                ?? new();
-        }
-        catch (JsonException)
-        {
-            Settings = new();
-        }
+        SettingsValidator.Validate(Settings);
     }
 
     public async Task SaveAsync()

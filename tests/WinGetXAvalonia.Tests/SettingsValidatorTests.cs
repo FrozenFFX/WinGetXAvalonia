@@ -78,4 +78,27 @@ public class SettingsValidatorTests
         var settings = Validate(s => s.Theme = "Light");
         Assert.Equal("Light", settings.Theme);
     }
+
+    [Fact]
+    public async Task LoadAsync_ClampsInvalidValuesFromFile()
+    {
+        var dir = Path.Combine(
+            Path.GetTempPath(),
+            "WinGetXAvalonia.Tests",
+            Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(dir);
+        var file = Path.Combine(dir, "settings.json");
+
+        await File.WriteAllTextAsync(
+            file,
+            """{ "ParallelDownloads": 999, "CacheSize": -100, "Opacity": 500, "WindowOpacity": 5 }""");
+
+        var store = new SettingsStore(file);
+        await store.LoadAsync();
+
+        Assert.Equal(32, store.Settings.ParallelDownloads);
+        Assert.Equal(128, store.Settings.CacheSize);
+        Assert.Equal(100, store.Settings.Opacity);
+        Assert.Equal(60, store.Settings.WindowOpacity);
+    }
 }

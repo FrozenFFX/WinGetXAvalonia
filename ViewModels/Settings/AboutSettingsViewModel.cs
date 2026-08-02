@@ -40,6 +40,10 @@ public partial class AboutSettingsViewModel : SettingsCategoryViewModel
 
     public string DotNet => RuntimeInformation.FrameworkDescription;
 
+    public string Os => RuntimeInformation.OSDescription;
+
+    public string Architecture => RuntimeInformation.OSArchitecture.ToString();
+
     public string Avalonia
         => typeof(Application).Assembly.GetName().Version?.ToString(3) ?? "?";
 

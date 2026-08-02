@@ -72,6 +72,16 @@
                         <TextBlock Grid.Column="1" Text="{Binding WingetVersion}"/>
                     </Grid>
 
+                    <Grid ColumnDefinitions="110,*">
+                        <TextBlock Opacity="0.7" Text="OS"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Os}"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="110,*">
+                        <TextBlock Opacity="0.7" Text="Architecture"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Architecture}"/>
+                    </Grid>
+
                 </StackPanel>
 
             </Border>

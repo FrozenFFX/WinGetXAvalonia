@@ -1,0 +1,17 @@
+<Styles xmlns="https://github.com/avaloniaui">
+
+    <Style Selector="Border.card">
+        <Setter Property="CornerRadius" Value="18"/>
+        <Setter Property="Padding" Value="22"/>
+        <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}"/>
+        <Setter Property="BoxShadow" Value="0 8 25 0 #40000000"/>
+        <Setter Property="RenderTransformOrigin" Value="50%,50%"/>
+        <Setter Property="RenderTransform" Value="scale(1)"/>
+    </Style>
+
+    <Style Selector="Border.card:pointerover">
+        <Setter Property="RenderTransform" Value="scale(1.03)"/>
+        <Setter Property="Background" Value="{DynamicResource CardHoverBrush}"/>
+    </Style>
+
+</Styles>

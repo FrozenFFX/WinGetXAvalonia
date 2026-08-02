@@ -1,0 +1,70 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
+             x:Class="WinGetXAvalonia.Views.Settings.GeneralSettingsView"
+             x:DataType="vm:GeneralSettingsViewModel">
+
+    <ScrollViewer>
+
+        <StackPanel Spacing="22">
+
+            <TextBlock
+                Classes="title"
+                Text="General"/>
+
+            <Border Classes="card">
+
+                <StackPanel Spacing="20">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Text="Startup"/>
+
+                    <ToggleSwitch
+                        OffContent="Run when Windows starts"
+                        OnContent="Run when Windows starts"
+                        IsChecked="{Binding StartWithWindows}"/>
+
+                    <ToggleSwitch
+                        OffContent="Start minimized"
+                        OnContent="Start minimized"
+                        IsChecked="{Binding StartMinimized}"/>
+
+                    <ToggleSwitch
+                        OffContent="Minimize to tray"
+                        OnContent="Minimize to tray"
+                        IsChecked="{Binding MinimizeToTray}"/>
+
+                    <ToggleSwitch
+                        OffContent="Close to tray"
+                        OnContent="Close to tray"
+                        IsChecked="{Binding CloseToTray}"/>
+
+                </StackPanel>
+
+            </Border>
+
+            <Border Classes="card">
+
+                <StackPanel Spacing="20">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Text="Updates"/>
+
+                    <ToggleSwitch
+                        OffContent="Check for updates automatically"
+                        OnContent="Check for updates automatically"
+                        IsChecked="{Binding CheckUpdates}"/>
+
+                </StackPanel>
+
+            </Border>
+
+        </StackPanel>
+
+    </ScrollViewer>
+
+</UserControl>

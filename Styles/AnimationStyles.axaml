@@ -1,0 +1,12 @@
+<Styles xmlns="https://github.com/avaloniaui">
+
+    <Style Selector="Border.card">
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.18"/>
+                <BrushTransition Property="Background" Duration="0:0:0.18"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+</Styles>

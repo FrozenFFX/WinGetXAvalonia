@@ -1,0 +1,53 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:WinGetXAvalonia.ViewModels"
+        xmlns:controls="using:WinGetXAvalonia.Controls"
+        mc:Ignorable="d"
+        x:Class="WinGetXAvalonia.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Width="1400"
+        Height="850"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Title="WinGetX">
+
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="240"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0"
+                Background="{DynamicResource SidebarBackgroundBrush}">
+
+            <Grid Margin="20">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    FontSize="28"
+                    FontWeight="Bold"
+                    Text="WinGetX"/>
+
+                <controls:Sidebar
+                    Grid.Row="2"
+                    DataContext="{Binding}"/>
+
+            </Grid>
+
+        </Border>
+
+        <ContentControl
+            Grid.Column="1"
+            Margin="25"
+            Content="{Binding Navigation.CurrentPage}"/>
+
+    </Grid>
+
+</Window>

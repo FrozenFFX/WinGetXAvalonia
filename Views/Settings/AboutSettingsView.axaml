@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
+             x:Class="WinGetXAvalonia.Views.Settings.AboutSettingsView"
+             x:DataType="vm:AboutSettingsViewModel">
+
+    <ScrollViewer>
+
+        <StackPanel Spacing="22">
+
+            <TextBlock
+                Classes="title"
+                Text="About"/>
+
+            <Border Classes="card">
+
+                <StackPanel Spacing="16">
+
+                    <TextBlock
+                        FontSize="28"
+                        FontWeight="Bold"
+                        Text="{Binding AppName}"/>
+
+                    <TextBlock
+                        Opacity="0.7"
+                        Text="Version {Binding Version}"/>
+
+                    <TextBlock
+                        Opacity="0.7"
+                        Text="A modern package manager front-end built on winget and Avalonia UI."/>
+
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+
+                        <Button Content="GitHub"/>
+                        <Button Content="Check for Updates"/>
+
+                    </StackPanel>
+
+                </StackPanel>
+
+            </Border>
+
+        </StackPanel>
+
+    </ScrollViewer>
+
+</UserControl>

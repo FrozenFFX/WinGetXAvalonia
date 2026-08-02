@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WinGetXAvalonia.ViewModels"
+             x:Class="WinGetXAvalonia.Views.FavoritesView"
+             x:DataType="vm:FavoritesViewModel">
+
+    <Grid Margin="20">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            FontSize="34"
+            FontWeight="Bold"
+            Text="Favorites"/>
+
+        <ListBox
+            Grid.Row="2"
+            ItemsSource="{Binding Favorites}"/>
+
+    </Grid>
+
+</UserControl>

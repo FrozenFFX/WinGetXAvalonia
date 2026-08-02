@@ -1,0 +1,24 @@
+<Styles xmlns="https://github.com/avaloniaui">
+
+    <Style Selector="ListBox.sidebar">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <Style Selector="ListBox.sidebar ListBoxItem">
+        <Setter Property="Padding" Value="4"/>
+        <Setter Property="Margin" Value="0,2"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+
+    <Style Selector="ListBox.sidebar ListBoxItem:selected /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+
+    <Style Selector="ListBox.sidebar ListBoxItem:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource NavHoverBrush}"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+
+</Styles>

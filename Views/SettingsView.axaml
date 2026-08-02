@@ -1,0 +1,90 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WinGetXAvalonia.ViewModels"
+             xmlns:vms="using:WinGetXAvalonia.ViewModels.Settings"
+             x:Class="WinGetXAvalonia.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+
+    <UserControl.Styles>
+
+        <Style Selector="ListBox.settings-nav ListBoxItem">
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Margin" Value="0,2"/>
+        </Style>
+
+        <Style Selector="ListBox.settings-nav ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource NavHoverBrush}"/>
+            <Setter Property="CornerRadius" Value="10"/>
+        </Style>
+
+        <Style Selector="ListBox.settings-nav ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="CornerRadius" Value="10"/>
+        </Style>
+
+    </UserControl.Styles>
+
+    <Grid Margin="30">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="25"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border
+            Grid.Column="0"
+            Classes="card"
+            Padding="15">
+
+            <StackPanel Spacing="6">
+
+                <TextBlock
+                    FontSize="28"
+                    FontWeight="Bold"
+                    Text="Settings"/>
+
+                <Separator Margin="0,15"/>
+
+                <ListBox
+                    Classes="settings-nav"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    ItemsSource="{Binding Categories}"
+                    SelectedItem="{Binding SelectedCategory}">
+
+                    <ListBox.ItemTemplate>
+
+                        <DataTemplate DataType="vms:SettingsCategoryViewModel">
+
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+
+                                <TextBlock
+                                    FontSize="18"
+                                    Text="{Binding Icon}"/>
+
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontSize="15"
+                                    Text="{Binding Title}"/>
+
+                            </StackPanel>
+
+                        </DataTemplate>
+
+                    </ListBox.ItemTemplate>
+
+                </ListBox>
+
+            </StackPanel>
+
+        </Border>
+
+        <ContentControl
+            Grid.Column="2"
+            Content="{Binding SelectedCategory}"/>
+
+    </Grid>
+
+</UserControl>

@@ -1,0 +1,141 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
+             xmlns:services="using:WinGetXAvalonia.Services.Theme"
+             x:Class="WinGetXAvalonia.Views.Settings.AppearanceSettingsView"
+             x:DataType="vm:AppearanceSettingsViewModel">
+
+    <UserControl.Styles>
+
+        <Style Selector="ListBox.accent ListBoxItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="2"/>
+            <Setter Property="Margin" Value="0,0,10,10"/>
+        </Style>
+
+        <Style Selector="ListBox.accent ListBoxItem /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+        <Style Selector="ListBox.accent ListBoxItem:selected Border">
+            <Setter Property="BorderBrush" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="BorderThickness" Value="3"/>
+        </Style>
+
+    </UserControl.Styles>
+
+    <ScrollViewer>
+
+        <StackPanel Spacing="22">
+
+            <TextBlock
+                Classes="title"
+                Text="Appearance"/>
+
+            <Border Classes="card">
+
+                <StackPanel Spacing="16">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Text="Theme"/>
+
+                    <ComboBox
+                        Width="220"
+                        SelectedItem="{Binding SelectedTheme}">
+                        <x:String>Dark</x:String>
+                        <x:String>Light</x:String>
+                        <x:String>System</x:String>
+                    </ComboBox>
+
+                </StackPanel>
+
+            </Border>
+
+            <Border Classes="card">
+
+                <StackPanel Spacing="16">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Text="Accent Color"/>
+
+                    <TextBlock
+                        Opacity="0.7"
+                        Text="{Binding SelectedAccent.Name}"/>
+
+                    <ListBox
+                        Classes="accent"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        ItemsSource="{Binding Accents}"
+                        SelectedItem="{Binding SelectedAccent}">
+
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+
+                        <ListBox.ItemTemplate>
+
+                            <DataTemplate DataType="services:AccentDefinition">
+
+                                <Border
+                                    Width="34"
+                                    Height="34"
+                                    CornerRadius="10"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="2"
+                                    Background="{Binding Hex}"/>
+
+                            </DataTemplate>
+
+                        </ListBox.ItemTemplate>
+
+                    </ListBox>
+
+                </StackPanel>
+
+            </Border>
+
+            <Border Classes="card">
+
+                <StackPanel Spacing="20">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Text="Effects"/>
+
+                    <ToggleSwitch
+                        OffContent="Enable animations"
+                        OnContent="Enable animations"
+                        IsChecked="{Binding EnableAnimations}"/>
+
+                    <ToggleSwitch
+                        OffContent="Enable Mica"
+                        OnContent="Enable Mica"
+                        IsChecked="{Binding EnableMica}"/>
+
+                    <ToggleSwitch
+                        OffContent="Enable Acrylic"
+                        OnContent="Enable Acrylic"
+                        IsChecked="{Binding EnableAcrylic}"/>
+
+                    <ToggleSwitch
+                        OffContent="Rounded corners"
+                        OnContent="Rounded corners"
+                        IsChecked="{Binding RoundedCorners}"/>
+
+                </StackPanel>
+
+            </Border>
+
+        </StackPanel>
+
+    </ScrollViewer>
+
+</UserControl>

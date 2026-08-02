@@ -1,0 +1,45 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:WinGetXAvalonia.Models"
+    x:Class="WinGetXAvalonia.Controls.PackageRow"
+    x:DataType="models:PackageModel">
+
+    <Border
+        CornerRadius="12"
+        Margin="4"
+        Padding="12"
+        Background="{DynamicResource CardBackgroundBrush}">
+
+        <Grid>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="220"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="120"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock
+                Text="{Binding Icon}"
+                FontSize="24"/>
+
+            <TextBlock
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Text="{Binding Name}"/>
+
+            <TextBlock
+                Grid.Column="2"
+                VerticalAlignment="Center"
+                Text="{Binding Version}"/>
+
+            <Button
+                Grid.Column="3"
+                Content="Remove"/>
+
+        </Grid>
+
+    </Border>
+
+</UserControl>

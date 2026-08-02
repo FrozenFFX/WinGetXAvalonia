@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WinGetXAvalonia.ViewModels"
+             x:Class="WinGetXAvalonia.Views.UpdatesView"
+             x:DataType="vm:UpdatesViewModel">
+
+    <Grid Margin="20">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            FontSize="34"
+            FontWeight="Bold"
+            Text="Updates"/>
+
+        <Button
+            Grid.Row="2"
+            Width="160"
+            Content="Upgrade All"
+            Command="{Binding UpgradeAllCommand}"/>
+
+        <ListBox
+            Grid.Row="4"
+            ItemsSource="{Binding Updates}"/>
+
+    </Grid>
+
+</UserControl>

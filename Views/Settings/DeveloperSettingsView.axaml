@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
+             x:Class="WinGetXAvalonia.Views.Settings.DeveloperSettingsView"
+             x:DataType="vm:DeveloperSettingsViewModel">
+
+    <ScrollViewer>
+
+        <StackPanel Spacing="22">
+
+            <TextBlock
+                Classes="title"
+                Text="Developer"/>
+
+            <Border Classes="card">
+
+                <StackPanel Spacing="20">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Text="Debugging"/>
+
+                    <ToggleSwitch
+                        OffContent="Developer mode"
+                        OnContent="Developer mode"
+                        IsChecked="{Binding DeveloperMode}"/>
+
+                    <ToggleSwitch
+                        OffContent="Verbose logs"
+                        OnContent="Verbose logs"
+                        IsChecked="{Binding VerboseLogs}"/>
+
+                </StackPanel>
+
+            </Border>
+
+        </StackPanel>
+
+    </ScrollViewer>
+
+</UserControl>

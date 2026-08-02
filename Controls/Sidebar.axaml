@@ -1,0 +1,45 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="WinGetXAvalonia.Controls.Sidebar"
+    x:CompileBindings="False">
+
+    <ListBox
+    Classes="sidebar"
+        SelectedItem="{Binding SelectedMenuItem}"
+        ItemsSource="{Binding Menu}"
+        BorderThickness="0"
+        Background="Transparent">
+
+        <ListBox.ItemTemplate>
+
+            <DataTemplate>
+
+                <Border
+                    Margin="0,4"
+                    Padding="12"
+                    CornerRadius="10">
+
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="10">
+
+                        <TextBlock
+                            FontSize="18"
+                            Text="{Binding Icon}"/>
+
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="15"
+                            Text="{Binding Title}"/>
+
+                    </StackPanel>
+
+                </Border>
+
+            </DataTemplate>
+
+        </ListBox.ItemTemplate>
+
+    </ListBox>
+
+</UserControl>

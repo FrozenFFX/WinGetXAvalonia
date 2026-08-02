@@ -1,0 +1,16 @@
+<Styles xmlns="https://github.com/avaloniaui">
+
+    <Style Selector="DataGrid">
+
+        <Setter Property="Background"
+                Value="{DynamicResource DataGridBackgroundBrush}"/>
+
+        <Setter Property="BorderThickness"
+                Value="0"/>
+
+        <Setter Property="RowHeight"
+                Value="42"/>
+
+    </Style>
+
+</Styles>

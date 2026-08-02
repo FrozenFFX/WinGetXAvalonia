@@ -1,0 +1,44 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WinGetXAvalonia.ViewModels"
+             x:Class="WinGetXAvalonia.Views.BrowseView"
+             x:DataType="vm:BrowseViewModel">
+
+    <Grid Margin="20">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            FontSize="34"
+            FontWeight="Bold"
+            Text="Browse"/>
+
+        <StackPanel
+            Grid.Row="2"
+            Orientation="Horizontal"
+            Spacing="10">
+
+            <TextBox
+                Width="400"
+                PlaceholderText="Search package..."
+                Text="{Binding SearchText}"/>
+
+            <Button
+                Content="Search"
+                Command="{Binding SearchCommand}"/>
+
+        </StackPanel>
+
+        <ListBox
+            Grid.Row="4"
+            ItemsSource="{Binding Results}"/>
+
+    </Grid>
+
+</UserControl>

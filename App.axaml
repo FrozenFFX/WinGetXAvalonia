@@ -1,0 +1,90 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:WinGetXAvalonia"
+             xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
+             xmlns:settingsViews="using:WinGetXAvalonia.Views.Settings"
+             x:Class="WinGetXAvalonia.App"
+             RequestedThemeVariant="Dark">
+
+    <Application.DataTemplates>
+        <local:ViewLocator />
+        <DataTemplate DataType="{x:Type vm:GeneralSettingsViewModel}">
+            <settingsViews:GeneralSettingsView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:AppearanceSettingsViewModel}">
+            <settingsViews:AppearanceSettingsView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:PerformanceSettingsViewModel}">
+            <settingsViews:PerformanceSettingsView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:WingetSettingsViewModel}">
+            <settingsViews:WingetSettingsView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:NotificationsSettingsViewModel}">
+            <settingsViews:NotificationsSettingsView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:BackupSettingsViewModel}">
+            <settingsViews:BackupSettingsView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:DeveloperSettingsViewModel}">
+            <settingsViews:DeveloperSettingsView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:AboutSettingsViewModel}">
+            <settingsViews:AboutSettingsView/>
+        </DataTemplate>
+    </Application.DataTemplates>
+
+    <Application.Resources>
+
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://WinGetXAvalonia/Brushes/AccentBrushes.axaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <ResourceDictionary.ThemeDictionaries>
+
+                <ResourceDictionary x:Key="Dark">
+                    <ResourceDictionary.MergedDictionaries>
+                        <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Dark.axaml"/>
+                    </ResourceDictionary.MergedDictionaries>
+                </ResourceDictionary>
+
+                <ResourceDictionary x:Key="Light">
+                    <ResourceDictionary.MergedDictionaries>
+                        <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Light.axaml"/>
+                    </ResourceDictionary.MergedDictionaries>
+                </ResourceDictionary>
+
+            </ResourceDictionary.ThemeDictionaries>
+
+        </ResourceDictionary>
+
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme/>
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+        <StyleInclude Source="/Styles/Buttons.axaml"/>
+        <StyleInclude Source="/Styles/Cards.axaml"/>
+        <StyleInclude Source="/Styles/CardStyles.axaml"/>
+        <StyleInclude Source="/Styles/AnimationStyles.axaml"/>
+        <StyleInclude Source="/Styles/SidebarStyles.axaml"/>
+        <StyleInclude Source="/Styles/Text.axaml"/>
+        <StyleInclude Source="/Styles/Navigation.axaml"/>
+
+        <Style Selector="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI Variable"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+        </Style>
+
+        <Style Selector="Button">
+            <Setter Property="FontFamily" Value="Segoe UI Variable"/>
+        </Style>
+
+        <Style Selector="ToggleSwitch">
+            <Setter Property="FontFamily" Value="Segoe UI Variable"/>
+        </Style>
+    </Application.Styles>
+
+</Application>

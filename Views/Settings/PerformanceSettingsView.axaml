@@ -1,0 +1,109 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
+             x:Class="WinGetXAvalonia.Views.Settings.PerformanceSettingsView"
+             x:DataType="vm:PerformanceSettingsViewModel">
+
+    <ScrollViewer>
+
+        <StackPanel Spacing="22">
+
+            <TextBlock
+                Classes="title"
+                Text="Performance"/>
+
+            <Border Classes="card">
+
+                <StackPanel Spacing="20">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Text="Rendering"/>
+
+                    <ToggleSwitch
+                        OffContent="Hardware acceleration"
+                        OnContent="Hardware acceleration"
+                        IsChecked="{Binding HardwareAcceleration}"/>
+
+                    <ToggleSwitch
+                        OffContent="UI virtualization"
+                        OnContent="UI virtualization"
+                        IsChecked="{Binding Virtualization}"/>
+
+                    <ToggleSwitch
+                        OffContent="Cache package lists"
+                        OnContent="Cache package lists"
+                        IsChecked="{Binding CachePackages}"/>
+
+                </StackPanel>
+
+            </Border>
+
+            <Border Classes="card">
+
+                <StackPanel Spacing="20">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Text="Downloads"/>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <TextBlock Text="Parallel downloads"/>
+                        <Slider Grid.Column="1"
+                                Margin="15,0"
+                                Minimum="{Binding MinParallelDownloads}"
+                                Maximum="{Binding MaxParallelDownloads}"
+                                TickFrequency="1"
+                                IsSnapToTickEnabled="True"
+                                Value="{Binding ParallelDownloads}"/>
+                        <TextBlock Grid.Column="2" Text="{Binding ParallelDownloads}"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <TextBlock Text="Cache size (MB)"/>
+                        <Slider Grid.Column="1"
+                                Margin="15,0"
+                                Minimum="{Binding MinCacheSize}"
+                                Maximum="{Binding MaxCacheSize}"
+                                TickFrequency="64"
+                                IsSnapToTickEnabled="True"
+                                Value="{Binding CacheSize}"/>
+                        <TextBlock Grid.Column="2" Text="{Binding CacheSize}"/>
+                    </Grid>
+
+                </StackPanel>
+
+            </Border>
+
+            <Border Classes="card">
+
+                <StackPanel Spacing="20">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Text="Window"/>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <TextBlock Text="Window opacity"/>
+                        <Slider Grid.Column="1"
+                                Margin="15,0"
+                                Minimum="0"
+                                Maximum="100"
+                                TickFrequency="5"
+                                IsSnapToTickEnabled="True"
+                                Value="{Binding WindowOpacity}"/>
+                        <TextBlock Grid.Column="2" Text="{Binding WindowOpacity}"/>
+                    </Grid>
+
+                </StackPanel>
+
+            </Border>
+
+        </StackPanel>
+
+    </ScrollViewer>
+
+</UserControl>

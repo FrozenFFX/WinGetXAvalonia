@@ -1,0 +1,21 @@
+## .NET build output
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+*.user
+*.suo
+.vs/
+
+## Rider
+.idea/
+*.DotSettings.user
+
+## Runtime artifacts
+settings.json
+*.log
+*.zip
+
+## OS
+Thumbs.db
+Desktop.ini

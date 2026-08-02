@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
+             x:Class="WinGetXAvalonia.Views.Settings.WingetSettingsView"
+             x:DataType="vm:WingetSettingsViewModel">
+
+    <ScrollViewer>
+
+        <StackPanel Spacing="22">
+
+            <TextBlock
+                Classes="title"
+                Text="Winget"/>
+
+            <Border Classes="card">
+
+                <StackPanel Spacing="20">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Text="Confirmations"/>
+
+                    <ToggleSwitch
+                        OffContent="Confirm before install"
+                        OnContent="Confirm before install"
+                        IsChecked="{Binding ConfirmInstall}"/>
+
+                    <ToggleSwitch
+                        OffContent="Confirm before update"
+                        OnContent="Confirm before update"
+                        IsChecked="{Binding ConfirmUpdate}"/>
+
+                    <ToggleSwitch
+                        OffContent="Confirm before uninstall"
+                        OnContent="Confirm before uninstall"
+                        IsChecked="{Binding ConfirmUninstall}"/>
+
+                </StackPanel>
+
+            </Border>
+
+            <Border Classes="card">
+
+                <StackPanel Spacing="20">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Text="Refresh"/>
+
+                    <ToggleSwitch
+                        OffContent="Auto refresh package lists"
+                        OnContent="Auto refresh package lists"
+                        IsChecked="{Binding AutoRefreshPackages}"/>
+
+                </StackPanel>
+
+            </Border>
+
+        </StackPanel>
+
+    </ScrollViewer>
+
+</UserControl>

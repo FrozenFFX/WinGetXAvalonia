@@ -1,0 +1,41 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:controls="using:WinGetXAvalonia.Controls"
+    x:Class="WinGetXAvalonia.Views.InstalledView"
+    x:DataType="vm:InstalledViewModel">
+
+    <Grid Margin="20">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Classes="title"
+            Text="Installed Packages"/>
+
+        <ScrollViewer Grid.Row="2">
+
+            <ItemsControl ItemsSource="{Binding Packages}">
+
+                <ItemsControl.ItemTemplate>
+
+                    <DataTemplate>
+
+                        <controls:PackageCard/>
+
+                    </DataTemplate>
+
+                </ItemsControl.ItemTemplate>
+
+            </ItemsControl>
+
+        </ScrollViewer>
+
+    </Grid>
+
+</UserControl>

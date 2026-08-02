@@ -1,0 +1,61 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
+             x:Class="WinGetXAvalonia.Views.Settings.BackupSettingsView"
+             x:DataType="vm:BackupSettingsViewModel">
+
+    <ScrollViewer>
+
+        <StackPanel Spacing="22">
+
+            <TextBlock
+                Classes="title"
+                Text="Backup"/>
+
+            <Border Classes="card">
+
+                <StackPanel Spacing="20">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Text="Automation"/>
+
+                    <ToggleSwitch
+                        OffContent="Auto backup settings"
+                        OnContent="Auto backup settings"
+                        IsChecked="{Binding AutoBackup}"/>
+
+                    <TextBlock
+                        Opacity="0.7"
+                        Text="Settings are stored locally in settings.json. Export a copy before reinstalling Windows."/>
+
+                </StackPanel>
+
+            </Border>
+
+            <Border Classes="card">
+
+                <StackPanel Spacing="16">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Text="Manual"/>
+
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+
+                        <Button Content="Export Settings"/>
+                        <Button Content="Import Settings"/>
+
+                    </StackPanel>
+
+                </StackPanel>
+
+            </Border>
+
+        </StackPanel>
+
+    </ScrollViewer>
+
+</UserControl>

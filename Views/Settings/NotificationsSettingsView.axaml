@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
+             x:Class="WinGetXAvalonia.Views.Settings.NotificationsSettingsView"
+             x:DataType="vm:NotificationsSettingsViewModel">
+
+    <ScrollViewer>
+
+        <StackPanel Spacing="22">
+
+            <TextBlock
+                Classes="title"
+                Text="Notifications"/>
+
+            <Border Classes="card">
+
+                <StackPanel Spacing="20">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Text="Alerts"/>
+
+                    <ToggleSwitch
+                        OffContent="Toast notifications"
+                        OnContent="Toast notifications"
+                        IsChecked="{Binding ToastNotifications}"/>
+
+                    <ToggleSwitch
+                        OffContent="Sound notifications"
+                        OnContent="Sound notifications"
+                        IsChecked="{Binding SoundNotifications}"/>
+
+                </StackPanel>
+
+            </Border>
+
+        </StackPanel>
+
+    </ScrollViewer>
+
+</UserControl>

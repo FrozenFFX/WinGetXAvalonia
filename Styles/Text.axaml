@@ -1,0 +1,16 @@
+<Styles xmlns="https://github.com/avaloniaui">
+
+    <Style Selector="TextBlock.title">
+
+        <Setter Property="FontSize" Value="34"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+
+    </Style>
+
+    <Style Selector="TextBlock.subtitle">
+
+        <Setter Property="FontSize" Value="20"/>
+
+    </Style>
+
+</Styles>

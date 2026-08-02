@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Services;
 using WinGetXAvalonia.Services.Interfaces;
 using WinGetXAvalonia.Services.Theme;
@@ -27,9 +28,15 @@ class Program
                 services.AddSingleton<UpdatesViewModel>();
                 services.AddSingleton<BrowseViewModel>();
                 services.AddSingleton<FavoritesViewModel>();
+                services.AddSingleton<WorkspacesViewModel>();
+                services.AddSingleton<BlueprintsViewModel>();
+                services.AddSingleton<AutomationViewModel>();
+                services.AddSingleton<SecurityViewModel>();
+                services.AddSingleton<DeveloperViewModel>();
                 services.AddSingleton<SettingsViewModel>();
 
                 services.AddSingleton<WingetService>();
+                services.AddSingleton<IPackageProvider, WingetProvider>();
                 services.AddSingleton<NavigationService>();
                 services.AddSingleton<SettingsStore>();
                 services.AddSingleton<ISettingsService, SettingsService>();

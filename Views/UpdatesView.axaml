@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:WinGetXAvalonia.ViewModels"
+             xmlns:models="using:WinGetXAvalonia.Models"
              x:Class="WinGetXAvalonia.Views.UpdatesView"
              x:DataType="vm:UpdatesViewModel">
 
@@ -27,7 +28,33 @@
 
         <ListBox
             Grid.Row="4"
-            ItemsSource="{Binding Updates}"/>
+            ItemsSource="{Binding Updates}">
+
+            <ListBox.ItemTemplate>
+
+                <DataTemplate DataType="models:UpdatePackage">
+
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+
+                        <TextBlock Text="{Binding Name}"/>
+
+                        <TextBlock
+                            Opacity="0.6"
+                            Text="{Binding Version}"/>
+
+                        <TextBlock Text="→"/>
+
+                        <TextBlock
+                            Opacity="0.6"
+                            Text="{Binding Available}"/>
+
+                    </StackPanel>
+
+                </DataTemplate>
+
+            </ListBox.ItemTemplate>
+
+        </ListBox>
 
     </Grid>
 

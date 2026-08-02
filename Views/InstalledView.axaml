@@ -16,7 +16,7 @@
 
         <TextBlock
             Classes="title"
-            Text="Installed Packages"/>
+            Text="Packages"/>
 
         <ScrollViewer Grid.Row="2">
 

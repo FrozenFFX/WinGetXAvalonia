@@ -22,7 +22,11 @@ public partial class MainViewModel : ViewModelBase
         InstalledViewModel installed,
         UpdatesViewModel updates,
         BrowseViewModel browse,
-        FavoritesViewModel favorites,
+        WorkspacesViewModel workspaces,
+        BlueprintsViewModel blueprints,
+        AutomationViewModel automation,
+        SecurityViewModel security,
+        DeveloperViewModel developer,
         SettingsViewModel settings)
     {
         Navigation = navigation;
@@ -33,20 +37,24 @@ public partial class MainViewModel : ViewModelBase
             [typeof(InstalledViewModel)] = installed,
             [typeof(UpdatesViewModel)] = updates,
             [typeof(BrowseViewModel)] = browse,
-            [typeof(FavoritesViewModel)] = favorites,
+            [typeof(WorkspacesViewModel)] = workspaces,
+            [typeof(BlueprintsViewModel)] = blueprints,
+            [typeof(AutomationViewModel)] = automation,
+            [typeof(SecurityViewModel)] = security,
+            [typeof(DeveloperViewModel)] = developer,
             [typeof(SettingsViewModel)] = settings
         };
 
         Menu.Add(new()
         {
-            Title = "Dashboard",
+            Title = "Home",
             Icon = "🏠",
             Page = typeof(DashboardViewModel)
         });
 
         Menu.Add(new()
         {
-            Title = "Installed",
+            Title = "Packages",
             Icon = "📦",
             Page = typeof(InstalledViewModel)
         });
@@ -60,16 +68,44 @@ public partial class MainViewModel : ViewModelBase
 
         Menu.Add(new()
         {
-            Title = "Browse",
+            Title = "Discover",
             Icon = "🔍",
             Page = typeof(BrowseViewModel)
         });
 
         Menu.Add(new()
         {
-            Title = "Favorites",
-            Icon = "⭐",
-            Page = typeof(FavoritesViewModel)
+            Title = "Workspaces",
+            Icon = "🗂",
+            Page = typeof(WorkspacesViewModel)
+        });
+
+        Menu.Add(new()
+        {
+            Title = "Blueprints",
+            Icon = "📐",
+            Page = typeof(BlueprintsViewModel)
+        });
+
+        Menu.Add(new()
+        {
+            Title = "Automation",
+            Icon = "⚙",
+            Page = typeof(AutomationViewModel)
+        });
+
+        Menu.Add(new()
+        {
+            Title = "Security",
+            Icon = "🛡",
+            Page = typeof(SecurityViewModel)
+        });
+
+        Menu.Add(new()
+        {
+            Title = "Developer",
+            Icon = "🧑‍💻",
+            Page = typeof(DeveloperViewModel)
         });
 
         Menu.Add(new()

@@ -1,24 +1,24 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Helpers;
 using WinGetXAvalonia.Models;
-using WinGetXAvalonia.Services;
 
 namespace WinGetXAvalonia.ViewModels;
 
 public partial class InstalledViewModel : ViewModelBase
 {
-    private readonly WingetService _winget;
+    private readonly IPackageProvider _provider;
 
     public ObservableCollection<PackageModel> Packages { get; } = new();
 
     [ObservableProperty]
     private bool isLoading;
 
-    public InstalledViewModel(WingetService winget)
+    public InstalledViewModel(IPackageProvider provider)
     {
-        _winget = winget;
+        _provider = provider;
         _ = Refresh();
     }
 
@@ -29,10 +29,10 @@ public partial class InstalledViewModel : ViewModelBase
 
         Packages.Clear();
 
-        var list = WingetParser.Parse(await _winget.GetInstalledApps());
+        var apps = await _provider.GetInstalledAsync();
 
-        foreach (var app in list)
-            Packages.Add(app);
+        foreach (var app in apps)
+            Packages.Add(ToModel(app));
 
         IsLoading = false;
     }
@@ -40,8 +40,18 @@ public partial class InstalledViewModel : ViewModelBase
     [RelayCommand]
     async Task Remove(PackageModel package)
     {
-        await _winget.Uninstall(package);
+        await _provider.UninstallAsync(package.Id);
 
         await Refresh();
     }
+
+    private static PackageModel ToModel(InstalledPackage app)
+        => new()
+        {
+            Icon = IconProvider.Get(app.Name),
+            Name = app.Name,
+            Id = app.Id,
+            Version = app.Version,
+            Source = app.Source
+        };
 }

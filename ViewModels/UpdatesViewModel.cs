@@ -1,18 +1,19 @@
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using WinGetXAvalonia.Services;
+using WinGetXAvalonia.Core.Providers;
+using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.ViewModels;
 
 public partial class UpdatesViewModel : ViewModelBase
 {
-    private readonly WingetService _winget;
+    private readonly IPackageProvider _provider;
 
-    public ObservableCollection<string> Updates { get; } = new();
+    public ObservableCollection<UpdatePackage> Updates { get; } = new();
 
-    public UpdatesViewModel(WingetService winget)
+    public UpdatesViewModel(IPackageProvider provider)
     {
-        _winget = winget;
+        _provider = provider;
         _ = Refresh();
     }
 
@@ -21,13 +22,16 @@ public partial class UpdatesViewModel : ViewModelBase
     {
         Updates.Clear();
 
-        foreach (var item in await _winget.GetUpdates())
+        foreach (var item in await _provider.GetUpdatesAsync())
             Updates.Add(item);
     }
 
     [RelayCommand]
     async Task UpgradeAll()
     {
-        await _winget.UpgradeAll();
+        foreach (var update in Updates.ToList())
+            await _provider.UpgradeAsync(update.Id);
+
+        await Refresh();
     }
 }

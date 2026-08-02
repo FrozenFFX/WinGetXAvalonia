@@ -5,34 +5,111 @@ namespace WinGetXAvalonia.Helpers;
 
 public static class WingetParser
 {
-    public static List<PackageModel> Parse(List<string> lines)
+    public static List<InstalledPackage> ParseInstalled(List<string> lines)
     {
-        List<PackageModel> list = new();
+        var list = new List<InstalledPackage>();
 
         foreach (string line in lines.Skip(2))
         {
             if (string.IsNullOrWhiteSpace(line))
                 continue;
 
-            string[] p = Regex
-                .Split(line.Trim(), @"\s{2,}");
-
-            if (p.Length < 3)
+            var row = SplitRow(line);
+            if (row.Id is null)
                 continue;
 
-            var name = p.ElementAtOrDefault(0) ?? "";
-
-            list.Add(new PackageModel
+            list.Add(new InstalledPackage
             {
-                Name = name,
-                Id = p.ElementAtOrDefault(1) ?? "",
-                Version = p.ElementAtOrDefault(2) ?? "",
-                Available = p.ElementAtOrDefault(3) ?? "",
-                Source = p.ElementAtOrDefault(4) ?? "",
-                Icon = IconProvider.Get(name)
+                Name = row.Name,
+                Id = row.Id,
+                Version = row.Version,
+                Source = row.Source
             });
         }
 
         return list;
     }
+
+    public static List<UpdatePackage> ParseUpdates(List<string> lines)
+    {
+        var list = new List<UpdatePackage>();
+
+        foreach (string line in lines.Skip(2))
+        {
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
+
+            var row = SplitRow(line);
+            if (row.Id is null)
+                continue;
+
+            list.Add(new UpdatePackage
+            {
+                Name = row.Name,
+                Id = row.Id,
+                Version = row.Version,
+                Available = row.Available,
+                Source = row.Source
+            });
+        }
+
+        return list;
+    }
+
+    public static List<PackageModel> ParseSearch(List<string> lines)
+    {
+        var list = new List<PackageModel>();
+
+        foreach (string line in lines.Skip(2))
+        {
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
+
+            var row = SplitRow(line);
+            if (row.Id is null)
+                continue;
+
+            list.Add(new PackageModel
+            {
+                Name = row.Name,
+                Id = row.Id,
+                Version = row.Version,
+                Source = row.Source,
+                Icon = IconProvider.Get(row.Name)
+            });
+        }
+
+        return list;
+    }
+
+    private static (string Name, string? Id, string Version, string Available, string Source) SplitRow(string line)
+    {
+        string[] p = Regex.Split(line.Trim(), @"\s{2,}");
+
+        if (p.Length < 3)
+            return default;
+
+        int sourceIndex = -1;
+
+        for (int i = p.Length - 1; i > 1; i--)
+        {
+            if (p[i] is "winget" or "msstore")
+            {
+                sourceIndex = i;
+                break;
+            }
+        }
+
+        int versionEnd = sourceIndex > 0 ? sourceIndex : p.Length;
+
+        return (
+            p[0],
+            p[1],
+            CleanVersion(p.ElementAtOrDefault(2)),
+            versionEnd >= 4 ? CleanVersion(p[3]) : "",
+            sourceIndex > 0 ? p[sourceIndex] : "");
+    }
+
+    private static string CleanVersion(string? value)
+        => value?.TrimStart('>').Trim() ?? "";
 }

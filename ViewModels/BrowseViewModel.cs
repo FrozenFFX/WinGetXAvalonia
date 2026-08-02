@@ -1,22 +1,23 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using WinGetXAvalonia.Services;
+using WinGetXAvalonia.Core.Providers;
+using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.ViewModels;
 
 public partial class BrowseViewModel : ViewModelBase
 {
-    private readonly WingetService _winget;
+    private readonly IPackageProvider _provider;
 
     [ObservableProperty]
-    private string _searchText = "";
+    private string searchText = "";
 
-    public ObservableCollection<string> Results { get; } = new();
+    public ObservableCollection<PackageModel> Results { get; } = new();
 
-    public BrowseViewModel(WingetService winget)
+    public BrowseViewModel(IPackageProvider provider)
     {
-        _winget = winget;
+        _provider = provider;
     }
 
     [RelayCommand]
@@ -27,13 +28,13 @@ public partial class BrowseViewModel : ViewModelBase
         if (string.IsNullOrWhiteSpace(SearchText))
             return;
 
-        foreach (var item in await _winget.Search(SearchText))
+        foreach (var item in await _provider.SearchAsync(SearchText))
             Results.Add(item);
     }
 
     [RelayCommand]
-    async Task Install(string id)
+    async Task Install(PackageModel package)
     {
-        await _winget.Install(id);
+        await _provider.InstallAsync(package.Id);
     }
 }

@@ -12,7 +12,7 @@
 
             <TextBlock
                 Classes="title"
-                Text="Dashboard"/>
+                Text="Home"/>
 
             <StackPanel Spacing="8"
                         IsVisible="{Binding IsLoading}">

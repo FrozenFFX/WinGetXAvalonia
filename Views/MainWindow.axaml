@@ -10,7 +10,7 @@
         Width="1400"
         Height="850"
         Background="{DynamicResource WindowBackgroundBrush}"
-        Title="WinGetX">
+        Title="WinGetX Studio">
 
     <Grid>
 
@@ -33,7 +33,7 @@
                 <TextBlock
                     FontSize="28"
                     FontWeight="Bold"
-                    Text="WinGetX"/>
+                    Text="WinGetX Studio"/>
 
                 <controls:Sidebar
                     Grid.Row="2"

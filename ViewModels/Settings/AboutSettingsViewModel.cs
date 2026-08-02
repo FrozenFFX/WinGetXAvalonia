@@ -75,7 +75,7 @@ public partial class AboutSettingsViewModel : SettingsCategoryViewModel
         {
             WingetVersion = (await _winget.Version()).Trim();
         }
-        catch
+        catch (Exception)
         {
             WingetVersion = "N/A";
         }

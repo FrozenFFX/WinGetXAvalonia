@@ -34,6 +34,9 @@
                         <Button
                             Content="GitHub"
                             Command="{Binding OpenGitHubCommand}"/>
+                        <Button
+                            Content="Check for Updates"
+                            IsEnabled="False"/>
 
                     </StackPanel>
 

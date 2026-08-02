@@ -1,17 +1,17 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#16181D"/>
-    <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#20242B"/>
-    <SolidColorBrush x:Key="DataGridBackgroundBrush" Color="#20242B"/>
-    <SolidColorBrush x:Key="CardBackgroundBrush" Color="#252A33"/>
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{StaticResource Color.Background}"/>
+    <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="{StaticResource Color.Surface}"/>
+    <SolidColorBrush x:Key="DataGridBackgroundBrush" Color="{StaticResource Color.Surface}"/>
+    <SolidColorBrush x:Key="CardBackgroundBrush" Color="{StaticResource Color.Card}"/>
     <SolidColorBrush x:Key="CardHoverBrush" Color="#2C3340"/>
     <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="#2B313C"/>
     <SolidColorBrush x:Key="ButtonHoverBrush" Color="#3C4452"/>
     <SolidColorBrush x:Key="ButtonPressedBrush" Color="#4B5568"/>
     <SolidColorBrush x:Key="NavHoverBrush" Color="#2B313C"/>
     <SolidColorBrush x:Key="NavSelectedBrush" Color="#3C4452"/>
-    <SolidColorBrush x:Key="TextBrush" Color="#FFFFFF"/>
-    <SolidColorBrush x:Key="SubtextBrush" Color="#B0B7C3"/>
+    <SolidColorBrush x:Key="TextBrush" Color="{StaticResource Color.TextPrimary}"/>
+    <SolidColorBrush x:Key="SubtextBrush" Color="{StaticResource Color.TextSecondary}"/>
 
 </ResourceDictionary>

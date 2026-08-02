@@ -39,7 +39,10 @@
         <ResourceDictionary>
 
             <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="avares://WinGetXAvalonia/Brushes/AccentBrushes.axaml"/>
+                <ResourceInclude Source="avares://WinGetXAvalonia/Styles/Colors.axaml"/>
+                <ResourceInclude Source="avares://WinGetXAvalonia/Styles/Brushes.axaml"/>
+                <ResourceInclude Source="avares://WinGetXAvalonia/Styles/Radius.axaml"/>
+                <ResourceInclude Source="avares://WinGetXAvalonia/Styles/Spacing.axaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <ResourceDictionary.ThemeDictionaries>

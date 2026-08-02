@@ -13,4 +13,10 @@ public interface ISettingsService
     Task SaveAsync();
 
     Task UpdateAsync(Action<AppSettings> update);
+
+    Task ExportAsync(string filePath);
+
+    Task<bool> ImportAsync(string filePath);
+
+    Task ResetAsync();
 }

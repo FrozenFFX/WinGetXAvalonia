@@ -1,0 +1,15 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Thickness x:Key="Spacing.XS">4</Thickness>
+
+    <Thickness x:Key="Spacing.S">8</Thickness>
+
+    <Thickness x:Key="Spacing.M">12</Thickness>
+
+    <Thickness x:Key="Spacing.L">16</Thickness>
+
+    <Thickness x:Key="Spacing.XL">24</Thickness>
+
+</ResourceDictionary>

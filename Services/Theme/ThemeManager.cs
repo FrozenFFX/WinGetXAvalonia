@@ -43,23 +43,11 @@ public sealed class ThemeManager
 
     public void ApplyCurrent()
     {
-        _theme.ApplyCurrent();
-        ApplyAccent(CurrentAccent);
+        ApplyTheme();
+        ApplyAccent();
     }
 
-    public void SetAccent(AccentDefinition accent)
-        => _ = _settings.UpdateAsync(s => s.AccentColor = accent.Name);
-
-    private void OnSettingsChanged(object? sender, SettingsChangedEventArgs e)
-    {
-        if (e.ChangedProperties.Contains(nameof(AppSettings.Theme)))
-            _theme.ApplyCurrent();
-
-        if (e.ChangedProperties.Contains(nameof(AppSettings.AccentColor)))
-            ApplyAccent(CurrentAccent);
-    }
-
-    private static void ApplyAccent(AccentDefinition accent)
+    public void ApplyAccent(AccentDefinition accent)
     {
         if (Application.Current is not { } app)
             return;
@@ -70,4 +58,19 @@ public sealed class ThemeManager
         app.Resources["AccentColor"] = color;
         app.Resources["SystemAccentColor"] = color;
     }
+
+    private void OnSettingsChanged(object? sender, SettingsChangedEventArgs e)
+    {
+        if (e.ChangedProperties.Contains(nameof(AppSettings.Theme)))
+            ApplyTheme();
+
+        if (e.ChangedProperties.Contains(nameof(AppSettings.AccentColor)))
+            ApplyAccent();
+    }
+
+    private void ApplyTheme()
+        => _theme.ApplyTheme(_theme.CurrentTheme);
+
+    private void ApplyAccent()
+        => ApplyAccent(CurrentAccent);
 }

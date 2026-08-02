@@ -5,13 +5,21 @@ namespace WinGetXAvalonia.Services;
 
 public sealed class SettingsStore
 {
-    const string FileName = "settings.json";
+    private readonly string _fileName;
+
+    public SettingsStore(string? filePath = null)
+    {
+        _fileName = filePath ?? "settings.json";
+    }
 
     public AppSettings Settings { get; private set; } = new();
 
+    public void Replace(AppSettings settings)
+        => Settings = settings;
+
     public async Task LoadAsync()
     {
-        if (!File.Exists(FileName))
+        if (!File.Exists(_fileName))
         {
             await SaveAsync();
             return;
@@ -19,7 +27,7 @@ public sealed class SettingsStore
 
         try
         {
-            string json = await File.ReadAllTextAsync(FileName);
+            string json = await File.ReadAllTextAsync(_fileName);
 
             if (string.IsNullOrWhiteSpace(json))
             {
@@ -38,6 +46,9 @@ public sealed class SettingsStore
     }
 
     public async Task SaveAsync()
+        => await SaveToAsync(_fileName);
+
+    public async Task SaveToAsync(string filePath)
     {
         string json =
             JsonSerializer.Serialize(
@@ -47,6 +58,6 @@ public sealed class SettingsStore
                     WriteIndented = true
                 });
 
-        await File.WriteAllTextAsync(FileName, json);
+        await File.WriteAllTextAsync(filePath, json);
     }
 }

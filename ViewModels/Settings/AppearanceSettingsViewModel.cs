@@ -48,8 +48,8 @@ public partial class AppearanceSettingsViewModel : SettingsCategoryViewModel
         SelectedTheme = s.Theme;
         SelectedAccent = Accents.FirstOrDefault(a => a.Name == s.AccentColor) ?? Accents[0];
         EnableAnimations = s.EnableAnimations;
-        EnableMica = s.EnableMica || s.Mica;
-        EnableAcrylic = s.EnableAcrylic || s.Acrylic;
+        EnableMica = s.UseMica;
+        EnableAcrylic = s.UseAcrylic;
         RoundedCorners = s.RoundedCorners;
 
         EndInit();
@@ -60,7 +60,8 @@ public partial class AppearanceSettingsViewModel : SettingsCategoryViewModel
         if (IsInitializing)
             return;
 
-        _theme.SetTheme(ParseTheme(value));
+        _theme.ApplyTheme(ParseTheme(value));
+        Queue(s => s.Theme = value);
     }
 
     partial void OnSelectedAccentChanged(AccentDefinition? value)
@@ -68,31 +69,24 @@ public partial class AppearanceSettingsViewModel : SettingsCategoryViewModel
         if (IsInitializing || value is null)
             return;
 
-        _themeManager.SetAccent(value);
+        _themeManager.ApplyAccent(value);
+        Queue(s => s.AccentColor = value.Name);
     }
 
     partial void OnEnableAnimationsChanged(bool value)
         => Queue(s => s.EnableAnimations = value);
 
     partial void OnEnableMicaChanged(bool value)
-        => Queue(s =>
-        {
-            s.EnableMica = value;
-            s.Mica = value;
-        });
+        => Queue(s => s.UseMica = value);
 
     partial void OnEnableAcrylicChanged(bool value)
-        => Queue(s =>
-        {
-            s.EnableAcrylic = value;
-            s.Acrylic = value;
-        });
+        => Queue(s => s.UseAcrylic = value);
 
     partial void OnRoundedCornersChanged(bool value)
         => Queue(s => s.RoundedCorners = value);
 
-    private static AppTheme ParseTheme(string value)
-        => Enum.TryParse<AppTheme>(value, true, out var theme)
+    private static ThemeMode ParseTheme(string value)
+        => Enum.TryParse<ThemeMode>(value, true, out var theme)
             ? theme
-            : AppTheme.Dark;
+            : ThemeMode.Dark;
 }

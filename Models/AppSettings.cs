@@ -36,13 +36,9 @@ public class AppSettings
 
     public bool EnableAnimations { get; set; } = true;
 
-    public bool Acrylic { get; set; }
+    public bool UseAcrylic { get; set; }
 
-    public bool Mica { get; set; }
-
-    public bool EnableAcrylic { get; set; }
-
-    public bool EnableMica { get; set; }
+    public bool UseMica { get; set; }
 
     public bool RoundedCorners { get; set; } = true;
 

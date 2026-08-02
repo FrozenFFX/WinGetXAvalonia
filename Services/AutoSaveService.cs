@@ -6,11 +6,13 @@ namespace WinGetXAvalonia.Services;
 public sealed class AutoSaveService
 {
     private readonly ISettingsService _settings;
+    private readonly TimeSpan _delay;
     private CancellationTokenSource? _cts;
 
-    public AutoSaveService(ISettingsService settings)
+    public AutoSaveService(ISettingsService settings, TimeSpan? delay = null)
     {
         _settings = settings;
+        _delay = delay ?? TimeSpan.FromMilliseconds(500);
     }
 
     public void Schedule(Action<AppSettings> update)
@@ -27,7 +29,7 @@ public sealed class AutoSaveService
     {
         try
         {
-            await Task.Delay(500, token);
+            await Task.Delay(_delay, token);
 
             await _settings.UpdateAsync(update);
         }

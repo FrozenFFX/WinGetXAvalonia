@@ -12,6 +12,9 @@ public partial class PerformanceSettingsViewModel : SettingsCategoryViewModel
     public int MinCacheSize => SettingsValidator.MinCacheSize;
     public int MaxCacheSize => SettingsValidator.MaxCacheSize;
 
+    public int MinWindowOpacity => SettingsValidator.MinWindowOpacity;
+    public int MaxWindowOpacity => SettingsValidator.MaxWindowOpacity;
+
     [ObservableProperty]
     private bool hardwareAcceleration = true;
 

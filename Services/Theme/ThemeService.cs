@@ -4,13 +4,6 @@ using WinGetXAvalonia.Services.Interfaces;
 
 namespace WinGetXAvalonia.Services.Theme;
 
-public enum AppTheme
-{
-    System,
-    Dark,
-    Light
-}
-
 public sealed class ThemeService : IThemeService
 {
     private readonly ISettingsService _settings;
@@ -20,27 +13,25 @@ public sealed class ThemeService : IThemeService
         _settings = settings;
     }
 
-    public void ApplyCurrent()
-        => Apply(Parse(_settings.Settings.Theme));
+    public ThemeMode CurrentTheme
+        => Parse(_settings.Settings.Theme);
 
-    public void SetTheme(AppTheme theme)
-        => _ = _settings.UpdateAsync(s => s.Theme = theme.ToString());
-
-    internal static void Apply(AppTheme theme)
+    public void ApplyTheme(ThemeMode theme)
     {
         if (Application.Current is not { } app)
             return;
 
         app.RequestedThemeVariant = theme switch
         {
-            AppTheme.Dark => ThemeVariant.Dark,
-            AppTheme.Light => ThemeVariant.Light,
+            ThemeMode.System => ThemeVariant.Default,
+            ThemeMode.Light => ThemeVariant.Light,
+            ThemeMode.Dark => ThemeVariant.Dark,
             _ => ThemeVariant.Default
         };
     }
 
-    internal static AppTheme Parse(string? value)
-        => Enum.TryParse<AppTheme>(value, true, out var theme)
+    private static ThemeMode Parse(string? value)
+        => Enum.TryParse<ThemeMode>(value, true, out var theme)
             ? theme
-            : AppTheme.Dark;
+            : ThemeMode.Dark;
 }

@@ -2,7 +2,7 @@ namespace WinGetXAvalonia.Services.Theme;
 
 public interface IThemeService
 {
-    void ApplyCurrent();
+    ThemeMode CurrentTheme { get; }
 
-    void SetTheme(AppTheme theme);
+    void ApplyTheme(ThemeMode theme);
 }

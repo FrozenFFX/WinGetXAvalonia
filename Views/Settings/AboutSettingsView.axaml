@@ -23,7 +23,7 @@
 
                     <TextBlock
                         Opacity="0.7"
-                        Text="Version {Binding Version}"/>
+                        Text="{Binding Version, StringFormat='Version {0}'}"/>
 
                     <TextBlock
                         Opacity="0.7"
@@ -31,10 +31,47 @@
 
                     <StackPanel Orientation="Horizontal" Spacing="10">
 
-                        <Button Content="GitHub"/>
+                        <Button
+                            Content="GitHub"
+                            Command="{Binding OpenGitHubCommand}"/>
                         <Button Content="Check for Updates"/>
 
                     </StackPanel>
+
+                </StackPanel>
+
+            </Border>
+
+            <Border Classes="card">
+
+                <StackPanel Spacing="12">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Text="System"/>
+
+                    <Grid ColumnDefinitions="110,*">
+                        <TextBlock Opacity="0.7" Text="Commit"/>
+                        <TextBlock Grid.Column="1"
+                                   FontFamily="Consolas"
+                                   Text="{Binding Commit}"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="110,*">
+                        <TextBlock Opacity="0.7" Text=".NET"/>
+                        <TextBlock Grid.Column="1" Text="{Binding DotNet}"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="110,*">
+                        <TextBlock Opacity="0.7" Text="Avalonia"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Avalonia}"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="110,*">
+                        <TextBlock Opacity="0.7" Text="Winget"/>
+                        <TextBlock Grid.Column="1" Text="{Binding WingetVersion}"/>
+                    </Grid>
 
                 </StackPanel>
 

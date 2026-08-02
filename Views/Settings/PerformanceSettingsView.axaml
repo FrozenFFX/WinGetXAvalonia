@@ -90,8 +90,8 @@
                         <TextBlock Text="Window opacity"/>
                         <Slider Grid.Column="1"
                                 Margin="15,0"
-                                Minimum="0"
-                                Maximum="100"
+                                Minimum="{Binding MinWindowOpacity}"
+                                Maximum="{Binding MaxWindowOpacity}"
                                 TickFrequency="5"
                                 IsSnapToTickEnabled="True"
                                 Value="{Binding WindowOpacity}"/>

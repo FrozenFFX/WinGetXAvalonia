@@ -29,17 +29,6 @@
                         Opacity="0.7"
                         Text="{Binding Description}"/>
 
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-
-                        <Button
-                            Content="GitHub"
-                            Command="{Binding OpenGitHubCommand}"/>
-                        <Button
-                            Content="Check for Updates"
-                            IsEnabled="False"/>
-
-                    </StackPanel>
-
                 </StackPanel>
 
             </Border>
@@ -51,14 +40,7 @@
                     <TextBlock
                         FontSize="22"
                         FontWeight="Bold"
-                        Text="System"/>
-
-                    <Grid ColumnDefinitions="110,*">
-                        <TextBlock Opacity="0.7" Text="Commit"/>
-                        <TextBlock Grid.Column="1"
-                                   FontFamily="Consolas"
-                                   Text="{Binding Commit}"/>
-                    </Grid>
+                        Text="Runtime"/>
 
                     <Grid ColumnDefinitions="110,*">
                         <TextBlock Opacity="0.7" Text=".NET"/>
@@ -75,15 +57,72 @@
                         <TextBlock Grid.Column="1" Text="{Binding WingetVersion}"/>
                     </Grid>
 
+                </StackPanel>
+
+            </Border>
+
+            <Border Classes="card">
+
+                <StackPanel Spacing="12">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Text="Build Information"/>
+
                     <Grid ColumnDefinitions="110,*">
-                        <TextBlock Opacity="0.7" Text="OS"/>
-                        <TextBlock Grid.Column="1" Text="{Binding Os}"/>
+                        <TextBlock Opacity="0.7" Text="Commit"/>
+                        <TextBlock Grid.Column="1"
+                                   FontFamily="Consolas"
+                                   Text="{Binding Commit}"/>
                     </Grid>
 
                     <Grid ColumnDefinitions="110,*">
                         <TextBlock Opacity="0.7" Text="Architecture"/>
                         <TextBlock Grid.Column="1" Text="{Binding Architecture}"/>
                     </Grid>
+
+                    <Grid ColumnDefinitions="110,*">
+                        <TextBlock Opacity="0.7" Text="OS"/>
+                        <TextBlock Grid.Column="1" Text="{Binding OS}"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="110,*">
+                        <TextBlock Opacity="0.7" Text="Configuration"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Configuration}"/>
+                    </Grid>
+
+                </StackPanel>
+
+            </Border>
+
+            <Border Classes="card">
+
+                <StackPanel Spacing="10">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Text="Links"/>
+
+                    <TextBlock
+                        Opacity="0.7"
+                        Text="Resources"/>
+
+                    <Button
+                        Content="GitHub"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding OpenGitHubCommand}"/>
+
+                    <Button
+                        Content="Report Issue"
+                        HorizontalAlignment="Stretch"
+                        IsEnabled="False"/>
+
+                    <Button
+                        Content="License"
+                        HorizontalAlignment="Stretch"
+                        IsEnabled="False"/>
 
                 </StackPanel>
 

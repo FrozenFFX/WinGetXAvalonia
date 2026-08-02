@@ -27,14 +27,13 @@
 
                     <TextBlock
                         Opacity="0.7"
-                        Text="A modern package manager front-end built on winget and Avalonia UI."/>
+                        Text="{Binding Description}"/>
 
                     <StackPanel Orientation="Horizontal" Spacing="10">
 
                         <Button
                             Content="GitHub"
                             Command="{Binding OpenGitHubCommand}"/>
-                        <Button Content="Check for Updates"/>
 
                     </StackPanel>
 

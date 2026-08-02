@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using WinGetXAvalonia.Infrastructure;
 using WinGetXAvalonia.Services;
 using WinGetXAvalonia.Services.Interfaces;
 
@@ -13,10 +14,11 @@ public partial class AboutSettingsViewModel : SettingsCategoryViewModel
 {
     private readonly WingetService _winget;
 
-    public string AppName { get; } = "WinGetX";
+    public string AppName => AppInfo.ProductName;
 
-    public string Version
-        => Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
+    public string Description => AppInfo.Description;
+
+    public string Version => AppInfo.Version;
 
     public string Commit
     {
@@ -59,7 +61,7 @@ public partial class AboutSettingsViewModel : SettingsCategoryViewModel
     private static void OpenGitHub()
         => Process.Start(new ProcessStartInfo
         {
-            FileName = "https://github.com/FrozenFFX/WinGetXAvalonia",
+            FileName = AppInfo.Repository,
             UseShellExecute = true
         });
 

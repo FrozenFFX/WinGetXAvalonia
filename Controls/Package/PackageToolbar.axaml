@@ -1,0 +1,82 @@
+<UserControl
+    x:Class="WinGetXAvalonia.Controls.Package.PackageToolbar"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    x:Name="Root">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
+
+    <Border
+        Margin="0,0,0,16"
+        Padding="16"
+        CornerRadius="{DynamicResource RadiusMedium}"
+        Background="{DynamicResource CardBrush}"
+        BorderBrush="{DynamicResource BorderBrush}"
+        BorderThickness="1">
+
+        <Grid
+            ColumnDefinitions="*,Auto,Auto,Auto,Auto"
+            RowDefinitions="Auto,Auto">
+
+            <!-- Search -->
+
+            <shared:SearchBox
+                Grid.Row="0"
+                Grid.Column="0"
+                Width="320"
+                Watermark="Search packages..."
+                Text="{Binding SearchText, ElementName=Root}" />
+
+            <!-- Sort -->
+
+            <ComboBox
+                Grid.Column="1"
+                Margin="12,0,0,0"
+                Width="150"
+                SelectedItem="{Binding SelectedSort, ElementName=Root}"
+                ItemsSource="{Binding SortItems, ElementName=Root}" />
+
+            <!-- Filter -->
+
+            <ComboBox
+                Grid.Column="2"
+                Margin="12,0,0,0"
+                Width="150"
+                SelectedItem="{Binding SelectedFilter, ElementName=Root}"
+                ItemsSource="{Binding FilterItems, ElementName=Root}" />
+
+            <!-- Refresh -->
+
+            <Button
+                Grid.Column="3"
+                Margin="12,0,0,0"
+                Width="100"
+                Content="Refresh"
+                Command="{Binding RefreshCommand, ElementName=Root}" />
+
+            <!-- Package Count -->
+
+            <Border
+                Grid.Column="4"
+                Margin="16,0,0,0"
+                Padding="12,6"
+                CornerRadius="{DynamicResource RadiusSmall}"
+                Background="{DynamicResource SurfaceBrush}"
+                VerticalAlignment="Center">
+
+                <TextBlock>
+
+                    <Run Text="{Binding PackageCount, ElementName=Root}" />
+                    <Run Text=" packages"/>
+
+                </TextBlock>
+
+            </Border>
+
+        </Grid>
+
+    </Border>
+
+
+    <!-- kaneki -->
+</UserControl>

@@ -1,17 +1,24 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using WinGetXAvalonia.Core.Providers;
+using WinGetXAvalonia.Core.State;
 using WinGetXAvalonia.Helpers;
 using WinGetXAvalonia.Models;
-using WinGetXAvalonia.Services;
+using WinGetXAvalonia.Services.Core;
+using WinGetXAvalonia.Services.Operations;
 
 namespace WinGetXAvalonia.ViewModels;
 
-public partial class InstalledViewModel : ViewModelBase
+// kaneki
+public partial class InstalledViewModel : AsyncViewModel
 {
     private readonly IPackageProvider _provider;
+    private readonly IOperationService _operations;
     private readonly ClipboardService _clipboard;
 
     private readonly List<PackageModel> _allPackages = new();
@@ -19,15 +26,21 @@ public partial class InstalledViewModel : ViewModelBase
 
     public ObservableCollection<PackageModel> Packages { get; } = new();
 
-    [ObservableProperty]
-    private bool isLoading;
+    public int PackageCount => Packages.Count;
 
     [ObservableProperty]
     private string searchText = "";
 
-    public InstalledViewModel(IPackageProvider provider, ClipboardService clipboard)
+    [ObservableProperty]
+    private string? selectedSort;
+
+    [ObservableProperty]
+    private string? selectedFilter;
+
+    public InstalledViewModel(IPackageProvider provider, IOperationService operations, ClipboardService clipboard)
     {
         _provider = provider;
+        _operations = operations;
         _clipboard = clipboard;
     }
 
@@ -46,10 +59,11 @@ public partial class InstalledViewModel : ViewModelBase
     [RelayCommand]
     public async Task Refresh()
     {
+        State = LoadState.Loading;
+        ErrorMessage = null;
+
         try
         {
-            IsLoading = true;
-
             var apps = await _provider.GetInstalledAsync();
 
             _allPackages.Clear();
@@ -58,10 +72,13 @@ public partial class InstalledViewModel : ViewModelBase
                 _allPackages.Add(ToModel(app));
 
             ApplyFilter();
+
+            State = _allPackages.Count == 0 ? LoadState.Empty : LoadState.Loaded;
         }
-        finally
+        catch (Exception ex)
         {
-            IsLoading = false;
+            State = LoadState.Error;
+            ErrorMessage = ex.Message;
         }
     }
 
@@ -71,7 +88,7 @@ public partial class InstalledViewModel : ViewModelBase
         if (string.IsNullOrWhiteSpace(package.Id))
             return;
 
-        await _provider.UpgradeAsync(package.Id);
+        await _operations.UpdateAsync(package.Id);
     }
 
     [RelayCommand]
@@ -83,15 +100,7 @@ public partial class InstalledViewModel : ViewModelBase
         Packages.Remove(package);
         _allPackages.Remove(package);
 
-        try
-        {
-            await _provider.UninstallAsync(package.Id);
-        }
-        catch
-        {
-            _allPackages.Add(package);
-            ApplyFilter();
-        }
+        await _operations.RemoveAsync(package.Id);
     }
 
     [RelayCommand]
@@ -129,6 +138,8 @@ public partial class InstalledViewModel : ViewModelBase
 
         foreach (var package in filtered)
             Packages.Add(package);
+
+        OnPropertyChanged(nameof(PackageCount));
     }
 
     private static PackageModel ToModel(InstalledPackage app)
@@ -141,3 +152,4 @@ public partial class InstalledViewModel : ViewModelBase
             Source = app.Source
         };
 }
+// kaneki

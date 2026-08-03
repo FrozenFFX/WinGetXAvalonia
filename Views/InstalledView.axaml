@@ -4,6 +4,7 @@
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
     xmlns:controls="using:WinGetXAvalonia.Controls"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    xmlns:package="using:WinGetXAvalonia.Controls.Package"
     x:Class="WinGetXAvalonia.Views.InstalledView"
     x:DataType="vm:InstalledViewModel">
     <!-- WinGetX - https://github.com/FrozenFFX -->
@@ -23,10 +24,13 @@
             ActionText="Refresh"
             ActionCommand="{Binding RefreshCommand}"/>
 
-        <TextBox
+        <package:PackageToolbar
             Grid.Row="1"
-            PlaceholderText="Search packages..."
-            Text="{Binding SearchText}"/>
+            SearchText="{Binding SearchText}"
+            PackageCount="{Binding PackageCount}"
+            RefreshCommand="{Binding RefreshCommand}"
+            SelectedSort="{Binding SelectedSort}"
+            SelectedFilter="{Binding SelectedFilter}"/>
 
         <ScrollViewer Grid.Row="3">
 

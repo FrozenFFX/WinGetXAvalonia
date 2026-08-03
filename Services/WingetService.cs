@@ -48,6 +48,12 @@ public class WingetService
     public Task<List<string>> Search(string query)
         => Execute($"search {query}");
 
+    public Task<List<string>> GetSources()
+        => Execute("source list");
+
+    public Task<List<string>> Show(string id)
+        => Execute($"show --id {id} --exact --accept-source-agreements");
+
     public Task Install(string id)
     {
         Process.Start("winget", $"install --id {id} -e");
@@ -80,6 +86,12 @@ public class WingetService
     public Task UpgradeAll()
     {
         Process.Start("winget", "upgrade --all");
+        return Task.CompletedTask;
+    }
+
+    public Task RefreshSources()
+    {
+        Process.Start("winget", "source update");
         return Task.CompletedTask;
     }
 

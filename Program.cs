@@ -48,6 +48,7 @@ class Program
                 services.AddSingleton<LoggerService>();
                 services.AddSingleton<GithubService>();
                 services.AddSingleton<ClockService>();
+                services.AddSingleton<ClipboardService>();
 
                 services.AddSingleton<GeneralSettingsViewModel>();
                 services.AddSingleton<AppearanceSettingsViewModel>();

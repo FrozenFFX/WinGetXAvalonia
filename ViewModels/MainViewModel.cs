@@ -130,5 +130,7 @@ public partial class MainViewModel : ViewModelBase
 
         if (page is DashboardViewModel dashboard)
             _ = dashboard.InitializeAsync();
+        else if (page is InstalledViewModel installed)
+            _ = installed.InitializeAsync();
     }
 }

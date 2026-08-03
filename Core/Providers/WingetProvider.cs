@@ -30,4 +30,7 @@ public sealed class WingetProvider : IPackageProvider
 
     public async Task<IReadOnlyList<UpdatePackage>> GetUpdatesAsync()
         => WingetParser.ParseUpdates(await _winget.GetUpdates());
+
+    public async Task<string?> GetHomepageAsync(string id)
+        => WingetParser.ParseHomepage(await _winget.Show(id));
 }

@@ -82,6 +82,16 @@ public static class WingetParser
         return list;
     }
 
+    public static string? ParseHomepage(IEnumerable<string> lines)
+    {
+        var match = Regex.Match(string.Join('\n', lines), @"(?im)^\s*Homepage:\s*(\S+)");
+
+        if (match.Success && Uri.TryCreate(match.Groups[1].Value, UriKind.Absolute, out _))
+            return match.Groups[1].Value;
+
+        return null;
+    }
+
     private static (string Name, string? Id, string Version, string Available, string Source) SplitRow(string line)
     {
         string[] p = Regex.Split(line.Trim(), @"\s{2,}");

@@ -15,4 +15,6 @@ public interface IPackageProvider
     Task<IReadOnlyList<InstalledPackage>> GetInstalledAsync();
 
     Task<IReadOnlyList<UpdatePackage>> GetUpdatesAsync();
+
+    Task<string?> GetHomepageAsync(string id);
 }

@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
     xmlns:controls="using:WinGetXAvalonia.Controls"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     x:Class="WinGetXAvalonia.Views.InstalledView"
     x:DataType="vm:InstalledViewModel">
 
@@ -10,31 +11,39 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="15"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock
-            Classes="title"
-            Text="Packages"/>
+        <shared:SectionHeader
+            Title="Installed Packages"
+            Description="Manage all installed applications."
+            ActionText="Refresh"
+            ActionCommand="{Binding RefreshCommand}"/>
 
-        <ScrollViewer Grid.Row="2">
+        <TextBox
+            Grid.Row="1"
+            PlaceholderText="Search packages..."
+            Text="{Binding SearchText}"/>
 
-            <ItemsControl ItemsSource="{Binding Packages}">
+        <ListBox
+            Grid.Row="3"
+            ItemsSource="{Binding Packages}"
+            BorderThickness="0"
+            Background="Transparent">
 
-                <ItemsControl.ItemTemplate>
+            <ListBox.ItemTemplate>
 
-                    <DataTemplate>
+                <DataTemplate>
 
-                        <controls:PackageCard/>
+                    <controls:PackageCard/>
 
-                    </DataTemplate>
+                </DataTemplate>
 
-                </ItemsControl.ItemTemplate>
+            </ListBox.ItemTemplate>
 
-            </ItemsControl>
-
-        </ScrollViewer>
+        </ListBox>
 
     </Grid>
 

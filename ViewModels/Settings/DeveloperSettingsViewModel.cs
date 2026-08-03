@@ -1,9 +1,14 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using CommunityToolkit.Mvvm.ComponentModel;
-using WinGetXAvalonia.Services;
+using WinGetXAvalonia.Services.Core;
+using WinGetXAvalonia.Services.Backup;
 using WinGetXAvalonia.Services.Interfaces;
 
 namespace WinGetXAvalonia.ViewModels.Settings;
 
+// kaneki
 public partial class DeveloperSettingsViewModel : SettingsCategoryViewModel
 {
     [ObservableProperty]
@@ -33,3 +38,4 @@ public partial class DeveloperSettingsViewModel : SettingsCategoryViewModel
     partial void OnVerboseLogsChanged(bool value)
         => Queue(s => s.VerboseLogs = value);
 }
+// kaneki

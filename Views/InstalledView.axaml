@@ -14,6 +14,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="15"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -32,23 +33,80 @@
             SelectedSort="{Binding SelectedSort}"
             SelectedFilter="{Binding SelectedFilter}"/>
 
-        <ScrollViewer Grid.Row="3">
+        <!-- Bulk actions -->
+        <Border
+            Grid.Row="2"
+            Margin="0,0,0,0"
+            Padding="12,8"
+            Background="{DynamicResource CardBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="1"
+            CornerRadius="{DynamicResource RadiusMedium}"
+            IsVisible="{Binding SelectedCount,
+            Converter={StaticResource PositiveToBoolConverter}}">
 
-            <ItemsControl ItemsSource="{Binding Packages}">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
 
-                <ItemsControl.ItemTemplate>
+                <TextBlock
+                    FontWeight="SemiBold"
+                    VerticalAlignment="Center"
+                    Text="{Binding SelectedCount,
+                    StringFormat={}{0} selected}"/>
 
-                    <DataTemplate>
+                <Button
+                    Grid.Column="2"
+                    Content="Update Selected"
+                    Command="{Binding UpdateSelectedCommand}"/>
 
-                        <controls:PackageCard/>
+                <Button
+                    Grid.Column="3"
+                    Classes="Danger"
+                    Content="Remove Selected"
+                    Command="{Binding RemoveSelectedCommand}"/>
+            </Grid>
+        </Border>
 
-                    </DataTemplate>
+        <Grid Grid.Row="4">
 
-                </ItemsControl.ItemTemplate>
+            <ScrollViewer>
 
-            </ItemsControl>
+                <ItemsControl ItemsSource="{Binding Packages}">
 
-        </ScrollViewer>
+                    <ItemsControl.ItemTemplate>
+
+                        <DataTemplate>
+
+                            <controls:PackageCard/>
+
+                        </DataTemplate>
+
+                    </ItemsControl.ItemTemplate>
+
+                </ItemsControl>
+
+            </ScrollViewer>
+
+            <!-- Empty state -->
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Spacing="8"
+                IsVisible="{Binding Packages.Count,
+                Converter={StaticResource ZeroToBoolConverter}}">
+
+                <TextBlock
+                    Text="📦"
+                    FontSize="32"
+                    Opacity="0.4"
+                    HorizontalAlignment="Center"/>
+
+                <TextBlock
+                    Text="No packages found"
+                    Opacity="0.6"
+                    HorizontalAlignment="Center"/>
+            </StackPanel>
+
+        </Grid>
 
 
     <!-- kaneki -->

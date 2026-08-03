@@ -1,9 +1,13 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using Avalonia;
 using Avalonia.Styling;
 using WinGetXAvalonia.Services.Interfaces;
 
 namespace WinGetXAvalonia.Services.Theme;
 
+// kaneki
 public sealed class ThemeService : IThemeService
 {
     private readonly ISettingsService _settings;
@@ -35,3 +39,4 @@ public sealed class ThemeService : IThemeService
             ? theme
             : ThemeMode.Dark;
 }
+// kaneki

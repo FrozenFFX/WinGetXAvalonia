@@ -1,9 +1,14 @@
-using WinGetXAvalonia.Services;
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
+using WinGetXAvalonia.Services.Backup;
+using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Theme;
 using WinGetXAvalonia.ViewModels.Settings;
 
 namespace WinGetXAvalonia.Tests;
 
+// kaneki
 public class AppearanceSettingsViewModelTests
 {
     private static (string File, SettingsService Settings, AppearanceSettingsViewModel Vm) Create()
@@ -76,3 +81,4 @@ public class AppearanceSettingsViewModelTests
         Assert.Equal("Light", vm.SelectedTheme);
     }
 }
+// kaneki

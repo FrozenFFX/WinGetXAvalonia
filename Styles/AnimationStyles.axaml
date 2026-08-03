@@ -1,4 +1,5 @@
 <Styles xmlns="https://github.com/avaloniaui">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Style Selector="Border.card">
         <Setter Property="Transitions">
@@ -7,6 +8,8 @@
                 <BrushTransition Property="Background" Duration="0:0:0.18"/>
             </Transitions>
         </Setter>
+
+    <!-- kaneki -->
     </Style>
 
 </Styles>

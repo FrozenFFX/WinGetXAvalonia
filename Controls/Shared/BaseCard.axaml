@@ -1,15 +1,17 @@
 <UserControl
+    x:Class="WinGetXAvalonia.Controls.Shared.BaseCard"
     xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    x:Class="WinGetXAvalonia.Controls.Shared.BaseCard">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Border
+        Margin="5"
+        Padding="16"
+        Background="{DynamicResource CardBrush}"
+        BorderBrush="{DynamicResource BorderBrush}"
+        BorderThickness="1"
         CornerRadius="{DynamicResource RadiusMedium}"
-        Padding="{DynamicResource Spacing.L}"
-        Background="{DynamicResource CardBackgroundBrush}"
-        BorderBrush="#E5E7EB"
-        BorderThickness="1">
+        Classes="BaseCard">
 
         <ContentPresenter/>
 

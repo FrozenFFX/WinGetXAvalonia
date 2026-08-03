@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Git",
+    "id": "Git.Git"
+  },
+  {
+    "title": "Visual Studio Code",
+    "id": "Microsoft.VisualStudioCode"
+  },
+  {
+    "title": "PowerToys",
+    "id": "Microsoft.PowerToys"
+  },
+  {
+    "title": "Windows Terminal",
+    "id": "Microsoft.WindowsTerminal"
+  }
+]

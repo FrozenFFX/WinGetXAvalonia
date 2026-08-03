@@ -1,7 +1,11 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace WinGetXAvalonia.Models;
 
+// kaneki
 public partial class PackageModel : ObservableObject
 {
     [ObservableProperty]
@@ -25,3 +29,4 @@ public partial class PackageModel : ObservableObject
     [ObservableProperty]
     private bool selected;
 }
+// kaneki

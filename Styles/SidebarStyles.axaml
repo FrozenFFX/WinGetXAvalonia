@@ -1,4 +1,5 @@
 <Styles xmlns="https://github.com/avaloniaui">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Style Selector="ListBox.sidebar">
         <Setter Property="Background" Value="Transparent"/>
@@ -19,6 +20,8 @@
     <Style Selector="ListBox.sidebar ListBoxItem:pointerover /template/ ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource NavHoverBrush}"/>
         <Setter Property="CornerRadius" Value="10"/>
+
+    <!-- kaneki -->
     </Style>
 
 </Styles>

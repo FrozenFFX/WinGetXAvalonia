@@ -1,3 +1,6 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -5,14 +8,17 @@ using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using WinGetXAvalonia.Infrastructure;
-using WinGetXAvalonia.Services;
+using WinGetXAvalonia.Services.Core;
+using WinGetXAvalonia.Services.Backup;
 using WinGetXAvalonia.Services.Interfaces;
 
 namespace WinGetXAvalonia.ViewModels.Settings;
 
+// kaneki
 public partial class AboutSettingsViewModel : SettingsCategoryViewModel
 {
     private readonly WingetService _winget;
+    private readonly LoggerService _logger;
 
     public string AppName => AppInfo.ProductName;
 
@@ -60,11 +66,12 @@ public partial class AboutSettingsViewModel : SettingsCategoryViewModel
     public AboutSettingsViewModel(
         ISettingsService settings,
         AutoSaveService autoSave,
-        WingetService winget)
+        WingetService winget,
+        LoggerService logger)
         : base("About", "ℹ", settings, autoSave)
     {
         _winget = winget;
-
+        _logger = logger;
         _ = LoadWingetVersionAsync();
     }
 
@@ -82,9 +89,11 @@ public partial class AboutSettingsViewModel : SettingsCategoryViewModel
         {
             WingetVersion = (await _winget.Version()).Trim();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.Error(ex, "Failed to load winget version");
             WingetVersion = "N/A";
         }
     }
 }
+// kaneki

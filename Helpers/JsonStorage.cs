@@ -1,9 +1,13 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace WinGetXAvalonia.Helpers;
 
+// kaneki
 public static class JsonStorage
 {
     public static async Task Save<T>(string path, T data)
@@ -25,3 +29,4 @@ public static class JsonStorage
             await File.ReadAllTextAsync(path));
     }
 }
+// kaneki

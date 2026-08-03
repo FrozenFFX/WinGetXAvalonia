@@ -1,7 +1,11 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Core.Providers;
 
+// kaneki
 public interface IPackageProvider
 {
     Task<IReadOnlyList<PackageModel>> SearchAsync(string query);
@@ -18,3 +22,4 @@ public interface IPackageProvider
 
     Task<string?> GetHomepageAsync(string id);
 }
+// kaneki

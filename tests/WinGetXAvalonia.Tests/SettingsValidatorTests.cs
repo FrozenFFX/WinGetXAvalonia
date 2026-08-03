@@ -1,8 +1,12 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using WinGetXAvalonia.Models;
-using WinGetXAvalonia.Services;
+using WinGetXAvalonia.Services.Core;
 
 namespace WinGetXAvalonia.Tests;
 
+// kaneki
 public class SettingsValidatorTests
 {
     private static AppSettings Validate(Action<AppSettings> setup)
@@ -102,3 +106,4 @@ public class SettingsValidatorTests
         Assert.Equal(60, store.Settings.WindowOpacity);
     }
 }
+// kaneki

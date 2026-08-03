@@ -1,99 +1,92 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:models="using:WinGetXAvalonia.Models"
+             xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+             mc:Ignorable="d"
+             d:DesignWidth="480"
+             d:DesignHeight="120"
              x:Class="WinGetXAvalonia.Controls.PackageCard"
              x:DataType="models:PackageModel"
              x:CompileBindings="False">
     <!-- WinGetX - https://github.com/FrozenFFX -->
 
-    <Border
-        Margin="5"
-        Padding="16"
-        CornerRadius="{DynamicResource RadiusMedium}"
-        Background="{DynamicResource CardBackgroundBrush}">
+    <shared:BaseCard>
 
-        <StackPanel Spacing="12">
+        <Grid ColumnDefinitions="Auto,Auto,*,Auto">
 
-            <Grid ColumnDefinitions="48,*,Auto">
+            <!-- SELECT -->
+            <CheckBox Grid.Column="0"
+                      IsChecked="{Binding Selected}"
+                      VerticalAlignment="Center"/>
 
-                <TextBlock
-                    FontSize="26"
-                    VerticalAlignment="Center"
-                    Text="{Binding Icon}"/>
-
-                <StackPanel
-                    Grid.Column="1"
+            <!-- ICON -->
+            <Border Grid.Column="1"
                     Margin="12,0,0,0"
-                    Spacing="2">
+                    Width="32"
+                    Height="32"
+                    CornerRadius="8"
+                    Background="{DynamicResource SurfaceBrush}">
 
-                    <TextBlock
-                        FontSize="15"
-                        FontWeight="SemiBold"
-                        Text="{Binding Name}"/>
+                <TextBlock Text="{Binding Icon}"
+                           FontSize="16"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </Border>
 
-                    <TextBlock
-                        FontSize="12"
-                        Opacity="0.6"
-                        Text="{Binding Id}"/>
+            <!-- INFO -->
+            <StackPanel Grid.Column="2"
+                        Margin="12,0,0,0"
+                        Spacing="4"
+                        VerticalAlignment="Center">
 
-                </StackPanel>
+                <TextBlock Text="{Binding Name}"
+                           FontSize="{DynamicResource FontSubtitle}"
+                           FontWeight="SemiBold"
+                           TextTrimming="CharacterEllipsis"/>
 
-                <StackPanel
-                    Grid.Column="2"
-                    HorizontalAlignment="Right"
-                    Spacing="2">
+                <TextBlock Text="{Binding Id}"
+                           FontSize="{DynamicResource FontCaption}"
+                           Foreground="{DynamicResource SubtextBrush}"
+                           TextTrimming="CharacterEllipsis"/>
 
-                    <TextBlock
-                        FontWeight="SemiBold"
-                        HorizontalAlignment="Right"
-                        Text="{Binding Version}"/>
-
-                    <TextBlock
-                        FontSize="12"
-                        Opacity="0.6"
-                        HorizontalAlignment="Right"
-                        Text="{Binding Source}"/>
-
-                </StackPanel>
-
-            </Grid>
-
-            <StackPanel
-                Orientation="Horizontal"
-                Spacing="8"
-                HorizontalAlignment="Right">
-
-                <Button
-                    Content="Update"
-                    Command="{Binding $parent[ItemsControl].DataContext.UpdateCommand}"
-                    CommandParameter="{Binding}"/>
-
-                <Button
-                    Content="Copy ID"
-                    Command="{Binding $parent[ItemsControl].DataContext.CopyIdCommand}"
-                    CommandParameter="{Binding}"/>
-
-                <Button
-                    Content="Copy Name"
-                    Command="{Binding $parent[ItemsControl].DataContext.CopyNameCommand}"
-                    CommandParameter="{Binding}"/>
-
-                <Button
-                    Content="Homepage"
-                    Command="{Binding $parent[ItemsControl].DataContext.OpenHomepageCommand}"
-                    CommandParameter="{Binding}"/>
-
-                <Button
-                    Content="Remove"
-                    Command="{Binding $parent[ItemsControl].DataContext.RemoveCommand}"
-                    CommandParameter="{Binding}"/>
-
+                <TextBlock Text="{Binding Source}"
+                           FontSize="{DynamicResource FontCaption}"
+                           Foreground="{DynamicResource SubtextBrush}"
+                           Opacity="0.7"/>
             </StackPanel>
 
-        </StackPanel>
+            <!-- ACTIONS -->
+            <WrapPanel Grid.Column="3"
+                       VerticalAlignment="Center"
+                       ItemSpacing="8">
+
+                <Button Content="Kaldır"
+                        Classes="Danger"
+                        Command="{Binding $parent[ItemsControl].DataContext.RemoveCommand}"
+                        CommandParameter="{Binding}"/>
+
+                <Button Content="Güncelle"
+                        Command="{Binding $parent[ItemsControl].DataContext.UpdateCommand}"
+                        CommandParameter="{Binding}"/>
+            </WrapPanel>
+
+        </Grid>
 
 
     <!-- kaneki -->
-    </Border>
+    </shared:BaseCard>
+
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Open Homepage"
+                      Click="OnOpenHomepage"/>
+            <MenuItem Header="Copy ID"
+                      Click="OnCopyId"/>
+            <MenuItem Header="Copy Name"
+                      Click="OnCopyName"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
 
 </UserControl>

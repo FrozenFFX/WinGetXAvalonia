@@ -1,19 +1,26 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Models;
+using WinGetXAvalonia.Services.Operations;
 
 namespace WinGetXAvalonia.ViewModels;
 
+// kaneki
 public partial class UpdatesViewModel : ViewModelBase
 {
     private readonly IPackageProvider _provider;
+    private readonly IOperationService _operations;
 
     public ObservableCollection<UpdatePackage> Updates { get; } = new();
 
-    public UpdatesViewModel(IPackageProvider provider)
+    public UpdatesViewModel(IPackageProvider provider, IOperationService operations)
     {
         _provider = provider;
+        _operations = operations;
         _ = Refresh();
     }
 
@@ -29,9 +36,8 @@ public partial class UpdatesViewModel : ViewModelBase
     [RelayCommand]
     async Task UpgradeAll()
     {
-        foreach (var update in Updates.ToList())
-            await _provider.UpgradeAsync(update.Id);
-
+        await _operations.UpgradeAllAsync();
         await Refresh();
     }
 }
+// kaneki

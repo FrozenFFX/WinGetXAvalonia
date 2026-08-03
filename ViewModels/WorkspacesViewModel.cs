@@ -1,5 +1,9 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 namespace WinGetXAvalonia.ViewModels;
 
+// kaneki
 public class WorkspacesViewModel : PlaceholderViewModel
 {
     public WorkspacesViewModel()
@@ -7,3 +11,4 @@ public class WorkspacesViewModel : PlaceholderViewModel
     {
     }
 }
+// kaneki

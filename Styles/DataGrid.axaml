@@ -1,4 +1,5 @@
 <Styles xmlns="https://github.com/avaloniaui">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Style Selector="DataGrid">
 
@@ -11,6 +12,8 @@
         <Setter Property="RowHeight"
                 Value="42"/>
 
+
+    <!-- kaneki -->
     </Style>
 
 </Styles>

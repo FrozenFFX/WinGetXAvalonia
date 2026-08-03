@@ -1,17 +1,40 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using WinGetXAvalonia.Interfaces;
 using WinGetXAvalonia.Models;
-using WinGetXAvalonia.Services;
+using WinGetXAvalonia.Services.Core;
+using WinGetXAvalonia.Services.Performance;
+using WinGetXAvalonia.Services.Theme;
+using WinGetXAvalonia.ViewModels.Settings;
 
 namespace WinGetXAvalonia.ViewModels;
 
+// kaneki
 public partial class DashboardViewModel : ViewModelBase
 {
     private readonly WingetService _winget;
+    private readonly ISystemMonitorService _monitor;
+    private readonly ITimeService _time;
+    private readonly FavoritesService _favorites;
     private readonly SystemInfoService _system;
+    private readonly IThemeService _theme;
     private readonly ClockService _clock;
+    private readonly NavigationService _navigation;
+    private readonly LoggerService _logger;
+    private readonly InstalledViewModel _installedPage;
+    private readonly SettingsViewModel _settingsPage;
 
+    private SystemCardModel? _cpuCard;
+    private SystemCardModel? _ramCard;
+    private SystemCardModel? _diskCard;
+    private SystemCardModel? _netCard;
     private SystemCardModel? _timeCard;
+    private HeroInfoItem? _wingetChip;
     private bool _initialized;
 
     [ObservableProperty]
@@ -21,28 +44,61 @@ public partial class DashboardViewModel : ViewModelBase
     private int updates;
 
     [ObservableProperty]
-    private string wingetVersion = "...";
+    private int favorites;
+
+    [ObservableProperty]
+    private int sources;
 
     [ObservableProperty]
     private bool isLoading;
 
-    public ObservableCollection<DashboardCardModel> Cards { get; } = new();
-
     public ObservableCollection<SystemCardModel> SystemCards { get; } = new();
+
+    public ObservableCollection<QuickActionItem> QuickActions { get; } = new();
+
+    public ObservableCollection<ActivityItem> Activity { get; } = new();
+
+    public ObservableCollection<HeroInfoItem> HeroInfo { get; } = new();
+
+    public ITimeService Time { get; }
 
     public DashboardViewModel(
         WingetService winget,
+        ISystemMonitorService monitor,
+        ITimeService time,
+        FavoritesService favorites,
         SystemInfoService system,
-        ClockService clock)
+        IThemeService theme,
+        ClockService clock,
+        NavigationService navigation,
+        LoggerService logger,
+        InstalledViewModel installedPage,
+        SettingsViewModel settingsPage)
     {
         _winget = winget;
+        _monitor = monitor;
+        _time = time;
+        _favorites = favorites;
         _system = system;
+        _theme = theme;
         _clock = clock;
+        _navigation = navigation;
+        _logger = logger;
+        _installedPage = installedPage;
+        _settingsPage = settingsPage;
+
+        Time = time;
+        _time.Start();
+
+        _monitor.PropertyChanged += OnMonitorChanged;
+        _monitor.Start();
 
         _clock.Tick += OnClockTick;
 
+        BuildQuickActions();
         BuildSystemCards();
-        BuildPlaceholderCards();
+        BuildHeroInfo();
+        BuildMockActivity();
     }
 
     public async Task InitializeAsync()
@@ -54,94 +110,117 @@ public partial class DashboardViewModel : ViewModelBase
         IsLoading = true;
 
         await Task.Delay(200);
-        await Load();
+        await LoadCountsAsync();
+        await LoadWingetVersionAsync();
 
         IsLoading = false;
     }
 
-    private async Task Load()
+    private async Task LoadWingetVersionAsync()
+    {
+        try
+        {
+            var version = (await _winget.Version()).Trim();
+
+            if (_wingetChip is not null)
+                _wingetChip.Value = version;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Failed to load winget version");
+            if (_wingetChip is not null)
+                _wingetChip.Value = "N/A";
+        }
+    }
+
+    private async Task LoadCountsAsync()
     {
         var installedTask = _winget.GetInstalledApps();
         var updatesTask = _winget.GetUpdates();
-        var versionTask = _winget.Version();
+        var sourcesTask = _winget.GetSources();
 
-        await Task.WhenAll(
-            installedTask,
-            updatesTask,
-            versionTask);
+        await Task.WhenAll(installedTask, updatesTask, sourcesTask);
 
         Installed = installedTask.Result.Count;
         Updates = updatesTask.Result.Count;
-        WingetVersion = versionTask.Result.Trim();
+        Sources = sourcesTask.Result.Count;
 
-        Cards.Clear();
-
-        Cards.Add(new()
-        {
-            Title = "Installed",
-            Value = Installed.ToString(),
-            Icon = "📦"
-        });
-
-        Cards.Add(new()
-        {
-            Title = "Updates",
-            Value = Updates.ToString(),
-            Icon = "⬇️"
-        });
-
-        Cards.Add(new()
-        {
-            Title = "Winget",
-            Value = WingetVersion,
-            Icon = "🛡️"
-        });
-
-        Cards.Add(new()
-        {
-            Title = "Status",
-            Value = "OK",
-            Icon = "✅"
-        });
+        Favorites = _favorites.Favorites.Count;
     }
 
-    private void BuildPlaceholderCards()
+    private void BuildQuickActions()
     {
-        Cards.Clear();
-
-        Cards.Add(new()
+        QuickActions.Add(new()
         {
-            Title = "Installed",
-            Value = Installed.ToString(),
-            Icon = "📦"
+            Icon = "📦",
+            Title = "Install Packages",
+            Description = "Browse the winget catalog and install",
+            Command = OpenPackagesCommand
         });
 
-        Cards.Add(new()
+        QuickActions.Add(new()
         {
-            Title = "Updates",
-            Value = Updates.ToString(),
-            Icon = "⬇️"
+            Icon = "⬆️",
+            Title = "Upgrade All",
+            Description = "Update every installed package",
+            Command = UpgradeAllCommand
         });
 
-        Cards.Add(new()
+        QuickActions.Add(new()
         {
-            Title = "Winget",
-            Value = WingetVersion,
-            Icon = "🛡️"
+            Icon = "🔄",
+            Title = "Refresh Sources",
+            Description = "Reload winget package sources",
+            Command = RefreshSourcesCommand
         });
 
-        Cards.Add(new()
+        QuickActions.Add(new()
         {
-            Title = "Status",
-            Value = "...",
-            Icon = "✅"
+            Icon = "⚙️",
+            Title = "Open Settings",
+            Description = "Tune WinGetX to your taste",
+            Command = OpenSettingsCommand
         });
     }
+
+    private void BuildHeroInfo()
+    {
+        HeroInfo.Add(new()
+        {
+            Icon = "🖥️",
+            Label = "OS",
+            Value = GetOsLabel()
+        });
+
+        HeroInfo.Add(new()
+        {
+            Icon = "⚙️",
+            Label = ".NET",
+            Value = $"{Environment.Version.Major}.{Environment.Version.Minor}"
+        });
+
+        _wingetChip = new HeroInfoItem
+        {
+            Icon = "🧰",
+            Label = "Winget",
+            Value = "…"
+        };
+
+        HeroInfo.Add(_wingetChip);
+
+        HeroInfo.Add(new()
+        {
+            Icon = "🎨",
+            Label = "Theme",
+            Value = _theme.CurrentTheme.ToString()
+        });
+    }
+
+    private static string GetOsLabel()
+        => Environment.OSVersion.Version.Build >= 22000 ? "Windows 11" : "Windows 10";
 
     private void BuildSystemCards()
     {
-        SystemCards.Clear();
-
         SystemCards.Add(new()
         {
             Title = "OS",
@@ -156,19 +235,15 @@ public partial class DashboardViewModel : ViewModelBase
             Icon = "👤"
         });
 
-        SystemCards.Add(new()
-        {
-            Title = "CPU",
-            Value = $"{_system.GetCpuThreads()} threads",
-            Icon = "🧠"
-        });
+        _cpuCard = new SystemCardModel { Title = "CPU", Value = "...", Icon = "🧠" };
+        _ramCard = new SystemCardModel { Title = "RAM", Value = "...", Icon = "💾" };
+        _diskCard = new SystemCardModel { Title = "Disk", Value = "...", Icon = "💿" };
+        _netCard = new SystemCardModel { Title = "Network", Value = "...", Icon = "🌐" };
 
-        SystemCards.Add(new()
-        {
-            Title = "RAM",
-            Value = $"{_system.GetRamUsage()} %",
-            Icon = "💾"
-        });
+        SystemCards.Add(_cpuCard);
+        SystemCards.Add(_ramCard);
+        SystemCards.Add(_diskCard);
+        SystemCards.Add(_netCard);
 
         SystemCards.Add(new()
         {
@@ -187,9 +262,103 @@ public partial class DashboardViewModel : ViewModelBase
         SystemCards.Add(_timeCard);
     }
 
+    private void BuildMockActivity()
+    {
+        Activity.Add(new()
+        {
+            Timestamp = DateTime.Now.AddMinutes(-3),
+            Title = "Visual Studio Code updated to 1.92.0",
+            Type = ActivityType.Update
+        });
+
+        Activity.Add(new()
+        {
+            Timestamp = DateTime.Now.AddMinutes(-12),
+            Title = "Google Chrome installed",
+            Type = ActivityType.Install
+        });
+
+        Activity.Add(new()
+        {
+            Timestamp = DateTime.Now.AddHours(-1),
+            Title = "Spotify uninstalled",
+            Type = ActivityType.Uninstall
+        });
+
+        Activity.Add(new()
+        {
+            Timestamp = DateTime.Now.AddHours(-3),
+            Title = "7-Zip upgraded to 24.09",
+            Type = ActivityType.Upgrade
+        });
+    }
+
+    private void OnMonitorChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        switch (e.PropertyName)
+        {
+            case nameof(ISystemMonitorService.CpuUsage):
+                if (_cpuCard is not null)
+                    _cpuCard.Value = $"{_monitor.CpuUsage:0.0} %";
+                break;
+
+            case nameof(ISystemMonitorService.RamUsage):
+                if (_ramCard is not null)
+                    _ramCard.Value = $"{_monitor.RamUsage:0.0} %";
+                break;
+
+            case nameof(ISystemMonitorService.DiskUsage):
+                if (_diskCard is not null)
+                    _diskCard.Value = $"{_monitor.DiskUsage:0.0} %";
+                break;
+
+            case nameof(ISystemMonitorService.NetworkUsage):
+                if (_netCard is not null)
+                    _netCard.Value = FormatNetwork(_monitor.NetworkUsage);
+                break;
+        }
+    }
+
     private void OnClockTick(string time)
     {
         if (_timeCard is not null)
             _timeCard.Value = time;
     }
+
+    private static string FormatNetwork(double bytesPerSecond)
+    {
+        if (bytesPerSecond >= 1024 * 1024)
+            return $"{bytesPerSecond / (1024 * 1024):0.0} MB/s";
+
+        if (bytesPerSecond >= 1024)
+            return $"{bytesPerSecond / 1024:0.0} KB/s";
+
+        return $"{bytesPerSecond:0.0} B/s";
+    }
+
+    [RelayCommand]
+    private void OpenPackages()
+    {
+        _navigation.Navigate(_installedPage);
+        _ = _installedPage.InitializeAsync();
+    }
+
+    [RelayCommand]
+    private void OpenSettings()
+        => _navigation.Navigate(_settingsPage);
+
+    [RelayCommand]
+    private async Task UpgradeAll()
+    {
+        await _winget.UpgradeAll();
+        await LoadCountsAsync();
+    }
+
+    [RelayCommand]
+    private async Task RefreshSources()
+    {
+        await _winget.RefreshSources();
+        await LoadCountsAsync();
+    }
 }
+// kaneki

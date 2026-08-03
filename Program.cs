@@ -1,9 +1,18 @@
-﻿using Avalonia;
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
+using Avalonia;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WinGetXAvalonia.Core.Operations;
 using WinGetXAvalonia.Core.Providers;
-using WinGetXAvalonia.Services;
+using WinGetXAvalonia.Interfaces;
+using WinGetXAvalonia.Services.Core;
+using WinGetXAvalonia.Services.Performance;
+using WinGetXAvalonia.Services.Backup;
+using WinGetXAvalonia.Services.History;
 using WinGetXAvalonia.Services.Interfaces;
+using WinGetXAvalonia.Services.Operations;
 using WinGetXAvalonia.Services.Theme;
 using WinGetXAvalonia.ViewModels;
 using WinGetXAvalonia.ViewModels.Settings;
@@ -37,6 +46,8 @@ class Program
 
                 services.AddSingleton<WingetService>();
                 services.AddSingleton<IPackageProvider, WingetProvider>();
+                services.AddSingleton<PackageSearchCache>();
+                services.AddSingleton<IFeaturedCatalog, FeaturedCatalog>();
                 services.AddSingleton<NavigationService>();
                 services.AddSingleton<SettingsStore>();
                 services.AddSingleton<ISettingsService, SettingsService>();
@@ -49,6 +60,11 @@ class Program
                 services.AddSingleton<GithubService>();
                 services.AddSingleton<ClockService>();
                 services.AddSingleton<ClipboardService>();
+                services.AddSingleton<IHistoryService, HistoryService>();
+                services.AddSingleton<IOperationService, OperationService>();
+                services.AddSingleton<ISystemMonitorService, SystemMonitorService>();
+                services.AddSingleton<ITimeService, TimeService>();
+                services.AddSingleton<IOperationQueue, OperationQueue>();
 
                 services.AddSingleton<GeneralSettingsViewModel>();
                 services.AddSingleton<AppearanceSettingsViewModel>();
@@ -74,3 +90,4 @@ class Program
 #endif
             .LogToTrace();
 }
+// kaneki

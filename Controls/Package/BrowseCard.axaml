@@ -1,0 +1,103 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:WinGetXAvalonia.Models"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
+    mc:Ignorable="d"
+    d:DesignWidth="440"
+    d:DesignHeight="120"
+    x:Class="WinGetXAvalonia.Controls.Package.BrowseCard"
+    x:DataType="models:PackageModel"
+    x:CompileBindings="False">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
+
+    <shared:BaseCard>
+
+        <Grid ColumnDefinitions="Auto,*,Auto">
+
+            <!-- ICON -->
+            <Border Width="32"
+                    Height="32"
+                    CornerRadius="8"
+                    Background="{DynamicResource SurfaceBrush}">
+
+                <TextBlock Text="{Binding Icon}"
+                           FontSize="16"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </Border>
+
+            <!-- INFO -->
+            <StackPanel Grid.Column="1"
+                        Margin="12,0,12,0"
+                        Spacing="4"
+                        VerticalAlignment="Center">
+
+                <TextBlock Text="{Binding Name}"
+                           FontSize="{DynamicResource FontSubtitle}"
+                           FontWeight="SemiBold"
+                           TextTrimming="CharacterEllipsis"/>
+
+                <TextBlock Text="{Binding Id}"
+                           FontSize="{DynamicResource FontCaption}"
+                           Foreground="{DynamicResource SubtextBrush}"
+                           TextTrimming="CharacterEllipsis"/>
+
+                <TextBlock Text="{Binding Source}"
+                           FontSize="{DynamicResource FontCaption}"
+                           Foreground="{DynamicResource SubtextBrush}"
+                           Opacity="0.7"/>
+            </StackPanel>
+
+            <!-- ACTIONS -->
+            <StackPanel Grid.Column="2"
+                        Spacing="8"
+                        VerticalAlignment="Center">
+
+                <!-- Update available -->
+                <StackPanel IsVisible="{Binding Available,
+                            Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}">
+
+                    <TextBlock FontSize="{DynamicResource FontCaption}"
+                               Foreground="{DynamicResource SubtextBrush}"
+                               Text="{Binding Version,
+                               StringFormat=Installed {0}}"/>
+
+                    <TextBlock FontSize="{DynamicResource FontCaption}"
+                               Foreground="{DynamicResource AccentBrush}"
+                               Text="{Binding Available,
+                               StringFormat=Available {0}}"/>
+
+                    <Button Content="Update"
+                            Command="{Binding $parent[ItemsControl].DataContext.UpdateCommand}"
+                            CommandParameter="{Binding}"/>
+                </StackPanel>
+
+                <!-- Plain result -->
+                <StackPanel IsVisible="{Binding Available,
+                            Converter={x:Static conv:StringConverters.IsNullOrEmpty}}">
+
+                    <TextBlock FontSize="{DynamicResource FontCaption}"
+                               Foreground="{DynamicResource SubtextBrush}"
+                               Text="{Binding Version,
+                               StringFormat=Version {0}}"
+                               IsVisible="{Binding Version,
+                               Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"/>
+
+                    <Button Content="Install"
+                            Command="{Binding $parent[ItemsControl].DataContext.InstallCommand}"
+                            CommandParameter="{Binding}"/>
+                </StackPanel>
+
+            </StackPanel>
+
+        </Grid>
+
+
+    <!-- kaneki -->
+    </shared:BaseCard>
+
+</UserControl>

@@ -1,10 +1,14 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using WinGetXAvalonia.Models;
-using WinGetXAvalonia.Services;
+using WinGetXAvalonia.Services.Core;
 
 namespace WinGetXAvalonia.ViewModels;
 
+// kaneki
 public partial class MainViewModel : ViewModelBase
 {
     public NavigationService Navigation { get; }
@@ -132,5 +136,8 @@ public partial class MainViewModel : ViewModelBase
             _ = dashboard.InitializeAsync();
         else if (page is InstalledViewModel installed)
             _ = installed.InitializeAsync();
+        else if (page is BrowseViewModel browse)
+            _ = browse.InitializeAsync();
     }
 }
+// kaneki

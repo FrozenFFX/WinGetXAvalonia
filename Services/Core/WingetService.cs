@@ -1,8 +1,12 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using System.Diagnostics;
 using WinGetXAvalonia.Models;
 
-namespace WinGetXAvalonia.Services;
+namespace WinGetXAvalonia.Services.Core;
 
+// kaneki
 public class WingetService
 {
     private readonly LoggerService _logger;
@@ -111,3 +115,4 @@ public class WingetService
         return await p.StandardOutput.ReadToEndAsync();
     }
 }
+// kaneki

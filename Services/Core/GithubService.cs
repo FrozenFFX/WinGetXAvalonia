@@ -1,7 +1,11 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using System.Net.Http;
 
-namespace WinGetXAvalonia.Services;
+namespace WinGetXAvalonia.Services.Core;
 
+// kaneki
 public class GithubService
 {
     readonly HttpClient client = new();
@@ -12,3 +16,4 @@ public class GithubService
             "https://api.github.com");
     }
 }
+// kaneki

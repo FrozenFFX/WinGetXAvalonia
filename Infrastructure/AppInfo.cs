@@ -1,16 +1,20 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using System.Reflection;
 
 namespace WinGetXAvalonia.Infrastructure;
 
+// kaneki
 public static class AppInfo
 {
     public const string ProductName = "WinGetX";
 
     public const string Description =
-        "Fast • Clean • Open Source";
+        "Fast • Clean • Reliable";
 
     public const string Repository =
-        "https://github.com/FrozenFFX/WinGetXAvalonia";
+        "https://github.com/FrozenFFX";
 
     public const string License = "MIT";
 
@@ -20,3 +24,4 @@ public static class AppInfo
             .Version?
             .ToString(3) ?? "0.1.0";
 }
+// kaneki

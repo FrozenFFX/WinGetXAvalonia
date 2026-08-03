@@ -3,9 +3,10 @@
              xmlns:models="using:WinGetXAvalonia.Models"
              x:Class="WinGetXAvalonia.Controls.SystemCard"
              x:DataType="models:SystemCardModel">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Border Classes="card"
-            Width="210"
+            MinWidth="160"
             Margin="0,0,16,16"
             MinHeight="120">
 
@@ -28,6 +29,8 @@
 
         </StackPanel>
 
+
+    <!-- kaneki -->
     </Border>
 
 </UserControl>

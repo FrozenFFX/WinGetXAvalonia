@@ -1,7 +1,11 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Services.Interfaces;
 
+// kaneki
 public interface ISettingsService
 {
     AppSettings Settings { get; }
@@ -20,3 +24,4 @@ public interface ISettingsService
 
     Task ResetAsync();
 }
+// kaneki

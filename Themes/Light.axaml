@@ -1,5 +1,6 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#F3F4F6"/>
     <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#E5E7EB"/>
@@ -13,5 +14,8 @@
     <SolidColorBrush x:Key="NavSelectedBrush" Color="#C7CBD2"/>
     <SolidColorBrush x:Key="TextBrush" Color="#111827"/>
     <SolidColorBrush x:Key="SubtextBrush" Color="#4B5563"/>
+    <SolidColorBrush x:Key="BorderBrush" Color="#D1D5DB"/>
 
-</ResourceDictionary>
+
+    <!-- kaneki -->
+    </ResourceDictionary>

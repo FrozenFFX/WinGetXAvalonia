@@ -1,9 +1,13 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using System.Text.Json;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Interfaces;
 
-namespace WinGetXAvalonia.Services;
+namespace WinGetXAvalonia.Services.Core;
 
+// kaneki
 public sealed class SettingsService : ISettingsService
 {
     private readonly SettingsStore _store;
@@ -112,3 +116,4 @@ public sealed class SettingsService : ISettingsService
                 new SettingsChangedEventArgs(_store.Settings, changed));
     }
 }
+// kaneki

@@ -1,11 +1,22 @@
 <Styles xmlns="https://github.com/avaloniaui">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
 
-    <Style Selector="Border.card">
+    <Style Selector="Border.BaseCard">
 
-        <Setter Property="CornerRadius" Value="15"/>
-        <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}"/>
-        <Setter Property="Padding" Value="20"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.12"/>
+            </Transitions>
+        </Setter>
 
     </Style>
 
+    <Style Selector="Border.BaseCard:pointerover">
+
+        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+
+    </Style>
+
+
+    <!-- kaneki -->
 </Styles>

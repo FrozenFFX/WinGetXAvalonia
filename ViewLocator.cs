@@ -1,3 +1,6 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Avalonia.Controls;
@@ -12,6 +15,7 @@ namespace WinGetXAvalonia;
 [RequiresUnreferencedCode(
     "Default implementation of ViewLocator involves reflection which may be trimmed away.",
     Url = "https://docs.avaloniaui.net/docs/concepts/view-locator")]
+// kaneki
 public class ViewLocator : IDataTemplate
 {
     public Control? Build(object? param)
@@ -45,3 +49,4 @@ public class ViewLocator : IDataTemplate
         return data is ViewModelBase;
     }
 }
+// kaneki

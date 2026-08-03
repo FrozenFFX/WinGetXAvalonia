@@ -1,11 +1,15 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WinGetXAvalonia.Helpers;
 using WinGetXAvalonia.Models;
 
-namespace WinGetXAvalonia.Services;
+namespace WinGetXAvalonia.Services.Core;
 
+// kaneki
 public class FavoritesService
 {
     private const string FileName = "favorites.json";
@@ -38,3 +42,4 @@ public class FavoritesService
         await Save();
     }
 }
+// kaneki

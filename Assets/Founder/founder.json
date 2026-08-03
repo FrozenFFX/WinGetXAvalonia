@@ -1,0 +1,14 @@
+{
+  "founder": {
+    "name": "FrozenFFX",
+    "edition": "Founder Edition",
+    "enabled": false,
+    "features": {
+      "wallpaper": true,
+      "logo": true,
+      "splash": true,
+      "startupSound": true,
+      "accent": true
+    }
+  }
+}

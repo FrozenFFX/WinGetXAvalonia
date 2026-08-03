@@ -1,0 +1,45 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
+    x:Class="WinGetXAvalonia.Controls.Shared.SectionHeader"
+    x:CompileBindings="False"
+    mc:Ignorable="d">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
+
+    <Grid ColumnDefinitions="*,Auto">
+
+        <StackPanel Spacing="4">
+
+            <TextBlock
+                FontSize="24"
+                FontWeight="SemiBold"
+                Text="{Binding Title,
+                RelativeSource={RelativeSource AncestorType=UserControl}}" />
+
+            <TextBlock
+                Opacity="0.7"
+                Text="{Binding Description,
+                RelativeSource={RelativeSource AncestorType=UserControl}}" />
+
+        </StackPanel>
+
+        <Button
+            Grid.Column="1"
+            Margin="16,0,0,0"
+            VerticalAlignment="Center"
+            Content="{Binding ActionText,
+            RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Command="{Binding ActionCommand,
+            RelativeSource={RelativeSource AncestorType=UserControl}}"
+            IsVisible="{Binding ActionText,
+            RelativeSource={RelativeSource AncestorType=UserControl},
+            Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}" />
+
+
+    <!-- kaneki -->
+    </Grid>
+
+</UserControl>

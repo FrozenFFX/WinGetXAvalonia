@@ -2,8 +2,11 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="WinGetXAvalonia.Controls.LoadingView">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <ProgressBar
         IsIndeterminate="True"/>
 
-</UserControl>
+
+    <!-- kaneki -->
+    </UserControl>

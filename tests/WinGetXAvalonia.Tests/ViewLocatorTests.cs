@@ -1,8 +1,12 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using WinGetXAvalonia.ViewModels;
 using WinGetXAvalonia.Views;
 
 namespace WinGetXAvalonia.Tests;
 
+// kaneki
 public class ViewLocatorTests
 {
     [Theory]
@@ -17,3 +21,4 @@ public class ViewLocatorTests
         Assert.IsType<PlaceholderView>(new ViewLocator().Build(vm));
     }
 }
+// kaneki

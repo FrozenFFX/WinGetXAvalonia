@@ -3,6 +3,7 @@
              xmlns:vm="using:WinGetXAvalonia.ViewModels"
              x:Class="WinGetXAvalonia.Views.PlaceholderView"
              x:DataType="vm:PlaceholderViewModel">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <StackPanel Margin="25" Spacing="8">
 
@@ -19,6 +20,8 @@
             Opacity="0.5"
             Text="Coming soon"/>
 
+
+    <!-- kaneki -->
     </StackPanel>
 
 </UserControl>

@@ -1,4 +1,5 @@
 <Styles xmlns="https://github.com/avaloniaui">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Style Selector="Button">
 
@@ -21,6 +22,27 @@
     <Style Selector="Button:pressed">
 
         <Setter Property="Background" Value="{DynamicResource ButtonPressedBrush}"/>
+
+
+    <!-- kaneki -->
+    </Style>
+
+    <Style Selector="Button.Danger">
+
+        <Setter Property="Background" Value="{DynamicResource DangerBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+
+    </Style>
+
+    <Style Selector="Button.Danger:pointerover">
+
+        <Setter Property="Background" Value="#C0392B"/>
+
+    </Style>
+
+    <Style Selector="Button.Danger:pressed">
+
+        <Setter Property="Background" Value="#922B21"/>
 
     </Style>
 

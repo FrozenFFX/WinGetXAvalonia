@@ -1,67 +1,238 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:WinGetXAvalonia.ViewModels"
-             xmlns:models="using:WinGetXAvalonia.Models"
+             xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+             xmlns:package="using:WinGetXAvalonia.Controls.Package"
+             xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
              x:Class="WinGetXAvalonia.Views.BrowseView"
-             x:DataType="vm:BrowseViewModel">
+             x:DataType="vm:BrowseViewModel"
+             x:CompileBindings="False">
     <!-- WinGetX - https://github.com/FrozenFFX -->
 
-    <Grid Margin="20">
+    <Grid Margin="20" ColumnDefinitions="*,360">
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="15"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="15"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        <!-- LEFT: Featured / Categories / Search / Results -->
+        <Grid Grid.Column="0"
+              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
 
-        <TextBlock
-            FontSize="34"
-            FontWeight="Bold"
-            Text="Discover"/>
+            <shared:SectionHeader
+                Title="Featured"
+                Description="Hand-picked by the community"/>
 
-        <StackPanel
-            Grid.Row="2"
-            Orientation="Horizontal"
-            Spacing="10">
+            <ListBox
+                Grid.Row="1"
+                Margin="0,4,0,0"
+                Height="150"
+                ItemsSource="{Binding Featured}"
+                SelectedItem="{Binding SelectedPackage}"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto">
 
-            <TextBox
-                Width="400"
-                PlaceholderText="Search package..."
-                Text="{Binding SearchText}"/>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
 
-            <Button
-                Content="Search"
-                Command="{Binding SearchCommand}"/>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <package:BrowseCard Width="380"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
 
-        </StackPanel>
+            <shared:SectionHeader
+                Grid.Row="2"
+                Margin="0,20,0,0"
+                Title="Categories"
+                Description="Browse by topic"/>
 
-        <ListBox
-            Grid.Row="4"
-            ItemsSource="{Binding Results}">
+            <ItemsControl
+                Grid.Row="3"
+                Margin="0,8,0,0"
+                ItemsSource="{Binding Categories}">
 
-            <ListBox.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-                <DataTemplate DataType="models:PackageModel">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button
+                            Margin="0,0,8,8"
+                            Command="{Binding $parent[ItemsControl].DataContext.SelectCategoryCommand}"
+                            CommandParameter="{Binding}">
 
-                    <StackPanel Orientation="Horizontal" Spacing="10">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="{Binding Icon}"/>
+                                <TextBlock Text="{Binding Name}"/>
+                            </StackPanel>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
 
-                        <TextBlock Text="{Binding Icon}"/>
+            <shared:SectionHeader
+                Grid.Row="4"
+                Margin="0,20,0,0"
+                Title="Search"
+                Description="Find packages to install"/>
 
-                        <TextBlock Text="{Binding Name}"/>
+            <Grid
+                Grid.Row="5"
+                Margin="0,8,0,0"
+                ColumnDefinitions="*,Auto"
+                ColumnSpacing="10">
 
-                        <TextBlock
-                            Opacity="0.6"
-                            Text="{Binding Version}"/>
+                <AutoCompleteBox
+                    x:Name="SearchBox"
+                    ItemsSource="{Binding Suggestions}"
+                    Text="{Binding SearchText, Mode=TwoWay}"
+                    FilterMode="None"
+                    MinimumPrefixLength="2"
+                    Watermark="Search packages..."
+                    KeyDown="OnSearchKeyDown"
+                    SelectionChanged="OnSearchSelectionChanged"/>
 
-                    </StackPanel>
+                <Button
+                    Grid.Column="1"
+                    Content="Search"
+                    Command="{Binding SearchCommand}"/>
+            </Grid>
 
-                </DataTemplate>
+            <shared:SectionHeader
+                Grid.Row="6"
+                Margin="0,20,0,0"
+                Title="Results"
+                Description="{Binding Results.Count, StringFormat={}{0} packages}"/>
 
-            </ListBox.ItemTemplate>
+            <Grid Grid.Row="7" Margin="0,4,0,0">
 
-        </ListBox>
+                <ListBox
+                    ItemsSource="{Binding Results}"
+                    SelectedItem="{Binding SelectedPackage}">
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <package:BrowseCard/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <ProgressBar
+                    IsIndeterminate="True"
+                    IsVisible="{Binding IsLoading}"
+                    VerticalAlignment="Top"/>
+
+                <TextBlock
+                    Text="No packages found."
+                    IsVisible="{Binding IsEmpty}"
+                    Opacity="0.6"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"/>
+
+                <TextBlock
+                    Text="{Binding ErrorMessage}"
+                    IsVisible="{Binding HasError}"
+                    Foreground="{DynamicResource DangerBrush}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"/>
+            </Grid>
+
+        </Grid>
+
+        <!-- RIGHT: Details Preview -->
+        <Border
+            Grid.Column="1"
+            Margin="16,0,0,0"
+            Padding="24"
+            VerticalAlignment="Top"
+            Background="{DynamicResource CardBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="1"
+            CornerRadius="{DynamicResource RadiusLarge}"
+            IsVisible="{Binding SelectedPackage,
+            Converter={x:Static conv:ObjectConverters.IsNotNull}}">
+
+            <StackPanel Spacing="12">
+
+                <TextBlock
+                    FontSize="{DynamicResource FontDisplay}"
+                    FontWeight="Bold"
+                    Text="Details"/>
+
+                <TextBlock
+                    Text="{Binding SelectedPackage.Icon}"
+                    FontSize="48"/>
+
+                <TextBlock
+                    FontSize="{DynamicResource FontTitle}"
+                    FontWeight="SemiBold"
+                    Text="{Binding SelectedPackage.Name}"
+                    TextWrapping="Wrap"/>
+
+                <TextBlock
+                    FontSize="{DynamicResource FontBody}"
+                    Foreground="{DynamicResource SubtextBrush}"
+                    Text="{Binding SelectedPackage.Id}"
+                    TextWrapping="Wrap"/>
+
+                <TextBlock
+                    FontSize="{DynamicResource FontCaption}"
+                    Foreground="{DynamicResource SubtextBrush}"
+                    Opacity="0.7"
+                    Text="{Binding SelectedPackage.Source}"/>
+
+                <Border Height="1" Background="{DynamicResource BorderBrush}"/>
+
+                <!-- Update available -->
+                <StackPanel
+                    Spacing="4"
+                    IsVisible="{Binding SelectedPackage.Available,
+                    Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}">
+
+                    <TextBlock
+                        FontSize="{DynamicResource FontBody}"
+                        Text="{Binding SelectedPackage.Version,
+                        StringFormat=Installed {0}}"/>
+
+                    <TextBlock
+                        FontSize="{DynamicResource FontBody}"
+                        Foreground="{DynamicResource AccentBrush}"
+                        Text="{Binding SelectedPackage.Available,
+                        StringFormat=Available {0}}"/>
+
+                    <Button
+                        Margin="0,8,0,0"
+                        Content="Update"
+                        Command="{Binding UpdateCommand}"
+                        CommandParameter="{Binding SelectedPackage}"/>
+                </StackPanel>
+
+                <!-- Plain result -->
+                <StackPanel
+                    Spacing="4"
+                    IsVisible="{Binding SelectedPackage.Available,
+                    Converter={x:Static conv:StringConverters.IsNullOrEmpty}}">
+
+                    <TextBlock
+                        FontSize="{DynamicResource FontBody}"
+                        Text="{Binding SelectedPackage.Version,
+                        StringFormat=Version {0}}"
+                        IsVisible="{Binding SelectedPackage.Version,
+                        Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"/>
+
+                    <Button
+                        Margin="0,8,0,0"
+                        Content="Install"
+                        Command="{Binding InstallCommand}"
+                        CommandParameter="{Binding SelectedPackage}"/>
+                </StackPanel>
+
+            </StackPanel>
+
+        </Border>
 
 
     <!-- kaneki -->

@@ -50,6 +50,7 @@
                 <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Motion.axaml"/>
                 <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Elevation.axaml"/>
                 <ResourceInclude Source="avares://WinGetXAvalonia/Styles/Brushes.axaml"/>
+                <ResourceInclude Source="avares://WinGetXAvalonia/Styles/Converters.axaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <ResourceDictionary.ThemeDictionaries>

@@ -1,10 +1,15 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using CommunityToolkit.Mvvm.ComponentModel;
-using WinGetXAvalonia.Services;
+using WinGetXAvalonia.Services.Core;
+using WinGetXAvalonia.Services.Backup;
 using WinGetXAvalonia.Services.Interfaces;
 using WinGetXAvalonia.Services.Theme;
 
 namespace WinGetXAvalonia.ViewModels.Settings;
 
+// kaneki
 public partial class AppearanceSettingsViewModel : SettingsCategoryViewModel
 {
     private readonly IThemeService _theme;
@@ -90,3 +95,4 @@ public partial class AppearanceSettingsViewModel : SettingsCategoryViewModel
             ? theme
             : ThemeMode.Dark;
 }
+// kaneki

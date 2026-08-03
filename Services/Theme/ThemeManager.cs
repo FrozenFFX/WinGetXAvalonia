@@ -1,3 +1,6 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using Avalonia;
 using Avalonia.Media;
 using WinGetXAvalonia.Models;
@@ -5,8 +8,10 @@ using WinGetXAvalonia.Services.Interfaces;
 
 namespace WinGetXAvalonia.Services.Theme;
 
+// kaneki
 public sealed record AccentDefinition(string Name, string Hex);
 
+// kaneki
 public sealed class ThemeManager
 {
     private readonly ISettingsService _settings;
@@ -74,3 +79,4 @@ public sealed class ThemeManager
     private void ApplyAccent()
         => ApplyAccent(CurrentAccent);
 }
+// kaneki

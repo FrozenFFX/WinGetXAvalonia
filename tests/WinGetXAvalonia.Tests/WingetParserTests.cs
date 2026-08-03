@@ -1,7 +1,11 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using WinGetXAvalonia.Helpers;
 
 namespace WinGetXAvalonia.Tests;
 
+// kaneki
 public class WingetParserTests
 {
     [Fact]
@@ -108,3 +112,4 @@ public class WingetParserTests
         Assert.Equal("Valid", result[0].Name);
     }
 }
+// kaneki

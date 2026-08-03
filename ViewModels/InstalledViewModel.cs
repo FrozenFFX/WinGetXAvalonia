@@ -1,15 +1,18 @@
 // ==========================================================
 // WinGetX - https://github.com/FrozenFFX
 // ==========================================================
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Core.State;
 using WinGetXAvalonia.Helpers;
 using WinGetXAvalonia.Models;
-using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Operations;
 
 namespace WinGetXAvalonia.ViewModels;
@@ -19,7 +22,6 @@ public partial class InstalledViewModel : AsyncViewModel
 {
     private readonly IPackageProvider _provider;
     private readonly IOperationService _operations;
-    private readonly ClipboardService _clipboard;
 
     private readonly List<PackageModel> _allPackages = new();
     private bool _initialized;
@@ -27,6 +29,8 @@ public partial class InstalledViewModel : AsyncViewModel
     public ObservableCollection<PackageModel> Packages { get; } = new();
 
     public int PackageCount => Packages.Count;
+
+    public int SelectedCount => Packages.Count(x => x.Selected);
 
     [ObservableProperty]
     private string searchText = "";
@@ -37,11 +41,10 @@ public partial class InstalledViewModel : AsyncViewModel
     [ObservableProperty]
     private string? selectedFilter;
 
-    public InstalledViewModel(IPackageProvider provider, IOperationService operations, ClipboardService clipboard)
+    public InstalledViewModel(IPackageProvider provider, IOperationService operations)
     {
         _provider = provider;
         _operations = operations;
-        _clipboard = clipboard;
     }
 
     public async Task InitializeAsync()
@@ -99,32 +102,87 @@ public partial class InstalledViewModel : AsyncViewModel
 
         Packages.Remove(package);
         _allPackages.Remove(package);
+        Unsubscribe(package);
 
         await _operations.RemoveAsync(package.Id);
+
+        OnPropertyChanged(nameof(PackageCount));
+        OnPropertyChanged(nameof(SelectedCount));
     }
 
     [RelayCommand]
-    private Task CopyId(PackageModel package)
-        => _clipboard.CopyTextAsync(package.Id);
+    private void CopyId(PackageModel package)
+    {
+        if (package is null)
+            return;
+
+        _ = CurrentWindow?.Clipboard?.SetTextAsync(package.Id);
+    }
 
     [RelayCommand]
-    private Task CopyName(PackageModel package)
-        => _clipboard.CopyTextAsync(package.Name);
+    private void CopyName(PackageModel package)
+    {
+        if (package is null)
+            return;
+
+        _ = CurrentWindow?.Clipboard?.SetTextAsync(package.Name);
+    }
 
     [RelayCommand]
     private async Task OpenHomepage(PackageModel package)
     {
-        if (string.IsNullOrWhiteSpace(package.Id))
+        if (package is null)
             return;
 
         var url = await _provider.GetHomepageAsync(package.Id);
 
         if (!string.IsNullOrWhiteSpace(url))
-            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
+        }
+    }
+
+    [RelayCommand]
+    private async Task RemoveSelected()
+    {
+        var selected = Packages
+            .Where(x => x.Selected)
+            .ToList();
+
+        foreach (var package in selected)
+        {
+            await _operations.RemoveAsync(package.Id);
+
+            Packages.Remove(package);
+            _allPackages.Remove(package);
+            Unsubscribe(package);
+        }
+
+        OnPropertyChanged(nameof(PackageCount));
+        OnPropertyChanged(nameof(SelectedCount));
+    }
+
+    [RelayCommand]
+    private async Task UpdateSelected()
+    {
+        var selected = Packages
+            .Where(x => x.Selected)
+            .ToList();
+
+        foreach (var package in selected)
+            await _operations.UpdateAsync(package.Id);
+
+        await Refresh();
     }
 
     private void ApplyFilter()
     {
+        UnsubscribeAll();
+
         Packages.Clear();
 
         IEnumerable<PackageModel> filtered = _allPackages;
@@ -137,10 +195,38 @@ public partial class InstalledViewModel : AsyncViewModel
         }
 
         foreach (var package in filtered)
+        {
+            Subscribe(package);
             Packages.Add(package);
+        }
 
         OnPropertyChanged(nameof(PackageCount));
+        OnPropertyChanged(nameof(SelectedCount));
     }
+
+    private void Subscribe(PackageModel package)
+        => package.PropertyChanged += OnPackagePropertyChanged;
+
+    private void Unsubscribe(PackageModel package)
+        => package.PropertyChanged -= OnPackagePropertyChanged;
+
+    private void UnsubscribeAll()
+    {
+        foreach (var package in Packages)
+            Unsubscribe(package);
+    }
+
+    private void OnPackagePropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(PackageModel.Selected))
+            OnPropertyChanged(nameof(SelectedCount));
+    }
+
+    private static Avalonia.Controls.Window? CurrentWindow
+        => Application.Current?.ApplicationLifetime
+            is IClassicDesktopStyleApplicationLifetime { MainWindow: { } window }
+            ? window
+            : null;
 
     private static PackageModel ToModel(InstalledPackage app)
         => new()

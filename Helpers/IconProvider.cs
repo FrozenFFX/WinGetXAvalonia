@@ -1,5 +1,9 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 namespace WinGetXAvalonia.Helpers;
 
+// kaneki
 public static class IconProvider
 {
     public static string Get(string package)
@@ -33,3 +37,4 @@ public static class IconProvider
         return "📦";
     }
 }
+// kaneki

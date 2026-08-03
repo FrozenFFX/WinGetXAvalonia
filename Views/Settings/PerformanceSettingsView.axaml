@@ -3,6 +3,7 @@
              xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
              x:Class="WinGetXAvalonia.Views.Settings.PerformanceSettingsView"
              x:DataType="vm:PerformanceSettingsViewModel">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <ScrollViewer>
 
@@ -104,6 +105,8 @@
 
         </StackPanel>
 
+
+    <!-- kaneki -->
     </ScrollViewer>
 
 </UserControl>

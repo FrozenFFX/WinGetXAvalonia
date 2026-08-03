@@ -1,3 +1,6 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -9,6 +12,7 @@ using WinGetXAvalonia.Views;
 
 namespace WinGetXAvalonia;
 
+// kaneki
 public partial class App : Application
 {
     public override void Initialize()
@@ -44,3 +48,4 @@ public partial class App : Application
         mainWindow.Show();
     }
 }
+// kaneki

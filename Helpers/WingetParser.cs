@@ -1,8 +1,12 @@
+// ==========================================================
+// WinGetX - https://github.com/FrozenFFX
+// ==========================================================
 using System.Text.RegularExpressions;
 using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Helpers;
 
+// kaneki
 public static class WingetParser
 {
     public static List<InstalledPackage> ParseInstalled(List<string> lines)
@@ -123,3 +127,4 @@ public static class WingetParser
     private static string CleanVersion(string? value)
         => value?.TrimStart('>').Trim() ?? "";
 }
+// kaneki

@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="WinGetXAvalonia.Controls.Dashboard.QuickActionCard"
+             x:Name="Root"
+             x:CompileBindings="False"
+             Cursor="Hand">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
+
+    <Border Classes="card"
+            MinWidth="180"
+            Margin="0,0,16,16"
+            MinHeight="96">
+
+        <Grid ColumnDefinitions="Auto,*">
+
+            <TextBlock
+                Margin="0,0,14,0"
+                FontSize="24"
+                VerticalAlignment="Center"
+                Text="{Binding #Root.Icon}"/>
+
+            <StackPanel Grid.Column="1" Spacing="4">
+
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Text="{Binding #Root.Title}"/>
+
+                <TextBlock
+                    Opacity="0.7"
+                    FontSize="12"
+                    TextWrapping="Wrap"
+                    Text="{Binding #Root.Description}"/>
+
+            </StackPanel>
+
+        </Grid>
+
+
+    <!-- kaneki -->
+    </Border>
+
+</UserControl>

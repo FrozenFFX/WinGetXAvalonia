@@ -1,0 +1,13 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="using:WinGetXAvalonia.Converters">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
+
+    <conv:ZeroToBoolConverter x:Key="ZeroToBoolConverter"/>
+
+    <conv:PositiveToBoolConverter x:Key="PositiveToBoolConverter"/>
+
+
+    <!-- kaneki -->
+    </ResourceDictionary>

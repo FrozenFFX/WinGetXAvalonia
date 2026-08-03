@@ -1,0 +1,47 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
+
+    <!-- Primary -->
+
+    <SolidColorBrush
+        x:Key="PrimaryBrush"
+        Color="#3E8EF7"/>
+
+    <SolidColorBrush
+        x:Key="SuccessBrush"
+        Color="#27AE60"/>
+
+    <SolidColorBrush
+        x:Key="WarningBrush"
+        Color="#F39C12"/>
+
+    <SolidColorBrush
+        x:Key="DangerBrush"
+        Color="#E74C3C"/>
+
+    <!-- Surfaces -->
+
+    <SolidColorBrush
+        x:Key="SurfaceBrush"
+        Color="#202020"/>
+
+    <SolidColorBrush
+        x:Key="CardBrush"
+        Color="#2A2A2A"/>
+
+    <!-- Legacy palette (used by Themes/Dark, Themes/Light, Styles/Brushes) -->
+
+    <Color x:Key="Color.Background">#FF1B1D23</Color>
+    <Color x:Key="Color.Surface">#FF2A2E39</Color>
+    <Color x:Key="Color.Card">#FF2F3440</Color>
+    <Color x:Key="Color.TextPrimary">#FFFFFFFF</Color>
+    <Color x:Key="Color.TextSecondary">#B3FFFFFF</Color>
+    <Color x:Key="Color.Accent">#FF4F8CFF</Color>
+    <Color x:Key="Color.Success">#FF16C47F</Color>
+    <Color x:Key="Color.Warning">#FFF5A524</Color>
+    <Color x:Key="Color.Error">#FFE5484D</Color>
+
+</ResourceDictionary>
+<!-- kaneki -->

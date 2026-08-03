@@ -2,62 +2,308 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:models="using:WinGetXAvalonia.Models"
     xmlns:controls="using:WinGetXAvalonia.Controls"
+    xmlns:dashboard="using:WinGetXAvalonia.Controls.Dashboard"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     x:Class="WinGetXAvalonia.Views.DashboardView"
     x:DataType="vm:DashboardViewModel">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
 
-    <ScrollViewer>
+    <ScrollViewer
+        VerticalScrollBarVisibility="Auto"
+        HorizontalScrollBarVisibility="Disabled">
 
-        <StackPanel Margin="25" Spacing="8">
+        <!-- TODO: Replace with Spacing Tokens -->
+        <Grid
+            Margin="25"
+            RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+            RowSpacing="16">
 
-            <TextBlock
-                Classes="title"
-                Text="Home"/>
+            <Grid.Styles>
 
-            <StackPanel Spacing="8"
-                        IsVisible="{Binding IsLoading}">
-                <TextBlock Text="Loading..."/>
-                <ProgressBar IsIndeterminate="True"/>
+                <Style Selector="Control#HeroSection">
+                    <Style.Animations>
+                        <Animation Duration="0:0:0.35" FillMode="Both">
+                            <KeyFrame Cue="0%">
+                                <Setter Property="Opacity" Value="0"/>
+                            </KeyFrame>
+                            <KeyFrame Cue="100%">
+                                <Setter Property="Opacity" Value="1"/>
+                            </KeyFrame>
+                        </Animation>
+                    </Style.Animations>
+                </Style>
+
+                <Style Selector="Control#OverviewSection">
+                    <Style.Animations>
+                        <Animation Duration="0:0:0.35" Delay="0:0:0.04" FillMode="Both">
+                            <KeyFrame Cue="0%">
+                                <Setter Property="Opacity" Value="0"/>
+                            </KeyFrame>
+                            <KeyFrame Cue="100%">
+                                <Setter Property="Opacity" Value="1"/>
+                            </KeyFrame>
+                        </Animation>
+                    </Style.Animations>
+                </Style>
+
+                <Style Selector="Control#QuickActionsSection">
+                    <Style.Animations>
+                        <Animation Duration="0:0:0.35" Delay="0:0:0.08" FillMode="Both">
+                            <KeyFrame Cue="0%">
+                                <Setter Property="Opacity" Value="0"/>
+                            </KeyFrame>
+                            <KeyFrame Cue="100%">
+                                <Setter Property="Opacity" Value="1"/>
+                            </KeyFrame>
+                        </Animation>
+                    </Style.Animations>
+                </Style>
+
+                <Style Selector="Control#SystemSection">
+                    <Style.Animations>
+                        <Animation Duration="0:0:0.35" Delay="0:0:0.12" FillMode="Both">
+                            <KeyFrame Cue="0%">
+                                <Setter Property="Opacity" Value="0"/>
+                            </KeyFrame>
+                            <KeyFrame Cue="100%">
+                                <Setter Property="Opacity" Value="1"/>
+                            </KeyFrame>
+                        </Animation>
+                    </Style.Animations>
+                </Style>
+
+                <Style Selector="Control#ActivitySection">
+                    <Style.Animations>
+                        <Animation Duration="0:0:0.35" Delay="0:0:0.16" FillMode="Both">
+                            <KeyFrame Cue="0%">
+                                <Setter Property="Opacity" Value="0"/>
+                            </KeyFrame>
+                            <KeyFrame Cue="100%">
+                                <Setter Property="Opacity" Value="1"/>
+                            </KeyFrame>
+                        </Animation>
+                    </Style.Animations>
+                </Style>
+
+            </Grid.Styles>
+
+            <!-- Hero -->
+            <shared:BaseCard
+                Grid.Row="0"
+                x:Name="HeroSection">
+
+                <StackPanel Spacing="16">
+
+                    <StackPanel Spacing="4">
+
+                        <TextBlock
+                            FontSize="28"
+                            FontWeight="SemiBold"
+                            Text="{Binding Time.Greeting, StringFormat='👋 {0}'}"/>
+
+                        <TextBlock
+                            Opacity="0.6"
+                            Text="{Binding Time.CurrentDate}"/>
+
+                        <TextBlock
+                            FontSize="40"
+                            FontWeight="Bold"
+                            Text="{Binding Time.CurrentTime}"/>
+
+                        <TextBlock
+                            Opacity="0.7"
+                            Text="{Binding Updates, StringFormat='{}{0} Updates Available'}"/>
+
+                    </StackPanel>
+
+                    <ItemsControl ItemsSource="{Binding HeroInfo}">
+
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:HeroInfoItem">
+
+                                <Border
+                                    Classes="card"
+                                    CornerRadius="{DynamicResource RadiusSmall}"
+                                    Padding="12,8"
+                                    Margin="0,0,8,0">
+
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+
+                                        <TextBlock Text="{Binding Icon}"/>
+
+                                        <TextBlock
+                                            Opacity="0.7"
+                                            Text="{Binding Label}"/>
+
+                                        <TextBlock
+                                            FontWeight="SemiBold"
+                                            Text="{Binding Value}"/>
+
+                                    </StackPanel>
+
+                                </Border>
+
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+
+                    </ItemsControl>
+
+                </StackPanel>
+
+            </shared:BaseCard>
+
+            <!-- Overview -->
+            <StackPanel
+                Grid.Row="1"
+                x:Name="OverviewSection">
+
+                <shared:SectionHeader Title="Overview"/>
+
+                <UniformGrid Columns="4">
+
+                    <dashboard:StatCard
+                        Icon="📦"
+                        Title="Installed"
+                        Value="{Binding Installed, StringFormat='{}{0:N0}'}"
+                        Subtitle="packages"
+                        AccentBrush="{DynamicResource PrimaryBrush}"/>
+
+                    <dashboard:StatCard
+                        Icon="⬇️"
+                        Title="Updates"
+                        Value="{Binding Updates, StringFormat='{}{0:N0}'}"
+                        Subtitle="available"
+                        AccentBrush="{DynamicResource SuccessBrush}"/>
+
+                    <dashboard:StatCard
+                        Icon="⭐"
+                        Title="Favorites"
+                        Value="{Binding Favorites, StringFormat='{}{0:N0}'}"
+                        Subtitle="saved"
+                        AccentBrush="{DynamicResource WarningBrush}"/>
+
+                    <dashboard:StatCard
+                        Icon="🗂"
+                        Title="Sources"
+                        Value="{Binding Sources, StringFormat='{}{0:N0}'}"
+                        Subtitle="winget"
+                        AccentBrush="{DynamicResource DangerBrush}"/>
+
+                </UniformGrid>
+
             </StackPanel>
 
-            <TextBlock
-                Margin="0,18,0,8"
-                Opacity="0.7"
-                Text="Overview"/>
+            <!-- Quick Actions -->
+            <StackPanel
+                Grid.Row="2"
+                x:Name="QuickActionsSection">
 
-            <ItemsControl ItemsSource="{Binding Cards}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <controls:DashboardStatCard/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                <shared:SectionHeader Title="Quick Actions"/>
 
-            <TextBlock
-                Margin="0,18,0,8"
-                Opacity="0.7"
-                Text="System"/>
+                <ItemsControl ItemsSource="{Binding QuickActions}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="4"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:QuickActionItem">
+                            <dashboard:QuickActionCard
+                                Icon="{Binding Icon}"
+                                Title="{Binding Title}"
+                                Description="{Binding Description}"
+                                Command="{Binding Command}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
-            <ItemsControl ItemsSource="{Binding SystemCards}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <controls:SystemCard/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            </StackPanel>
 
-        </StackPanel>
+            <!-- System -->
+            <StackPanel
+                Grid.Row="3"
+                x:Name="SystemSection">
 
+                <shared:SectionHeader Title="System"/>
+
+                <ItemsControl ItemsSource="{Binding SystemCards}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="4"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <controls:SystemCard/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+            </StackPanel>
+
+            <!-- Recent Activity -->
+            <StackPanel
+                Grid.Row="4"
+                x:Name="ActivitySection">
+
+                <shared:SectionHeader Title="Recent Activity"/>
+
+                <shared:BaseCard>
+
+                    <ItemsControl ItemsSource="{Binding Activity}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:ActivityItem">
+
+                                <Grid ColumnDefinitions="24,*" Margin="0,8">
+
+                                    <TextBlock
+                                        FontSize="14"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding Icon}"/>
+
+                                    <StackPanel Grid.Column="1" Margin="12,0,0,0" Spacing="2">
+
+                                        <TextBlock
+                                            FontWeight="SemiBold"
+                                            Text="{Binding Title}"/>
+
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+
+                                            <TextBlock
+                                                FontWeight="SemiBold"
+                                                Opacity="0.55"
+                                                Text="{Binding Timestamp, StringFormat='HH:mm'}"/>
+
+                                            <TextBlock
+                                                Opacity="0.55"
+                                                Text="{Binding Type}"/>
+
+                                        </StackPanel>
+
+                                    </StackPanel>
+
+                                </Grid>
+
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                </shared:BaseCard>
+
+            </StackPanel>
+
+        </Grid>
+
+
+    <!-- kaneki -->
     </ScrollViewer>
 
 </UserControl>

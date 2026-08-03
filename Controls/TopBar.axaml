@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="WinGetXAvalonia.Controls.TopBar"
     x:CompileBindings="False">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Grid Height="60">
 
@@ -12,6 +13,8 @@
             FontWeight="Bold"
             Text="{Binding Title}"/>
 
+
+    <!-- kaneki -->
     </Grid>
 
 </UserControl>

@@ -6,6 +6,7 @@
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     x:Class="WinGetXAvalonia.Views.InstalledView"
     x:DataType="vm:InstalledViewModel">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Grid Margin="20">
 
@@ -27,24 +28,26 @@
             PlaceholderText="Search packages..."
             Text="{Binding SearchText}"/>
 
-        <ListBox
-            Grid.Row="3"
-            ItemsSource="{Binding Packages}"
-            BorderThickness="0"
-            Background="Transparent">
+        <ScrollViewer Grid.Row="3">
 
-            <ListBox.ItemTemplate>
+            <ItemsControl ItemsSource="{Binding Packages}">
 
-                <DataTemplate>
+                <ItemsControl.ItemTemplate>
 
-                    <controls:PackageCard/>
+                    <DataTemplate>
 
-                </DataTemplate>
+                        <controls:PackageCard/>
 
-            </ListBox.ItemTemplate>
+                    </DataTemplate>
 
-        </ListBox>
+                </ItemsControl.ItemTemplate>
 
+            </ItemsControl>
+
+        </ScrollViewer>
+
+
+    <!-- kaneki -->
     </Grid>
 
 </UserControl>

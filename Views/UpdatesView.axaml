@@ -4,6 +4,7 @@
              xmlns:models="using:WinGetXAvalonia.Models"
              x:Class="WinGetXAvalonia.Views.UpdatesView"
              x:DataType="vm:UpdatesViewModel">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Grid Margin="20">
 
@@ -56,6 +57,8 @@
 
         </ListBox>
 
+
+    <!-- kaneki -->
     </Grid>
 
 </UserControl>

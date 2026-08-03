@@ -6,6 +6,7 @@
              xmlns:settingsViews="using:WinGetXAvalonia.Views.Settings"
              x:Class="WinGetXAvalonia.App"
              RequestedThemeVariant="Dark">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Application.DataTemplates>
         <local:ViewLocator />
@@ -33,6 +34,8 @@
         <DataTemplate DataType="{x:Type vms:AboutSettingsViewModel}">
             <settingsViews:AboutSettingsView/>
         </DataTemplate>
+
+    <!-- kaneki -->
     </Application.DataTemplates>
 
     <Application.Resources>
@@ -40,10 +43,13 @@
         <ResourceDictionary>
 
             <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="avares://WinGetXAvalonia/Styles/Colors.axaml"/>
+                <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Colors.axaml"/>
+                <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Radius.axaml"/>
+                <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Spacing.axaml"/>
+                <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Typography.axaml"/>
+                <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Motion.axaml"/>
+                <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Elevation.axaml"/>
                 <ResourceInclude Source="avares://WinGetXAvalonia/Styles/Brushes.axaml"/>
-                <ResourceInclude Source="avares://WinGetXAvalonia/Styles/Radius.axaml"/>
-                <ResourceInclude Source="avares://WinGetXAvalonia/Styles/Spacing.axaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <ResourceDictionary.ThemeDictionaries>

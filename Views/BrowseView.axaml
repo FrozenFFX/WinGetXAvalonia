@@ -4,6 +4,7 @@
              xmlns:models="using:WinGetXAvalonia.Models"
              x:Class="WinGetXAvalonia.Views.BrowseView"
              x:DataType="vm:BrowseViewModel">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Grid Margin="20">
 
@@ -62,6 +63,8 @@
 
         </ListBox>
 
+
+    <!-- kaneki -->
     </Grid>
 
 </UserControl>

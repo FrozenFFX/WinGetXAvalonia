@@ -3,6 +3,7 @@
              xmlns:vm="using:WinGetXAvalonia.ViewModels"
              x:Class="WinGetXAvalonia.Views.FavoritesView"
              x:DataType="vm:FavoritesViewModel">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Grid Margin="20">
 
@@ -21,6 +22,8 @@
             Grid.Row="2"
             ItemsSource="{Binding Favorites}"/>
 
+
+    <!-- kaneki -->
     </Grid>
 
 </UserControl>

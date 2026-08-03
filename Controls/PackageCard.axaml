@@ -4,11 +4,12 @@
              x:Class="WinGetXAvalonia.Controls.PackageCard"
              x:DataType="models:PackageModel"
              x:CompileBindings="False">
+    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Border
         Margin="5"
         Padding="16"
-        CornerRadius="12"
+        CornerRadius="{DynamicResource RadiusMedium}"
         Background="{DynamicResource CardBackgroundBrush}">
 
         <StackPanel Spacing="12">
@@ -91,6 +92,8 @@
 
         </StackPanel>
 
+
+    <!-- kaneki -->
     </Border>
 
 </UserControl>

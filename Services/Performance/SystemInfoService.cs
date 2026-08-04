@@ -1,11 +1,7 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using System.Runtime.InteropServices;
 
 namespace WinGetXAvalonia.Services.Performance;
 
-// kaneki
 public class SystemInfoService
 {
     public double GetRamUsage()
@@ -37,7 +33,6 @@ public class SystemInfoService
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-    // kaneki
     private class MEMORYSTATUSEX
     {
         public uint dwLength = (uint)Marshal.SizeOf<MEMORYSTATUSEX>();
@@ -55,4 +50,3 @@ public class SystemInfoService
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool GlobalMemoryStatusEx([In, Out] MEMORYSTATUSEX lpBuffer);
 }
-// kaneki

@@ -1,9 +1,5 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 namespace WinGetXAvalonia.Helpers;
 
-// kaneki
 public static class Constants
 {
     public const string Github =
@@ -15,4 +11,3 @@ public static class Constants
     public const string AppName =
         "WinGetX";
 }
-// kaneki

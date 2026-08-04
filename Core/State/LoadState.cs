@@ -1,10 +1,5 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
-
 namespace WinGetXAvalonia.Core.State;
 
-// kaneki
 public enum LoadState
 {
     None,
@@ -13,4 +8,3 @@ public enum LoadState
     Empty,
     Error
 }
-// kaneki

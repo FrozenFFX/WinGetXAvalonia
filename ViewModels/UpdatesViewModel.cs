@@ -1,52 +1,85 @@
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using WinGetXAvalonia.Collections;
+using WinGetXAvalonia.Core.Domain.Packages;
 using WinGetXAvalonia.Core.Events;
 using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Core.State;
+using WinGetXAvalonia.Helpers;
 using WinGetXAvalonia.Models;
+using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Operations;
 
 namespace WinGetXAvalonia.ViewModels;
 
-public partial class UpdatesViewModel : AsyncViewModel
+public partial class UpdatesViewModel : AsyncViewModel, IDisposable
 {
     private readonly IPackageProvider _provider;
     private readonly IOperationService _operations;
     private readonly IEventBus _eventBus;
+    private readonly ILauncherService _launcher;
 
+    private readonly List<PackageModel> _allPackages = new();
+    private IDisposable? _subscription;
     private bool _refreshing;
-
-    [ObservableProperty]
-    private UpdatePackage? selectedPackage;
+    private CancellationTokenSource? _searchCts;
 
     [ObservableProperty]
     private string searchText = "";
 
     [ObservableProperty]
-    private string selectedSort = "Name";
+    private PackageSortMode selectedSort = PackageSortMode.Name;
 
     [ObservableProperty]
-    private string selectedFilter = "All";
+    private PackageFilterMode selectedFilter = PackageFilterMode.All;
 
-    public ObservableCollection<UpdatePackage> Updates { get; } = new();
+    public ObservableRangeCollection<PackageModel> Updates { get; } = new();
 
     public int PackageCount => Updates.Count;
 
-    public UpdatesViewModel(IPackageProvider provider, IOperationService operations, IEventBus eventBus)
+    public UpdatesViewModel(
+        IPackageProvider provider,
+        IOperationService operations,
+        IEventBus eventBus,
+        ILauncherService launcher)
     {
         _provider = provider;
         _operations = operations;
         _eventBus = eventBus;
+        _launcher = launcher;
 
-        _eventBus.Subscribe<PackageChangedEvent>(e => _ = Refresh());
+        _subscription =
+            _eventBus.Subscribe<PackageChangedEvent>(e => _ = Refresh());
+
+        Updates.CollectionChanged += (_, _) => OnPropertyChanged(nameof(PackageCount));
     }
 
     public Task InitializeAsync()
         => Refresh();
 
+    partial void OnSearchTextChanged(string value)
+    {
+        _searchCts?.Cancel();
+        _searchCts?.Dispose();
+
+        _searchCts = new CancellationTokenSource();
+
+        // her tuş basışında filtreyi çalıştırmayalım, 200ms bekleyelim
+        _ = DebounceSearch(_searchCts.Token);
+    }
+
+    partial void OnSelectedSortChanged(PackageSortMode value)
+        => ApplyFilter();
+
+    partial void OnSelectedFilterChanged(PackageFilterMode value)
+        => ApplyFilter();
+
     [RelayCommand]
-    async Task Refresh()
+    public async Task Refresh()
     {
         if (_refreshing)
             return;
@@ -58,35 +91,50 @@ public partial class UpdatesViewModel : AsyncViewModel
             State = LoadState.Loading;
             ErrorMessage = null;
 
-            Updates.Clear();
+            var updates = await _provider.GetUpdatesAsync();
 
-            foreach (var item in await _provider.GetUpdatesAsync())
-                Updates.Add(item);
+            _allPackages.Clear();
 
-            State = Updates.Count == 0 ? LoadState.Empty : LoadState.Loaded;
+            foreach (var update in updates)
+                _allPackages.Add(ToModel(update));
+
+            ApplyFilter();
+
+            State = _allPackages.Count == 0 ? LoadState.Empty : LoadState.Loaded;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             State = LoadState.Error;
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Failed to load updates.";
         }
         finally
         {
             _refreshing = false;
         }
+    }
 
-        OnPropertyChanged(nameof(PackageCount));
+    private async Task DebounceSearch(CancellationToken token)
+    {
+        try
+        {
+            await Task.Delay(200, token);
+
+            ApplyFilter();
+        }
+        catch (OperationCanceledException)
+        {
+        }
     }
 
     [RelayCommand]
-    async Task UpgradeAll()
+    private async Task UpgradeAll()
     {
         await _operations.UpgradeAllAsync();
         await Refresh();
     }
 
     [RelayCommand]
-    async Task Update(UpdatePackage? package)
+    private async Task Update(PackageModel? package)
     {
         if (package is null || string.IsNullOrWhiteSpace(package.Id))
             return;
@@ -97,17 +145,63 @@ public partial class UpdatesViewModel : AsyncViewModel
     }
 
     [RelayCommand]
-    void CopyId(UpdatePackage? package)
+    private void CopyId(PackageModel? package)
     {
+        if (package is null || string.IsNullOrWhiteSpace(package.Id))
+            return;
+
+        _ = CurrentWindow?.Clipboard?.SetTextAsync(package.Id);
     }
 
     [RelayCommand]
-    void CopyName(UpdatePackage? package)
+    private void CopyName(PackageModel? package)
     {
+        if (package is null || string.IsNullOrWhiteSpace(package.Name))
+            return;
+
+        _ = CurrentWindow?.Clipboard?.SetTextAsync(package.Name);
     }
 
     [RelayCommand]
-    void OpenHomepage(UpdatePackage? package)
+    private async Task OpenHomepage(PackageModel? package)
     {
+        if (package is null || string.IsNullOrWhiteSpace(package.Id))
+            return;
+
+        var url = await _provider.GetHomepageAsync(package.Id);
+
+        if (!string.IsNullOrWhiteSpace(url))
+            await _launcher.OpenUrlAsync(url);
+    }
+
+    private void ApplyFilter()
+    {
+        IEnumerable<PackageModel> filtered =
+            PackageFilter.Apply(_allPackages, SearchText, SelectedFilter);
+
+        Updates.ReplaceAll(PackageSorter.Sort(filtered, SelectedSort));
+    }
+
+    private static Avalonia.Controls.Window? CurrentWindow
+        => Application.Current?.ApplicationLifetime
+            is IClassicDesktopStyleApplicationLifetime { MainWindow: { } window }
+            ? window
+            : null;
+
+    private static PackageModel ToModel(UpdatePackage update)
+        => new()
+        {
+            Icon = IconProvider.Get(update.Name),
+            Name = update.Name,
+            Id = update.Id,
+            Version = update.Version,
+            Available = update.Available,
+            Source = update.Source
+        };
+
+    public void Dispose()
+    {
+        _subscription?.Dispose();
+        _subscription = null;
     }
 }

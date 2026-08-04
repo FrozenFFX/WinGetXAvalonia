@@ -1,11 +1,7 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using Avalonia.Controls;
 
 namespace WinGetXAvalonia.Views.Settings;
 
-// kaneki
 public partial class AboutSettingsView : UserControl
 {
     public AboutSettingsView()
@@ -13,4 +9,3 @@ public partial class AboutSettingsView : UserControl
         InitializeComponent();
     }
 }
-// kaneki

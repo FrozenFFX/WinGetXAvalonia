@@ -1,24 +1,36 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Services.Core;
 
-// kaneki
 public sealed class PackageSearchCache
 {
+    private static readonly TimeSpan DefaultExpiration = TimeSpan.FromMinutes(5);
+
     private readonly object _lock = new();
-    private readonly Dictionary<string, List<PackageModel>> _map = new(StringComparer.OrdinalIgnoreCase);
+    private readonly TimeSpan _expiration;
+    private readonly Dictionary<string, Entry> _map = new(StringComparer.OrdinalIgnoreCase);
+
+    public PackageSearchCache()
+        : this(DefaultExpiration)
+    {
+    }
+
+    public PackageSearchCache(TimeSpan expiration)
+        => _expiration = expiration;
 
     public bool TryGet(string query, out IReadOnlyList<PackageModel>? results)
     {
         lock (_lock)
         {
-            if (_map.TryGetValue(query, out List<PackageModel>? cached))
+            if (_map.TryGetValue(query, out var entry))
             {
-                results = cached;
-                return true;
+                if (DateTime.UtcNow - entry.CreatedAt <= _expiration)
+                {
+                    results = entry.Results;
+                    return true;
+                }
+
+                _map.Remove(query);
             }
         }
 
@@ -29,13 +41,13 @@ public sealed class PackageSearchCache
     public void Set(string query, IReadOnlyList<PackageModel> results)
     {
         lock (_lock)
-            _map[query] = results.ToList();
+            _map[query] = new Entry(results.ToList(), DateTime.UtcNow);
     }
 
     public IReadOnlyList<PackageModel> All()
     {
         lock (_lock)
-            return _map.Values.SelectMany(x => x).ToList();
+            return _map.Values.SelectMany(x => x.Results).ToList();
     }
 
     public void Clear()
@@ -43,5 +55,6 @@ public sealed class PackageSearchCache
         lock (_lock)
             _map.Clear();
     }
+
+    private sealed record Entry(IReadOnlyList<PackageModel> Results, DateTime CreatedAt);
 }
-// kaneki

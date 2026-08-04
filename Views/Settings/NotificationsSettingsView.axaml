@@ -3,7 +3,6 @@
              xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
              x:Class="WinGetXAvalonia.Views.Settings.NotificationsSettingsView"
              x:DataType="vm:NotificationsSettingsViewModel">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <ScrollViewer>
 
@@ -38,8 +37,6 @@
 
         </StackPanel>
 
-
-    <!-- kaneki -->
     </ScrollViewer>
 
 </UserControl>

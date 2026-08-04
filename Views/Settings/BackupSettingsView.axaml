@@ -3,7 +3,6 @@
              xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
              x:Class="WinGetXAvalonia.Views.Settings.BackupSettingsView"
              x:DataType="vm:BackupSettingsViewModel">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <ScrollViewer>
 
@@ -68,8 +67,6 @@
 
         </StackPanel>
 
-
-    <!-- kaneki -->
     </ScrollViewer>
 
 </UserControl>

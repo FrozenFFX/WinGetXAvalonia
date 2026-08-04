@@ -1,12 +1,8 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using System.Text.Json;
 using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Services.Core;
 
-// kaneki
 public sealed class SettingsStore
 {
     private readonly string _fileName;
@@ -69,4 +65,3 @@ public sealed class SettingsStore
         await File.WriteAllTextAsync(filePath, json);
     }
 }
-// kaneki

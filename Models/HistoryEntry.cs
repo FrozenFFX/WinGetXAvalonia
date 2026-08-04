@@ -1,11 +1,7 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using System;
 
 namespace WinGetXAvalonia.Models;
 
-// kaneki
 public class HistoryEntry
 {
     public DateTime Timestamp { get; set; }
@@ -22,4 +18,3 @@ public class HistoryEntry
 
     public string? Message { get; set; }
 }
-// kaneki

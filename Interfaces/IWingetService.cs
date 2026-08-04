@@ -1,9 +1,5 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 namespace WinGetXAvalonia.Interfaces;
 
-// kaneki
 public interface IWingetService
 {
     Task<List<string>> GetInstalledApps();
@@ -15,4 +11,3 @@ public interface IWingetService
     Task UpgradeAll();
     Task<string> Version();
 }
-// kaneki

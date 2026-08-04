@@ -11,7 +11,6 @@
         Height="850"
         Background="{DynamicResource WindowBackgroundBrush}"
         Title="WinGetX Studio">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Grid>
 
@@ -49,8 +48,6 @@
             Margin="25"
             Content="{Binding Navigation.CurrentPage}"/>
 
-
-    <!-- kaneki -->
     </Grid>
 
 </Window>

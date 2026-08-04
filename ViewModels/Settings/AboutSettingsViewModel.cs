@@ -1,7 +1,3 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
-using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Avalonia;
@@ -14,11 +10,11 @@ using WinGetXAvalonia.Services.Interfaces;
 
 namespace WinGetXAvalonia.ViewModels.Settings;
 
-// kaneki
 public partial class AboutSettingsViewModel : SettingsCategoryViewModel
 {
     private readonly WingetService _winget;
     private readonly LoggerService _logger;
+    private readonly ILauncherService _launcher;
 
     public string AppName => AppInfo.ProductName;
 
@@ -67,21 +63,19 @@ public partial class AboutSettingsViewModel : SettingsCategoryViewModel
         ISettingsService settings,
         AutoSaveService autoSave,
         WingetService winget,
-        LoggerService logger)
+        LoggerService logger,
+        ILauncherService launcher)
         : base("About", "ℹ", settings, autoSave)
     {
         _winget = winget;
         _logger = logger;
+        _launcher = launcher;
         _ = LoadWingetVersionAsync();
     }
 
     [RelayCommand]
-    private static void OpenGitHub()
-        => Process.Start(new ProcessStartInfo
-        {
-            FileName = AppInfo.Repository,
-            UseShellExecute = true
-        });
+    private void OpenGitHub()
+        => _ = _launcher.OpenUrlAsync(AppInfo.Repository);
 
     private async Task LoadWingetVersionAsync()
     {
@@ -96,4 +90,3 @@ public partial class AboutSettingsViewModel : SettingsCategoryViewModel
         }
     }
 }
-// kaneki

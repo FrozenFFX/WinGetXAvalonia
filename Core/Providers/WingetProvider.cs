@@ -1,13 +1,9 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using WinGetXAvalonia.Helpers;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
 
 namespace WinGetXAvalonia.Core.Providers;
 
-// kaneki
 public sealed class WingetProvider : IPackageProvider
 {
     private readonly WingetService _winget;
@@ -37,5 +33,7 @@ public sealed class WingetProvider : IPackageProvider
 
     public async Task<string?> GetHomepageAsync(string id)
         => WingetParser.ParseHomepage(await _winget.Show(id));
+
+    public async Task<PackageDetails> GetDetailsAsync(string id)
+        => WingetParser.ParseDetails(await _winget.Show(id));
 }
-// kaneki

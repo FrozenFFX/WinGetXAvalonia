@@ -1,12 +1,8 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Interfaces;
 
 namespace WinGetXAvalonia.Services.Backup;
 
-// kaneki
 public sealed class AutoSaveService
 {
     private readonly ISettingsService _settings;
@@ -42,4 +38,3 @@ public sealed class AutoSaveService
         }
     }
 }
-// kaneki

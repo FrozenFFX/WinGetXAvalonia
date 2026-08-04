@@ -1,12 +1,8 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using System.Text.Json;
 using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Helpers;
 
-// kaneki
 public static class FeaturedParser
 {
     private static readonly JsonSerializerOptions Options = new()
@@ -29,4 +25,3 @@ public static class FeaturedParser
         }
     }
 }
-// kaneki

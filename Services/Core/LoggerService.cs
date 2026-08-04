@@ -1,9 +1,5 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 namespace WinGetXAvalonia.Services.Core;
 
-// kaneki
 public class LoggerService
 {
     readonly string file = "wingetx.log";
@@ -21,4 +17,3 @@ public class LoggerService
         Log($"[ERROR] {ex}");
     }
 }
-// kaneki

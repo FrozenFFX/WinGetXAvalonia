@@ -1,19 +1,20 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using Avalonia;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WinGetXAvalonia.Core.Operations;
 using WinGetXAvalonia.Core.Providers;
+using WinGetXAvalonia.Core.Events;
 using WinGetXAvalonia.Interfaces;
+using WinGetXAvalonia.Services;
 using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Performance;
 using WinGetXAvalonia.Services.Backup;
+using WinGetXAvalonia.Services.Dialogs;
 using WinGetXAvalonia.Services.History;
 using WinGetXAvalonia.Services.Interfaces;
+using WinGetXAvalonia.Services.Notifications;
 using WinGetXAvalonia.Services.Operations;
 using WinGetXAvalonia.Services.Theme;
+using WinGetXAvalonia.Services.Workspaces;
 using WinGetXAvalonia.ViewModels;
 using WinGetXAvalonia.ViewModels.Settings;
 
@@ -36,6 +37,7 @@ class Program
                 services.AddSingleton<InstalledViewModel>();
                 services.AddSingleton<UpdatesViewModel>();
                 services.AddSingleton<BrowseViewModel>();
+                services.AddSingleton<HistoryViewModel>();
                 services.AddSingleton<FavoritesViewModel>();
                 services.AddSingleton<WorkspacesViewModel>();
                 services.AddSingleton<BlueprintsViewModel>();
@@ -43,6 +45,11 @@ class Program
                 services.AddSingleton<SecurityViewModel>();
                 services.AddSingleton<DeveloperViewModel>();
                 services.AddSingleton<SettingsViewModel>();
+
+                services.AddSingleton<QueuePanelViewModel>();
+
+                services.AddSingleton<NotificationService>();
+                services.AddSingleton<NotificationCenterViewModel>();
 
                 services.AddSingleton<WingetService>();
                 services.AddSingleton<IPackageProvider, WingetProvider>();
@@ -59,8 +66,12 @@ class Program
                 services.AddSingleton<LoggerService>();
                 services.AddSingleton<GithubService>();
                 services.AddSingleton<ClockService>();
-                services.AddSingleton<ClipboardService>();
+                services.AddSingleton<IClipboardService, ClipboardService>();
+                services.AddSingleton<ILauncherService, LauncherService>();
                 services.AddSingleton<IHistoryService, HistoryService>();
+                services.AddSingleton<IWorkspaceService, WorkspaceService>();
+                services.AddSingleton<IDialogService, DialogService>();
+                services.AddSingleton<IEventBus, EventBus>();
                 services.AddSingleton<IOperationService, OperationService>();
                 services.AddSingleton<ISystemMonitorService, SystemMonitorService>();
                 services.AddSingleton<ITimeService, TimeService>();
@@ -90,4 +101,3 @@ class Program
 #endif
             .LogToTrace();
 }
-// kaneki

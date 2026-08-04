@@ -1,19 +1,19 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
+using WinGetXAvalonia.Core.Events;
 using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Models;
+using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Operations;
 using WinGetXAvalonia.ViewModels;
 
 namespace WinGetXAvalonia.Tests;
 
-// kaneki
 public class InstalledViewModelTests
 {
     private sealed class FakeProvider : IPackageProvider
     {
         public List<InstalledPackage> Installed { get; } = new();
+
+        public List<UpdatePackage> Updates { get; } = new();
 
         public Task<IReadOnlyList<InstalledPackage>> GetInstalledAsync()
             => Task.FromResult<IReadOnlyList<InstalledPackage>>(Installed);
@@ -22,7 +22,7 @@ public class InstalledViewModelTests
             => Task.FromResult<IReadOnlyList<PackageModel>>(Array.Empty<PackageModel>());
 
         public Task<IReadOnlyList<UpdatePackage>> GetUpdatesAsync()
-            => Task.FromResult<IReadOnlyList<UpdatePackage>>(Array.Empty<UpdatePackage>());
+            => Task.FromResult<IReadOnlyList<UpdatePackage>>(Updates);
 
         public Task InstallAsync(string id) => Task.CompletedTask;
 
@@ -32,6 +32,9 @@ public class InstalledViewModelTests
 
         public Task<string?> GetHomepageAsync(string id)
             => Task.FromResult<string?>(null);
+
+        public Task<PackageDetails> GetDetailsAsync(string id)
+            => Task.FromResult(new PackageDetails());
     }
 
     private sealed class FakeOperationService : IOperationService
@@ -57,7 +60,7 @@ public class InstalledViewModelTests
         public Task UpgradeAllAsync() => Task.CompletedTask;
     }
 
-    private static (InstalledViewModel vm, FakeProvider provider, FakeOperationService operations) Create(
+    private static (InstalledViewModel vm, FakeProvider provider, FakeOperationService operations, FakeEventBus events) Create(
         params string[] ids)
     {
         var provider = new FakeProvider();
@@ -66,16 +69,17 @@ public class InstalledViewModelTests
             provider.Installed.Add(new InstalledPackage { Id = id, Name = id, Version = "1.0.0" });
 
         var operations = new FakeOperationService();
+        var events = new FakeEventBus();
 
-        var vm = new InstalledViewModel(provider, operations);
+        var vm = new InstalledViewModel(provider, operations, events, new LauncherService());
 
-        return (vm, provider, operations);
+        return (vm, provider, operations, events);
     }
 
     [Fact]
     public async Task Refresh_PopulatesPackages()
     {
-        var (vm, _, _) = Create("Git.Git", "Microsoft.VisualStudioCode", "Microsoft.PowerToys");
+        var (vm, _, _, _) = Create("Git.Git", "Microsoft.VisualStudioCode", "Microsoft.PowerToys");
 
         await vm.RefreshCommand.ExecuteAsync(null);
 
@@ -84,9 +88,27 @@ public class InstalledViewModelTests
     }
 
     [Fact]
+    public async Task Refresh_EnrichesAvailableFromUpdates()
+    {
+        var (vm, provider, _, _) = Create("Git.Git", "Microsoft.VisualStudioCode");
+
+        provider.Updates.Add(new UpdatePackage
+        {
+            Id = "Git.Git",
+            Name = "Git.Git",
+            Available = "2.52.0"
+        });
+
+        await vm.RefreshCommand.ExecuteAsync(null);
+
+        Assert.Equal("2.52.0", vm.Packages.Single(p => p.Id == "Git.Git").Available);
+        Assert.Equal("", vm.Packages.Single(p => p.Id == "Microsoft.VisualStudioCode").Available);
+    }
+
+    [Fact]
     public async Task Selected_Toggle_UpdatesSelectedCount()
     {
-        var (vm, _, _) = Create("a", "b", "c");
+        var (vm, _, _, _) = Create("a", "b", "c");
         await vm.RefreshCommand.ExecuteAsync(null);
 
         vm.Packages[0].Selected = true;
@@ -102,7 +124,7 @@ public class InstalledViewModelTests
     [Fact]
     public async Task RemoveSelected_RemovesOnlySelected()
     {
-        var (vm, _, operations) = Create("a", "b", "c");
+        var (vm, _, operations, _) = Create("a", "b", "c");
         await vm.RefreshCommand.ExecuteAsync(null);
 
         vm.Packages[0].Selected = true;
@@ -119,7 +141,7 @@ public class InstalledViewModelTests
     [Fact]
     public async Task UpdateSelected_UpdatesEach_AndRefreshes()
     {
-        var (vm, _, operations) = Create("a", "b", "c");
+        var (vm, _, operations, _) = Create("a", "b", "c");
         await vm.RefreshCommand.ExecuteAsync(null);
 
         vm.Packages[0].Selected = true;
@@ -130,5 +152,46 @@ public class InstalledViewModelTests
         Assert.Equal(new[] { "a", "c" }, operations.Updated.OrderBy(x => x));
         Assert.Equal(3, vm.Packages.Count);
     }
+
+    [Fact]
+    public async Task Filter_Winget_FiltersBySource()
+    {
+        var (vm, provider, _, _) = Create("Git.Git", "Microsoft.StoreApp");
+
+        provider.Installed[0].Source = "winget";
+        provider.Installed[1].Source = "msstore";
+
+        await vm.RefreshCommand.ExecuteAsync(null);
+
+        vm.SelectedFilter = PackageFilterMode.Winget;
+
+        Assert.Single(vm.Packages);
+        Assert.Equal("Git.Git", vm.Packages[0].Id);
+    }
+
+    [Fact]
+    public async Task Filter_All_ShowsEverything()
+    {
+        var (vm, provider, _, _) = Create("Git.Git", "Microsoft.StoreApp");
+
+        provider.Installed[0].Source = "winget";
+        provider.Installed[1].Source = "msstore";
+
+        await vm.RefreshCommand.ExecuteAsync(null);
+
+        vm.SelectedFilter = PackageFilterMode.All;
+
+        Assert.Equal(2, vm.Packages.Count);
+    }
+
+    [Fact]
+    public async Task Sort_ByName_OrdersPackages()
+    {
+        var (vm, _, _, _) = Create("b", "a", "c");
+        await vm.RefreshCommand.ExecuteAsync(null);
+
+        vm.SelectedSort = PackageSortMode.Name;
+
+        Assert.Equal(new[] { "a", "b", "c" }, vm.Packages.Select(p => p.Id));
+    }
 }
-// kaneki

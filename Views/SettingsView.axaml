@@ -4,7 +4,6 @@
              xmlns:vms="using:WinGetXAvalonia.ViewModels.Settings"
              x:Class="WinGetXAvalonia.Views.SettingsView"
              x:DataType="vm:SettingsViewModel">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <UserControl.Styles>
 
@@ -24,8 +23,6 @@
             <Setter Property="CornerRadius" Value="10"/>
         </Style>
 
-
-    <!-- kaneki -->
     </UserControl.Styles>
 
     <Grid Margin="30">

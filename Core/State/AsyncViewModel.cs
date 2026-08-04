@@ -1,15 +1,15 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using CommunityToolkit.Mvvm.ComponentModel;
 using WinGetXAvalonia.ViewModels;
 
 namespace WinGetXAvalonia.Core.State;
 
-// kaneki
 public abstract partial class AsyncViewModel : ViewModelBase
 {
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsLoading))]
+    [NotifyPropertyChangedFor(nameof(IsEmpty))]
+    [NotifyPropertyChangedFor(nameof(HasError))]
+    [NotifyPropertyChangedFor(nameof(IsLoaded))]
     private LoadState state = LoadState.None;
 
     [ObservableProperty]
@@ -23,4 +23,3 @@ public abstract partial class AsyncViewModel : ViewModelBase
 
     public bool IsLoaded => State == LoadState.Loaded;
 }
-// kaneki

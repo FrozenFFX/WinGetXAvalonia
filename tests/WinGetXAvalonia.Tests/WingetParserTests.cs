@@ -1,11 +1,7 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using WinGetXAvalonia.Helpers;
 
 namespace WinGetXAvalonia.Tests;
 
-// kaneki
 public class WingetParserTests
 {
     [Fact]
@@ -111,5 +107,62 @@ public class WingetParserTests
         Assert.Single(result);
         Assert.Equal("Valid", result[0].Name);
     }
+
+    [Fact]
+    public void ParseDetails_ReadsShowOutputFields()
+    {
+        var lines = new List<string>
+        {
+            "Found Git [Git.Git] Version 2.52.0",
+            "Name: Git",
+            "Publisher: Git for Windows",
+            "Version: 2.52.0",
+            "Homepage: https://git-scm.com/",
+            "License: MIT",
+            "Description: Distributed version control system.",
+            "ReleaseNotes: Improvements and bug fixes."
+        };
+
+        var result = WingetParser.ParseDetails(lines);
+
+        Assert.Equal("Git", result.Name);
+        Assert.Equal("Git for Windows", result.Publisher);
+        Assert.Equal("2.52.0", result.Version);
+        Assert.Equal("https://git-scm.com/", result.Homepage);
+        Assert.Equal("MIT", result.License);
+        Assert.Equal("Distributed version control system.", result.Description);
+        Assert.Equal("Improvements and bug fixes.", result.ReleaseNotes);
+    }
+
+    [Fact]
+    public void ParseDetails_MissingFieldsStayEmpty()
+    {
+        var lines = new List<string>
+        {
+            "Found Git [Git.Git] Version 2.52.0",
+            "Name: Git",
+            "Version: 2.52.0"
+        };
+
+        var result = WingetParser.ParseDetails(lines);
+
+        Assert.Equal("Git", result.Name);
+        Assert.Equal("", result.Publisher);
+        Assert.Equal("", result.License);
+        Assert.Equal("", result.ReleaseNotes);
+    }
+
+    [Fact]
+    public void ParseDetails_SkipsInvalidHomepage()
+    {
+        var lines = new List<string>
+        {
+            "Homepage: not-a-url",
+            "Name: Git"
+        };
+
+        var result = WingetParser.ParseDetails(lines);
+
+        Assert.Equal("", result.Homepage);
+    }
 }
-// kaneki

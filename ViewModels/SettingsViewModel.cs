@@ -1,12 +1,8 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using CommunityToolkit.Mvvm.ComponentModel;
 using WinGetXAvalonia.ViewModels.Settings;
 
 namespace WinGetXAvalonia.ViewModels;
 
-// kaneki
 public partial class SettingsViewModel : ViewModelBase
 {
     public IReadOnlyList<SettingsCategoryViewModel> Categories { get; }
@@ -39,4 +35,3 @@ public partial class SettingsViewModel : ViewModelBase
         SelectedCategory = general;
     }
 }
-// kaneki

@@ -1,6 +1,3 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -9,7 +6,6 @@ using WinGetXAvalonia.Services.Core;
 
 namespace WinGetXAvalonia.ViewModels;
 
-// kaneki
 public partial class MainViewModel : ViewModelBase
 {
     public NavigationService Navigation { get; }
@@ -27,6 +23,7 @@ public partial class MainViewModel : ViewModelBase
         InstalledViewModel installed,
         UpdatesViewModel updates,
         BrowseViewModel browse,
+        HistoryViewModel history,
         WorkspacesViewModel workspaces,
         BlueprintsViewModel blueprints,
         AutomationViewModel automation,
@@ -36,12 +33,14 @@ public partial class MainViewModel : ViewModelBase
     {
         Navigation = navigation;
 
+        // ViewModel tipinden örneğine eşleme, navigasyon bununla ilerliyor
         _pages = new()
         {
             [typeof(DashboardViewModel)] = dashboard,
             [typeof(InstalledViewModel)] = installed,
             [typeof(UpdatesViewModel)] = updates,
             [typeof(BrowseViewModel)] = browse,
+            [typeof(HistoryViewModel)] = history,
             [typeof(WorkspacesViewModel)] = workspaces,
             [typeof(BlueprintsViewModel)] = blueprints,
             [typeof(AutomationViewModel)] = automation,
@@ -69,6 +68,13 @@ public partial class MainViewModel : ViewModelBase
             Title = "Updates",
             Icon = "🔄",
             Page = typeof(UpdatesViewModel)
+        });
+
+        Menu.Add(new()
+        {
+            Title = "History",
+            Icon = "🕘",
+            Page = typeof(HistoryViewModel)
         });
 
         Menu.Add(new()
@@ -122,6 +128,7 @@ public partial class MainViewModel : ViewModelBase
 
         SelectedMenuItem = Menu[0];
 
+        // Installed ekranında liste boşken "Browse" denince Discover'a zıplatalım
         installed.BrowseRequested += (_, _) =>
         {
             var discover = Menu.FirstOrDefault(m => m.Page == typeof(BrowseViewModel));
@@ -141,12 +148,16 @@ public partial class MainViewModel : ViewModelBase
 
         Navigation.Navigate(page);
 
+        // sayfaları ilk ziyaret edildiğinde yüklüyoruz, sonra hazır bekliyor
         if (page is DashboardViewModel dashboard)
             _ = dashboard.InitializeAsync();
         else if (page is InstalledViewModel installed)
             _ = installed.InitializeAsync();
+        else if (page is UpdatesViewModel updates)
+            _ = updates.InitializeAsync();
         else if (page is BrowseViewModel browse)
             _ = browse.InitializeAsync();
+        else if (page is HistoryViewModel history)
+            _ = history.InitializeAsync();
     }
 }
-// kaneki

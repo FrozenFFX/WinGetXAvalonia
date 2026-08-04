@@ -8,7 +8,12 @@
     x:Class="WinGetXAvalonia.Views.InstalledView"
     x:Name="Root"
     x:DataType="vm:InstalledViewModel">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
+
+    <UserControl.KeyBindings>
+        <KeyBinding
+            Gesture="F5"
+            Command="{Binding RefreshCommand}"/>
+    </UserControl.KeyBindings>
 
     <Grid Margin="20">
 
@@ -16,15 +21,13 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="15"/>
+            <RowDefinition Height="12"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <shared:SectionHeader
             Title="Installed Packages"
-            Description="Manage all installed applications."
-            ActionText="Refresh"
-            ActionCommand="{Binding RefreshCommand}"/>
+            Description="Manage all installed applications."/>
 
         <package:PackageToolbar
             Grid.Row="1"
@@ -77,13 +80,15 @@
 
                 <Button
                     Grid.Column="2"
-                    Content="Update Selected"
+                    Content="{Binding SelectedCount,
+                    StringFormat=Update ({0})}"
                     Command="{Binding UpdateSelectedCommand}"/>
 
                 <Button
                     Grid.Column="3"
                     Classes="Danger"
-                    Content="Remove Selected"
+                    Content="{Binding SelectedCount,
+                    StringFormat=Remove ({0})}"
                     Command="{Binding RemoveSelectedCommand}"/>
             </Grid>
         </Border>
@@ -93,6 +98,9 @@
             <ListBox
                 ItemsSource="{Binding Packages}"
                 SelectionMode="Multiple"
+                SelectedItem="{Binding SelectedPackage}"
+                BorderThickness="0"
+                Background="Transparent"
                 SelectionChanged="OnSelectionChanged">
 
                 <ListBox.KeyBindings>
@@ -112,25 +120,25 @@
             <StackPanel
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Spacing="8"
-                IsVisible="{Binding Packages.Count,
-                Converter={StaticResource ZeroToBoolConverter}}">
+                Spacing="12"
+                IsVisible="{Binding IsEmpty}">
 
                 <TextBlock
                     Text="📦"
-                    FontSize="48"
-                    Opacity="0.4"
+                    FontSize="46"
+                    Opacity="0.35"
                     HorizontalAlignment="Center"/>
 
                 <TextBlock
                     Text="No installed packages"
-                    FontSize="{DynamicResource FontTitle}"
+                    FontSize="18"
                     FontWeight="SemiBold"
                     HorizontalAlignment="Center"/>
 
                 <TextBlock
-                    Text="Install applications from Browse."
-                    Opacity="0.6"
+                    Text="Applications installed with WinGet will appear here."
+                    Opacity="0.65"
+                    TextAlignment="Center"
                     HorizontalAlignment="Center"/>
 
                 <Button
@@ -140,10 +148,47 @@
                     HorizontalAlignment="Center"/>
             </StackPanel>
 
+            <!-- Error state -->
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Spacing="12"
+                IsVisible="{Binding HasError}">
+
+                <TextBlock
+                    Text="⚠️"
+                    FontSize="46"
+                    Opacity="0.35"
+                    HorizontalAlignment="Center"/>
+
+                <TextBlock
+                    Text="Couldn't load installed packages"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Center"/>
+
+                <TextBlock
+                    Text="{Binding ErrorMessage}"
+                    Opacity="0.65"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap"
+                    MaxWidth="480"
+                    HorizontalAlignment="Center"/>
+
+                <Button
+                    Margin="0,8,0,0"
+                    Content="Retry"
+                    Command="{Binding RefreshCommand}"
+                    HorizontalAlignment="Center"/>
+            </StackPanel>
+
         </Grid>
 
+        <shared:LoadingOverlay
+            Grid.RowSpan="5"
+            IsLoading="{Binding IsLoading}"
+            Message="Loading installed packages..."/>
 
-    <!-- kaneki -->
     </Grid>
 
 </UserControl>

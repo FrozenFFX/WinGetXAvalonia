@@ -1,9 +1,8 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using WinGetXAvalonia.Collections;
+using WinGetXAvalonia.Core.Domain.Packages;
 using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Core.State;
 using WinGetXAvalonia.Models;
@@ -12,44 +11,62 @@ using WinGetXAvalonia.Services.Operations;
 
 namespace WinGetXAvalonia.ViewModels;
 
-// kaneki
 public partial class BrowseViewModel : AsyncViewModel
 {
     private readonly IPackageProvider _provider;
     private readonly IOperationService _operations;
     private readonly PackageSearchCache _cache;
     private readonly IFeaturedCatalog _featured;
+    private readonly IClipboardService _clipboard;
+    private readonly ILauncherService _launcher;
 
     private bool _initialized;
     private CancellationTokenSource? _suggestCts;
-
-    private Dictionary<string, string>? _installedVersions;
-    private Dictionary<string, string>? _availableUpdates;
+    private PackageModel? _lastSelected;
+    private PackageIndex? _index;
 
     [ObservableProperty]
     private string searchText = "";
 
     [ObservableProperty]
+    private string? selectedSuggestion;
+
+    [ObservableProperty]
     private PackageModel? selectedPackage;
+
+    public PackageDetailsViewModel SelectedDetails { get; }
 
     public ObservableCollection<PackageModel> Featured { get; } = new();
 
     public ObservableCollection<PackageCategory> Categories { get; } = new();
 
-    public ObservableCollection<PackageModel> Results { get; } = new();
+    public ObservableRangeCollection<PackageModel> Results { get; } = new();
 
-    public ObservableCollection<string> Suggestions { get; } = new();
+    public ObservableRangeCollection<string> Suggestions { get; } = new();
+
+    public string ResultsSummary => Results.Count switch
+    {
+        0 => "No packages found",
+        1 => "1 package found",
+        var count => $"{count} packages found"
+    };
 
     public BrowseViewModel(
         IPackageProvider provider,
         IOperationService operations,
         PackageSearchCache cache,
-        IFeaturedCatalog featured)
+        IFeaturedCatalog featured,
+        IClipboardService clipboard,
+        ILauncherService launcher)
     {
         _provider = provider;
         _operations = operations;
         _cache = cache;
         _featured = featured;
+        _clipboard = clipboard;
+        _launcher = launcher;
+
+        SelectedDetails = new PackageDetailsViewModel(provider, operations, clipboard, launcher);
 
         SeedCategories();
     }
@@ -67,6 +84,29 @@ public partial class BrowseViewModel : AsyncViewModel
     partial void OnSearchTextChanged(string value)
         => _ = RefreshSuggestionsAsync(value);
 
+    partial void OnSelectedSuggestionChanged(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return;
+
+        SearchText = value;
+        SearchCommand.Execute(null);
+    }
+
+    partial void OnSelectedPackageChanged(PackageModel? value)
+    {
+        if (_lastSelected is not null)
+            _lastSelected.Selected = false;
+
+        if (value is not null)
+        {
+            value.Selected = true;
+            _lastSelected = value;
+        }
+
+        _ = SelectedDetails.Load(value);
+    }
+
     [RelayCommand]
     public async Task Search()
     {
@@ -74,6 +114,25 @@ public partial class BrowseViewModel : AsyncViewModel
             return;
 
         await RunSearchAsync(SearchText);
+    }
+
+    [RelayCommand]
+    private void ClearSearch()
+    {
+        _suggestCts?.Cancel();
+        _suggestCts?.Dispose();
+        _suggestCts = null;
+
+        SearchText = "";
+        SelectedSuggestion = null;
+        Suggestions.Clear();
+        Results.Clear();
+        SelectedPackage = null;
+
+        State = LoadState.None;
+        ErrorMessage = null;
+
+        OnPropertyChanged(nameof(ResultsSummary));
     }
 
     [RelayCommand]
@@ -105,6 +164,74 @@ public partial class BrowseViewModel : AsyncViewModel
         await _operations.UpdateAsync(package.Id);
     }
 
+    [RelayCommand]
+    private async Task OpenHomepage(PackageDetailsViewModel? details)
+    {
+        if (details is null || !details.HasHomepage)
+            return;
+
+        await _launcher.OpenUrlAsync(details.HomepageDisplay);
+    }
+
+    [RelayCommand]
+    private async Task CopyId(PackageModel? package)
+    {
+        if (package is null || string.IsNullOrWhiteSpace(package.Id))
+            return;
+
+        await _clipboard.CopyTextAsync(package.Id);
+    }
+
+    [RelayCommand]
+    private async Task CopyName(PackageModel? package)
+    {
+        if (package is null || string.IsNullOrWhiteSpace(package.Name))
+            return;
+
+        await _clipboard.CopyTextAsync(package.Name);
+    }
+
+    [RelayCommand]
+    private async Task InstallOrUpdate(PackageModel? package)
+    {
+        if (package is null || string.IsNullOrWhiteSpace(package.Id))
+            return;
+
+        if (package.InstallState == PackageInstallState.NotInstalled)
+        {
+            package.InstallState = PackageInstallState.Installing;
+
+            try
+            {
+                await _operations.InstallAsync(package.Id);
+            }
+            catch
+            {
+                package.InstallState = PackageInstallState.NotInstalled;
+                throw;
+            }
+
+            package.InstallState = PackageInstallState.Installed;
+        }
+        else if (package.InstallState == PackageInstallState.Installed && package.HasUpdate)
+        {
+            package.InstallState = PackageInstallState.Updating;
+
+            try
+            {
+                await _operations.UpdateAsync(package.Id);
+            }
+            catch
+            {
+                package.InstallState = PackageInstallState.Installed;
+                throw;
+            }
+
+            package.Available = "";
+            package.InstallState = PackageInstallState.Installed;
+        }
+    }
+
     private async Task LoadFeaturedAsync()
     {
         IReadOnlyList<FeaturedItem> items;
@@ -118,33 +245,55 @@ public partial class BrowseViewModel : AsyncViewModel
             return;
         }
 
-        await Task.WhenAll(items.Select(LoadFeaturedItemAsync));
+        using var gate = new SemaphoreSlim(4);
+
+        var packages = await Task.WhenAll(items.Select(async item =>
+        {
+            await gate.WaitAsync();
+
+            try
+            {
+                return await LoadFeaturedItemAsync(item);
+            }
+            finally
+            {
+                gate.Release();
+            }
+        }));
+
+        foreach (var package in packages)
+        {
+            if (package is not null)
+                Featured.Add(package);
+        }
     }
 
-    private async Task LoadFeaturedItemAsync(FeaturedItem item)
+    private async Task<PackageModel?> LoadFeaturedItemAsync(FeaturedItem item)
     {
         try
         {
             var results = await GetOrSearchAsync(item.Id);
 
-            var package = results.FirstOrDefault(p =>
-                string.Equals(p.Id, item.Id, StringComparison.OrdinalIgnoreCase))
-                ?? results.FirstOrDefault();
+            var package = PackageMatcher.FindPreferred(results, item.Id);
 
             if (package is null)
-                return;
+                return null;
 
             await EnsureEnrichmentAsync();
-            Enrich(package);
+            PackageStateCalculator.Apply(package, _index);
+
+            package.IsFeatured = true;
+            package.Description = item.Description;
 
             if (!string.IsNullOrWhiteSpace(item.Title))
                 package.Name = item.Title;
 
-            Featured.Add(package);
+            return package;
         }
         catch
         {
-            // A single failed featured package should not break the list.
+            // tek bir paket çökmüşse listeyi komple bozmayalım
+            return null;
         }
     }
 
@@ -152,20 +301,26 @@ public partial class BrowseViewModel : AsyncViewModel
     {
         State = LoadState.Loading;
         ErrorMessage = null;
+        Results.Clear();
 
         try
         {
-            var results = await GetOrSearchAsync(query);
+            var results = SearchEngine.Rank(
+                await GetOrSearchAsync(query),
+                query,
+                new SearchOptions(UpdateAvailableFirst: true, FeaturedBoost: true));
 
             await EnsureEnrichmentAsync();
 
-            Results.Clear();
+            var enriched = new List<PackageModel>(results.Count);
 
             foreach (var package in results)
             {
-                Enrich(package);
-                Results.Add(package);
+                PackageStateCalculator.Apply(package, _index);
+                enriched.Add(package);
             }
+
+            Results.ReplaceAll(enriched);
 
             SelectedPackage = null;
 
@@ -176,10 +331,13 @@ public partial class BrowseViewModel : AsyncViewModel
             State = LoadState.Error;
             ErrorMessage = ex.Message;
         }
+
+        OnPropertyChanged(nameof(ResultsSummary));
     }
 
     private async Task<IReadOnlyList<PackageModel>> GetOrSearchAsync(string query)
     {
+        // aynı sorguyu tekrar tekrar winget'e sormayalım
         if (_cache.TryGet(query, out var cached))
             return cached!;
 
@@ -212,10 +370,7 @@ public partial class BrowseViewModel : AsyncViewModel
             if (cts.Token.IsCancellationRequested)
                 return;
 
-            Suggestions.Clear();
-
-            foreach (string name in names)
-                Suggestions.Add(name);
+            Suggestions.ReplaceAll(names);
         }
         catch (OperationCanceledException)
         {
@@ -227,8 +382,9 @@ public partial class BrowseViewModel : AsyncViewModel
 
     private async Task<IReadOnlyList<string>> GetSuggestionNamesAsync(string text, CancellationToken token)
     {
-        var matches = _cache.All()
-            .Where(p => p.Name.Contains(text, StringComparison.OrdinalIgnoreCase))
+        var matches = SearchEngine.Rank(
+                _cache.All().Where(p => p.Name.Contains(text, StringComparison.OrdinalIgnoreCase)),
+                text)
             .Select(p => p.Name)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .Take(8)
@@ -250,45 +406,29 @@ public partial class BrowseViewModel : AsyncViewModel
 
     private async Task EnsureEnrichmentAsync()
     {
-        if (_installedVersions is not null)
+        // kurulu sürüm ve güncelleme bilgisi bir kez çekilir, sonra kartlara işlenir
+        if (_index is not null)
             return;
 
+        var index = new PackageIndex();
+
         try
         {
-            var installed = await _provider.GetInstalledAsync();
-
-            _installedVersions = installed
-                .Where(p => !string.IsNullOrWhiteSpace(p.Id))
-                .ToDictionary(p => p.Id, p => p.Version, StringComparer.OrdinalIgnoreCase);
+            index.AddInstalled(await _provider.GetInstalledAsync());
         }
         catch
         {
-            _installedVersions = new Dictionary<string, string>();
         }
 
         try
         {
-            var updates = await _provider.GetUpdatesAsync();
-
-            _availableUpdates = updates
-                .Where(p => !string.IsNullOrWhiteSpace(p.Id))
-                .ToDictionary(p => p.Id, p => p.Available, StringComparer.OrdinalIgnoreCase);
+            index.AddUpdates(await _provider.GetUpdatesAsync());
         }
         catch
         {
-            _availableUpdates = new Dictionary<string, string>();
         }
-    }
 
-    private void Enrich(PackageModel package)
-    {
-        if (_installedVersions is not null
-            && _installedVersions.TryGetValue(package.Id, out var installedVersion))
-            package.Version = installedVersion;
-
-        if (_availableUpdates is not null
-            && _availableUpdates.TryGetValue(package.Id, out var availableVersion))
-            package.Available = availableVersion;
+        _index = index;
     }
 
     private void SeedCategories()
@@ -301,4 +441,3 @@ public partial class BrowseViewModel : AsyncViewModel
         Categories.Add(new() { Name = "Design", Query = "figma", Icon = "🎨" });
     }
 }
-// kaneki

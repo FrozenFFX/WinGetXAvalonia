@@ -1,6 +1,3 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using CommunityToolkit.Mvvm.ComponentModel;
 using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Backup;
@@ -8,7 +5,6 @@ using WinGetXAvalonia.Services.Interfaces;
 
 namespace WinGetXAvalonia.ViewModels.Settings;
 
-// kaneki
 public partial class PerformanceSettingsViewModel : SettingsCategoryViewModel
 {
     public int MinParallelDownloads => SettingsValidator.MinParallelDownloads;
@@ -79,4 +75,3 @@ public partial class PerformanceSettingsViewModel : SettingsCategoryViewModel
             s.Opacity = value;
         });
 }
-// kaneki

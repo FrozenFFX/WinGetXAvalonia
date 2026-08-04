@@ -1,6 +1,3 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -13,7 +10,6 @@ using WinGetXAvalonia.Services.Interfaces;
 
 namespace WinGetXAvalonia.ViewModels.Settings;
 
-// kaneki
 public partial class BackupSettingsViewModel : SettingsCategoryViewModel
 {
     [ObservableProperty]
@@ -108,4 +104,3 @@ public partial class BackupSettingsViewModel : SettingsCategoryViewModel
                ? window
                : null;
 }
-// kaneki

@@ -1,11 +1,7 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Services.Interfaces;
 
-// kaneki
 public sealed class SettingsChangedEventArgs : EventArgs
 {
     public AppSettings Settings { get; }
@@ -20,4 +16,3 @@ public sealed class SettingsChangedEventArgs : EventArgs
         ChangedProperties = changedProperties;
     }
 }
-// kaneki

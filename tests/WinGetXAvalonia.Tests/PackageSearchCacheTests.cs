@@ -1,12 +1,8 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
 
 namespace WinGetXAvalonia.Tests;
 
-// kaneki
 public class PackageSearchCacheTests
 {
     [Fact]
@@ -57,5 +53,18 @@ public class PackageSearchCacheTests
 
         Assert.False(cache.TryGet("a", out _));
     }
+
+    [Fact]
+    public async Task TryGet_ExpiredEntry_ReturnsFalse_AndDropsIt()
+    {
+        var cache = new PackageSearchCache(TimeSpan.FromMilliseconds(20));
+        cache.Set("git", new List<PackageModel> { new() { Id = "Git.Git" } });
+
+        Assert.True(cache.TryGet("git", out _));
+
+        await Task.Delay(60);
+
+        Assert.False(cache.TryGet("git", out _));
+        Assert.False(cache.TryGet("git", out _));
+    }
 }
-// kaneki

@@ -1,11 +1,7 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using System.ComponentModel;
 
 namespace WinGetXAvalonia.Interfaces;
 
-// kaneki
 public interface ISystemMonitorService : INotifyPropertyChanged, IDisposable
 {
     double CpuUsage { get; }
@@ -20,4 +16,3 @@ public interface ISystemMonitorService : INotifyPropertyChanged, IDisposable
 
     void Stop();
 }
-// kaneki

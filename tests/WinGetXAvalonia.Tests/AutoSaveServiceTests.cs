@@ -1,6 +1,3 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Backup;
@@ -8,10 +5,8 @@ using WinGetXAvalonia.Services.Interfaces;
 
 namespace WinGetXAvalonia.Tests;
 
-// kaneki
 public class AutoSaveServiceTests
 {
-    // kaneki
     private sealed class FakeSettingsService : ISettingsService
     {
         public AppSettings Settings { get; } = new();
@@ -74,4 +69,3 @@ public class AutoSaveServiceTests
         Assert.Equal("Dark", fake.Settings.Theme);
     }
 }
-// kaneki

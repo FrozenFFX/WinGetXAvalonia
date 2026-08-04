@@ -1,13 +1,9 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WinGetXAvalonia.Interfaces;
 
 namespace WinGetXAvalonia.Services.Core;
 
-// kaneki
 public sealed class TimeService : ITimeService
 {
     private readonly PeriodicTimer _timer = new(TimeSpan.FromSeconds(1));
@@ -81,4 +77,3 @@ public sealed class TimeService : ITimeService
             _ => "Good Evening"
         };
 }
-// kaneki

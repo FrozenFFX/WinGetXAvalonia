@@ -1,6 +1,3 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using CommunityToolkit.Mvvm.ComponentModel;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
@@ -9,7 +6,6 @@ using WinGetXAvalonia.Services.Interfaces;
 
 namespace WinGetXAvalonia.ViewModels.Settings;
 
-// kaneki
 public abstract partial class SettingsCategoryViewModel : ObservableObject
 {
     protected ISettingsService Settings { get; }
@@ -50,4 +46,3 @@ public abstract partial class SettingsCategoryViewModel : ObservableObject
         _autoSave.Schedule(update);
     }
 }
-// kaneki

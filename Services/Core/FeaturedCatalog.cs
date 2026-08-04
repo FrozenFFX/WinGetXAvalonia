@@ -1,13 +1,9 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using Avalonia.Platform;
 using WinGetXAvalonia.Helpers;
 using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Services.Core;
 
-// kaneki
 public sealed class FeaturedCatalog : IFeaturedCatalog
 {
     private const string AssetUri = "avares://WinGetXAvalonia/Assets/featured.json";
@@ -27,4 +23,3 @@ public sealed class FeaturedCatalog : IFeaturedCatalog
         return _cache;
     }
 }
-// kaneki

@@ -1,6 +1,3 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using System.ComponentModel;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
@@ -10,7 +7,6 @@ using WinGetXAvalonia.Services.Core;
 
 namespace WinGetXAvalonia.Services.Performance;
 
-// kaneki
 public sealed class SystemMonitorService : ISystemMonitorService
 {
     private readonly PeriodicTimer _timer = new(TimeSpan.FromSeconds(2));
@@ -217,7 +213,6 @@ public sealed class SystemMonitorService : ISystemMonitorService
         => ((ulong)ft.dwHighDateTime << 32) | ft.dwLowDateTime;
 
     [StructLayout(LayoutKind.Sequential)]
-    // kaneki
     private struct FILETIME
     {
         public uint dwLowDateTime;
@@ -230,4 +225,3 @@ public sealed class SystemMonitorService : ISystemMonitorService
         out FILETIME lpKernelTime,
         out FILETIME lpUserTime);
 }
-// kaneki

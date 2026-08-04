@@ -1,14 +1,10 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input.Platform;
 
 namespace WinGetXAvalonia.Services.Core;
 
-// kaneki
-public class ClipboardService
+public class ClipboardService : IClipboardService
 {
     public async Task CopyTextAsync(string text)
     {
@@ -25,4 +21,3 @@ public class ClipboardService
         }
     }
 }
-// kaneki

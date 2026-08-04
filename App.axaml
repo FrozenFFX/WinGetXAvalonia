@@ -5,8 +5,7 @@
              xmlns:vms="using:WinGetXAvalonia.ViewModels.Settings"
              xmlns:settingsViews="using:WinGetXAvalonia.Views.Settings"
              x:Class="WinGetXAvalonia.App"
-             RequestedThemeVariant="Dark">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
+             RequestedThemeVariant="Default">
 
     <Application.DataTemplates>
         <local:ViewLocator />
@@ -35,7 +34,6 @@
             <settingsViews:AboutSettingsView/>
         </DataTemplate>
 
-    <!-- kaneki -->
     </Application.DataTemplates>
 
     <Application.Resources>

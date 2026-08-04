@@ -1,9 +1,5 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 namespace WinGetXAvalonia.Models;
 
-// kaneki
 public class NavigationItem
 {
     public string Title { get; set; } = "";
@@ -12,4 +8,3 @@ public class NavigationItem
 
     public Type Page { get; set; } = typeof(object);
 }
-// kaneki

@@ -1,64 +1,125 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:WinGetXAvalonia.ViewModels"
-             xmlns:models="using:WinGetXAvalonia.Models"
+             xmlns:controls="using:WinGetXAvalonia.Controls"
+             xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+             xmlns:package="using:WinGetXAvalonia.Controls.Package"
              x:Class="WinGetXAvalonia.Views.UpdatesView"
+             x:Name="Root"
              x:DataType="vm:UpdatesViewModel">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
+
+    <UserControl.KeyBindings>
+        <KeyBinding
+            Gesture="F5"
+            Command="{Binding RefreshCommand}"/>
+    </UserControl.KeyBindings>
 
     <Grid Margin="20">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="15"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="15"/>
+            <RowDefinition Height="12"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock
-            FontSize="34"
-            FontWeight="Bold"
-            Text="Updates"/>
+        <shared:SectionHeader
+            Title="Updates"
+            Description="Manage available package updates."
+            ActionText="Refresh"
+            ActionCommand="{Binding RefreshCommand}"/>
 
-        <Button
-            Grid.Row="2"
-            Width="160"
-            Content="Upgrade All"
-            Command="{Binding UpgradeAllCommand}"/>
+        <package:PackageToolbar
+            Grid.Row="1"
+            SearchText="{Binding SearchText}"
+            PackageCount="{Binding PackageCount}"
+            RefreshCommand="{Binding RefreshCommand}"
+            SelectedSort="{Binding SelectedSort}"
+            SelectedFilter="{Binding SelectedFilter}"
+            ActionText="⬆️ Upgrade All"
+            ActionCommand="{Binding UpgradeAllCommand}"/>
 
-        <ListBox
-            Grid.Row="4"
-            ItemsSource="{Binding Updates}">
+        <Grid Grid.Row="3">
 
-            <ListBox.ItemTemplate>
+            <ScrollViewer>
 
-                <DataTemplate DataType="models:UpdatePackage">
+                <ItemsControl ItemsSource="{Binding Updates}">
 
-                    <StackPanel Orientation="Horizontal" Spacing="10">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <controls:PackageCard Mode="Updates"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
 
-                        <TextBlock Text="{Binding Name}"/>
+            <!-- Empty state -->
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Spacing="12"
+                IsVisible="{Binding IsEmpty}">
 
-                        <TextBlock
-                            Opacity="0.6"
-                            Text="{Binding Version}"/>
+                <TextBlock
+                    Text="⬆️"
+                    FontSize="46"
+                    Opacity="0.35"
+                    HorizontalAlignment="Center"/>
 
-                        <TextBlock Text="→"/>
+                <TextBlock
+                    Text="No updates available"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Center"/>
 
-                        <TextBlock
-                            Opacity="0.6"
-                            Text="{Binding Available}"/>
+                <TextBlock
+                    Text="All packages are up to date."
+                    Opacity="0.65"
+                    TextAlignment="Center"
+                    HorizontalAlignment="Center"/>
+            </StackPanel>
 
-                    </StackPanel>
+            <!-- Error state -->
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Spacing="12"
+                IsVisible="{Binding HasError}">
 
-                </DataTemplate>
+                <TextBlock
+                    Text="⚠️"
+                    FontSize="46"
+                    Opacity="0.35"
+                    HorizontalAlignment="Center"/>
 
-            </ListBox.ItemTemplate>
+                <TextBlock
+                    Text="Couldn't load updates"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Center"/>
 
-        </ListBox>
+                <TextBlock
+                    Text="{Binding ErrorMessage}"
+                    Opacity="0.65"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap"
+                    MaxWidth="480"
+                    HorizontalAlignment="Center"/>
 
+                <Button
+                    Margin="0,8,0,0"
+                    Content="Retry"
+                    Command="{Binding RefreshCommand}"
+                    HorizontalAlignment="Center"/>
+            </StackPanel>
 
-    <!-- kaneki -->
+        </Grid>
+
+        <shared:LoadingOverlay
+            Grid.RowSpan="4"
+            IsLoading="{Binding IsLoading}"
+            Message="Checking for updates..."/>
+
     </Grid>
 
 </UserControl>

@@ -1,13 +1,9 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Interfaces;
 
 namespace WinGetXAvalonia.Tests;
 
-// kaneki
 public class SettingsServiceTests
 {
     private static string CreateTempFile()
@@ -208,4 +204,3 @@ public class SettingsServiceTests
         Assert.Equal("Dark", reloaded.Settings.Theme);
     }
 }
-// kaneki

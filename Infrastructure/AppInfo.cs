@@ -1,11 +1,7 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using System.Reflection;
 
 namespace WinGetXAvalonia.Infrastructure;
 
-// kaneki
 public static class AppInfo
 {
     public const string ProductName = "WinGetX";
@@ -24,4 +20,3 @@ public static class AppInfo
             .Version?
             .ToString(3) ?? "0.1.0";
 }
-// kaneki

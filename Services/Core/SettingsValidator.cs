@@ -1,11 +1,7 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Services.Core;
 
-// kaneki
 public static class SettingsValidator
 {
     public const int MinParallelDownloads = 1;
@@ -54,4 +50,3 @@ public static class SettingsValidator
     private static string Normalize(string? value, string fallback)
         => string.IsNullOrWhiteSpace(value) ? fallback : value;
 }
-// kaneki

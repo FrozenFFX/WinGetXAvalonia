@@ -1,12 +1,8 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using CommunityToolkit.Mvvm.ComponentModel;
 using WinGetXAvalonia.ViewModels;
 
 namespace WinGetXAvalonia.Services.Core;
 
-// kaneki
 public partial class NavigationService : ObservableObject
 {
     [ObservableProperty]
@@ -20,4 +16,3 @@ public partial class NavigationService : ObservableObject
         CurrentPage = page;
     }
 }
-// kaneki

@@ -1,9 +1,5 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 namespace WinGetXAvalonia.Models;
 
-// kaneki
 public class UpdatePackage
 {
     public string Name { get; set; } = "";
@@ -16,4 +12,3 @@ public class UpdatePackage
 
     public string Source { get; set; } = "";
 }
-// kaneki

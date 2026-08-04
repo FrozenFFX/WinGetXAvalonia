@@ -1,6 +1,3 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input.Platform;
@@ -8,23 +5,27 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
+using WinGetXAvalonia.Core.Domain.Packages;
+using WinGetXAvalonia.Core.Events;
 using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Core.State;
 using WinGetXAvalonia.Helpers;
 using WinGetXAvalonia.Models;
+using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Operations;
 
 namespace WinGetXAvalonia.ViewModels;
 
-// kaneki
 public partial class InstalledViewModel : AsyncViewModel
 {
     private readonly IPackageProvider _provider;
     private readonly IOperationService _operations;
+    private readonly IEventBus _eventBus;
+    private readonly ILauncherService _launcher;
 
     private readonly List<PackageModel> _allPackages = new();
-    private bool _initialized;
+    private bool _refreshing;
+    private CancellationTokenSource? _searchCts;
 
     public event EventHandler? BrowseRequested;
 
@@ -38,43 +39,69 @@ public partial class InstalledViewModel : AsyncViewModel
     private string searchText = "";
 
     [ObservableProperty]
-    private string? selectedSort;
+    private PackageSortMode selectedSort = PackageSortMode.Name;
 
     [ObservableProperty]
-    private string? selectedFilter;
+    private PackageFilterMode selectedFilter = PackageFilterMode.All;
 
-    public InstalledViewModel(IPackageProvider provider, IOperationService operations)
+    [ObservableProperty]
+    private PackageModel? selectedPackage;
+
+    public InstalledViewModel(
+        IPackageProvider provider,
+        IOperationService operations,
+        IEventBus eventBus,
+        ILauncherService launcher)
     {
         _provider = provider;
         _operations = operations;
+        _eventBus = eventBus;
+        _launcher = launcher;
+
+        _eventBus.Subscribe<PackageChangedEvent>(e => _ = Refresh());
     }
 
-    public async Task InitializeAsync()
-    {
-        if (_initialized)
-            return;
-
-        _initialized = true;
-        await Refresh();
-    }
+    public Task InitializeAsync()
+        => Refresh();
 
     partial void OnSearchTextChanged(string value)
+    {
+        _searchCts?.Cancel();
+        _searchCts?.Dispose();
+
+        _searchCts = new CancellationTokenSource();
+
+        // her tuş basışında filtreyi çalıştırmayalım, 200ms bekleyelim
+        _ = DebounceSearch(_searchCts.Token);
+    }
+
+    partial void OnSelectedSortChanged(PackageSortMode value)
+        => ApplyFilter();
+
+    partial void OnSelectedFilterChanged(PackageFilterMode value)
         => ApplyFilter();
 
     [RelayCommand]
     public async Task Refresh()
     {
-        State = LoadState.Loading;
-        ErrorMessage = null;
+        if (_refreshing)
+            return;
+
+        _refreshing = true;
 
         try
         {
+            State = LoadState.Loading;
+            ErrorMessage = null;
+
             var apps = await _provider.GetInstalledAsync();
+
+            var availableVersions = await LoadAvailableVersionsAsync();
 
             _allPackages.Clear();
 
             foreach (var app in apps)
-                _allPackages.Add(ToModel(app));
+                _allPackages.Add(ToModel(app, availableVersions));
 
             ApplyFilter();
 
@@ -84,6 +111,38 @@ public partial class InstalledViewModel : AsyncViewModel
         {
             State = LoadState.Error;
             ErrorMessage = ex.Message;
+        }
+        finally
+        {
+            _refreshing = false;
+        }
+    }
+
+    private async Task DebounceSearch(CancellationToken token)
+    {
+        try
+        {
+            await Task.Delay(200, token);
+
+            ApplyFilter();
+        }
+        catch (OperationCanceledException)
+        {
+        }
+    }
+
+    private async Task<Dictionary<string, string>?> LoadAvailableVersionsAsync()
+    {
+        try
+        {
+            return (await _provider.GetUpdatesAsync())
+                .Where(p => !string.IsNullOrWhiteSpace(p.Id))
+                .ToDictionary(p => p.Id, p => p.Available, StringComparer.OrdinalIgnoreCase);
+        }
+        catch
+        {
+            // güncelleme listesi alınamadıysa kartları boş çipleriyle gösterelim
+            return null;
         }
     }
 
@@ -139,13 +198,7 @@ public partial class InstalledViewModel : AsyncViewModel
         var url = await _provider.GetHomepageAsync(package.Id);
 
         if (!string.IsNullOrWhiteSpace(url))
-        {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = url,
-                UseShellExecute = true
-            });
-        }
+            await _launcher.OpenUrlAsync(url);
     }
 
     [RelayCommand]
@@ -191,14 +244,10 @@ public partial class InstalledViewModel : AsyncViewModel
 
         Packages.Clear();
 
-        IEnumerable<PackageModel> filtered = _allPackages;
+        IEnumerable<PackageModel> filtered =
+            PackageFilter.Apply(_allPackages, SearchText, SelectedFilter);
 
-        if (!string.IsNullOrWhiteSpace(SearchText))
-        {
-            filtered = filtered.Where(p =>
-                p.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)
-                || p.Id.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
-        }
+        filtered = PackageSorter.Sort(filtered, SelectedSort);
 
         foreach (var package in filtered)
         {
@@ -234,8 +283,11 @@ public partial class InstalledViewModel : AsyncViewModel
             ? window
             : null;
 
-    private static PackageModel ToModel(InstalledPackage app)
-        => new()
+    private static PackageModel ToModel(
+        InstalledPackage app,
+        IReadOnlyDictionary<string, string>? availableVersions = null)
+    {
+        var model = new PackageModel
         {
             Icon = IconProvider.Get(app.Name),
             Name = app.Name,
@@ -243,5 +295,12 @@ public partial class InstalledViewModel : AsyncViewModel
             Version = app.Version,
             Source = app.Source
         };
+
+        if (availableVersions is not null
+            && !string.IsNullOrWhiteSpace(app.Id)
+            && availableVersions.TryGetValue(app.Id, out var availableVersion))
+            model.Available = availableVersion;
+
+        return model;
+    }
 }
-// kaneki

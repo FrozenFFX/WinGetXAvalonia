@@ -4,7 +4,6 @@
              xmlns:services="using:WinGetXAvalonia.Services.Theme"
              x:Class="WinGetXAvalonia.Views.Settings.AppearanceSettingsView"
              x:DataType="vm:AppearanceSettingsViewModel">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <UserControl.Styles>
 
@@ -23,8 +22,6 @@
             <Setter Property="BorderThickness" Value="3"/>
         </Style>
 
-
-    <!-- kaneki -->
     </UserControl.Styles>
 
     <ScrollViewer>

@@ -1,11 +1,7 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using WinGetXAvalonia.Helpers;
 
 namespace WinGetXAvalonia.Tests;
 
-// kaneki
 public class FeaturedParserTests
 {
     [Fact]
@@ -35,4 +31,3 @@ public class FeaturedParserTests
     public void Parse_InvalidJson_ReturnsEmpty()
         => Assert.Empty(FeaturedParser.Parse("not json"));
 }
-// kaneki

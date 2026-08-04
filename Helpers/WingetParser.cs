@@ -1,12 +1,8 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using System.Text.RegularExpressions;
 using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Helpers;
 
-// kaneki
 public static class WingetParser
 {
     public static List<InstalledPackage> ParseInstalled(List<string> lines)
@@ -96,6 +92,53 @@ public static class WingetParser
         return null;
     }
 
+    public static PackageDetails ParseDetails(IEnumerable<string> lines)
+    {
+        var details = new PackageDetails();
+
+        foreach (string line in lines)
+        {
+            var match = Regex.Match(line.Trim(), @"^([^:]+):\s*(.*)$");
+
+            if (!match.Success)
+                continue;
+
+            string key = match.Groups[1].Value.Trim();
+            string value = match.Groups[2].Value.Trim();
+
+            switch (key)
+            {
+                case "Name":
+                    details = details with { Name = value };
+                    break;
+                case "Id":
+                    details = details with { Id = value };
+                    break;
+                case "Version":
+                    details = details with { Version = value };
+                    break;
+                case "Publisher":
+                    details = details with { Publisher = value };
+                    break;
+                case "Description":
+                    details = details with { Description = value };
+                    break;
+                case "Homepage":
+                    if (Uri.TryCreate(value, UriKind.Absolute, out _))
+                        details = details with { Homepage = value };
+                    break;
+                case "License":
+                    details = details with { License = value };
+                    break;
+                case "ReleaseNotes":
+                    details = details with { ReleaseNotes = value };
+                    break;
+            }
+        }
+
+        return details;
+    }
+
     private static (string Name, string? Id, string Version, string Available, string Source) SplitRow(string line)
     {
         string[] p = Regex.Split(line.Trim(), @"\s{2,}");
@@ -127,4 +170,3 @@ public static class WingetParser
     private static string CleanVersion(string? value)
         => value?.TrimStart('>').Trim() ?? "";
 }
-// kaneki

@@ -1,11 +1,7 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using System.ComponentModel;
 
 namespace WinGetXAvalonia.Interfaces;
 
-// kaneki
 public interface ITimeService : INotifyPropertyChanged, IDisposable
 {
     string Greeting { get; }
@@ -18,4 +14,3 @@ public interface ITimeService : INotifyPropertyChanged, IDisposable
 
     void Stop();
 }
-// kaneki

@@ -1,11 +1,7 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using Avalonia.Threading;
 
 namespace WinGetXAvalonia.Services.Core;
 
-// kaneki
 public class ClockService : IDisposable
 {
     private readonly DispatcherTimer _timer;
@@ -38,4 +34,3 @@ public class ClockService : IDisposable
         _timer.Tick -= OnTick;
     }
 }
-// kaneki

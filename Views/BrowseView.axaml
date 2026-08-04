@@ -7,11 +7,10 @@
              x:Class="WinGetXAvalonia.Views.BrowseView"
              x:DataType="vm:BrowseViewModel"
              x:CompileBindings="False">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Grid Margin="20" ColumnDefinitions="*,360">
 
-        <!-- LEFT: Featured / Categories / Search / Results -->
+        <!-- sol taraf: featured, kategoriler, arama, sonuçlar -->
         <Grid Grid.Column="0"
               RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
 
@@ -61,6 +60,7 @@
                     <DataTemplate>
                         <Button
                             Margin="0,0,8,8"
+                            HorizontalContentAlignment="Center"
                             Command="{Binding $parent[ItemsControl].DataContext.SelectCategoryCommand}"
                             CommandParameter="{Binding}">
 
@@ -86,14 +86,19 @@
                 ColumnSpacing="10">
 
                 <AutoCompleteBox
-                    x:Name="SearchBox"
                     ItemsSource="{Binding Suggestions}"
                     Text="{Binding SearchText, Mode=TwoWay}"
+                    SelectedItem="{Binding SelectedSuggestion, Mode=TwoWay}"
                     FilterMode="None"
                     MinimumPrefixLength="2"
-                    Watermark="Search packages..."
-                    KeyDown="OnSearchKeyDown"
-                    SelectionChanged="OnSearchSelectionChanged"/>
+                    PlaceholderText="Search packages...">
+
+                    <AutoCompleteBox.KeyBindings>
+                        <KeyBinding
+                            Gesture="Enter"
+                            Command="{Binding SearchCommand}"/>
+                    </AutoCompleteBox.KeyBindings>
+                </AutoCompleteBox>
 
                 <Button
                     Grid.Column="1"
@@ -105,13 +110,14 @@
                 Grid.Row="6"
                 Margin="0,20,0,0"
                 Title="Results"
-                Description="{Binding Results.Count, StringFormat={}{0} packages}"/>
+                Description="{Binding ResultsSummary}"/>
 
             <Grid Grid.Row="7" Margin="0,4,0,0">
 
                 <ListBox
                     ItemsSource="{Binding Results}"
-                    SelectedItem="{Binding SelectedPackage}">
+                    SelectedItem="{Binding SelectedPackage}"
+                    shared:ScrollToTopBehavior.ScrollToTopOnReset="True">
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
@@ -120,122 +126,412 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
 
-                <ProgressBar
-                    IsIndeterminate="True"
-                    IsVisible="{Binding IsLoading}"
-                    VerticalAlignment="Top"/>
+                <shared:LoadingOverlay
+                    IsLoading="{Binding IsLoading}"
+                    Message="Searching packages..."/>
 
-                <TextBlock
-                    Text="No packages found."
-                    IsVisible="{Binding IsEmpty}"
-                    Opacity="0.6"
+                <!-- Empty state -->
+                <Border
+                    HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    HorizontalAlignment="Center"/>
+                    Padding="32"
+                    Background="{DynamicResource CardBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="{DynamicResource RadiusMedium}"
+                    MaxWidth="480"
+                    IsVisible="{Binding IsEmpty}">
 
-                <TextBlock
-                    Text="{Binding ErrorMessage}"
-                    IsVisible="{Binding HasError}"
-                    Foreground="{DynamicResource DangerBrush}"
+                    <StackPanel Spacing="12">
+
+                        <TextBlock
+                            Text="🔍"
+                            FontSize="46"
+                            Opacity="0.35"
+                            HorizontalAlignment="Center"/>
+
+                        <TextBlock
+                            Text="No packages found"
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            HorizontalAlignment="Center"/>
+
+                        <TextBlock
+                            Text="Try another package name or category."
+                            Opacity="0.65"
+                            TextAlignment="Center"
+                            HorizontalAlignment="Center"/>
+
+                        <Button
+                            Margin="0,8,0,0"
+                            Content="Clear Search"
+                            Command="{Binding ClearSearchCommand}"
+                            HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Error state -->
+                <Border
+                    HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    HorizontalAlignment="Center"/>
+                    Padding="32"
+                    Background="{DynamicResource CardBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="{DynamicResource RadiusMedium}"
+                    MaxWidth="480"
+                    IsVisible="{Binding HasError}">
+
+                    <StackPanel Spacing="12">
+
+                        <TextBlock
+                            Text="⚠️"
+                            FontSize="46"
+                            Opacity="0.5"
+                            HorizontalAlignment="Center"/>
+
+                        <TextBlock
+                            Text="Unable to load packages"
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            HorizontalAlignment="Center"/>
+
+                        <TextBlock
+                            Text="Reason:"
+                            Opacity="0.7"
+                            HorizontalAlignment="Center"/>
+
+                        <TextBlock
+                            Text="{Binding ErrorMessage}"
+                            Foreground="{DynamicResource DangerBrush}"
+                            TextAlignment="Center"
+                            TextWrapping="Wrap"
+                            HorizontalAlignment="Center"/>
+
+                        <Button
+                            Margin="0,8,0,0"
+                            Content="Retry"
+                            Command="{Binding SearchCommand}"
+                            HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
             </Grid>
 
         </Grid>
 
-        <!-- RIGHT: Details Preview -->
+        <!-- sağ tarafta seçilen paketin detay paneli -->
         <Border
             Grid.Column="1"
             Margin="16,0,0,0"
-            Padding="24"
-            VerticalAlignment="Top"
+            VerticalAlignment="Stretch"
             Background="{DynamicResource CardBrush}"
             BorderBrush="{DynamicResource BorderBrush}"
             BorderThickness="1"
-            CornerRadius="{DynamicResource RadiusLarge}"
-            IsVisible="{Binding SelectedPackage,
-            Converter={x:Static conv:ObjectConverters.IsNotNull}}">
+            CornerRadius="{DynamicResource RadiusLarge}">
 
-            <StackPanel Spacing="12">
+            <Grid>
 
-                <TextBlock
-                    FontSize="{DynamicResource FontDisplay}"
-                    FontWeight="Bold"
-                    Text="Details"/>
-
-                <TextBlock
-                    Text="{Binding SelectedPackage.Icon}"
-                    FontSize="48"/>
+            <!-- Boş durum: hiç paket seçilmedi -->
+            <StackPanel
+                Spacing="12"
+                IsVisible="{Binding SelectedDetails.SelectedPackage,
+                Converter={x:Static conv:ObjectConverters.IsNull}}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
 
                 <TextBlock
-                    FontSize="{DynamicResource FontTitle}"
+                    Text="📦"
+                    FontSize="46"
+                    Opacity="0.35"
+                    HorizontalAlignment="Center"/>
+
+                <TextBlock
+                    Text="Select a package to view details."
+                    FontSize="18"
                     FontWeight="SemiBold"
-                    Text="{Binding SelectedPackage.Name}"
-                    TextWrapping="Wrap"/>
-
-                <TextBlock
-                    FontSize="{DynamicResource FontBody}"
-                    Foreground="{DynamicResource SubtextBrush}"
-                    Text="{Binding SelectedPackage.Id}"
-                    TextWrapping="Wrap"/>
-
-                <TextBlock
-                    FontSize="{DynamicResource FontCaption}"
-                    Foreground="{DynamicResource SubtextBrush}"
-                    Opacity="0.7"
-                    Text="{Binding SelectedPackage.Source}"/>
-
-                <Border Height="1" Background="{DynamicResource BorderBrush}"/>
-
-                <!-- Update available -->
-                <StackPanel
-                    Spacing="4"
-                    IsVisible="{Binding SelectedPackage.Available,
-                    Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}">
-
-                    <TextBlock
-                        FontSize="{DynamicResource FontBody}"
-                        Text="{Binding SelectedPackage.Version,
-                        StringFormat=Installed {0}}"/>
-
-                    <TextBlock
-                        FontSize="{DynamicResource FontBody}"
-                        Foreground="{DynamicResource AccentBrush}"
-                        Text="{Binding SelectedPackage.Available,
-                        StringFormat=Available {0}}"/>
-
-                    <Button
-                        Margin="0,8,0,0"
-                        Content="Update"
-                        Command="{Binding UpdateCommand}"
-                        CommandParameter="{Binding SelectedPackage}"/>
-                </StackPanel>
-
-                <!-- Plain result -->
-                <StackPanel
-                    Spacing="4"
-                    IsVisible="{Binding SelectedPackage.Available,
-                    Converter={x:Static conv:StringConverters.IsNullOrEmpty}}">
-
-                    <TextBlock
-                        FontSize="{DynamicResource FontBody}"
-                        Text="{Binding SelectedPackage.Version,
-                        StringFormat=Version {0}}"
-                        IsVisible="{Binding SelectedPackage.Version,
-                        Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"/>
-
-                    <Button
-                        Margin="0,8,0,0"
-                        Content="Install"
-                        Command="{Binding InstallCommand}"
-                        CommandParameter="{Binding SelectedPackage}"/>
-                </StackPanel>
-
+                    HorizontalAlignment="Center"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap"
+                    MaxWidth="240"/>
             </StackPanel>
+
+            <!-- Detay içeriği -->
+            <ScrollViewer
+                IsVisible="{Binding SelectedDetails.SelectedPackage,
+                Converter={x:Static conv:ObjectConverters.IsNotNull}}"
+                VerticalScrollBarVisibility="Auto">
+
+                <Border Padding="24">
+
+                    <StackPanel Spacing="14">
+
+                    <!-- başlık: 64px ikon + ad -->
+                    <StackPanel Orientation="Horizontal" Spacing="16">
+
+                        <Border
+                            Width="64"
+                            Height="64"
+                            CornerRadius="12"
+                            Background="{DynamicResource SurfaceBrush}">
+
+                            <TextBlock
+                                Text="{Binding SelectedDetails.SelectedPackage.Icon}"
+                                FontSize="32"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+                        </Border>
+
+                        <StackPanel
+                            Spacing="4"
+                            VerticalAlignment="Center">
+
+                            <TextBlock
+                                FontSize="{DynamicResource FontTitle}"
+                                FontWeight="SemiBold"
+                                Text="{Binding SelectedDetails.SelectedPackage.Name}"
+                                TextWrapping="Wrap"/>
+
+                            <TextBlock
+                                FontSize="{DynamicResource FontBody}"
+                                Foreground="{DynamicResource SubtextBrush}"
+                                Text="{Binding SelectedDetails.SelectedPackage.Id}"
+                                TextWrapping="Wrap"/>
+
+                            <TextBlock
+                                FontSize="{DynamicResource FontCaption}"
+                                Foreground="{DynamicResource SubtextBrush}"
+                                Opacity="0.7"
+                                Text="{Binding SelectedDetails.SelectedPackage.Source}"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Kur / Güncelle -->
+                    <Button
+                        Content="{Binding SelectedDetails.SelectedPackage.InstallButtonText}"
+                        Command="{Binding InstallOrUpdateCommand}"
+                        CommandParameter="{Binding SelectedDetails.SelectedPackage}"
+                        IsEnabled="{Binding SelectedDetails.SelectedPackage.CanInstall}"
+                        HorizontalAlignment="Stretch"/>
+
+                    <ProgressBar
+                        IsIndeterminate="True"
+                        IsVisible="{Binding SelectedDetails.SelectedPackage.IsBusy}"/>
+
+                    <Border Height="1" Background="{DynamicResource BorderBrush}"/>
+
+                    <!-- Versiyonlar: iki sütun -->
+                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*">
+
+                        <TextBlock
+                            FontSize="{DynamicResource FontCaption}"
+                            Foreground="{DynamicResource SubtextBrush}"
+                            Opacity="0.7"
+                            Text="Installed"/>
+
+                        <TextBlock
+                            Grid.Column="1"
+                            FontSize="{DynamicResource FontCaption}"
+                            Foreground="{DynamicResource SubtextBrush}"
+                            Opacity="0.7"
+                            Text="Available"/>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            FontWeight="SemiBold"
+                            Text="{Binding SelectedDetails.SelectedPackage.InstalledVersionDisplay}"/>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource AccentBrush}"
+                            Text="{Binding SelectedDetails.SelectedPackage.AvailableVersionDisplay}"/>
+                    </Grid>
+
+                    <Border Height="1" Background="{DynamicResource BorderBrush}"/>
+
+                    <!-- Health Score -->
+                    <StackPanel Spacing="10">
+
+                        <Grid
+                            ColumnDefinitions="Auto,12,*,Auto"
+                            ColumnSpacing="8">
+
+                            <TextBlock
+                                FontSize="{DynamicResource FontCaption}"
+                                Foreground="{DynamicResource SubtextBrush}"
+                                Opacity="0.7"
+                                Text="Health Score"
+                                VerticalAlignment="Center"/>
+
+                            <ProgressBar
+                                Grid.Column="2"
+                                Minimum="0"
+                                Maximum="100"
+                                Height="6"
+                                Value="{Binding SelectedDetails.HealthScore}"
+                                VerticalAlignment="Center"/>
+
+                            <TextBlock
+                                Grid.Column="3"
+                                FontWeight="SemiBold"
+                                Text="{Binding SelectedDetails.HealthScoreLabel}"
+                                VerticalAlignment="Center"/>
+                        </Grid>
+
+                        <Grid
+                            RowDefinitions="Auto,Auto,Auto,Auto"
+                            ColumnDefinitions="*,*">
+
+                            <TextBlock
+                                FontSize="{DynamicResource FontCaption}"
+                                Foreground="{DynamicResource SubtextBrush}"
+                                Opacity="0.7"
+                                Text="Source Trust"/>
+
+                            <TextBlock
+                                Grid.Column="1"
+                                FontSize="{DynamicResource FontCaption}"
+                                Foreground="{DynamicResource SubtextBrush}"
+                                Opacity="0.7"
+                                Text="Update Frequency"/>
+
+                            <TextBlock
+                                Grid.Row="1"
+                                FontWeight="SemiBold"
+                                Text="{Binding SelectedDetails.SourceTrustLabel}"/>
+
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                FontWeight="SemiBold"
+                                Text="{Binding SelectedDetails.UpdateFrequencyLabel}"/>
+
+                            <TextBlock
+                                Grid.Row="2"
+                                FontSize="{DynamicResource FontCaption}"
+                                Foreground="{DynamicResource SubtextBrush}"
+                                Opacity="0.7"
+                                Text="Latest Version"/>
+
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                FontSize="{DynamicResource FontCaption}"
+                                Foreground="{DynamicResource SubtextBrush}"
+                                Opacity="0.7"
+                                Text="Publisher"/>
+
+                            <TextBlock
+                                Grid.Row="3"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource AccentBrush}"
+                                Text="{Binding SelectedDetails.LatestVersionLabel}"/>
+
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource AccentBrush}"
+                                Text="{Binding SelectedDetails.PublisherLabel}"/>
+                        </Grid>
+                    </StackPanel>
+
+                    <Border Height="1" Background="{DynamicResource BorderBrush}"/>
+
+                    <!-- Description -->
+                    <StackPanel Spacing="4">
+
+                        <TextBlock
+                            FontSize="{DynamicResource FontCaption}"
+                            Foreground="{DynamicResource SubtextBrush}"
+                            Opacity="0.7"
+                            Text="Description"/>
+
+                        <TextBlock
+                            FontSize="{DynamicResource FontBody}"
+                            Foreground="{DynamicResource SubtextBrush}"
+                            Text="{Binding SelectedDetails.DescriptionDisplay}"
+                            TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <!-- Publisher -->
+                    <StackPanel Spacing="4">
+
+                        <TextBlock
+                            FontSize="{DynamicResource FontCaption}"
+                            Foreground="{DynamicResource SubtextBrush}"
+                            Opacity="0.7"
+                            Text="Publisher"/>
+
+                        <TextBlock
+                            FontSize="{DynamicResource FontBody}"
+                            Foreground="{DynamicResource SubtextBrush}"
+                            Text="{Binding SelectedDetails.PublisherDisplay}"
+                            TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <!-- Homepage + Copy ID -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+
+                        <Button
+                            Content="Open Homepage"
+                            Command="{Binding OpenHomepageCommand}"
+                            CommandParameter="{Binding SelectedDetails}"
+                            IsVisible="{Binding SelectedDetails.HasHomepage}"/>
+
+                        <Button
+                            Grid.Column="1"
+                            Content="📋 Copy ID"
+                            Command="{Binding CopyIdCommand}"
+                            CommandParameter="{Binding SelectedDetails.SelectedPackage}"/>
+                    </Grid>
+
+                    <!-- License -->
+                    <StackPanel Spacing="4">
+
+                        <TextBlock
+                            FontSize="{DynamicResource FontCaption}"
+                            Foreground="{DynamicResource SubtextBrush}"
+                            Opacity="0.7"
+                            Text="License"/>
+
+                        <TextBlock
+                            FontSize="{DynamicResource FontBody}"
+                            Foreground="{DynamicResource SubtextBrush}"
+                            Text="{Binding SelectedDetails.LicenseDisplay}"
+                            TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <!-- Release Notes -->
+                    <StackPanel Spacing="4">
+
+                        <TextBlock
+                            FontSize="{DynamicResource FontCaption}"
+                            Foreground="{DynamicResource SubtextBrush}"
+                            Opacity="0.7"
+                            Text="Release Notes"/>
+
+                        <TextBlock
+                            FontSize="{DynamicResource FontBody}"
+                            Foreground="{DynamicResource SubtextBrush}"
+                            Text="{Binding SelectedDetails.ReleaseNotesDisplay}"
+                            TextWrapping="Wrap"/>
+                    </StackPanel>
+                    </StackPanel>
+
+                </Border>
+            </ScrollViewer>
+
+            <shared:LoadingOverlay
+                IsLoading="{Binding SelectedDetails.IsLoading}"
+                Message="Loading package details..."/>
+
+            </Grid>
 
         </Border>
 
-
-    <!-- kaneki -->
     </Grid>
 
 </UserControl>

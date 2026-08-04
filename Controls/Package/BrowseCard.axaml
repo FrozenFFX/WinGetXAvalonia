@@ -12,92 +12,158 @@
     x:Class="WinGetXAvalonia.Controls.Package.BrowseCard"
     x:DataType="models:PackageModel"
     x:CompileBindings="False">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
-    <shared:BaseCard>
+    <UserControl.Styles>
+        <Style Selector="Border.BaseCard:pointerover">
+            <Setter Property="Opacity" Value="0.9"/>
+        </Style>
+    </UserControl.Styles>
 
-        <Grid ColumnDefinitions="Auto,*,Auto">
+    <Grid>
 
-            <!-- ICON -->
-            <Border Width="32"
-                    Height="32"
-                    CornerRadius="8"
-                    Background="{DynamicResource SurfaceBrush}">
+        <shared:BaseCard>
 
-                <TextBlock Text="{Binding Icon}"
-                           FontSize="16"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
-            </Border>
+            <Grid ColumnDefinitions="Auto,*,Auto">
 
-            <!-- INFO -->
-            <StackPanel Grid.Column="1"
-                        Margin="12,0,12,0"
-                        Spacing="4"
-                        VerticalAlignment="Center">
+                <Border Grid.Column="0"
+                        Width="{Binding IsFeatured,
+                                Converter={StaticResource BoolToSizeConverter},
+                                ConverterParameter='48;32'}"
+                        Height="{Binding IsFeatured,
+                                Converter={StaticResource BoolToSizeConverter},
+                                ConverterParameter='48;32'}"
+                        CornerRadius="8"
+                        Background="{DynamicResource SurfaceBrush}">
 
-                <TextBlock Text="{Binding Name}"
-                           FontSize="{DynamicResource FontSubtitle}"
-                           FontWeight="SemiBold"
-                           TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding Icon}"
+                               FontSize="{Binding IsFeatured,
+                               Converter={StaticResource BoolToSizeConverter},
+                               ConverterParameter='24;16'}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
 
-                <TextBlock Text="{Binding Id}"
-                           FontSize="{DynamicResource FontCaption}"
-                           Foreground="{DynamicResource SubtextBrush}"
-                           TextTrimming="CharacterEllipsis"/>
+                <!-- paket adı ve bilgileri -->
+                <StackPanel Grid.Column="1"
+                            Margin="12,0,12,0"
+                            Spacing="6"
+                            VerticalAlignment="Center">
 
-                <TextBlock Text="{Binding Source}"
-                           FontSize="{DynamicResource FontCaption}"
-                           Foreground="{DynamicResource SubtextBrush}"
-                           Opacity="0.7"/>
-            </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
 
-            <!-- ACTIONS -->
-            <StackPanel Grid.Column="2"
-                        Spacing="8"
-                        VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Name}"
+                                   FontSize="{DynamicResource FontSubtitle}"
+                                   FontWeight="SemiBold"
+                                   TextTrimming="CharacterEllipsis"/>
 
-                <!-- Update available -->
-                <StackPanel IsVisible="{Binding Available,
-                            Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}">
+                        <Border Background="#334F8CFF"
+                                CornerRadius="10"
+                                Padding="8,2"
+                                VerticalAlignment="Center"
+                                IsVisible="{Binding IsFeatured}">
 
-                    <TextBlock FontSize="{DynamicResource FontCaption}"
+                            <TextBlock Text="✦ Recommended"
+                                       FontSize="11"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource AccentBrush}"/>
+                        </Border>
+                    </StackPanel>
+
+                    <TextBlock Text="{Binding Id}"
+                               FontSize="{DynamicResource FontCaption}"
                                Foreground="{DynamicResource SubtextBrush}"
-                               Text="{Binding Version,
-                               StringFormat=Installed {0}}"/>
+                               TextTrimming="CharacterEllipsis"/>
 
-                    <TextBlock FontSize="{DynamicResource FontCaption}"
-                               Foreground="{DynamicResource AccentBrush}"
-                               Text="{Binding Available,
-                               StringFormat=Available {0}}"/>
-
-                    <Button Content="Update"
-                            Command="{Binding $parent[ItemsControl].DataContext.UpdateCommand}"
-                            CommandParameter="{Binding}"/>
-                </StackPanel>
-
-                <!-- Plain result -->
-                <StackPanel IsVisible="{Binding Available,
-                            Converter={x:Static conv:StringConverters.IsNullOrEmpty}}">
-
-                    <TextBlock FontSize="{DynamicResource FontCaption}"
+                    <TextBlock Text="{Binding Description}"
+                               FontSize="{DynamicResource FontCaption}"
                                Foreground="{DynamicResource SubtextBrush}"
-                               Text="{Binding Version,
-                               StringFormat=Version {0}}"
-                               IsVisible="{Binding Version,
+                               TextWrapping="Wrap"
+                               IsVisible="{Binding Description,
                                Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"/>
 
+                    <WrapPanel ItemSpacing="6">
+
+                        <!-- kaynak -->
+                        <Border Background="{DynamicResource SurfaceBrush}"
+                                CornerRadius="20"
+                                Padding="8,3">
+
+                            <TextBlock Text="{Binding Source}"
+                                       FontSize="{DynamicResource FontCaption}"
+                                       Foreground="{DynamicResource SubtextBrush}"/>
+                        </Border>
+
+                        <!-- kurulu sürüm -->
+                        <Border Background="{DynamicResource SurfaceBrush}"
+                                CornerRadius="20"
+                                Padding="8,3"
+                                IsVisible="{Binding Version,
+                                Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}">
+
+                            <TextBlock Text="{Binding Version,
+                                       StringFormat=Installed {0}}"
+                                       FontSize="{DynamicResource FontCaption}"
+                                       Foreground="{DynamicResource SubtextBrush}"/>
+                        </Border>
+
+                        <!-- güncelleme var -->
+                        <Border Background="#3327AE60"
+                                CornerRadius="20"
+                                Padding="8,3"
+                                IsVisible="{Binding Available,
+                                Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}">
+
+                            <TextBlock Text="{Binding Available,
+                                       StringFormat=▲ {0}}"
+                                       FontSize="{DynamicResource FontCaption}"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource SuccessBrush}"/>
+                        </Border>
+                    </WrapPanel>
+                </StackPanel>
+
+                <!-- kuruluysa güncelle, değilse kur -->
+                <StackPanel Grid.Column="2"
+                            Spacing="8"
+                            VerticalAlignment="Center">
+
+                    <Button Content="Update"
+                            IsVisible="{Binding Available,
+                            Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"
+                            Command="{Binding $parent[ItemsControl].DataContext.UpdateCommand}"
+                            CommandParameter="{Binding}"/>
+
                     <Button Content="Install"
+                            IsVisible="{Binding Available,
+                            Converter={x:Static conv:StringConverters.IsNullOrEmpty}}"
                             Command="{Binding $parent[ItemsControl].DataContext.InstallCommand}"
                             CommandParameter="{Binding}"/>
                 </StackPanel>
 
-            </StackPanel>
+            </Grid>
 
-        </Grid>
+        </shared:BaseCard>
 
+        <!-- seçiliyken kenar çerçevesi -->
+        <Border IsVisible="{Binding Selected}"
+                BorderBrush="{DynamicResource AccentBrush}"
+                BorderThickness="1.5"
+                CornerRadius="{DynamicResource RadiusMedium}"
+                Margin="5"
+                IsHitTestVisible="False"/>
 
-    <!-- kaneki -->
-    </shared:BaseCard>
+    </Grid>
+
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Copy ID"
+                      Command="{Binding $parent[ListBox].DataContext.CopyIdCommand}"
+                      CommandParameter="{Binding}"/>
+
+            <MenuItem Header="Copy Name"
+                      Command="{Binding $parent[ListBox].DataContext.CopyNameCommand}"
+                      CommandParameter="{Binding}"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
 
 </UserControl>

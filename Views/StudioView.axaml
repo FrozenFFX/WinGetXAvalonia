@@ -1,0 +1,220 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    xmlns:studio="using:WinGetXAvalonia.Controls.Studio"
+    x:Class="WinGetXAvalonia.Views.StudioView"
+    x:Name="Root"
+    x:DataType="vm:StudioViewModel">
+
+    <UserControl.KeyBindings>
+        <KeyBinding
+            Gesture="F5"
+            Command="{Binding RefreshCommand}"/>
+    </UserControl.KeyBindings>
+
+    <UserControl.Styles>
+
+        <Style Selector="ToggleButton.FilterChip">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="14,0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="CornerRadius" Value="15"/>
+        </Style>
+
+        <Style Selector="ToggleButton.FilterChip:checked">
+            <Setter Property="Background" Value="{DynamicResource StudioAccentBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource StudioAccentBrush}"/>
+        </Style>
+
+    </UserControl.Styles>
+
+    <Grid Margin="20">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <shared:SectionHeader
+            Title="Studio"
+            Description="{Binding ToolsSummary}"/>
+
+        <!-- Toolbar -->
+        <Border
+            Grid.Row="1"
+            Margin="0,0,0,8"
+            Padding="16"
+            CornerRadius="{DynamicResource RadiusMedium}"
+            Background="{DynamicResource CardBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="1">
+
+            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+
+                <shared:SearchBox
+                    MinWidth="320"
+                    MaxWidth="600"
+                    HorizontalAlignment="Stretch"
+                    Watermark="Search studio tools..."
+                    Text="{Binding SearchText}"/>
+
+                <Button
+                    Grid.Column="1"
+                    Width="42"
+                    Padding="0"
+                    Content="🔄"
+                    ToolTip.Tip="Refresh studio tools (F5)"
+                    Command="{Binding RefreshCommand}"/>
+
+                <Border
+                    Grid.Column="2"
+                    Padding="10,5"
+                    CornerRadius="{DynamicResource RadiusSmall}"
+                    Background="{DynamicResource SurfaceBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1"
+                    VerticalAlignment="Center">
+
+                    <TextBlock
+                        FontWeight="SemiBold"
+                        VerticalAlignment="Center"
+                        Text="{Binding ToolCount}"/>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Filter chips -->
+        <ItemsControl
+            Grid.Row="2"
+            ItemsSource="{Binding Filters}">
+
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <ToggleButton
+                        Classes="FilterChip"
+                        Margin="0,0,8,8"
+                        IsChecked="{Binding IsActive, Mode=OneWay}"
+                        Command="{Binding $parent[ItemsControl].DataContext.SelectFilterCommand}"
+                        CommandParameter="{Binding}">
+
+                        <TextBlock Text="{Binding Label}"/>
+                    </ToggleButton>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Tools -->
+        <Grid Grid.Row="4">
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+
+                <ItemsControl ItemsSource="{Binding Tools}">
+
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <studio:StudioTile
+                                Width="320"
+                                Margin="0,0,12,12"
+                                Icon="{Binding Icon}"
+                                Title="{Binding Title}"
+                                Description="{Binding Description}"
+                                Badge="{Binding Badge}"
+                                BadgeStatus="{Binding BadgeStatus}"
+                                Command="{Binding $parent[ItemsControl].DataContext.SelectToolCommand}"
+                                CommandParameter="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- Empty state -->
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Spacing="12"
+                IsVisible="{Binding IsEmpty}">
+
+                <TextBlock
+                    Text="🎛"
+                    FontSize="46"
+                    Opacity="0.35"
+                    HorizontalAlignment="Center"/>
+
+                <TextBlock
+                    Text="No studio tools found"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Center"/>
+
+                <TextBlock
+                    Text="Try a different search or filter."
+                    Opacity="0.65"
+                    TextAlignment="Center"
+                    HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Error state -->
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Spacing="12"
+                IsVisible="{Binding HasError}">
+
+                <TextBlock
+                    Text="⚠️"
+                    FontSize="46"
+                    Opacity="0.35"
+                    HorizontalAlignment="Center"/>
+
+                <TextBlock
+                    Text="Couldn't load studio tools"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Center"/>
+
+                <TextBlock
+                    Text="{Binding ErrorMessage}"
+                    Opacity="0.65"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap"
+                    MaxWidth="480"
+                    HorizontalAlignment="Center"/>
+
+                <Button
+                    Margin="0,8,0,0"
+                    Content="Retry"
+                    Command="{Binding RefreshCommand}"
+                    HorizontalAlignment="Center"/>
+            </StackPanel>
+
+        </Grid>
+
+        <shared:LoadingOverlay
+            Grid.RowSpan="5"
+            IsLoading="{Binding IsLoading}"
+            Message="Loading studio tools..."/>
+
+    </Grid>
+
+</UserControl>

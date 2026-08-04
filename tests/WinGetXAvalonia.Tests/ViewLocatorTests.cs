@@ -3,6 +3,7 @@ using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Dialogs;
 using WinGetXAvalonia.Services.History;
 using WinGetXAvalonia.Services.Operations;
+using WinGetXAvalonia.Services.Studio;
 using WinGetXAvalonia.Services.Workspaces;
 using WinGetXAvalonia.ViewModels;
 using WinGetXAvalonia.Views;
@@ -45,6 +46,14 @@ public class ViewLocatorTests
         Assert.IsType<DeveloperView>(new ViewLocator().Build(vm));
     }
 
+    [Fact]
+    public void StudioViewModel_ResolvesToStudioView()
+    {
+        var vm = new StudioViewModel(new FakeStudioService());
+
+        Assert.IsType<StudioView>(new ViewLocator().Build(vm));
+    }
+
     private sealed class FakeWorkspaceService : IWorkspaceService
     {
         public Task<IReadOnlyList<WorkspaceModel>> GetAllAsync()
@@ -82,6 +91,12 @@ public class ViewLocatorTests
             => Task.FromResult<IReadOnlyList<HistoryEntry>>(new List<HistoryEntry>());
 
         public Task ClearAsync() => Task.CompletedTask;
+    }
+
+    private sealed class FakeStudioService : IStudioService
+    {
+        public Task<IReadOnlyList<StudioTool>> GetToolsAsync()
+            => Task.FromResult<IReadOnlyList<StudioTool>>(new List<StudioTool>());
     }
 
     private sealed class FakeDialogService : IDialogService

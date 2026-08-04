@@ -13,6 +13,7 @@ using WinGetXAvalonia.Services.History;
 using WinGetXAvalonia.Services.Interfaces;
 using WinGetXAvalonia.Services.Notifications;
 using WinGetXAvalonia.Services.Operations;
+using WinGetXAvalonia.Services.Studio;
 using WinGetXAvalonia.Services.Theme;
 using WinGetXAvalonia.Services.Workspaces;
 using WinGetXAvalonia.ViewModels;
@@ -43,6 +44,7 @@ class Program
                 services.AddSingleton<BlueprintsViewModel>();
                 services.AddSingleton<AutomationViewModel>();
                 services.AddSingleton<SecurityViewModel>();
+                services.AddSingleton<StudioViewModel>();
                 services.AddSingleton<DeveloperViewModel>();
                 services.AddSingleton<SettingsViewModel>();
 
@@ -70,6 +72,7 @@ class Program
                 services.AddSingleton<ILauncherService, LauncherService>();
                 services.AddSingleton<IHistoryService, HistoryService>();
                 services.AddSingleton<IWorkspaceService, WorkspaceService>();
+                services.AddSingleton<IStudioService, StudioService>();
                 services.AddSingleton<IDialogService, DialogService>();
                 services.AddSingleton<IEventBus, EventBus>();
                 services.AddSingleton<IOperationService, OperationService>();

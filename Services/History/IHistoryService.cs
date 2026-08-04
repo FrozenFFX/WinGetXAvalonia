@@ -1,13 +1,9 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Services.History;
 
-// kaneki
 public interface IHistoryService
 {
     Task AddAsync(HistoryEntry entry);
@@ -16,4 +12,3 @@ public interface IHistoryService
 
     Task ClearAsync();
 }
-// kaneki

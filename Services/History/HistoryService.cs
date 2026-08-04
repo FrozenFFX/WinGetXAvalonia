@@ -1,6 +1,3 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -8,7 +5,6 @@ using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Services.History;
 
-// kaneki
 public sealed class HistoryService : IHistoryService
 {
     private static readonly JsonSerializerOptions Options = new()
@@ -105,4 +101,3 @@ public sealed class HistoryService : IHistoryService
         await File.WriteAllTextAsync(_filePath, json);
     }
 }
-// kaneki

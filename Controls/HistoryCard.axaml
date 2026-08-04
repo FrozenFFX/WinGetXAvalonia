@@ -1,0 +1,77 @@
+<UserControl
+    x:Class="WinGetXAvalonia.Controls.HistoryCard"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    mc:Ignorable="d"
+    d:DesignWidth="800"
+    x:CompileBindings="False">
+
+    <shared:BaseCard>
+
+        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+
+            <Border
+                Width="36"
+                Height="36"
+                CornerRadius="18"
+                Background="{Binding IsSuccess,
+                Converter={StaticResource BoolToBrushConverter}}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center">
+
+                <TextBlock
+                    Text="{Binding Icon}"
+                    Foreground="White"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"/>
+            </Border>
+
+            <StackPanel
+                Grid.Column="1"
+                Spacing="2"
+                VerticalAlignment="Center">
+
+                <TextBlock
+                    FontSize="{DynamicResource FontBody}"
+                    FontWeight="SemiBold"
+                    Foreground="{Binding IsSuccess,
+                    Converter={StaticResource BoolToBrushConverter}}"
+                    Text="{Binding Title}"/>
+
+                <TextBlock
+                    FontSize="{DynamicResource FontCaption}"
+                    Foreground="{DynamicResource SubtextBrush}"
+                    Text="{Binding PackageName}"
+                    TextTrimming="CharacterEllipsis"/>
+            </StackPanel>
+
+            <StackPanel
+                Grid.Column="2"
+                Spacing="2"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Right">
+
+                <TextBlock
+                    FontSize="{DynamicResource FontCaption}"
+                    FontWeight="SemiBold"
+                    Text="{Binding Time}"/>
+
+                <TextBlock
+                    FontSize="{DynamicResource FontCaption}"
+                    Foreground="{DynamicResource SubtextBrush}"
+                    Text="{Binding Status}"
+                    TextAlignment="Right"
+                    MaxWidth="220"
+                    TextTrimming="CharacterEllipsis"/>
+            </StackPanel>
+
+        </Grid>
+
+    </shared:BaseCard>
+
+</UserControl>

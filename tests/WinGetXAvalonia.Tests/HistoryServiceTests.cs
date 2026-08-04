@@ -1,13 +1,9 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using System.Text.Json;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.History;
 
 namespace WinGetXAvalonia.Tests;
 
-// kaneki
 public class HistoryServiceTests
 {
     private static string CreateTempFile()
@@ -136,4 +132,3 @@ public class HistoryServiceTests
         Assert.Empty(await service.GetAllAsync());
     }
 }
-// kaneki

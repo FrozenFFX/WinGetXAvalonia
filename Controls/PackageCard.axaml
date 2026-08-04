@@ -11,91 +11,166 @@
              x:Class="WinGetXAvalonia.Controls.PackageCard"
              x:DataType="models:PackageModel"
              x:CompileBindings="False">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
-    <shared:BaseCard>
+    <UserControl.Styles>
+        <Style Selector="Border.BaseCard:pointerover">
+            <Setter Property="Opacity" Value="0.9"/>
+        </Style>
+    </UserControl.Styles>
 
-        <Grid ColumnDefinitions="Auto,*,Auto">
+    <Grid>
 
-            <!-- ICON -->
-            <Border Grid.Column="0"
-                    Width="32"
-                    Height="32"
-                    CornerRadius="8"
-                    Background="{DynamicResource SurfaceBrush}">
+        <shared:BaseCard>
 
-                <TextBlock Text="{Binding Icon}"
-                           FontSize="16"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
-            </Border>
+            <Grid ColumnDefinitions="Auto,*,Auto">
 
-            <!-- INFO -->
-            <StackPanel Grid.Column="1"
-                        Margin="12,0,0,0"
-                        Spacing="4"
-                        VerticalAlignment="Center">
+                <Border Grid.Column="0"
+                        Width="32"
+                        Height="32"
+                        CornerRadius="8"
+                        Background="{DynamicResource SurfaceBrush}">
 
-                <TextBlock Text="{Binding Name}"
-                           FontSize="{DynamicResource FontSubtitle}"
-                           FontWeight="SemiBold"
-                           TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding Icon}"
+                               FontSize="16"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
 
-                <TextBlock Text="{Binding Id}"
-                           FontSize="{DynamicResource FontCaption}"
-                           Foreground="{DynamicResource SubtextBrush}"
-                           TextTrimming="CharacterEllipsis"/>
+                <!-- bilgi -->
+                <StackPanel Grid.Column="1"
+                            Margin="12,0,0,0"
+                            Spacing="6"
+                            VerticalAlignment="Center">
 
-                <TextBlock Text="{Binding Source}"
-                           FontSize="{DynamicResource FontCaption}"
-                           Foreground="{DynamicResource SubtextBrush}"
-                           Opacity="0.7"/>
+                    <TextBlock Text="{Binding Name}"
+                               FontSize="{DynamicResource FontSubtitle}"
+                               FontWeight="SemiBold"
+                               TextTrimming="CharacterEllipsis"/>
 
-                <TextBlock Text="{Binding Version,
-                           StringFormat=Installed {0}}"
-                           FontSize="{DynamicResource FontCaption}"
-                           Foreground="{DynamicResource SubtextBrush}"
-                           IsVisible="{Binding Version,
-                           Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"/>
+                    <TextBlock Text="{Binding Id}"
+                               FontSize="{DynamicResource FontCaption}"
+                               Foreground="{DynamicResource SubtextBrush}"
+                               TextTrimming="CharacterEllipsis"/>
 
-                <TextBlock Text="{Binding Available,
-                           StringFormat=▲ Available {0}}"
-                           FontSize="{DynamicResource FontCaption}"
-                           Foreground="{DynamicResource AccentBrush}"
-                           IsVisible="{Binding Available,
-                           Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"/>
-            </StackPanel>
+                    <WrapPanel ItemSpacing="6">
 
-            <!-- ACTIONS -->
-            <WrapPanel Grid.Column="2"
-                       Margin="12,0,0,0"
-                       VerticalAlignment="Center"
-                       ItemSpacing="8">
+                        <!-- kaynak -->
+                        <Border Background="{DynamicResource SurfaceBrush}"
+                                CornerRadius="20"
+                                Padding="8,3">
 
-                <Button Content="Kaldır"
-                        Classes="Danger"
-                        Command="{Binding $parent[ItemsControl].DataContext.RemoveCommand}"
-                        CommandParameter="{Binding}"/>
+                            <TextBlock Text="{Binding Source}"
+                                       FontSize="{DynamicResource FontCaption}"
+                                       Foreground="{DynamicResource SubtextBrush}"/>
+                        </Border>
 
-                <Button Content="Güncelle"
-                        Command="{Binding $parent[ItemsControl].DataContext.UpdateCommand}"
-                        CommandParameter="{Binding}"/>
-            </WrapPanel>
+                        <!-- kurulu sürüm -->
+                        <Border Background="{DynamicResource SurfaceBrush}"
+                                CornerRadius="20"
+                                Padding="8,3"
+                                IsVisible="{Binding Version,
+                                Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}">
 
-        </Grid>
+                            <TextBlock Text="{Binding Version,
+                                       StringFormat=Installed {0}}"
+                                       FontSize="{DynamicResource FontCaption}"
+                                       Foreground="{DynamicResource SubtextBrush}"/>
+                        </Border>
 
+                        <!-- güncelleme var -->
+                        <Border Background="#3327AE60"
+                                CornerRadius="20"
+                                Padding="8,3"
+                                IsVisible="{Binding Available,
+                                Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}">
 
-    <!-- kaneki -->
-    </shared:BaseCard>
+                            <TextBlock Text="{Binding Available,
+                                       StringFormat=▲ {0}}"
+                                       FontSize="{DynamicResource FontCaption}"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource SuccessBrush}"/>
+                        </Border>
+                    </WrapPanel>
+                </StackPanel>
+
+                <!-- sağdaki butonlar -->
+                <Grid Grid.Column="2"
+                      Margin="12,0,0,0"
+                      VerticalAlignment="Center"
+                      RowDefinitions="Auto,Auto,Auto,Auto"
+                      RowSpacing="6">
+
+                    <Button Grid.Row="0"
+                            Content="Güncelle"
+                            IsVisible="{Binding Available,
+                            Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"
+                            Command="{Binding $parent[ItemsControl].DataContext.UpdateCommand}"
+                            CommandParameter="{Binding}"/>
+
+                    <Button Grid.Row="1"
+                            Content="🌐"
+                            Width="42"
+                            Padding="0"
+                            ToolTip.Tip="Open Homepage"
+                            Command="{Binding $parent[ItemsControl].DataContext.OpenHomepageCommand}"
+                            CommandParameter="{Binding}"/>
+
+                    <Button Grid.Row="2"
+                            Content="•••"
+                            Width="42"
+                            Padding="0"
+                            ToolTip.Tip="More">
+
+                        <Button.Flyout>
+                            <MenuFlyout>
+                                <MenuItem Header="Copy ID"
+                                          Command="{Binding $parent[ListBox].DataContext.CopyIdCommand}"
+                                          CommandParameter="{Binding}"/>
+
+                                <MenuItem Header="Copy Name"
+                                          Command="{Binding $parent[ListBox].DataContext.CopyNameCommand}"
+                                          CommandParameter="{Binding}"/>
+                            </MenuFlyout>
+                        </Button.Flyout>
+                    </Button>
+
+                    <Button Grid.Row="3"
+                            Classes="Danger"
+                            Content="Kaldır"
+                            Command="{Binding $parent[ItemsControl].DataContext.RemoveCommand}"
+                            CommandParameter="{Binding}"
+                            IsVisible="{Binding Mode,
+                                        RelativeSource={RelativeSource AncestorType=UserControl},
+                                        Converter={StaticResource IsDefaultCardMode}}"/>
+                </Grid>
+
+            </Grid>
+
+        </shared:BaseCard>
+
+        <!-- seçiliyken kenar çerçevesi -->
+        <Border IsVisible="{Binding Selected}"
+                BorderBrush="{DynamicResource AccentBrush}"
+                BorderThickness="1.5"
+                CornerRadius="{DynamicResource RadiusMedium}"
+                Margin="5"
+                IsHitTestVisible="False"/>
+
+    </Grid>
 
     <UserControl.ContextMenu>
         <ContextMenu>
             <MenuItem Header="Open Homepage"
-                      Click="OnOpenHomepage"/>
+                      Command="{Binding $parent[ListBox].DataContext.OpenHomepageCommand}"
+                      CommandParameter="{Binding}"/>
+
             <MenuItem Header="Copy ID"
-                      Click="OnCopyId"/>
+                      Command="{Binding $parent[ListBox].DataContext.CopyIdCommand}"
+                      CommandParameter="{Binding}"/>
+
             <MenuItem Header="Copy Name"
-                      Click="OnCopyName"/>
+                      Command="{Binding $parent[ListBox].DataContext.CopyNameCommand}"
+                      CommandParameter="{Binding}"/>
         </ContextMenu>
     </UserControl.ContextMenu>
 

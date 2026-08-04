@@ -3,7 +3,6 @@
              x:Class="WinGetXAvalonia.Controls.Dashboard.StatCard"
              x:Name="Root"
              x:CompileBindings="False">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
         <Border Classes="card"
                 MinWidth="150"
@@ -34,8 +33,6 @@
 
         </StackPanel>
 
-
-    <!-- kaneki -->
     </Border>
 
 </UserControl>

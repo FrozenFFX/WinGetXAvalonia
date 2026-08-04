@@ -1,9 +1,5 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 namespace WinGetXAvalonia.Models;
 
-// kaneki
 public sealed class ActivityItem
 {
     public DateTime Timestamp { get; init; }
@@ -22,4 +18,3 @@ public sealed class ActivityItem
         _ => "ℹ️"
     };
 }
-// kaneki

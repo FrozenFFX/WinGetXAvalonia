@@ -1,20 +1,21 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using WinGetXAvalonia.Core.Domain.Dashboard;
+using WinGetXAvalonia.Core.Domain.Package;
+using WinGetXAvalonia.Core.Events;
+using WinGetXAvalonia.Helpers;
 using WinGetXAvalonia.Interfaces;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
+using WinGetXAvalonia.Services.History;
 using WinGetXAvalonia.Services.Performance;
 using WinGetXAvalonia.Services.Theme;
 using WinGetXAvalonia.ViewModels.Settings;
 
 namespace WinGetXAvalonia.ViewModels;
 
-// kaneki
 public partial class DashboardViewModel : ViewModelBase
 {
     private readonly WingetService _winget;
@@ -26,6 +27,8 @@ public partial class DashboardViewModel : ViewModelBase
     private readonly ClockService _clock;
     private readonly NavigationService _navigation;
     private readonly LoggerService _logger;
+    private readonly IEventBus _eventBus;
+    private readonly IHistoryService _history;
     private readonly InstalledViewModel _installedPage;
     private readonly SettingsViewModel _settingsPage;
 
@@ -52,6 +55,9 @@ public partial class DashboardViewModel : ViewModelBase
     [ObservableProperty]
     private bool isLoading;
 
+    [ObservableProperty]
+    private PackageHealthSummary healthSummary = PackageHealthSummary.Empty;
+
     public ObservableCollection<SystemCardModel> SystemCards { get; } = new();
 
     public ObservableCollection<QuickActionItem> QuickActions { get; } = new();
@@ -61,6 +67,10 @@ public partial class DashboardViewModel : ViewModelBase
     public ObservableCollection<HeroInfoItem> HeroInfo { get; } = new();
 
     public ITimeService Time { get; }
+
+    public QueuePanelViewModel Queue { get; }
+
+    public NotificationCenterViewModel Notifications { get; }
 
     public DashboardViewModel(
         WingetService winget,
@@ -72,6 +82,10 @@ public partial class DashboardViewModel : ViewModelBase
         ClockService clock,
         NavigationService navigation,
         LoggerService logger,
+        IEventBus eventBus,
+        IHistoryService history,
+        QueuePanelViewModel queue,
+        NotificationCenterViewModel notifications,
         InstalledViewModel installedPage,
         SettingsViewModel settingsPage)
     {
@@ -84,16 +98,22 @@ public partial class DashboardViewModel : ViewModelBase
         _clock = clock;
         _navigation = navigation;
         _logger = logger;
+        _eventBus = eventBus;
+        _history = history;
         _installedPage = installedPage;
         _settingsPage = settingsPage;
 
         Time = time;
+        Queue = queue;
+        Notifications = notifications;
         _time.Start();
 
         _monitor.PropertyChanged += OnMonitorChanged;
         _monitor.Start();
 
         _clock.Tick += OnClockTick;
+
+        _eventBus.Subscribe<PackageChangedEvent>(e => _ = LoadCountsAsync());
 
         BuildQuickActions();
         BuildSystemCards();
@@ -103,6 +123,7 @@ public partial class DashboardViewModel : ViewModelBase
 
     public async Task InitializeAsync()
     {
+        // ana ekran her seferinde baştan yüklenmesin, bir kez yeter
         if (_initialized)
             return;
 
@@ -135,17 +156,41 @@ public partial class DashboardViewModel : ViewModelBase
 
     private async Task LoadCountsAsync()
     {
-        var installedTask = _winget.GetInstalledApps();
-        var updatesTask = _winget.GetUpdates();
-        var sourcesTask = _winget.GetSources();
+        try
+        {
+            var installedTask = _winget.GetInstalledApps();
+            var updatesTask = _winget.GetUpdates();
+            var sourcesTask = _winget.GetSources();
+            var historyTask = _history.GetAllAsync();
 
-        await Task.WhenAll(installedTask, updatesTask, sourcesTask);
+            await Task.WhenAll(installedTask, updatesTask, sourcesTask, historyTask);
 
-        Installed = installedTask.Result.Count;
-        Updates = updatesTask.Result.Count;
-        Sources = sourcesTask.Result.Count;
+            var stats = DashboardStatisticsCalculator.Calculate(
+                installedLines: installedTask.Result,
+                updateLines: updatesTask.Result,
+                sourceLines: sourcesTask.Result,
+                favoriteCount: _favorites.Favorites.Count);
 
-        Favorites = _favorites.Favorites.Count;
+            HealthSummary = PackageHealthSummaryCalculator.Calculate(
+                WingetParser.ParseInstalled(installedTask.Result),
+                WingetParser.ParseUpdates(updatesTask.Result),
+                historyTask.Result);
+
+            Installed = stats.InstalledCount;
+            Updates = stats.UpdateCount;
+            Sources = stats.SourceCount;
+            Favorites = stats.FavoriteCount;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Failed to load dashboard counts");
+
+            Installed = 0;
+            Updates = 0;
+            Sources = 0;
+            Favorites = _favorites.Favorites.Count;
+            HealthSummary = PackageHealthSummary.Empty;
+        }
     }
 
     private void BuildQuickActions()
@@ -361,4 +406,3 @@ public partial class DashboardViewModel : ViewModelBase
         await LoadCountsAsync();
     }
 }
-// kaneki

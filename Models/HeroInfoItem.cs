@@ -1,9 +1,5 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 namespace WinGetXAvalonia.Models;
 
-// kaneki
 public sealed class HeroInfoItem
 {
     public string Icon { get; init; } = "";
@@ -12,4 +8,3 @@ public sealed class HeroInfoItem
 
     public string Value { get; set; } = "";
 }
-// kaneki

@@ -4,7 +4,6 @@
     xmlns:models="using:WinGetXAvalonia.Models"
     x:Class="WinGetXAvalonia.Controls.PackageRow"
     x:DataType="models:PackageModel">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Border
         CornerRadius="{DynamicResource RadiusMedium}"
@@ -41,8 +40,6 @@
 
         </Grid>
 
-
-    <!-- kaneki -->
     </Border>
 
 </UserControl>

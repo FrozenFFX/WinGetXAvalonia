@@ -1,11 +1,7 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using System.Windows.Input;
 
 namespace WinGetXAvalonia.Models;
 
-// kaneki
 public sealed class QuickActionItem
 {
     public string Icon { get; init; } = "";
@@ -16,4 +12,3 @@ public sealed class QuickActionItem
 
     public ICommand? Command { get; init; }
 }
-// kaneki

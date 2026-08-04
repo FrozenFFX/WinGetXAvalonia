@@ -4,7 +4,6 @@
              x:Name="Root"
              x:CompileBindings="False"
              Cursor="Hand">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Border Classes="card"
             MinWidth="180"
@@ -36,8 +35,6 @@
 
         </Grid>
 
-
-    <!-- kaneki -->
     </Border>
 
 </UserControl>

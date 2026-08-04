@@ -1,6 +1,3 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
@@ -8,7 +5,6 @@ using Avalonia.Input;
 
 namespace WinGetXAvalonia.Controls.Dashboard;
 
-// kaneki
 public partial class QuickActionCard : UserControl
 {
     public QuickActionCard()
@@ -60,4 +56,3 @@ public partial class QuickActionCard : UserControl
             Command.Execute(null);
     }
 }
-// kaneki

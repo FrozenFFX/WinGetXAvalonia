@@ -8,16 +8,17 @@
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     x:Class="WinGetXAvalonia.Views.DashboardView"
     x:DataType="vm:DashboardViewModel">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
-    <ScrollViewer
-        VerticalScrollBarVisibility="Auto"
-        HorizontalScrollBarVisibility="Disabled">
+    <Grid>
+
+        <ScrollViewer
+            VerticalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Disabled">
 
         <!-- TODO: Replace with Spacing Tokens -->
         <Grid
             Margin="25"
-            RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+            RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
             RowSpacing="16">
 
             <Grid.Styles>
@@ -38,6 +39,32 @@
                 <Style Selector="Control#OverviewSection">
                     <Style.Animations>
                         <Animation Duration="0:0:0.35" Delay="0:0:0.04" FillMode="Both">
+                            <KeyFrame Cue="0%">
+                                <Setter Property="Opacity" Value="0"/>
+                            </KeyFrame>
+                            <KeyFrame Cue="100%">
+                                <Setter Property="Opacity" Value="1"/>
+                            </KeyFrame>
+                        </Animation>
+                    </Style.Animations>
+                </Style>
+
+                <Style Selector="Control#HealthSection">
+                    <Style.Animations>
+                        <Animation Duration="0:0:0.35" Delay="0:0:0.05" FillMode="Both">
+                            <KeyFrame Cue="0%">
+                                <Setter Property="Opacity" Value="0"/>
+                            </KeyFrame>
+                            <KeyFrame Cue="100%">
+                                <Setter Property="Opacity" Value="1"/>
+                            </KeyFrame>
+                        </Animation>
+                    </Style.Animations>
+                </Style>
+
+                <Style Selector="Control#OperationsSection">
+                    <Style.Animations>
+                        <Animation Duration="0:0:0.35" Delay="0:0:0.06" FillMode="Both">
                             <KeyFrame Cue="0%">
                                 <Setter Property="Opacity" Value="0"/>
                             </KeyFrame>
@@ -201,9 +228,152 @@
 
             </StackPanel>
 
-            <!-- Quick Actions -->
+            <!-- Package Health -->
             <StackPanel
                 Grid.Row="2"
+                x:Name="HealthSection">
+
+                <shared:SectionHeader Title="Package Health"/>
+
+                <shared:BaseCard>
+
+                    <UniformGrid Columns="5">
+
+                        <StackPanel
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Spacing="8">
+
+                            <TextBlock Text="🟢"/>
+
+                            <StackPanel Spacing="2">
+
+                                <TextBlock
+                                    FontSize="18"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding HealthSummary.Healthy, StringFormat='{}{0:N0}'}"/>
+
+                                <TextBlock
+                                    FontSize="11"
+                                    Opacity="0.6"
+                                    Text="Healthy"/>
+
+                            </StackPanel>
+
+                        </StackPanel>
+
+                        <StackPanel
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Spacing="8">
+
+                            <TextBlock Text="🟡"/>
+
+                            <StackPanel Spacing="2">
+
+                                <TextBlock
+                                    FontSize="18"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding HealthSummary.Outdated, StringFormat='{}{0:N0}'}"/>
+
+                                <TextBlock
+                                    FontSize="11"
+                                    Opacity="0.6"
+                                    Text="Outdated"/>
+
+                            </StackPanel>
+
+                        </StackPanel>
+
+                        <StackPanel
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Spacing="8">
+
+                            <TextBlock Text="🔴"/>
+
+                            <StackPanel Spacing="2">
+
+                                <TextBlock
+                                    FontSize="18"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding HealthSummary.Deprecated, StringFormat='{}{0:N0}'}"/>
+
+                                <TextBlock
+                                    FontSize="11"
+                                    Opacity="0.6"
+                                    Text="Deprecated"/>
+
+                            </StackPanel>
+
+                        </StackPanel>
+
+                        <StackPanel
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Spacing="8">
+
+                            <TextBlock Text="❓"/>
+
+                            <StackPanel Spacing="2">
+
+                                <TextBlock
+                                    FontSize="18"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding HealthSummary.UnknownSource, StringFormat='{}{0:N0}'}"/>
+
+                                <TextBlock
+                                    FontSize="11"
+                                    Opacity="0.6"
+                                    Text="Unknown Source"/>
+
+                            </StackPanel>
+
+                        </StackPanel>
+
+                        <StackPanel
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Spacing="8">
+
+                            <TextBlock Text="❌"/>
+
+                            <StackPanel Spacing="2">
+
+                                <TextBlock
+                                    FontSize="18"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding HealthSummary.Failed, StringFormat='{}{0:N0}'}"/>
+
+                                <TextBlock
+                                    FontSize="11"
+                                    Opacity="0.6"
+                                    Text="Failed"/>
+
+                            </StackPanel>
+
+                        </StackPanel>
+
+                    </UniformGrid>
+
+                </shared:BaseCard>
+
+            </StackPanel>
+
+            <!-- Operations -->
+            <StackPanel
+                Grid.Row="3"
+                x:Name="OperationsSection">
+
+                <shared:SectionHeader Title="Operations"/>
+
+                <controls:QueuePanel DataContext="{Binding Queue}"/>
+
+            </StackPanel>
+
+            <!-- Quick Actions -->
+            <StackPanel
+                Grid.Row="4"
                 x:Name="QuickActionsSection">
 
                 <shared:SectionHeader Title="Quick Actions"/>
@@ -229,7 +399,7 @@
 
             <!-- System -->
             <StackPanel
-                Grid.Row="3"
+                Grid.Row="5"
                 x:Name="SystemSection">
 
                 <shared:SectionHeader Title="System"/>
@@ -251,7 +421,7 @@
 
             <!-- Recent Activity -->
             <StackPanel
-                Grid.Row="4"
+                Grid.Row="6"
                 x:Name="ActivitySection">
 
                 <shared:SectionHeader Title="Recent Activity"/>
@@ -302,8 +472,18 @@
 
         </Grid>
 
+        </ScrollViewer>
 
-    <!-- kaneki -->
-    </ScrollViewer>
+        <controls:NotificationBell
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Margin="0,20,0,0"
+            DataContext="{Binding Notifications}"/>
+
+        <shared:LoadingOverlay
+            IsLoading="{Binding IsLoading}"
+            Message="Loading dashboard..."/>
+
+    </Grid>
 
 </UserControl>

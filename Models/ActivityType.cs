@@ -1,9 +1,5 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 namespace WinGetXAvalonia.Models;
 
-// kaneki
 public enum ActivityType
 {
     Install,
@@ -13,4 +9,3 @@ public enum ActivityType
     Info,
     Error
 }
-// kaneki

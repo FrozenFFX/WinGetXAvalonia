@@ -1,11 +1,7 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace WinGetXAvalonia.Models;
 
-// kaneki
 public partial class DashboardCardModel : ObservableObject
 {
     [ObservableProperty]
@@ -17,4 +13,3 @@ public partial class DashboardCardModel : ObservableObject
     [ObservableProperty]
     private string icon = "";
 }
-// kaneki

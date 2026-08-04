@@ -1,13 +1,9 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 
 namespace WinGetXAvalonia.Controls.Dashboard;
 
-// kaneki
 public partial class StatCard : UserControl
 {
     public StatCard()
@@ -60,4 +56,3 @@ public partial class StatCard : UserControl
         set => SetValue(AccentBrushProperty, value);
     }
 }
-// kaneki

@@ -1,18 +1,22 @@
 [
   {
     "title": "Git",
+    "description": "Distributed version control for tracking source code changes.",
     "id": "Git.Git"
   },
   {
     "title": "Visual Studio Code",
+    "description": "A lightweight but powerful source code editor from Microsoft.",
     "id": "Microsoft.VisualStudioCode"
   },
   {
     "title": "PowerToys",
+    "description": "A set of productivity utilities to customize Windows.",
     "id": "Microsoft.PowerToys"
   },
   {
     "title": "Windows Terminal",
+    "description": "A modern, fast, and efficient terminal for Windows.",
     "id": "Microsoft.WindowsTerminal"
   }
 ]

@@ -1,66 +1,10 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
-using WinGetXAvalonia.Core.Operations;
-using WinGetXAvalonia.Core.Providers;
-using WinGetXAvalonia.Interfaces;
-using WinGetXAvalonia.Models;
-using WinGetXAvalonia.Services.Core;
+using WinGetXAvalonia.Core.Events;
+using WinGetXAvalonia.Services.Operations;
 
 namespace WinGetXAvalonia.Tests;
 
-// kaneki
 public class OperationQueueTests
 {
-    // kaneki
-    private sealed class FakeProvider : IPackageProvider
-    {
-        public TaskCompletionSource? Blocking { get; set; }
-
-        public bool Throws { get; set; }
-
-        public List<string> Installed { get; } = new();
-
-        public List<string> Upgraded { get; } = new();
-
-        public List<string> Uninstalled { get; } = new();
-
-        public Task<IReadOnlyList<PackageModel>> SearchAsync(string query)
-            => Task.FromResult<IReadOnlyList<PackageModel>>(Array.Empty<PackageModel>());
-
-        public Task<IReadOnlyList<InstalledPackage>> GetInstalledAsync()
-            => Task.FromResult<IReadOnlyList<InstalledPackage>>(Array.Empty<InstalledPackage>());
-
-        public Task<IReadOnlyList<UpdatePackage>> GetUpdatesAsync()
-            => Task.FromResult<IReadOnlyList<UpdatePackage>>(Array.Empty<UpdatePackage>());
-
-        public async Task InstallAsync(string id)
-        {
-            Installed.Add(id);
-
-            if (Throws)
-                throw new InvalidOperationException("boom");
-
-            if (Blocking is not null)
-                await Blocking.Task;
-        }
-
-        public Task UpgradeAsync(string id)
-        {
-            Upgraded.Add(id);
-            return Task.CompletedTask;
-        }
-
-        public Task UninstallAsync(string id)
-        {
-            Uninstalled.Add(id);
-            return Task.CompletedTask;
-        }
-
-        public Task<string?> GetHomepageAsync(string id)
-            => Task.FromResult<string?>(null);
-    }
-
     private static async Task WaitUntilAsync(Func<bool> condition, int timeoutMs = 5000)
     {
         var deadline = DateTime.UtcNow.AddMilliseconds(timeoutMs);
@@ -74,85 +18,100 @@ public class OperationQueueTests
         }
     }
 
-    [Fact]
-    public void PackageOperation_DefaultsToQueued()
-    {
-        var operation = new PackageOperation("Microsoft.VSCode", PackageOperationType.Install);
+    private static OperationItem Item(string id = "Microsoft.VSCode")
+        => new()
+        {
+            PackageId = id,
+            DisplayName = id,
+            Operation = PackageOperation.Installed
+        };
 
-        Assert.NotEqual(Guid.Empty, operation.Id);
-        Assert.Equal("Microsoft.VSCode", operation.PackageId);
-        Assert.Equal(PackageOperationType.Install, operation.Type);
-        Assert.Equal(PackageOperationStatus.Queued, operation.Status);
-        Assert.Equal(0, operation.Progress);
-        Assert.Null(operation.FinishedAt);
+    [Fact]
+    public async Task EnqueueAsync_RunsAction_AndCompletes()
+    {
+        var queue = new OperationQueue();
+        var ran = false;
+
+        await queue.EnqueueAsync(Item(), () =>
+        {
+            ran = true;
+            return Task.CompletedTask;
+        });
+
+        Assert.True(ran);
+
+        var item = Assert.Single(queue.Operations);
+        Assert.Equal(OperationStatus.Completed, item.Status);
+        Assert.Equal(100, item.Progress);
     }
 
     [Fact]
-    public async Task EnqueueAsync_RunsInstall_AndCompletes()
+    public async Task EnqueueAsync_SetsFailed_OnActionError()
     {
-        var provider = new FakeProvider();
-        var queue = new OperationQueue(provider, new LoggerService());
-        var operation = new PackageOperation("Microsoft.VSCode", PackageOperationType.Install);
+        var queue = new OperationQueue();
+        var item = Item();
 
-        await queue.EnqueueAsync(operation);
-        await WaitUntilAsync(() => operation.Status == PackageOperationStatus.Completed);
+        await queue.EnqueueAsync(item, () => throw new InvalidOperationException("boom"));
 
-        Assert.Contains("Microsoft.VSCode", provider.Installed);
-        Assert.Equal(PackageOperationStatus.Completed, operation.Status);
-        Assert.Equal(100, operation.Progress);
-        Assert.NotNull(operation.FinishedAt);
+        Assert.Equal(OperationStatus.Failed, item.Status);
+        Assert.Equal("boom", item.Message);
+    }
+
+    [Fact]
+    public async Task EnqueueAsync_SerializesOperations_OneAtATime()
+    {
+        var queue = new OperationQueue();
+        var blocking = new TaskCompletionSource();
+        var first = Item("first");
+        var second = Item("second");
+        var secondRan = false;
+
+        var firstTask = queue.EnqueueAsync(first, async () => await blocking.Task);
+        await WaitUntilAsync(() => first.Status == OperationStatus.Running);
+
+        var secondTask = queue.EnqueueAsync(second, () =>
+        {
+            secondRan = true;
+            return Task.CompletedTask;
+        });
+
+        Assert.Equal(OperationStatus.Pending, second.Status);
+
+        blocking.SetResult();
+        await Task.WhenAll(firstTask, secondTask);
+
+        Assert.Equal(OperationStatus.Completed, first.Status);
+        Assert.Equal(OperationStatus.Completed, second.Status);
+        Assert.True(secondRan);
+    }
+
+    [Fact]
+    public async Task QueueChanged_Fires_OnStatusTransitions()
+    {
+        var queue = new OperationQueue();
+        var notifications = 0;
+
+        queue.QueueChanged += (_, _) => notifications++;
+
+        await queue.EnqueueAsync(Item(), () => Task.CompletedTask);
+
+        // enqueue + running + completed
+        Assert.True(notifications >= 3);
+    }
+
+    [Fact]
+    public async Task Operations_ExposesEnqueuedItems_BeforeCompletion()
+    {
+        var queue = new OperationQueue();
+        var blocking = new TaskCompletionSource();
+        var first = Item("first");
+
+        var task = queue.EnqueueAsync(first, async () => await blocking.Task);
+        await WaitUntilAsync(() => first.Status == OperationStatus.Running);
+
         Assert.Single(queue.Operations);
-    }
 
-    [Fact]
-    public async Task EnqueueAsync_RunsUpdate_ThroughUpgrade()
-    {
-        var provider = new FakeProvider();
-        var queue = new OperationQueue(provider, new LoggerService());
-        var operation = new PackageOperation("Microsoft.VSCode", PackageOperationType.Update);
-
-        await queue.EnqueueAsync(operation);
-        await WaitUntilAsync(() => operation.Status == PackageOperationStatus.Completed);
-
-        Assert.Contains("Microsoft.VSCode", provider.Upgraded);
-    }
-
-    [Fact]
-    public async Task EnqueueAsync_SetsFailed_OnProviderError()
-    {
-        var provider = new FakeProvider { Throws = true };
-        var queue = new OperationQueue(provider, new LoggerService());
-        var operation = new PackageOperation("Microsoft.VSCode", PackageOperationType.Install);
-
-        await queue.EnqueueAsync(operation);
-        await WaitUntilAsync(() => operation.Status == PackageOperationStatus.Failed);
-
-        Assert.Equal(PackageOperationStatus.Failed, operation.Status);
-        Assert.NotNull(operation.FinishedAt);
-    }
-
-    [Fact]
-    public async Task CancelAsync_CancelsQueuedOperation_NotRunning()
-    {
-        var provider = new FakeProvider { Blocking = new TaskCompletionSource() };
-        var queue = new OperationQueue(provider, new LoggerService());
-        var first = new PackageOperation("first", PackageOperationType.Install);
-        var second = new PackageOperation("second", PackageOperationType.Install);
-
-        await queue.EnqueueAsync(first);
-        await WaitUntilAsync(() => first.Status == PackageOperationStatus.Running);
-
-        await queue.EnqueueAsync(second);
-        await queue.CancelAsync(second.Id);
-
-        Assert.Equal(PackageOperationStatus.Cancelled, second.Status);
-        Assert.NotNull(second.FinishedAt);
-
-        provider.Blocking!.SetResult();
-        await WaitUntilAsync(() => first.Status == PackageOperationStatus.Completed);
-
-        Assert.Equal(PackageOperationStatus.Cancelled, second.Status);
-        Assert.DoesNotContain("second", provider.Installed);
+        blocking.SetResult();
+        await task;
     }
 }
-// kaneki

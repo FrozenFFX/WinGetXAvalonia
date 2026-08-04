@@ -1,0 +1,90 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:operations="using:WinGetXAvalonia.Services.Operations"
+    x:Class="WinGetXAvalonia.Controls.QueuePanel"
+    x:DataType="vm:QueuePanelViewModel">
+
+    <Border Classes="card" Padding="16">
+
+        <StackPanel Spacing="12">
+
+            <Grid ColumnDefinitions="*,Auto">
+
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Text="Operations"/>
+
+                <StackPanel
+                    Grid.Column="1"
+                    Orientation="Horizontal"
+                    Spacing="12">
+
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBlock Opacity="0.6" Text="Running"/>
+                        <TextBlock FontWeight="SemiBold" Text="{Binding RunningCount}"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBlock Opacity="0.6" Text="Waiting"/>
+                        <TextBlock FontWeight="SemiBold" Text="{Binding WaitingCount}"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBlock Opacity="0.6" Text="Failed"/>
+                        <TextBlock FontWeight="SemiBold" Text="{Binding FailedCount}"/>
+                    </StackPanel>
+
+                </StackPanel>
+
+            </Grid>
+
+            <Separator/>
+
+            <TextBlock
+                IsVisible="{Binding IsEmpty}"
+                Opacity="0.5"
+                Text="No operations yet."/>
+
+            <ItemsControl ItemsSource="{Binding Items}">
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="operations:OperationItem">
+
+                        <Grid
+                            RowDefinitions="Auto,Auto"
+                            ColumnDefinitions="*,Auto"
+                            Margin="0,4">
+
+                            <TextBlock
+                                FontWeight="SemiBold"
+                                Text="{Binding DisplayName}"/>
+
+                            <TextBlock
+                                Grid.Column="1"
+                                Opacity="0.5"
+                                Text="{Binding Status}"/>
+
+                            <ProgressBar
+                                Grid.Row="1"
+                                Grid.ColumnSpan="2"
+                                Margin="0,6,0,0"
+                                Maximum="100"
+                                Minimum="0"
+                                Value="{Binding Progress}"
+                                IsVisible="{Binding ShowProgress}"/>
+
+                        </Grid>
+
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+            </ItemsControl>
+
+        </StackPanel>
+
+    </Border>
+
+</UserControl>

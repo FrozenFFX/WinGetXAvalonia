@@ -1,11 +1,6 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
-
-    <SolidColorBrush
-        x:Key="BackgroundBrush"
-        Color="{StaticResource Color.Background}" />
 
     <SolidColorBrush
         x:Key="AccentBrush"
@@ -15,10 +10,4 @@
         x:Key="TextBrush"
         Color="{StaticResource Color.TextPrimary}" />
 
-    <SolidColorBrush
-        x:Key="SecondaryTextBrush"
-        Color="{StaticResource Color.TextSecondary}" />
-
-
-    <!-- kaneki -->
     </ResourceDictionary>

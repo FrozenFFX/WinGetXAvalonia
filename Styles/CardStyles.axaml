@@ -1,5 +1,4 @@
 <Styles xmlns="https://github.com/avaloniaui">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Style Selector="Border.card">
         <Setter Property="CornerRadius" Value="18"/>
@@ -14,7 +13,6 @@
         <Setter Property="RenderTransform" Value="scale(1.03)"/>
         <Setter Property="Background" Value="{DynamicResource CardHoverBrush}"/>
 
-    <!-- kaneki -->
     </Style>
 
 </Styles>

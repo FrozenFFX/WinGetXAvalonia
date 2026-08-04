@@ -1,5 +1,4 @@
 <Styles xmlns="https://github.com/avaloniaui">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Style Selector="Border.BaseCard">
 
@@ -17,6 +16,4 @@
 
     </Style>
 
-
-    <!-- kaneki -->
 </Styles>

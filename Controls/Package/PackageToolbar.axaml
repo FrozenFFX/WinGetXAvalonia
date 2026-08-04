@@ -2,9 +2,9 @@
     x:Class="WinGetXAvalonia.Controls.Package.PackageToolbar"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     x:Name="Root">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Border
         Margin="0,0,0,16"
@@ -15,7 +15,7 @@
         BorderThickness="1">
 
         <Grid
-            ColumnDefinitions="*,Auto,Auto,Auto,Auto"
+            ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto"
             RowDefinitions="Auto,Auto">
 
             <!-- Search -->
@@ -23,7 +23,8 @@
             <shared:SearchBox
                 Grid.Row="0"
                 Grid.Column="0"
-                MinWidth="300"
+                MinWidth="320"
+                MaxWidth="600"
                 HorizontalAlignment="Stretch"
                 Watermark="Search packages..."
                 Text="{Binding SearchText, ElementName=Root}" />
@@ -87,10 +88,24 @@
 
             </Border>
 
+            <!-- Action (e.g. Upgrade All) -->
+
+            <Border
+                Grid.Column="5"
+                Margin="12,0,0,0"
+                VerticalAlignment="Center"
+                IsVisible="{Binding ActionCommand, ElementName=Root,
+                Converter={x:Static conv:ObjectConverters.IsNotNull}}">
+
+                <Button
+                    Content="{Binding ActionText, ElementName=Root}"
+                    Command="{Binding ActionCommand, ElementName=Root}"
+                    IsVisible="{Binding PackageCount, ElementName=Root,
+                    Converter={StaticResource PositiveToBoolConverter}}"/>
+            </Border>
+
         </Grid>
 
     </Border>
 
-
-    <!-- kaneki -->
 </UserControl>

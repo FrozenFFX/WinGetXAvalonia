@@ -2,7 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="WinGetXAvalonia.Controls.SearchBar">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Grid>
 
@@ -18,8 +17,6 @@
             Grid.Column="1"
             Content="Search"/>
 
-
-    <!-- kaneki -->
     </Grid>
 
 </UserControl>

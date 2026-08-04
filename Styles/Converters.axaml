@@ -2,12 +2,21 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:conv="using:WinGetXAvalonia.Converters">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <conv:ZeroToBoolConverter x:Key="ZeroToBoolConverter"/>
 
     <conv:PositiveToBoolConverter x:Key="PositiveToBoolConverter"/>
 
+    <conv:BoolToSizeConverter x:Key="BoolToSizeConverter"/>
 
-    <!-- kaneki -->
+    <conv:BoolToClassConverter x:Key="BoolToClassConverter"/>
+
+    <conv:BoolToBrushConverter x:Key="BoolToBrushConverter"/>
+
+    <conv:NotificationTypeToIconConverter x:Key="NotificationTypeToIcon"/>
+
+    <conv:PackageCardModeToBoolConverter x:Key="IsDefaultCardMode" Match="Default"/>
+
+    <conv:PackageCardModeToBoolConverter x:Key="IsUpdatesCardMode" Match="Updates"/>
+
     </ResourceDictionary>

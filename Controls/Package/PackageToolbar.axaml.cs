@@ -1,14 +1,11 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
+using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Controls.Package;
 
-// kaneki
 public partial class PackageToolbar : UserControl
 {
     public static readonly StyledProperty<string?> SearchTextProperty =
@@ -28,6 +25,12 @@ public partial class PackageToolbar : UserControl
 
     public static readonly StyledProperty<ICommand?> RefreshCommandProperty =
         AvaloniaProperty.Register<PackageToolbar, ICommand?>(nameof(RefreshCommand));
+
+    public static readonly StyledProperty<string?> ActionTextProperty =
+        AvaloniaProperty.Register<PackageToolbar, string?>(nameof(ActionText));
+
+    public static readonly StyledProperty<ICommand?> ActionCommandProperty =
+        AvaloniaProperty.Register<PackageToolbar, ICommand?>(nameof(ActionCommand));
 
     public string? SearchText
     {
@@ -59,20 +62,32 @@ public partial class PackageToolbar : UserControl
         set => SetValue(RefreshCommandProperty, value);
     }
 
-    public ObservableCollection<string> SortItems { get; } =
+    public string? ActionText
+    {
+        get => GetValue(ActionTextProperty);
+        set => SetValue(ActionTextProperty, value);
+    }
+
+    public ICommand? ActionCommand
+    {
+        get => GetValue(ActionCommandProperty);
+        set => SetValue(ActionCommandProperty, value);
+    }
+
+    public ObservableCollection<PackageSortMode> SortItems { get; } =
     [
-        "Name",
-        "Version",
-        "Source",
-        "Available"
+        PackageSortMode.Name,
+        PackageSortMode.Version,
+        PackageSortMode.Source,
+        PackageSortMode.Available
     ];
 
-    public ObservableCollection<string> FilterItems { get; } =
+    public ObservableCollection<PackageFilterMode> FilterItems { get; } =
     [
-        "All",
-        "Winget",
-        "MS Store",
-        "Portable"
+        PackageFilterMode.All,
+        PackageFilterMode.Winget,
+        PackageFilterMode.MsStore,
+        PackageFilterMode.Portable
     ];
 
     public PackageToolbar()
@@ -80,4 +95,3 @@ public partial class PackageToolbar : UserControl
         InitializeComponent();
     }
 }
-// kaneki

@@ -1,7 +1,6 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <CornerRadius x:Key="RadiusSmall">6</CornerRadius>
 
@@ -10,4 +9,3 @@
     <CornerRadius x:Key="RadiusLarge">16</CornerRadius>
 
 </ResourceDictionary>
-<!-- kaneki -->

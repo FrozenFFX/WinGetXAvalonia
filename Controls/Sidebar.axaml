@@ -3,7 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="WinGetXAvalonia.Controls.Sidebar"
     x:CompileBindings="False">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <ListBox
     Classes="sidebar"
@@ -41,8 +40,6 @@
 
         </ListBox.ItemTemplate>
 
-
-    <!-- kaneki -->
     </ListBox>
 
 </UserControl>

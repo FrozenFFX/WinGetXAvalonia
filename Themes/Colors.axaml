@@ -1,7 +1,6 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <!-- Primary -->
 
@@ -21,16 +20,6 @@
         x:Key="DangerBrush"
         Color="#E74C3C"/>
 
-    <!-- Surfaces -->
-
-    <SolidColorBrush
-        x:Key="SurfaceBrush"
-        Color="#202020"/>
-
-    <SolidColorBrush
-        x:Key="CardBrush"
-        Color="#2A2A2A"/>
-
     <!-- Legacy palette (used by Themes/Dark, Themes/Light, Styles/Brushes) -->
 
     <Color x:Key="Color.Background">#FF1B1D23</Color>
@@ -44,4 +33,3 @@
     <Color x:Key="Color.Error">#FFE5484D</Color>
 
 </ResourceDictionary>
-<!-- kaneki -->

@@ -1,5 +1,4 @@
 <Styles xmlns="https://github.com/avaloniaui">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Style Selector="ListBox">
         <Setter Property="Background" Value="Transparent"/>
@@ -19,7 +18,6 @@
     <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource NavSelectedBrush}"/>
 
-    <!-- kaneki -->
     </Style>
 
 </Styles>

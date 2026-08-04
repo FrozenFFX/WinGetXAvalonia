@@ -1,5 +1,4 @@
 <Styles xmlns="https://github.com/avaloniaui">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Style Selector="TextBlock.title">
 
@@ -12,8 +11,6 @@
 
         <Setter Property="FontSize" Value="20"/>
 
-
-    <!-- kaneki -->
     </Style>
 
 </Styles>

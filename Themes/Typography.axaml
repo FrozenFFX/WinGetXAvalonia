@@ -1,7 +1,6 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <x:Double x:Key="FontCaption">12</x:Double>
 
@@ -14,4 +13,3 @@
     <x:Double x:Key="FontDisplay">34</x:Double>
 
 </ResourceDictionary>
-<!-- kaneki -->

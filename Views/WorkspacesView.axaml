@@ -1,0 +1,168 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    xmlns:workspace="using:WinGetXAvalonia.Controls.Workspace"
+    x:Class="WinGetXAvalonia.Views.WorkspacesView"
+    x:DataType="vm:WorkspacesViewModel">
+
+    <UserControl.KeyBindings>
+        <KeyBinding
+            Gesture="F5"
+            Command="{Binding RefreshCommand}"/>
+    </UserControl.KeyBindings>
+
+    <Grid Margin="20">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <shared:SectionHeader
+            Title="Workspaces"
+            Description="{Binding WorkspacesSummary}"/>
+
+        <!-- Toolbar -->
+        <workspace:WorkspaceToolbar
+            Grid.Row="1"
+            SearchText="{Binding SearchText}"
+            Count="{Binding WorkspaceCount}"
+            CreateCommand="{Binding NewWorkspaceCommand}"
+            ImportCommand="{Binding ImportCommand}"
+            RefreshCommand="{Binding RefreshCommand}"/>
+
+        <!-- Editor -->
+        <Border
+            Grid.Row="2"
+            Margin="0,0,0,8"
+            Padding="16"
+            CornerRadius="{DynamicResource RadiusMedium}"
+            Background="{DynamicResource CardBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="1"
+            IsVisible="{Binding IsEditorOpen}">
+
+            <StackPanel Spacing="12">
+
+                <TextBlock
+                    FontWeight="SemiBold"
+                    Text="{Binding EditorTitle}"/>
+
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+
+                    <StackPanel Spacing="8">
+
+                        <TextBox
+                            Text="{Binding NewWorkspaceName}"
+                            PlaceholderText="Workspace name">
+
+                            <TextBox.KeyBindings>
+                                <KeyBinding
+                                    Gesture="Enter"
+                                    Command="{Binding SaveWorkspaceCommand}"/>
+                            </TextBox.KeyBindings>
+                        </TextBox>
+
+                        <TextBox
+                            Text="{Binding NewWorkspaceDescription}"
+                            PlaceholderText="Workspace description (optional)"/>
+                    </StackPanel>
+
+                    <Button
+                        Grid.Column="1"
+                        VerticalAlignment="Top"
+                        Content="{Binding EditorAction}"
+                        Command="{Binding SaveWorkspaceCommand}"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- List -->
+        <Grid Grid.Row="4">
+
+            <ListBox
+                ItemsSource="{Binding Workspaces}"
+                SelectedItem="{Binding SelectedWorkspace, Mode=TwoWay}">
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <workspace:WorkspaceCard/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <!-- Empty state -->
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Spacing="12"
+                IsVisible="{Binding IsEmpty}">
+
+                <TextBlock
+                    Text="💻"
+                    FontSize="46"
+                    Opacity="0.35"
+                    HorizontalAlignment="Center"/>
+
+                <TextBlock
+                    Text="No workspaces"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Center"/>
+
+                <TextBlock
+                    Text="Create your first workspace to group package installs."
+                    Opacity="0.65"
+                    TextAlignment="Center"
+                    HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Error state -->
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Spacing="12"
+                IsVisible="{Binding HasError}">
+
+                <TextBlock
+                    Text="⚠️"
+                    FontSize="46"
+                    Opacity="0.35"
+                    HorizontalAlignment="Center"/>
+
+                <TextBlock
+                    Text="Couldn't load workspaces"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Center"/>
+
+                <TextBlock
+                    Text="{Binding ErrorMessage}"
+                    Opacity="0.65"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap"
+                    MaxWidth="480"
+                    HorizontalAlignment="Center"/>
+
+                <Button
+                    Margin="0,8,0,0"
+                    Content="Retry"
+                    Command="{Binding RefreshCommand}"
+                    HorizontalAlignment="Center"/>
+            </StackPanel>
+
+        </Grid>
+
+        <shared:LoadingOverlay
+            Grid.RowSpan="5"
+            IsLoading="{Binding IsLoading}"
+            Message="Loading workspaces..."/>
+
+    </Grid>
+
+</UserControl>

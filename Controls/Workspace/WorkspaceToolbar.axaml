@@ -1,0 +1,60 @@
+<UserControl
+    x:Class="WinGetXAvalonia.Controls.Workspace.WorkspaceToolbar"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    x:Name="Root">
+
+    <Border
+        Margin="0,0,0,8"
+        Padding="16"
+        CornerRadius="{DynamicResource RadiusMedium}"
+        Background="{DynamicResource CardBrush}"
+        BorderBrush="{DynamicResource BorderBrush}"
+        BorderThickness="1">
+
+        <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" ColumnSpacing="10">
+
+            <shared:SearchBox
+                MinWidth="240"
+                MaxWidth="600"
+                HorizontalAlignment="Stretch"
+                Watermark="Search workspaces..."
+                Text="{Binding SearchText, ElementName=Root}"/>
+
+            <Button
+                Grid.Column="1"
+                Content="＋ New Workspace"
+                Command="{Binding CreateCommand, ElementName=Root}"/>
+
+            <Button
+                Grid.Column="2"
+                Content="Import"
+                Command="{Binding ImportCommand, ElementName=Root}"/>
+
+            <Button
+                Grid.Column="3"
+                Width="42"
+                Padding="0"
+                Content="🔄"
+                ToolTip.Tip="Refresh workspaces (F5)"
+                Command="{Binding RefreshCommand, ElementName=Root}"/>
+
+            <Border
+                Grid.Column="4"
+                Padding="10,5"
+                CornerRadius="{DynamicResource RadiusSmall}"
+                Background="{DynamicResource SurfaceBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1"
+                VerticalAlignment="Center">
+
+                <TextBlock FontWeight="SemiBold" VerticalAlignment="Center">
+                    <Run Text="{Binding Count, ElementName=Root}" />
+                    <Run Text=" workspaces"/>
+                </TextBlock>
+            </Border>
+        </Grid>
+    </Border>
+
+</UserControl>

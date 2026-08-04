@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using WinGetXAvalonia.Services.Operations;
+using WinGetXAvalonia.Services.Queue;
 
 namespace WinGetXAvalonia.ViewModels;
 
@@ -8,7 +10,7 @@ public partial class QueuePanelViewModel : ViewModelBase
 {
     private readonly IOperationQueue _queue;
 
-    public ObservableCollection<OperationItem> Items { get; } = new();
+    public ObservableCollection<QueueItem> Items { get; }
 
     [ObservableProperty]
     private int runningCount;
@@ -31,39 +33,48 @@ public partial class QueuePanelViewModel : ViewModelBase
     public QueuePanelViewModel(IOperationQueue queue)
     {
         _queue = queue;
-        _queue.QueueChanged += OnQueueChanged;
+        Items = _queue.Items;
+
+        Items.CollectionChanged += OnItemsChanged;
+
+        foreach (var item in Items)
+            item.PropertyChanged += OnItemChanged;
+
         Refresh();
     }
 
-    private void OnQueueChanged(object? sender, EventArgs e)
+    private void OnItemsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems is not null)
+        {
+            foreach (QueueItem item in e.OldItems)
+                item.PropertyChanged -= OnItemChanged;
+        }
+
+        if (e.NewItems is not null)
+        {
+            foreach (QueueItem item in e.NewItems)
+                item.PropertyChanged += OnItemChanged;
+        }
+
+        Refresh();
+    }
+
+    private void OnItemChanged(object? sender, PropertyChangedEventArgs e)
         => Refresh();
 
-    public void Refresh()
+    private void Refresh()
     {
-        var snapshot = _queue.Operations;
-
-        foreach (var item in snapshot)
-        {
-            if (!Items.Contains(item))
-                Items.Add(item);
-        }
-
-        for (int i = Items.Count - 1; i >= 0; i--)
-        {
-            if (!snapshot.Contains(Items[i]))
-                Items.RemoveAt(i);
-        }
-
-        RunningCount = CountOf(snapshot, OperationStatus.Running);
-        WaitingCount = CountOf(snapshot, OperationStatus.Pending);
-        CompletedCount = CountOf(snapshot, OperationStatus.Completed);
-        FailedCount = CountOf(snapshot, OperationStatus.Failed);
-        CancelledCount = CountOf(snapshot, OperationStatus.Cancelled);
+        RunningCount = CountOf(Items, QueueStatus.Running);
+        WaitingCount = CountOf(Items, QueueStatus.Waiting);
+        CompletedCount = CountOf(Items, QueueStatus.Completed);
+        FailedCount = CountOf(Items, QueueStatus.Failed);
+        CancelledCount = CountOf(Items, QueueStatus.Cancelled);
 
         IsEmpty = Items.Count == 0;
     }
 
-    private static int CountOf(IReadOnlyList<OperationItem> items, OperationStatus status)
+    private static int CountOf(IEnumerable<QueueItem> items, QueueStatus status)
     {
         int count = 0;
 

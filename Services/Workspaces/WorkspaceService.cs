@@ -1,48 +1,63 @@
-using System.Text.Json;
 using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Services.Workspaces;
 
 public class WorkspaceService : IWorkspaceService
 {
-    private static readonly JsonSerializerOptions Options = new()
-    {
-        WriteIndented = true
-    };
-
     private readonly string _folder;
+    private readonly WorkspaceSerializer _serializer;
+    private readonly WorkspaceImporter _importer;
+    private readonly WorkspaceExporter _exporter;
 
     public WorkspaceService()
-        : this(Path.Combine(
+        : this(
+            Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "WinGetX",
-            "Workspaces"))
+            "Workspaces"),
+            new WorkspaceSerializer())
     {
     }
 
     public WorkspaceService(string folder)
+        : this(folder, new WorkspaceSerializer())
+    {
+    }
+
+    public WorkspaceService(string folder, WorkspaceSerializer serializer)
+        : this(folder, new WorkspaceImporter(serializer), new WorkspaceExporter(serializer))
+    {
+    }
+
+    public WorkspaceService(
+        string folder,
+        WorkspaceImporter importer,
+        WorkspaceExporter exporter)
     {
         _folder = folder;
+        _serializer = new WorkspaceSerializer();
+        _importer = importer;
+        _exporter = exporter;
 
         Directory.CreateDirectory(folder);
     }
 
-    public async Task<IReadOnlyList<WorkspaceModel>> GetAllAsync()
+    public async Task<IReadOnlyList<WorkspaceModel>> GetAllAsync(
+        CancellationToken cancellationToken = default)
     {
         var result = new List<WorkspaceModel>();
 
         foreach (var file in Directory.GetFiles(_folder, "*.workspace.json"))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             try
             {
-                var json = await File.ReadAllTextAsync(file);
+                var json = await File.ReadAllTextAsync(file, cancellationToken);
 
-                var workspace = JsonSerializer.Deserialize<WorkspaceModel>(json);
-
-                if (workspace != null)
-                    result.Add(workspace);
+                result.Add(_serializer.Deserialize(json));
             }
-            catch (JsonException)
+            catch (InvalidDataException)
             {
                 // bozuk dosya tüm listeyi bozmasın
             }
@@ -51,58 +66,69 @@ public class WorkspaceService : IWorkspaceService
         return result;
     }
 
-    public async Task SaveAsync(WorkspaceModel workspace)
+    public async Task<WorkspaceModel?> GetAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
     {
-        var path = Path.Combine(_folder, $"{workspace.Id}.workspace.json");
+        var path = GetWorkspacePath(id);
 
-        var json = JsonSerializer.Serialize(workspace, Options);
+        if (!File.Exists(path))
+            return null;
 
-        await File.WriteAllTextAsync(path, json);
+        var json = await File.ReadAllTextAsync(path, cancellationToken);
+        return _serializer.Deserialize(json);
     }
 
-    public Task DeleteAsync(Guid id)
+    public async Task SaveAsync(
+        WorkspaceModel workspace,
+        CancellationToken cancellationToken = default)
     {
-        var file = Path.Combine(_folder, $"{id}.workspace.json");
+        var path = GetWorkspacePath(workspace.Id);
+        await File.WriteAllTextAsync(path, _serializer.Serialize(workspace), cancellationToken);
+    }
 
-        if (File.Exists(file))
-            File.Delete(file);
+    public Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var path = GetWorkspacePath(id);
+
+        if (File.Exists(path))
+            File.Delete(path);
 
         return Task.CompletedTask;
     }
 
-    public async Task ImportAsync(string file)
+    public Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var json = await File.ReadAllTextAsync(file);
+        cancellationToken.ThrowIfCancellationRequested();
+        return Task.FromResult(File.Exists(GetWorkspacePath(id)));
+    }
 
-        WorkspaceModel workspace;
-
-        try
-        {
-            workspace = JsonSerializer.Deserialize<WorkspaceModel>(json)
-                ?? throw new InvalidDataException("Invalid workspace file.");
-        }
-        catch (JsonException ex)
-        {
-            throw new InvalidDataException("Invalid workspace file.", ex);
-        }
+    public async Task ImportAsync(string path, CancellationToken cancellationToken = default)
+    {
+        var workspace = await _importer.ImportAsync(path, cancellationToken);
 
         // içe aktarılan çalışma alanı mevcut dosyanın üzerine yazılmasın
         workspace.Id = Guid.NewGuid();
         workspace.Created = DateTime.Now;
-        workspace.LastUsed = DateTime.Now;
+        workspace.Modified = DateTime.Now;
+        workspace.LastUsed = null;
 
-        await SaveAsync(workspace);
+        await SaveAsync(workspace, cancellationToken);
     }
 
-    public async Task ExportAsync(Guid id, string file)
+    public async Task ExportAsync(
+        Guid id,
+        string path,
+        CancellationToken cancellationToken = default)
     {
-        var path = Path.Combine(_folder, $"{id}.workspace.json");
+        var workspace = await GetAsync(id, cancellationToken)
+            ?? throw new FileNotFoundException("Workspace not found.", GetWorkspacePath(id));
 
-        if (!File.Exists(path))
-            throw new FileNotFoundException("Workspace not found.", path);
-
-        var json = await File.ReadAllTextAsync(path);
-
-        await File.WriteAllTextAsync(file, json);
+        await _exporter.ExportAsync(workspace, path, cancellationToken);
     }
+
+    private string GetWorkspacePath(Guid id)
+        => Path.Combine(_folder, $"{id}.workspace.json");
 }

@@ -1,0 +1,36 @@
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+
+namespace WinGetXAvalonia.Controls.Shared;
+
+public partial class SearchBar : UserControl
+{
+    public static readonly StyledProperty<string?> WatermarkProperty =
+        AvaloniaProperty.Register<SearchBar, string?>(nameof(Watermark));
+
+    public static readonly StyledProperty<string?> TextProperty =
+        AvaloniaProperty.Register<SearchBar, string?>(
+            nameof(Text),
+            defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+
+    public string? Watermark
+    {
+        get => GetValue(WatermarkProperty);
+        set => SetValue(WatermarkProperty, value);
+    }
+
+    public string? Text
+    {
+        get => GetValue(TextProperty);
+        set => SetValue(TextProperty, value);
+    }
+
+    public SearchBar()
+    {
+        InitializeComponent();
+    }
+
+    private void OnClearClick(object? sender, RoutedEventArgs e)
+        => Text = "";
+}

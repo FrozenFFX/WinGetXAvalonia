@@ -1,0 +1,32 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:WinGetXAvalonia.Models"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    x:Class="WinGetXAvalonia.Controls.Shared.PropertyGrid"
+    x:Name="Root">
+
+    <Border
+        Background="{DynamicResource CardBrush}"
+        BorderBrush="{DynamicResource BorderBrush}"
+        BorderThickness="1"
+        CornerRadius="{DynamicResource RadiusMedium}"
+        Padding="16,8">
+
+        <ItemsControl ItemsSource="{Binding ItemsSource, ElementName=Root}">
+
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="models:PropertyItem">
+
+                    <shared:PropertyRow
+                        Label="{Binding Label}"
+                        Value="{Binding Value}"/>
+
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+
+        </ItemsControl>
+
+    </Border>
+
+</UserControl>

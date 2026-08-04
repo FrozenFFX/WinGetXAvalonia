@@ -1,0 +1,25 @@
+<ContentControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="WinGetXAvalonia.Controls.Shared.Badge">
+
+    <ContentControl.Template>
+        <ControlTemplate TargetType="ContentControl">
+
+            <Border
+                Background="{TemplateBinding Background}"
+                CornerRadius="12"
+                Padding="10,4">
+
+                <ContentPresenter
+                    Content="{TemplateBinding Content}"
+                    ContentTemplate="{TemplateBinding ContentTemplate}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"/>
+
+            </Border>
+
+        </ControlTemplate>
+    </ContentControl.Template>
+
+</ContentControl>

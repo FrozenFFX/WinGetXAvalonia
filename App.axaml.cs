@@ -2,8 +2,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
-using WinGetXAvalonia.Services.Interfaces;
-using WinGetXAvalonia.Services.Theme;
+using WinGetXAvalonia.Core.Runtime;
 using WinGetXAvalonia.ViewModels;
 using WinGetXAvalonia.Views;
 
@@ -31,9 +30,9 @@ public partial class App : Application
     {
         var services = Program.Host!.Services;
 
-        await services.GetRequiredService<ISettingsService>().LoadAsync();
+        var runtime = services.GetRequiredService<RuntimeHost>();
 
-        services.GetRequiredService<ThemeManager>().ApplyCurrent();
+        await runtime.StartAsync();
 
         var mainWindow = new MainWindow
         {

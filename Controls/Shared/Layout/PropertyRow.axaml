@@ -1,0 +1,24 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="WinGetXAvalonia.Controls.Shared.PropertyRow"
+    x:CompileBindings="False">
+
+    <Grid
+        ColumnDefinitions="120,*"
+        Margin="0,4">
+
+        <TextBlock
+            FontWeight="SemiBold"
+            Opacity="0.65"
+            Text="{Binding Label,
+            RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+        <TextBlock
+            Grid.Column="1"
+            Text="{Binding Value,
+            RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+    </Grid>
+
+</UserControl>

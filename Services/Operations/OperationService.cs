@@ -15,7 +15,6 @@ public sealed class OperationService : IOperationService
     private readonly IHistoryService _history;
     private readonly LoggerService _logger;
     private readonly IEventBus _eventBus;
-    private readonly IOperationQueue _queue;
     private readonly NotificationService _notifications;
 
     public OperationService(
@@ -23,14 +22,12 @@ public sealed class OperationService : IOperationService
         IHistoryService history,
         LoggerService logger,
         IEventBus eventBus,
-        IOperationQueue queue,
         NotificationService notifications)
     {
         _provider = provider;
         _history = history;
         _logger = logger;
         _eventBus = eventBus;
-        _queue = queue;
         _notifications = notifications;
     }
 
@@ -58,17 +55,19 @@ public sealed class OperationService : IOperationService
         if (string.IsNullOrWhiteSpace(packageId))
             return;
 
-        var item = new OperationItem
+        bool success;
+        string? message = null;
+
+        try
         {
-            PackageId = packageId,
-            DisplayName = packageId,
-            Operation = eventOperation
-        };
-
-        await _queue.EnqueueAsync(item, work);
-
-        bool success = item.Status == OperationStatus.Completed;
-        string? message = item.Status == OperationStatus.Failed ? item.Message : null;
+            await work();
+            success = true;
+        }
+        catch (Exception ex)
+        {
+            success = false;
+            message = ex.Message;
+        }
 
         if (!success && message is not null)
             _logger.Error(new InvalidOperationException(message), $"Operation '{operation}' failed for '{packageId}'");

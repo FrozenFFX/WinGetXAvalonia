@@ -57,19 +57,6 @@
                 </Transitions>
             </Border.Transitions>
 
-            <Border.Styles>
-                <Style Selector="Border">
-                    <Setter Property="Height" Value="0"/>
-                    <Setter Property="Opacity" Value="0"/>
-                    <Setter Property="RenderTransform" Value="translateY(12px)"/>
-                    <Style Selector="Border[IsVisible=True]">
-                        <Setter Property="Height" Value="60"/>
-                        <Setter Property="Opacity" Value="1"/>
-                        <Setter Property="RenderTransform" Value="translateY(0px)"/>
-                    </Style>
-                </Style>
-            </Border.Styles>
-
             <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
 
                 <TextBlock
@@ -93,7 +80,11 @@
             </Grid>
         </Border>
 
-        <Grid Grid.Row="4">
+        <Grid Grid.Row="4"
+              ColumnDefinitions="2*,420"
+              ColumnSpacing="16">
+
+            <Grid Grid.Column="0">
 
             <ListBox
                 ItemsSource="{Binding Packages}"
@@ -181,6 +172,83 @@
                     Command="{Binding RefreshCommand}"
                     HorizontalAlignment="Center"/>
             </StackPanel>
+
+            </Grid>
+
+            <!-- Details panel -->
+            <Border
+                Grid.Column="1"
+                Padding="18"
+                Background="{DynamicResource CardBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="{DynamicResource RadiusMedium}"
+                IsVisible="{Binding HasSelection}">
+
+                <StackPanel Spacing="12">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="SemiBold"
+                        Text="{Binding PackageDetails.Name}"/>
+
+                    <TextBlock
+                        Opacity="0.7"
+                        Text="{Binding PackageDetails.Id}"/>
+
+                    <TextBlock
+                        Text="{Binding PackageDetails.Publisher}"/>
+
+                    <Separator/>
+
+                    <TextBlock
+                        Text="{Binding PackageDetails.InstalledVersion,
+                        StringFormat=Installed: {0}}"/>
+
+                    <TextBlock
+                        Text="{Binding PackageDetails.LatestVersion,
+                        StringFormat=Latest: {0}}"/>
+
+                    <TextBlock
+                        Text="{Binding PackageDetails.Source,
+                        StringFormat=Source: {0}}"/>
+
+                    <TextBlock
+                        Text="{Binding PackageDetails.Homepage,
+                        StringFormat=Homepage: {0}}"/>
+
+                    <TextBlock
+                        Text="{Binding PackageDetails.License,
+                        StringFormat=License: {0}}"/>
+
+                    <Separator/>
+
+                    <TextBlock
+                        Text="{Binding PackageDetails.Description}"
+                        Opacity="0.7"
+                        TextWrapping="Wrap"/>
+
+                    <Separator/>
+
+                    <Button
+                        Content="Open Homepage"
+                        Command="{Binding OpenHomepageCommand}"
+                        CommandParameter="{Binding SelectedPackage}"/>
+
+                    <Button
+                        Content="Update"
+                        Command="{Binding UpdateCommand}"
+                        CommandParameter="{Binding SelectedPackage}"/>
+
+                    <Button
+                        Classes="Danger"
+                        Content="Remove"
+                        Command="{Binding RemoveCommand}"
+                        CommandParameter="{Binding SelectedPackage}"/>
+
+                </StackPanel>
+
+            </Border>
 
         </Grid>
 

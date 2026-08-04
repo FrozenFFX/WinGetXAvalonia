@@ -1,8 +1,11 @@
 using Avalonia;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WinGetXAvalonia.Core.PackageEngine;
 using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Core.Events;
+using WinGetXAvalonia.Core.Runtime;
+using WinGetXAvalonia.Services.Runtime;
 using WinGetXAvalonia.Interfaces;
 using WinGetXAvalonia.Services;
 using WinGetXAvalonia.Services.Core;
@@ -13,6 +16,8 @@ using WinGetXAvalonia.Services.History;
 using WinGetXAvalonia.Services.Interfaces;
 using WinGetXAvalonia.Services.Notifications;
 using WinGetXAvalonia.Services.Operations;
+using WinGetXAvalonia.Services.PackageDetails;
+using WinGetXAvalonia.Services.Queue;
 using WinGetXAvalonia.Services.Studio;
 using WinGetXAvalonia.Services.Theme;
 using WinGetXAvalonia.Services.Workspaces;
@@ -71,14 +76,39 @@ class Program
                 services.AddSingleton<IClipboardService, ClipboardService>();
                 services.AddSingleton<ILauncherService, LauncherService>();
                 services.AddSingleton<IHistoryService, HistoryService>();
+                services.AddSingleton<WorkspaceSerializer>();
+                services.AddSingleton<WorkspaceImporter>();
+                services.AddSingleton<WorkspaceExporter>();
+                services.AddSingleton<WorkspaceService>();
                 services.AddSingleton<IWorkspaceService, WorkspaceService>();
                 services.AddSingleton<IStudioService, StudioService>();
                 services.AddSingleton<IDialogService, DialogService>();
+                services.AddSingleton<IFilePickerService, FilePickerService>();
                 services.AddSingleton<IEventBus, EventBus>();
                 services.AddSingleton<IOperationService, OperationService>();
+                services.AddSingleton<IPackageDetailsService, PackageDetailsService>();
+                services.AddSingleton<IPackageEngine, PackageEngine>();
+                services.AddSingleton<PackagePipeline>();
                 services.AddSingleton<ISystemMonitorService, SystemMonitorService>();
                 services.AddSingleton<ITimeService, TimeService>();
                 services.AddSingleton<IOperationQueue, OperationQueue>();
+                services.AddSingleton<IOperationCenter, OperationCenter>();
+                services.AddSingleton<OperationDrawerViewModel>();
+
+                services.AddSingleton<RuntimeContext>();
+                services.AddSingleton<RuntimeFeatureManager>(_ =>
+                {
+                    var manager = new RuntimeFeatureManager();
+                    manager
+                        .Register(new RuntimeFeature { Id = "Diagnostics", Name = "Diagnostics", Enabled = true })
+                        .Register(new RuntimeFeature { Id = "Automation", Name = "Automation", Enabled = true })
+                        .Register(new RuntimeFeature { Id = "Studio", Name = "Studio", Enabled = true })
+                        .Register(new RuntimeFeature { Id = "Plugins", Name = "Plugins", Experimental = true })
+                        .Register(new RuntimeFeature { Id = "Analytics", Name = "Analytics", Enabled = true })
+                        .Register(new RuntimeFeature { Id = "Founder", Name = "Founder", Experimental = true });
+                    return manager;
+                });
+                services.AddSingleton<RuntimeHost, AppRuntimeHost>();
 
                 services.AddSingleton<GeneralSettingsViewModel>();
                 services.AddSingleton<AppearanceSettingsViewModel>();

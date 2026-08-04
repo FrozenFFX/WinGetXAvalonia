@@ -1,0 +1,49 @@
+<ContentControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinGetXAvalonia.Controls.Shared"
+    xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
+    x:Class="WinGetXAvalonia.Controls.Shared.Section">
+
+    <ContentControl.Template>
+        <ControlTemplate TargetType="local:Section">
+
+            <Border
+                Padding="16"
+                Background="{DynamicResource CardBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="{DynamicResource RadiusMedium}">
+
+                <StackPanel Spacing="12">
+
+                    <StackPanel
+                        Spacing="2"
+                        IsVisible="{TemplateBinding Title,
+                        Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}">
+
+                        <TextBlock
+                            Text="{TemplateBinding Title}"
+                            FontSize="{DynamicResource FontSubtitle}"
+                            FontWeight="SemiBold"/>
+
+                        <TextBlock
+                            Text="{TemplateBinding Description}"
+                            FontSize="{DynamicResource FontCaption}"
+                            Foreground="{DynamicResource SubtextBrush}"
+                            IsVisible="{TemplateBinding Description,
+                            Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"/>
+                    </StackPanel>
+
+                    <ContentPresenter
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"/>
+
+                </StackPanel>
+
+            </Border>
+
+        </ControlTemplate>
+    </ContentControl.Template>
+
+</ContentControl>

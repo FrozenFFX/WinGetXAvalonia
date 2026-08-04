@@ -161,6 +161,84 @@ public class PackageDetailsViewModelTests
     }
 
     [Fact]
+    public async Task Load_PopulatesRawProperties()
+    {
+        var provider = new FakeProvider
+        {
+            Details = new PackageDetails
+            {
+                Name = "Git",
+                Publisher = "Git for Windows",
+                Description = "Distributed version control",
+                Version = "2.51.0",
+                LatestVersion = "2.52.0",
+                Homepage = "https://git-scm.com/",
+                License = "MIT",
+                Source = "winget"
+            }
+        };
+
+        var vm = Create(provider);
+
+        await vm.Load(Package());
+
+        Assert.Equal("Git", vm.Name);
+        Assert.Equal("Git for Windows", vm.Publisher);
+        Assert.Equal("Distributed version control", vm.Description);
+        Assert.Equal("2.51.0", vm.InstalledVersion);
+        Assert.Equal("2.52.0", vm.LatestVersion);
+        Assert.Equal("https://git-scm.com/", vm.Homepage);
+        Assert.Equal("MIT", vm.License);
+        Assert.Equal("winget", vm.Source);
+    }
+
+    [Fact]
+    public async Task Load_RawVersionsFallBackToPackage()
+    {
+        var vm = Create();
+
+        var package = Package();
+        package.Available = "2.52.0";
+
+        await vm.Load(package);
+
+        Assert.Equal("2.51.0", vm.InstalledVersion);
+        Assert.Equal("2.52.0", vm.LatestVersion);
+        Assert.Equal("winget", vm.Source);
+    }
+
+    [Fact]
+    public async Task Load_Null_ResetsRawProperties()
+    {
+        var vm = Create();
+
+        await vm.Load(Package());
+        await vm.Load(null);
+
+        Assert.Equal("Not available", vm.Name);
+        Assert.Equal("Not available", vm.Description);
+        Assert.Equal("", vm.Homepage);
+        Assert.Equal("Not available", vm.Publisher);
+        Assert.Equal("Not available", vm.License);
+        Assert.Equal("Not available", vm.Source);
+    }
+
+    [Fact]
+    public async Task Load_ProviderThrows_FallsBackToPackage()
+    {
+        var vm = Create(new ThrowingProvider());
+
+        await vm.Load(Package());
+
+        Assert.Equal("Git", vm.Name);
+        Assert.Equal("2.51.0", vm.InstalledVersion);
+        Assert.Equal("winget", vm.Source);
+        Assert.Equal("Not available", vm.Publisher);
+        Assert.Equal("", vm.Homepage);
+        Assert.False(vm.IsLoading);
+    }
+
+    [Fact]
     public async Task Load_ProviderThrows_UsesFallbackText()
     {
         var provider = new ThrowingProvider();

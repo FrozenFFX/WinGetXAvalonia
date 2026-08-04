@@ -1,4 +1,3 @@
-using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
@@ -13,6 +12,7 @@ public partial class WorkspacesViewModel : AsyncViewModel
 {
     private readonly IWorkspaceService _workspaces;
     private readonly IDialogService _dialogs;
+    private readonly IFilePickerService _filePicker;
 
     private readonly List<WorkspaceModel> _allWorkspaces = new();
     private WorkspaceModel? _editing;
@@ -51,10 +51,14 @@ public partial class WorkspacesViewModel : AsyncViewModel
         var count => $"{count} workspaces"
     };
 
-    public WorkspacesViewModel(IWorkspaceService workspaces, IDialogService dialogs)
+    public WorkspacesViewModel(
+        IWorkspaceService workspaces,
+        IDialogService dialogs,
+        IFilePickerService filePicker)
     {
         _workspaces = workspaces;
         _dialogs = dialogs;
+        _filePicker = filePicker;
     }
 
     public Task InitializeAsync()
@@ -74,7 +78,7 @@ public partial class WorkspacesViewModel : AsyncViewModel
             var items = await _workspaces.GetAllAsync();
 
             _allWorkspaces.Clear();
-            _allWorkspaces.AddRange(items.OrderByDescending(w => w.LastUsed));
+            _allWorkspaces.AddRange(items.OrderByDescending(w => w.LastUsed ?? w.Modified));
 
             WorkspaceCount = _allWorkspaces.Count;
 
@@ -132,24 +136,9 @@ public partial class WorkspacesViewModel : AsyncViewModel
             return;
 
         if (_editing is null)
-        {
-            _editing = new WorkspaceModel
-            {
-                Name = name,
-                Description = NewWorkspaceDescription.Trim()
-            };
-
-            _allWorkspaces.Insert(0, _editing);
-            WorkspaceCount = _allWorkspaces.Count;
-        }
+            await CreateWorkspaceAsync(name);
         else
-        {
-            _editing.Name = name;
-            _editing.Description = NewWorkspaceDescription.Trim();
-            _editing.LastUsed = DateTime.Now;
-        }
-
-        await _workspaces.SaveAsync(_editing);
+            await UpdateWorkspaceAsync(name);
 
         ApplyFilter();
 
@@ -194,7 +183,7 @@ public partial class WorkspacesViewModel : AsyncViewModel
     [RelayCommand]
     private async Task Import()
     {
-        var file = await PickOpenFileAsync();
+        var file = await _filePicker.PickOpenJsonAsync("Import Workspace");
 
         if (file is null)
             return;
@@ -217,7 +206,9 @@ public partial class WorkspacesViewModel : AsyncViewModel
         if (workspace is null)
             return;
 
-        var file = await PickSaveFileAsync(workspace.Name);
+        var file = await _filePicker.PickSaveJsonAsync(
+            "Export Workspace",
+            $"{workspace.Name}-{DateTime.Now:yyyyMMdd-HHmmss}.json");
 
         if (file is null)
             return;
@@ -240,10 +231,7 @@ public partial class WorkspacesViewModel : AsyncViewModel
         {
             filtered = filtered.Where(w =>
                 w.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)
-                || w.Description.Contains(SearchText, StringComparison.OrdinalIgnoreCase)
-                || w.Packages.Any(p =>
-                    p.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)
-                    || p.Id.Contains(SearchText, StringComparison.OrdinalIgnoreCase)));
+                || w.Description.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
         }
 
         Workspaces.Clear();
@@ -259,48 +247,23 @@ public partial class WorkspacesViewModel : AsyncViewModel
         OnPropertyChanged(nameof(EditorAction));
     }
 
-    private static async Task<IStorageFile?> PickSaveFileAsync(string name)
+    private async Task CreateWorkspaceAsync(string name)
     {
-        var window = CurrentWindow;
-
-        if (window is null)
-            return null;
-
-        return await window.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        _editing = new WorkspaceModel
         {
-            Title = "Export Workspace",
-            SuggestedFileName = $"{name}-{DateTime.Now:yyyyMMdd-HHmmss}.json",
-            DefaultExtension = "json",
-            FileTypeChoices = new[]
-            {
-                new FilePickerFileType("JSON file") { Patterns = new[] { "*.json" } }
-            }
-        });
+            Name = name,
+            Description = NewWorkspaceDescription.Trim()
+        };
+
+        await _workspaces.SaveAsync(_editing);
+        _allWorkspaces.Insert(0, _editing);
+        WorkspaceCount = _allWorkspaces.Count;
     }
 
-    private static async Task<IStorageFile?> PickOpenFileAsync()
+    private async Task UpdateWorkspaceAsync(string name)
     {
-        var window = CurrentWindow;
-
-        if (window is null)
-            return null;
-
-        var files = await window.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
-        {
-            Title = "Import Workspace",
-            AllowMultiple = false,
-            FileTypeFilter = new[]
-            {
-                new FilePickerFileType("JSON file") { Patterns = new[] { "*.json" } }
-            }
-        });
-
-        return files.FirstOrDefault();
+        _editing!.Name = name;
+        _editing.Description = NewWorkspaceDescription.Trim();
+        await _workspaces.SaveAsync(_editing);
     }
-
-    private static Avalonia.Controls.Window? CurrentWindow
-        => Avalonia.Application.Current?.ApplicationLifetime
-            is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime { MainWindow: { } window }
-            ? window
-            : null;
 }

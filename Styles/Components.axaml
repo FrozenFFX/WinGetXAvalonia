@@ -1,0 +1,45 @@
+<Styles
+    xmlns="https://github.com/avaloniaui"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared">
+
+    <Style Selector="shared|Badge">
+        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+    </Style>
+
+    <Style Selector="shared|Badge.Accent">
+        <Setter Property="Background" Value="#334F8CFF"/>
+    </Style>
+
+    <Style Selector="shared|Badge.Success">
+        <Setter Property="Background" Value="#3327AE60"/>
+    </Style>
+
+    <Style Selector="shared|Badge.Warning">
+        <Setter Property="Background" Value="#33F39C12"/>
+    </Style>
+
+    <Style Selector="shared|Badge.Danger">
+        <Setter Property="Background" Value="#33E74C3C"/>
+    </Style>
+
+    <Style Selector="shared|Chip">
+        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+    </Style>
+
+    <Style Selector="shared|Chip.Accent">
+        <Setter Property="Background" Value="#334F8CFF"/>
+    </Style>
+
+    <Style Selector="shared|Chip.Success">
+        <Setter Property="Background" Value="#3327AE60"/>
+    </Style>
+
+    <Style Selector="shared|Chip.Warning">
+        <Setter Property="Background" Value="#33F39C12"/>
+    </Style>
+
+    <Style Selector="shared|Chip.Danger">
+        <Setter Property="Background" Value="#33E74C3C"/>
+    </Style>
+
+</Styles>

@@ -1,0 +1,48 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="WinGetXAvalonia.Controls.Workspace.WorkspaceEditor"
+    x:Name="Root"
+    x:CompileBindings="False">
+
+    <Border
+        Margin="0,0,0,8"
+        Padding="16"
+        CornerRadius="{DynamicResource RadiusMedium}"
+        Background="{DynamicResource CardBrush}"
+        BorderBrush="{DynamicResource BorderBrush}"
+        BorderThickness="1">
+
+        <StackPanel Spacing="12">
+
+            <TextBlock
+                FontWeight="SemiBold"
+                Text="{Binding Title, ElementName=Root}"/>
+
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+
+                <StackPanel Spacing="8">
+
+                    <TextBox
+                        Text="{Binding Name, ElementName=Root}"
+                        PlaceholderText="Workspace name">
+                        <TextBox.KeyBindings>
+                            <KeyBinding Gesture="Enter" Command="{Binding SaveCommand, ElementName=Root}"/>
+                        </TextBox.KeyBindings>
+                    </TextBox>
+
+                    <TextBox
+                        Text="{Binding Description, ElementName=Root}"
+                        PlaceholderText="Workspace description (optional)"/>
+                </StackPanel>
+
+                <Button
+                    Grid.Column="1"
+                    VerticalAlignment="Top"
+                    Content="{Binding SaveButtonText, ElementName=Root}"
+                    Command="{Binding SaveCommand, ElementName=Root}"/>
+            </Grid>
+        </StackPanel>
+    </Border>
+
+</UserControl>

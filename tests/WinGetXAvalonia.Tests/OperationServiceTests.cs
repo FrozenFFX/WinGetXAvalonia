@@ -58,38 +58,6 @@ public class OperationServiceTests
             => Task.FromResult(new PackageDetails());
     }
 
-    private sealed class FakeOperationQueue : IOperationQueue
-    {
-        public List<OperationItem> Items { get; } = new();
-
-        public List<OperationItem> Enqueued { get; } = new();
-
-        public IReadOnlyList<OperationItem> Operations => Items;
-
-        public event EventHandler? QueueChanged;
-
-        public async Task EnqueueAsync(OperationItem item, Func<Task> action)
-        {
-            Items.Add(item);
-            Enqueued.Add(item);
-            item.Status = OperationStatus.Running;
-
-            try
-            {
-                await action();
-                item.Progress = 100;
-                item.Status = OperationStatus.Completed;
-            }
-            catch (Exception ex)
-            {
-                item.Status = OperationStatus.Failed;
-                item.Message = ex.Message;
-            }
-
-            QueueChanged?.Invoke(this, EventArgs.Empty);
-        }
-    }
-
     private static string CreateTempFile()
     {
         var dir = Path.Combine(
@@ -100,15 +68,14 @@ public class OperationServiceTests
         return Path.Combine(dir, "history.json");
     }
 
-    private static (OperationService Service, FakeProvider Provider, HistoryService History, FakeEventBus Events, FakeOperationQueue Queue, NotificationService Notifications) Create()
+    private static (OperationService Service, FakeProvider Provider, HistoryService History, FakeEventBus Events, NotificationService Notifications) Create()
     {
         var provider = new FakeProvider();
         var history = new HistoryService(CreateTempFile());
         var events = new FakeEventBus();
-        var queue = new FakeOperationQueue();
         var notifications = new NotificationService();
-        var service = new OperationService(provider, history, new LoggerService(), events, queue, notifications);
-        return (service, provider, history, events, queue, notifications);
+        var service = new OperationService(provider, history, new LoggerService(), events, notifications);
+        return (service, provider, history, events, notifications);
     }
 
     private static async Task<List<HistoryEntry>> GetEntriesAsync(HistoryService history)
@@ -117,7 +84,7 @@ public class OperationServiceTests
     [Fact]
     public async Task InstallAsync_CallsProvider_AndRecordsHistory()
     {
-        var (service, provider, history, eventBus, queue, notifications) = Create();
+        var (service, provider, history, eventBus, notifications) = Create();
 
         await service.InstallAsync("Git.Git");
 
@@ -132,7 +99,7 @@ public class OperationServiceTests
     [Fact]
     public async Task UpdateAsync_CallsUpgrade_AndRecordsHistory()
     {
-        var (service, provider, history, eventBus, queue, notifications) = Create();
+        var (service, provider, history, eventBus, notifications) = Create();
 
         await service.UpdateAsync("Git.Git");
 
@@ -146,7 +113,7 @@ public class OperationServiceTests
     [Fact]
     public async Task RemoveAsync_CallsUninstall_AndRecordsHistory()
     {
-        var (service, provider, history, eventBus, queue, notifications) = Create();
+        var (service, provider, history, eventBus, notifications) = Create();
 
         await service.RemoveAsync("Git.Git");
 
@@ -160,7 +127,7 @@ public class OperationServiceTests
     [Fact]
     public async Task Operation_Failed_RecordsFailure_WithoutThrowing()
     {
-        var (service, provider, history, eventBus, queue, notifications) = Create();
+        var (service, provider, history, eventBus, notifications) = Create();
         provider.Throws = true;
 
         await service.InstallAsync("Git.Git");
@@ -173,7 +140,7 @@ public class OperationServiceTests
     [Fact]
     public async Task BlankPackageId_SkipsProviderAndHistory()
     {
-        var (service, provider, history, eventBus, queue, notifications) = Create();
+        var (service, provider, history, eventBus, notifications) = Create();
 
         await service.InstallAsync("   ");
 
@@ -184,7 +151,7 @@ public class OperationServiceTests
     [Fact]
     public async Task UpgradeAllAsync_UpgradesEveryUpdate_AndRecordsPerPackage()
     {
-        var (service, provider, history, eventBus, queue, notifications) = Create();
+        var (service, provider, history, eventBus, notifications) = Create();
         provider.Updates =
         [
             new UpdatePackage { Id = "Git.Git" },
@@ -209,7 +176,7 @@ public class OperationServiceTests
     public async Task Operation_Success_PublishesPackageChangedEvent(
         string operation, PackageOperation expected)
     {
-        var (service, _, _, eventBus, queue, notifications) = Create();
+        var (service, _, _, eventBus, notifications) = Create();
 
         switch (operation)
         {
@@ -233,7 +200,7 @@ public class OperationServiceTests
     [Fact]
     public async Task Operation_Failed_DoesNotPublishEvent()
     {
-        var (service, provider, _, eventBus, queue, notifications) = Create();
+        var (service, provider, _, eventBus, notifications) = Create();
         provider.Throws = true;
 
         await service.InstallAsync("Git.Git");
@@ -244,7 +211,7 @@ public class OperationServiceTests
     [Fact]
     public async Task BlankPackageId_DoesNotPublishEvent()
     {
-        var (service, _, _, eventBus, queue, notifications) = Create();
+        var (service, _, _, eventBus, notifications) = Create();
 
         await service.InstallAsync("   ");
 
@@ -252,22 +219,9 @@ public class OperationServiceTests
     }
 
     [Fact]
-    public async Task Operations_AreRoutedThroughQueue()
-    {
-        var (service, _, _, _, queue, _) = Create();
-
-        await service.InstallAsync("Git.Git");
-
-        var item = Assert.Single(queue.Enqueued);
-        Assert.Equal("Git.Git", item.PackageId);
-        Assert.Equal(PackageOperation.Installed, item.Operation);
-        Assert.Equal(OperationStatus.Completed, item.Status);
-    }
-
-    [Fact]
     public async Task Operation_Success_CreatesSuccessNotification()
     {
-        var (service, _, _, _, _, notifications) = Create();
+        var (service, _, _, _, notifications) = Create();
 
         await service.InstallAsync("Git.Git");
 
@@ -280,7 +234,7 @@ public class OperationServiceTests
     [Fact]
     public async Task Operation_Failed_CreatesErrorNotification()
     {
-        var (service, provider, _, _, _, notifications) = Create();
+        var (service, provider, _, _, notifications) = Create();
         provider.Throws = true;
 
         await service.InstallAsync("Git.Git");

@@ -1,0 +1,52 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
+    x:Class="WinGetXAvalonia.Controls.Shared.SearchBar"
+    x:Name="Root">
+
+    <Border
+        Background="{DynamicResource SurfaceBrush}"
+        BorderBrush="{DynamicResource BorderBrush}"
+        BorderThickness="1"
+        CornerRadius="10"
+        Padding="12,0"
+        Height="42">
+
+        <Grid ColumnDefinitions="Auto,*,Auto">
+
+            <TextBlock
+                Text="🔍"
+                FontSize="13"
+                Opacity="0.5"
+                VerticalAlignment="Center"/>
+
+            <TextBox
+                Grid.Column="1"
+                Margin="8,0"
+                Padding="0"
+                Background="Transparent"
+                BorderThickness="0"
+                VerticalAlignment="Center"
+                PlaceholderText="{Binding Watermark, ElementName=Root}"
+                Text="{Binding Text, ElementName=Root, Mode=TwoWay}"/>
+
+            <Button
+                Grid.Column="2"
+                Content="✕"
+                FontSize="12"
+                Width="24"
+                Height="24"
+                Padding="0"
+                Background="Transparent"
+                Foreground="{DynamicResource SubtextBrush}"
+                VerticalAlignment="Center"
+                IsVisible="{Binding Text, ElementName=Root,
+                Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"
+                Click="OnClearClick"/>
+
+        </Grid>
+
+    </Border>
+
+</UserControl>

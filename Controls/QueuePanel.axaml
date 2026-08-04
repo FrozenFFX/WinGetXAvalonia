@@ -2,7 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
-    xmlns:operations="using:WinGetXAvalonia.Services.Operations"
+    xmlns:queue="using:WinGetXAvalonia.Services.Queue"
     x:Class="WinGetXAvalonia.Controls.QueuePanel"
     x:DataType="vm:QueuePanelViewModel">
 
@@ -51,7 +51,7 @@
             <ItemsControl ItemsSource="{Binding Items}">
 
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="operations:OperationItem">
+                    <DataTemplate x:DataType="queue:QueueItem">
 
                         <Grid
                             RowDefinitions="Auto,Auto"
@@ -60,21 +60,19 @@
 
                             <TextBlock
                                 FontWeight="SemiBold"
-                                Text="{Binding DisplayName}"/>
+                                Text="{Binding Request.PackageId}"/>
 
                             <TextBlock
                                 Grid.Column="1"
                                 Opacity="0.5"
                                 Text="{Binding Status}"/>
 
-                            <ProgressBar
+                            <TextBlock
                                 Grid.Row="1"
                                 Grid.ColumnSpan="2"
-                                Margin="0,6,0,0"
-                                Maximum="100"
-                                Minimum="0"
-                                Value="{Binding Progress}"
-                                IsVisible="{Binding ShowProgress}"/>
+                                FontSize="11"
+                                Opacity="0.5"
+                                Text="{Binding Request.Operation}"/>
 
                         </Grid>
 

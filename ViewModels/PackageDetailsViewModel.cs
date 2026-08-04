@@ -26,6 +26,30 @@ public partial class PackageDetailsViewModel : ObservableObject
     [ObservableProperty]
     private bool isLoading;
 
+    [ObservableProperty]
+    private string name = "";
+
+    [ObservableProperty]
+    private string publisher = Fallback;
+
+    [ObservableProperty]
+    private string description = "";
+
+    [ObservableProperty]
+    private string installedVersion = Fallback;
+
+    [ObservableProperty]
+    private string latestVersion = Fallback;
+
+    [ObservableProperty]
+    private string homepage = "";
+
+    [ObservableProperty]
+    private string license = Fallback;
+
+    [ObservableProperty]
+    private string source = "";
+
     public string DescriptionDisplay { get; private set; } = "";
 
     public string PublisherDisplay { get; private set; } = Fallback;
@@ -164,6 +188,15 @@ public partial class PackageDetailsViewModel : ObservableObject
 
     private void RefreshDisplay()
     {
+        Name = Pick(_details.Name, SelectedPackage?.Name);
+        Publisher = Pick(_details.Publisher);
+        Description = Pick(_details.Description, SelectedPackage?.Description);
+        InstalledVersion = Pick(_details.Version, SelectedPackage?.Version);
+        LatestVersion = Pick(_details.LatestVersion, SelectedPackage?.Available);
+        Homepage = _details.Homepage;
+        License = Pick(_details.License);
+        Source = Pick(_details.Source, SelectedPackage?.Source);
+
         DescriptionDisplay = Pick(_details.Description, SelectedPackage?.Description);
         PublisherDisplay = Pick(_details.Publisher);
         HomepageDisplay = _details.Homepage;

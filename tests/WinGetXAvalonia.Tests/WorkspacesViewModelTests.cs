@@ -20,7 +20,7 @@ public class WorkspacesViewModelTests
 
         public bool ThrowOnGetAll { get; set; }
 
-        public Task<IReadOnlyList<WorkspaceModel>> GetAllAsync()
+        public Task<IReadOnlyList<WorkspaceModel>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             if (ThrowOnGetAll)
                 throw new InvalidOperationException("boom");
@@ -28,27 +28,33 @@ public class WorkspacesViewModelTests
             return Task.FromResult<IReadOnlyList<WorkspaceModel>>(Items.ToList());
         }
 
-        public Task SaveAsync(WorkspaceModel workspace)
+        public Task<WorkspaceModel?> GetAsync(Guid id, CancellationToken cancellationToken = default)
+            => Task.FromResult<WorkspaceModel?>(Items.SingleOrDefault(i => i.Id == id));
+
+        public Task SaveAsync(WorkspaceModel workspace, CancellationToken cancellationToken = default)
         {
             Items.RemoveAll(i => i.Id == workspace.Id);
             Items.Add(workspace);
             return Task.CompletedTask;
         }
 
-        public Task DeleteAsync(Guid id)
+        public Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
             Deleted.Add(id);
             Items.RemoveAll(i => i.Id == id);
             return Task.CompletedTask;
         }
 
-        public Task ImportAsync(string file)
+        public Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default)
+            => Task.FromResult(Items.Any(i => i.Id == id));
+
+        public Task ImportAsync(string file, CancellationToken cancellationToken = default)
         {
             Imported.Add(file);
             return Task.CompletedTask;
         }
 
-        public Task ExportAsync(Guid id, string file)
+        public Task ExportAsync(Guid id, string file, CancellationToken cancellationToken = default)
         {
             Exported.Add((id, file));
             return Task.CompletedTask;
@@ -78,17 +84,39 @@ public class WorkspacesViewModelTests
         }
     }
 
+    private sealed class FakeFilePickerService : IFilePickerService
+    {
+        public Task<Avalonia.Platform.Storage.IStorageFile?> PickOpenJsonAsync(
+            string title,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult<Avalonia.Platform.Storage.IStorageFile?>(null);
+
+        public Task<Avalonia.Platform.Storage.IStorageFile?> PickSaveJsonAsync(
+            string title,
+            string suggestedFileName,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult<Avalonia.Platform.Storage.IStorageFile?>(null);
+
+        public Task<Avalonia.Platform.Storage.IStorageFolder?> PickFolderAsync(
+            string title,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult<Avalonia.Platform.Storage.IStorageFolder?>(null);
+    }
+
     private static WorkspacesViewModel Create(
         FakeWorkspaceService? service = null,
         FakeDialogService? dialogs = null)
-        => new(service ?? new FakeWorkspaceService(), dialogs ?? new FakeDialogService());
+        => new(
+            service ?? new FakeWorkspaceService(),
+            dialogs ?? new FakeDialogService(),
+            new FakeFilePickerService());
 
     [Fact]
     public async Task Load_PopulatesWorkspaces_NewestFirst()
     {
         var service = new FakeWorkspaceService();
-        service.Items.Add(new WorkspaceModel { Name = "Older", LastUsed = DateTime.Now.AddDays(-1) });
-        service.Items.Add(new WorkspaceModel { Name = "Newer", LastUsed = DateTime.Now });
+        service.Items.Add(new WorkspaceModel { Name = "Older", Modified = DateTime.Now.AddDays(-1) });
+        service.Items.Add(new WorkspaceModel { Name = "Newer", Modified = DateTime.Now });
 
         var vm = Create(service);
         await vm.InitializeAsync();
@@ -200,17 +228,13 @@ public class WorkspacesViewModelTests
     }
 
     [Fact]
-    public async Task Search_MatchesDescriptionAndPackages()
+    public async Task Search_MatchesDescription()
     {
         var service = new FakeWorkspaceService();
         service.Items.Add(new WorkspaceModel
         {
             Name = "Dev",
-            Description = "Node and database setup",
-            Packages = new ObservableCollection<WorkspacePackage>
-            {
-                new() { Id = "Microsoft.VisualStudioCode", Name = "Visual Studio Code" }
-            }
+            Description = "Node and database setup"
         });
         service.Items.Add(new WorkspaceModel { Name = "Gaming" });
         var vm = Create(service);
@@ -220,11 +244,6 @@ public class WorkspacesViewModelTests
         Assert.Single(vm.Workspaces);
         Assert.Equal("Dev", vm.Workspaces[0].Name);
 
-        vm.SearchText = "visual studio code";
-        Assert.Single(vm.Workspaces);
-
-        vm.SearchText = "Microsoft.VisualStudioCode";
-        Assert.Single(vm.Workspaces);
     }
 
     [Fact]

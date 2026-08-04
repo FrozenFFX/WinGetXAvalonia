@@ -10,6 +10,8 @@ public partial class MainViewModel : ViewModelBase
 {
     public NavigationService Navigation { get; }
 
+    public OperationDrawerViewModel OperationDrawer { get; }
+
     public ObservableCollection<NavigationItem> Menu { get; } = new();
 
     private readonly Dictionary<Type, ViewModelBase> _pages;
@@ -19,6 +21,7 @@ public partial class MainViewModel : ViewModelBase
 
     public MainViewModel(
         NavigationService navigation,
+        OperationDrawerViewModel operationDrawer,
         DashboardViewModel dashboard,
         InstalledViewModel installed,
         UpdatesViewModel updates,
@@ -33,6 +36,7 @@ public partial class MainViewModel : ViewModelBase
         SettingsViewModel settings)
     {
         Navigation = navigation;
+        OperationDrawer = operationDrawer;
 
         // ViewModel tipinden örneğine eşleme, navigasyon bununla ilerliyor
         _pages = new()
@@ -168,6 +172,8 @@ public partial class MainViewModel : ViewModelBase
             _ = browse.InitializeAsync();
         else if (page is HistoryViewModel history)
             _ = history.InitializeAsync();
+        else if (page is WorkspacesViewModel workspaces)
+            _ = workspaces.InitializeAsync();
         else if (page is StudioViewModel studio)
             _ = studio.InitializeAsync();
     }

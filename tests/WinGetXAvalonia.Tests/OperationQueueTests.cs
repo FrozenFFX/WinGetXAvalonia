@@ -1,10 +1,24 @@
-using WinGetXAvalonia.Core.Events;
+using WinGetXAvalonia.Core.PackageEngine;
 using WinGetXAvalonia.Services.Operations;
+using WinGetXAvalonia.Services.Queue;
 
 namespace WinGetXAvalonia.Tests;
 
 public class OperationQueueTests
 {
+    private sealed class FakeEngine : IPackageEngine
+    {
+        private readonly Func<PackageRequest, Task<PackageResult>> _handler;
+
+        public FakeEngine(Func<PackageRequest, Task<PackageResult>>? handler = null)
+        {
+            _handler = handler ?? (_ => Task.FromResult(new PackageResult { Success = true }));
+        }
+
+        public Task<PackageResult> ExecuteAsync(PackageRequest request)
+            => _handler(request);
+    }
+
     private static async Task WaitUntilAsync(Func<bool> condition, int timeoutMs = 5000)
     {
         var deadline = DateTime.UtcNow.AddMilliseconds(timeoutMs);
@@ -18,100 +32,131 @@ public class OperationQueueTests
         }
     }
 
-    private static OperationItem Item(string id = "Microsoft.VSCode")
+    private static PackageRequest Request(string id = "Microsoft.VSCode")
         => new()
         {
             PackageId = id,
-            DisplayName = id,
-            Operation = PackageOperation.Installed
+            Operation = PackageOperation.Update
         };
 
     [Fact]
-    public async Task EnqueueAsync_RunsAction_AndCompletes()
+    public async Task EnqueueAsync_AddsWaitingItem_AndRunsIt()
     {
-        var queue = new OperationQueue();
-        var ran = false;
+        var queue = new OperationQueue(new FakeEngine(), new OperationCenter());
 
-        await queue.EnqueueAsync(Item(), () =>
-        {
-            ran = true;
-            return Task.CompletedTask;
-        });
+        await queue.EnqueueAsync(Request("Git.Git"));
 
-        Assert.True(ran);
-
-        var item = Assert.Single(queue.Operations);
-        Assert.Equal(OperationStatus.Completed, item.Status);
-        Assert.Equal(100, item.Progress);
+        var item = Assert.Single(queue.Items);
+        Assert.Equal(QueueStatus.Completed, item.Status);
+        Assert.Equal("Git.Git", item.Request.PackageId);
+        Assert.NotNull(item.Started);
+        Assert.NotNull(item.Finished);
     }
 
     [Fact]
-    public async Task EnqueueAsync_SetsFailed_OnActionError()
+    public async Task EnqueueAsync_EngineFailure_MarksFailed_WithError()
     {
-        var queue = new OperationQueue();
-        var item = Item();
+        var queue = new OperationQueue(new FakeEngine(_ =>
+            Task.FromResult(new PackageResult { Success = false, Output = "nope" })), new OperationCenter());
 
-        await queue.EnqueueAsync(item, () => throw new InvalidOperationException("boom"));
+        await queue.EnqueueAsync(Request());
 
-        Assert.Equal(OperationStatus.Failed, item.Status);
-        Assert.Equal("boom", item.Message);
+        var item = Assert.Single(queue.Items);
+        Assert.Equal(QueueStatus.Failed, item.Status);
+        Assert.Equal("nope", item.Error);
+    }
+
+    [Fact]
+    public async Task EnqueueAsync_EngineThrows_MarksFailed()
+    {
+        var queue = new OperationQueue(new FakeEngine(_ => throw new InvalidOperationException("boom")), new OperationCenter());
+
+        await queue.EnqueueAsync(Request());
+
+        var item = Assert.Single(queue.Items);
+        Assert.Equal(QueueStatus.Failed, item.Status);
+        Assert.Equal("boom", item.Error);
     }
 
     [Fact]
     public async Task EnqueueAsync_SerializesOperations_OneAtATime()
     {
-        var queue = new OperationQueue();
         var blocking = new TaskCompletionSource();
-        var first = Item("first");
-        var second = Item("second");
-        var secondRan = false;
+        var started = 0;
 
-        var firstTask = queue.EnqueueAsync(first, async () => await blocking.Task);
-        await WaitUntilAsync(() => first.Status == OperationStatus.Running);
-
-        var secondTask = queue.EnqueueAsync(second, () =>
+        var engine = new FakeEngine(async _ =>
         {
-            secondRan = true;
-            return Task.CompletedTask;
+            Interlocked.Increment(ref started);
+
+            await blocking.Task;
+
+            return new PackageResult { Success = true };
         });
 
-        Assert.Equal(OperationStatus.Pending, second.Status);
+        var queue = new OperationQueue(engine, new OperationCenter());
+
+        var firstTask = queue.EnqueueAsync(Request("first"));
+        await WaitUntilAsync(() => queue.Items.Any(x => x.Status == QueueStatus.Running));
+
+        var secondTask = queue.EnqueueAsync(Request("second"));
+
+        Assert.Equal(1, started);
 
         blocking.SetResult();
         await Task.WhenAll(firstTask, secondTask);
 
-        Assert.Equal(OperationStatus.Completed, first.Status);
-        Assert.Equal(OperationStatus.Completed, second.Status);
-        Assert.True(secondRan);
+        Assert.Equal(2, started);
+        Assert.All(queue.Items, item => Assert.Equal(QueueStatus.Completed, item.Status));
     }
 
     [Fact]
-    public async Task QueueChanged_Fires_OnStatusTransitions()
+    public async Task Cancel_WaitingItem_OnlyCancelsThatItem()
     {
-        var queue = new OperationQueue();
-        var notifications = 0;
+        var gate = new TaskCompletionSource();
+        var queue = new OperationQueue(new FakeEngine(async _ =>
+        {
+            await gate.Task;
+            return new PackageResult { Success = true };
+        }), new OperationCenter());
 
-        queue.QueueChanged += (_, _) => notifications++;
+        var firstTask = queue.EnqueueAsync(Request("first"));
+        await WaitUntilAsync(() => queue.Items.Any(x => x.Status == QueueStatus.Running));
 
-        await queue.EnqueueAsync(Item(), () => Task.CompletedTask);
+        var secondTask = queue.EnqueueAsync(Request("second"));
+        var second = queue.Items.First(x => x.Request.PackageId == "second");
 
-        // enqueue + running + completed
-        Assert.True(notifications >= 3);
+        queue.Cancel(second.Id);
+
+        Assert.Equal(QueueStatus.Cancelled, second.Status);
+
+        gate.SetResult();
+        await Task.WhenAll(firstTask, secondTask);
     }
 
     [Fact]
-    public async Task Operations_ExposesEnqueuedItems_BeforeCompletion()
+    public async Task ClearCompleted_RemovesOnlyCompleted()
     {
-        var queue = new OperationQueue();
-        var blocking = new TaskCompletionSource();
-        var first = Item("first");
+        var gate = new TaskCompletionSource();
+        var queue = new OperationQueue(new FakeEngine(async _ =>
+        {
+            await gate.Task;
+            return new PackageResult { Success = true };
+        }), new OperationCenter());
 
-        var task = queue.EnqueueAsync(first, async () => await blocking.Task);
-        await WaitUntilAsync(() => first.Status == OperationStatus.Running);
+        var firstTask = queue.EnqueueAsync(Request("a"));
+        await WaitUntilAsync(() => queue.Items.Any(x => x.Status == QueueStatus.Running));
 
-        Assert.Single(queue.Operations);
+        var secondTask = queue.EnqueueAsync(Request("b"));
+        var second = queue.Items.First(x => x.Request.PackageId == "b");
+        queue.Cancel(second.Id);
 
-        blocking.SetResult();
-        await task;
+        gate.SetResult();
+        await Task.WhenAll(firstTask, secondTask);
+
+        queue.ClearCompleted();
+
+        var remaining = Assert.Single(queue.Items);
+        Assert.Equal("b", remaining.Request.PackageId);
+        Assert.Equal(QueueStatus.Cancelled, remaining.Status);
     }
 }

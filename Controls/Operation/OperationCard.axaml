@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:models="using:WinGetXAvalonia.Models.Operations"
+             x:Class="WinGetXAvalonia.Controls.Operation.OperationCard"
+             x:DataType="models:OperationModel">
+
+    <Border Margin="0,0,0,10"
+            Padding="12"
+            Background="{DynamicResource CardBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="1"
+            CornerRadius="{DynamicResource RadiusMedium}">
+
+        <StackPanel Spacing="8">
+
+            <TextBlock FontWeight="SemiBold"
+                       Text="{Binding Title}" />
+
+            <TextBlock Opacity="0.7"
+                       Text="{Binding Subtitle}" />
+
+            <ProgressBar Minimum="0"
+                         Maximum="100"
+                         Value="{Binding Progress}" />
+
+        </StackPanel>
+
+    </Border>
+
+</UserControl>

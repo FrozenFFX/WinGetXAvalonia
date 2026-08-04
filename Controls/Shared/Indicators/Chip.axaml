@@ -1,0 +1,41 @@
+<ContentControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinGetXAvalonia.Controls.Shared"
+    x:Class="WinGetXAvalonia.Controls.Shared.Chip">
+
+    <ContentControl.Template>
+        <ControlTemplate TargetType="local:Chip">
+
+            <Border
+                Background="{TemplateBinding Background}"
+                CornerRadius="12"
+                Padding="10,4">
+
+                <StackPanel Orientation="Horizontal" Spacing="6">
+
+                    <ContentPresenter
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        VerticalAlignment="Center"/>
+
+                    <Button
+                        Content="✕"
+                        FontSize="10"
+                        Width="16"
+                        Height="16"
+                        Padding="0"
+                        Background="Transparent"
+                        Foreground="{DynamicResource SubtextBrush}"
+                        VerticalAlignment="Center"
+                        Command="{TemplateBinding CloseCommand}"
+                        IsVisible="{TemplateBinding ShowClose}"/>
+
+                </StackPanel>
+
+            </Border>
+
+        </ControlTemplate>
+    </ContentControl.Template>
+
+</ContentControl>

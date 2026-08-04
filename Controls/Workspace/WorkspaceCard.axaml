@@ -1,61 +1,68 @@
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:WinGetXAvalonia.Models"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
-    mc:Ignorable="d"
-    d:DesignWidth="640"
-    d:DesignHeight="120"
     x:Class="WinGetXAvalonia.Controls.Workspace.WorkspaceCard"
     x:DataType="models:WorkspaceModel"
     x:CompileBindings="False">
 
     <shared:BaseCard>
 
-        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="12">
 
-            <Border
-                Width="52"
-                Height="52"
-                CornerRadius="{DynamicResource RadiusMedium}"
-                Background="{DynamicResource SurfaceBrush}"
-                VerticalAlignment="Center">
+            <Grid ColumnDefinitions="Auto,*">
 
-                <TextBlock
-                    Text="{Binding Icon}"
-                    FontSize="26"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"/>
-            </Border>
+                <Border
+                    Width="44"
+                    Height="44"
+                    CornerRadius="8"
+                    Background="{DynamicResource SurfaceBrush}">
 
-            <StackPanel
-                Grid.Column="1"
-                Spacing="4"
-                VerticalAlignment="Center">
+                    <TextBlock
+                        FontSize="22"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="{Binding Icon}"/>
+                </Border>
 
-                <TextBlock
-                    Text="{Binding Name}"
-                    FontWeight="SemiBold"
-                    TextTrimming="CharacterEllipsis"/>
+                <StackPanel Grid.Column="1" Margin="12,0,0,0" Spacing="2">
 
-                <TextBlock
-                    Text="{Binding PackageCount, StringFormat='{}{0} Packages'}"
-                    FontSize="{DynamicResource FontCaption}"
-                    Foreground="{DynamicResource SubtextBrush}"/>
+                    <TextBlock
+                        FontWeight="SemiBold"
+                        FontSize="{DynamicResource FontSubtitle}"
+                        Text="{Binding Name}"
+                        TextTrimming="CharacterEllipsis"/>
 
-                <TextBlock
-                    Text="{Binding LastUsed, StringFormat='Last Used {0:MMM d, yyyy}'}"
-                    FontSize="{DynamicResource FontCaption}"
-                    Foreground="{DynamicResource SubtextBrush}"/>
-            </StackPanel>
+                    <TextBlock
+                        Opacity="0.7"
+                        Text="{Binding Description}"
+                        TextWrapping="Wrap"
+                        TextTrimming="CharacterEllipsis"
+                        MaxLines="2"/>
+                </StackPanel>
+            </Grid>
 
-            <StackPanel
-                Grid.Column="2"
-                Spacing="8"
-                Orientation="Horizontal"
-                VerticalAlignment="Center">
+            <WrapPanel Grid.Row="1" ItemSpacing="8">
+
+                <Border
+                    Padding="8,3"
+                    Background="{DynamicResource SurfaceBrush}"
+                    CornerRadius="20">
+
+                    <TextBlock Text="{Binding PackageCount, StringFormat='📦 {0} Packages'}"/>
+                </Border>
+
+                <Border
+                    Padding="8,3"
+                    Background="{DynamicResource SurfaceBrush}"
+                    CornerRadius="20">
+
+                    <TextBlock Text="{Binding Modified, StringFormat='🕒 {0:g}'}"/>
+                </Border>
+            </WrapPanel>
+
+            <UniformGrid Grid.Row="2" Columns="2" Rows="1" ColumnSpacing="8">
 
                 <Button
                     Content="Open"
@@ -66,6 +73,9 @@
                     Content="Edit"
                     Command="{Binding $parent[ItemsControl].DataContext.EditCommand}"
                     CommandParameter="{Binding}"/>
+            </UniformGrid>
+
+            <UniformGrid Grid.Row="3" Columns="2" Rows="1" ColumnSpacing="8">
 
                 <Button
                     Content="Export"
@@ -77,7 +87,7 @@
                     Content="Delete"
                     Command="{Binding $parent[ItemsControl].DataContext.DeleteWorkspaceCommand}"
                     CommandParameter="{Binding}"/>
-            </StackPanel>
+            </UniformGrid>
         </Grid>
     </shared:BaseCard>
 

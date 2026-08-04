@@ -117,6 +117,12 @@ public static class WingetParser
                 case "Version":
                     details = details with { Version = value };
                     break;
+                case "Latest Version":
+                    details = details with { LatestVersion = value };
+                    break;
+                case "Source":
+                    details = details with { Source = value };
+                    break;
                 case "Publisher":
                     details = details with { Publisher = value };
                     break;

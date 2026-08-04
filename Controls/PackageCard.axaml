@@ -14,7 +14,7 @@
 
     <UserControl.Styles>
         <Style Selector="Border.BaseCard:pointerover">
-            <Setter Property="Opacity" Value="0.9"/>
+            <Setter Property="Background" Value="#31343C"/>
         </Style>
     </UserControl.Styles>
 
@@ -22,16 +22,17 @@
 
         <shared:BaseCard>
 
-            <Grid ColumnDefinitions="Auto,*,Auto">
+            <Grid ColumnDefinitions="52,*,140"
+                  ColumnSpacing="16">
 
                 <Border Grid.Column="0"
-                        Width="32"
-                        Height="32"
-                        CornerRadius="8"
+                        Width="52"
+                        Height="52"
+                        CornerRadius="12"
                         Background="{DynamicResource SurfaceBrush}">
 
                     <TextBlock Text="{Binding Icon}"
-                               FontSize="16"
+                               FontSize="20"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"/>
                 </Border>
@@ -39,7 +40,7 @@
                 <!-- bilgi -->
                 <StackPanel Grid.Column="1"
                             Margin="12,0,0,0"
-                            Spacing="6"
+                            Spacing="4"
                             VerticalAlignment="Center">
 
                     <TextBlock Text="{Binding Name}"
@@ -57,7 +58,7 @@
                         <!-- kaynak -->
                         <Border Background="{DynamicResource SurfaceBrush}"
                                 CornerRadius="20"
-                                Padding="8,3">
+                                Padding="8,2">
 
                             <TextBlock Text="{Binding Source}"
                                        FontSize="{DynamicResource FontCaption}"
@@ -67,7 +68,7 @@
                         <!-- kurulu sürüm -->
                         <Border Background="{DynamicResource SurfaceBrush}"
                                 CornerRadius="20"
-                                Padding="8,3"
+                                Padding="8,2"
                                 IsVisible="{Binding Version,
                                 Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}">
 
@@ -80,7 +81,7 @@
                         <!-- güncelleme var -->
                         <Border Background="#3327AE60"
                                 CornerRadius="20"
-                                Padding="8,3"
+                                Padding="8,2"
                                 IsVisible="{Binding Available,
                                 Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}">
 
@@ -93,56 +94,26 @@
                     </WrapPanel>
                 </StackPanel>
 
-                <!-- sağdaki butonlar -->
-                <Grid Grid.Column="2"
-                      Margin="12,0,0,0"
-                      VerticalAlignment="Center"
-                      RowDefinitions="Auto,Auto,Auto,Auto"
-                      RowSpacing="6">
+                <StackPanel
+                    Grid.Column="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Spacing="8">
 
-                    <Button Grid.Row="0"
-                            Content="Güncelle"
-                            IsVisible="{Binding Available,
-                            Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"
-                            Command="{Binding $parent[ItemsControl].DataContext.UpdateCommand}"
-                            CommandParameter="{Binding}"/>
+                    <Button
+                        Width="66"
+                        Classes="Accent"
+                        Content="Update"
+                        IsVisible="{Binding Available,
+                        Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"/>
 
-                    <Button Grid.Row="1"
-                            Content="🌐"
-                            Width="42"
-                            Padding="0"
-                            ToolTip.Tip="Open Homepage"
-                            Command="{Binding $parent[ItemsControl].DataContext.OpenHomepageCommand}"
-                            CommandParameter="{Binding}"/>
+                    <Button
+                        Width="66"
+                        Classes="Danger"
+                        Content="Remove"/>
 
-                    <Button Grid.Row="2"
-                            Content="•••"
-                            Width="42"
-                            Padding="0"
-                            ToolTip.Tip="More">
-
-                        <Button.Flyout>
-                            <MenuFlyout>
-                                <MenuItem Header="Copy ID"
-                                          Command="{Binding $parent[ListBox].DataContext.CopyIdCommand}"
-                                          CommandParameter="{Binding}"/>
-
-                                <MenuItem Header="Copy Name"
-                                          Command="{Binding $parent[ListBox].DataContext.CopyNameCommand}"
-                                          CommandParameter="{Binding}"/>
-                            </MenuFlyout>
-                        </Button.Flyout>
-                    </Button>
-
-                    <Button Grid.Row="3"
-                            Classes="Danger"
-                            Content="Kaldır"
-                            Command="{Binding $parent[ItemsControl].DataContext.RemoveCommand}"
-                            CommandParameter="{Binding}"
-                            IsVisible="{Binding Mode,
-                                        RelativeSource={RelativeSource AncestorType=UserControl},
-                                        Converter={StaticResource IsDefaultCardMode}}"/>
-                </Grid>
+                </StackPanel>
 
             </Grid>
 

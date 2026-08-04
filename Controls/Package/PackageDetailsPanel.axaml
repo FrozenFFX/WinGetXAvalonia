@@ -1,0 +1,95 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    mc:Ignorable="d"
+    d:DesignWidth="420"
+    d:DesignHeight="560"
+    x:Class="WinGetXAvalonia.Controls.Package.PackageDetailsPanel"
+    x:DataType="vm:PackageDetailsViewModel"
+    x:CompileBindings="False">
+
+    <StackPanel Spacing="16">
+
+        <!-- başlık: ikon + ad -->
+        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+
+            <Border
+                Width="56"
+                Height="56"
+                CornerRadius="12"
+                Background="{DynamicResource SurfaceBrush}">
+
+                <TextBlock
+                    Text="{Binding SelectedPackage.Icon}"
+                    FontSize="28"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"/>
+            </Border>
+
+            <TextBlock
+                Grid.Column="1"
+                Text="{Binding Name}"
+                FontSize="18"
+                FontWeight="SemiBold"
+                VerticalAlignment="Center"
+                TextWrapping="Wrap"/>
+        </Grid>
+
+        <!-- aksiyonlar -->
+        <Button
+            Command="{Binding UpdateCommand}"
+            Classes="Accent"
+            HorizontalAlignment="Stretch">
+            Update
+        </Button>
+
+        <Button
+            Command="{Binding RemoveCommand}"
+            Classes="Danger"
+            HorizontalAlignment="Stretch">
+            Remove
+        </Button>
+
+        <Border Height="1" Background="{DynamicResource BorderBrush}"/>
+
+        <!-- açıklama -->
+        <TextBlock
+            Text="{Binding Description}"
+            FontSize="13"
+            Foreground="{DynamicResource SubtextBrush}"
+            TextWrapping="Wrap"/>
+
+        <Border Height="1" Background="{DynamicResource BorderBrush}"/>
+
+        <!-- özellikler -->
+        <shared:PropertyRow
+            Label="Installed"
+            Value="{Binding InstalledVersion}"/>
+
+        <shared:PropertyRow
+            Label="Latest"
+            Value="{Binding LatestVersion}"/>
+
+        <shared:PropertyRow
+            Label="Publisher"
+            Value="{Binding Publisher}"/>
+
+        <shared:PropertyRow
+            Label="License"
+            Value="{Binding License}"/>
+
+        <shared:PropertyRow
+            Label="Source"
+            Value="{Binding Source}"/>
+
+        <shared:PropertyRow
+            Label="Homepage"
+            Value="{Binding Homepage}"/>
+
+    </StackPanel>
+
+</UserControl>

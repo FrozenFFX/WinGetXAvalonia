@@ -34,7 +34,18 @@ public class ViewLocator : IDataTemplate
 
         if (type != null)
         {
-            return (Control)Activator.CreateInstance(type)!;
+            try
+            {
+                return (Control)Activator.CreateInstance(type)!;
+            }
+            catch (Exception ex)
+            {
+                return new TextBlock
+                {
+                    Text = ex.ToString(),
+                    TextWrapping = Avalonia.Media.TextWrapping.Wrap
+                };
+            }
         }
 
         return new TextBlock { Text = "Not Found: " + $"{ns}.{name}" };

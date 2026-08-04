@@ -1,0 +1,45 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
+    x:Class="WinGetXAvalonia.Controls.Shared.ErrorState"
+    x:Name="Root">
+
+    <StackPanel
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Spacing="12"
+        MaxWidth="300">
+
+        <TextBlock
+            Text="{Binding Icon, ElementName=Root}"
+            FontSize="44"
+            Opacity="0.6"
+            HorizontalAlignment="Center"/>
+
+        <TextBlock
+            Text="{Binding Title, ElementName=Root}"
+            FontSize="18"
+            FontWeight="SemiBold"
+            Foreground="{DynamicResource DangerBrush}"
+            TextAlignment="Center"/>
+
+        <TextBlock
+            Text="{Binding Message, ElementName=Root}"
+            FontSize="{DynamicResource FontBody}"
+            Foreground="{DynamicResource SubtextBrush}"
+            TextAlignment="Center"
+            TextWrapping="Wrap"/>
+
+        <Button
+            Content="{Binding RetryText, ElementName=Root}"
+            Command="{Binding RetryCommand, ElementName=Root}"
+            IsVisible="{Binding RetryCommand, ElementName=Root,
+            Converter={x:Static conv:ObjectConverters.IsNotNull}}"
+            Classes="Accent"
+            HorizontalAlignment="Center"
+            Margin="0,8,0,0"/>
+
+    </StackPanel>
+
+</UserControl>

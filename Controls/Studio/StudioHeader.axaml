@@ -1,0 +1,73 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
+    xmlns:studio="using:WinGetXAvalonia.Controls.Studio"
+    x:Class="WinGetXAvalonia.Controls.Studio.StudioHeader"
+    x:Name="Root">
+
+    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+
+        <Border
+            Width="48"
+            Height="48"
+            CornerRadius="{DynamicResource RadiusMedium}"
+            Background="{Binding AccentColor, ElementName=Root}"
+            IsVisible="{Binding Icon, ElementName=Root, Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"
+            VerticalAlignment="Top">
+
+            <TextBlock
+                Text="{Binding Icon, ElementName=Root}"
+                FontSize="24"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"/>
+        </Border>
+
+        <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
+
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+
+                <TextBlock
+                    Text="{Binding Title, ElementName=Root}"
+                    FontSize="{DynamicResource FontTitle}"
+                    FontWeight="SemiBold"
+                    TextTrimming="CharacterEllipsis"/>
+
+                <studio:StudioBadge
+                    Grid.Column="1"
+                    Text="{Binding Badge, ElementName=Root}"
+                    IsVisible="{Binding Badge, ElementName=Root, Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"/>
+            </Grid>
+
+            <TextBlock
+                Text="{Binding Subtitle, ElementName=Root}"
+                FontSize="{DynamicResource FontSubtitle}"
+                Foreground="{DynamicResource SubtextBrush}"
+                TextTrimming="CharacterEllipsis"
+                IsVisible="{Binding Subtitle, ElementName=Root, Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"/>
+
+            <TextBlock
+                Text="{Binding Description, ElementName=Root}"
+                FontSize="{DynamicResource FontBody}"
+                Foreground="{DynamicResource SubtextBrush}"
+                TextWrapping="Wrap"
+                MaxLines="2"
+                IsVisible="{Binding Description, ElementName=Root, Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+
+            <Button
+                Content="{Binding SecondaryText, ElementName=Root}"
+                Command="{Binding SecondaryCommand, ElementName=Root}"
+                IsVisible="{Binding SecondaryText, ElementName=Root, Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"/>
+
+            <Button
+                Classes="accent"
+                Content="{Binding PrimaryText, ElementName=Root}"
+                Command="{Binding Command, ElementName=Root}"
+                IsVisible="{Binding PrimaryText, ElementName=Root, Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"/>
+        </StackPanel>
+    </Grid>
+
+</UserControl>

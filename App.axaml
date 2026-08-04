@@ -76,6 +76,7 @@
         <FluentTheme/>
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
         <StyleInclude Source="/Styles/Buttons.axaml"/>
+        <StyleInclude Source="/Styles/Components.axaml"/>
         <StyleInclude Source="/Styles/Cards.axaml"/>
         <StyleInclude Source="/Styles/CardStyles.axaml"/>
         <StyleInclude Source="/Styles/AnimationStyles.axaml"/>

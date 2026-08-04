@@ -19,7 +19,6 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="12"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -36,65 +35,33 @@
             ImportCommand="{Binding ImportCommand}"
             RefreshCommand="{Binding RefreshCommand}"/>
 
-        <!-- Editor -->
-        <Border
+        <workspace:WorkspaceEditor
             Grid.Row="2"
-            Margin="0,0,0,8"
-            Padding="16"
-            CornerRadius="{DynamicResource RadiusMedium}"
-            Background="{DynamicResource CardBrush}"
-            BorderBrush="{DynamicResource BorderBrush}"
-            BorderThickness="1"
-            IsVisible="{Binding IsEditorOpen}">
+            IsVisible="{Binding IsEditorOpen}"
+            Name="{Binding NewWorkspaceName}"
+            Description="{Binding NewWorkspaceDescription}"
+            SaveCommand="{Binding SaveWorkspaceCommand}"
+            SaveButtonText="{Binding EditorAction}"
+            Title="{Binding EditorTitle}"/>
 
-            <StackPanel Spacing="12">
+        <Grid Grid.Row="3">
 
-                <TextBlock
-                    FontWeight="SemiBold"
-                    Text="{Binding EditorTitle}"/>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Workspaces}">
 
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-                    <StackPanel Spacing="8">
-
-                        <TextBox
-                            Text="{Binding NewWorkspaceName}"
-                            PlaceholderText="Workspace name">
-
-                            <TextBox.KeyBindings>
-                                <KeyBinding
-                                    Gesture="Enter"
-                                    Command="{Binding SaveWorkspaceCommand}"/>
-                            </TextBox.KeyBindings>
-                        </TextBox>
-
-                        <TextBox
-                            Text="{Binding NewWorkspaceDescription}"
-                            PlaceholderText="Workspace description (optional)"/>
-                    </StackPanel>
-
-                    <Button
-                        Grid.Column="1"
-                        VerticalAlignment="Top"
-                        Content="{Binding EditorAction}"
-                        Command="{Binding SaveWorkspaceCommand}"/>
-                </Grid>
-            </StackPanel>
-        </Border>
-
-        <!-- List -->
-        <Grid Grid.Row="4">
-
-            <ListBox
-                ItemsSource="{Binding Workspaces}"
-                SelectedItem="{Binding SelectedWorkspace, Mode=TwoWay}">
-
-                <ListBox.ItemTemplate>
+                <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <workspace:WorkspaceCard/>
+                        <workspace:WorkspaceCard Width="420" Margin="0,0,12,12"/>
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
 
             <!-- Empty state -->
             <StackPanel
@@ -159,7 +126,7 @@
         </Grid>
 
         <shared:LoadingOverlay
-            Grid.RowSpan="5"
+            Grid.RowSpan="4"
             IsLoading="{Binding IsLoading}"
             Message="Loading workspaces..."/>
 

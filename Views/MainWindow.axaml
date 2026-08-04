@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:WinGetXAvalonia.ViewModels"
         xmlns:controls="using:WinGetXAvalonia.Controls"
+        xmlns:operation="using:WinGetXAvalonia.Controls.Operation"
         mc:Ignorable="d"
         x:Class="WinGetXAvalonia.Views.MainWindow"
         x:DataType="vm:MainViewModel"
@@ -47,6 +48,12 @@
             Grid.Column="1"
             Margin="25"
             Content="{Binding Navigation.CurrentPage}"/>
+
+        <operation:OperationDrawer
+            Margin="20"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            DataContext="{Binding OperationDrawer}"/>
 
     </Grid>
 

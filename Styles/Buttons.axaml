@@ -43,4 +43,23 @@
 
     </Style>
 
+    <Style Selector="Button.Accent">
+
+        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+
+    </Style>
+
+    <Style Selector="Button.Accent:pointerover">
+
+        <Setter Property="Background" Value="#3D78E8"/>
+
+    </Style>
+
+    <Style Selector="Button.Accent:pressed">
+
+        <Setter Property="Background" Value="#3364C9"/>
+
+    </Style>
+
 </Styles>

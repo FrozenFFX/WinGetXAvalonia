@@ -12,16 +12,20 @@ using WinGetXAvalonia.Core.State;
 using WinGetXAvalonia.Helpers;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
-using WinGetXAvalonia.Services.Operations;
+using WinGetXAvalonia.Services.Queue;
+using PackageRequest = WinGetXAvalonia.Core.PackageEngine.PackageRequest;
+using PackageOperation = WinGetXAvalonia.Core.PackageEngine.PackageOperation;
+using WinGetXAvalonia.Services.PackageDetails;
 
 namespace WinGetXAvalonia.ViewModels;
 
 public partial class InstalledViewModel : AsyncViewModel
 {
     private readonly IPackageProvider _provider;
-    private readonly IOperationService _operations;
+    private readonly IOperationQueue _queue;
     private readonly IEventBus _eventBus;
     private readonly ILauncherService _launcher;
+    private readonly IPackageDetailsService _details;
 
     private readonly List<PackageModel> _allPackages = new();
     private bool _refreshing;
@@ -47,16 +51,46 @@ public partial class InstalledViewModel : AsyncViewModel
     [ObservableProperty]
     private PackageModel? selectedPackage;
 
+    [ObservableProperty]
+    private PackageDetailsModel? packageDetails;
+
+    public bool HasSelection => SelectedPackage != null;
+
+    partial void OnSelectedPackageChanged(PackageModel? value)
+    {
+        OnPropertyChanged(nameof(HasSelection));
+
+        _ = LoadDetails(value);
+    }
+
+    private async Task LoadDetails(PackageModel? package)
+    {
+        if (package is null || string.IsNullOrWhiteSpace(package.Id))
+        {
+            PackageDetails = null;
+            return;
+        }
+
+        var id = package.Id;
+
+        var details = await _details.GetAsync(id);
+
+        if (SelectedPackage?.Id == id)
+            PackageDetails = details;
+    }
+
     public InstalledViewModel(
         IPackageProvider provider,
-        IOperationService operations,
+        IOperationQueue queue,
         IEventBus eventBus,
-        ILauncherService launcher)
+        ILauncherService launcher,
+        IPackageDetailsService details)
     {
         _provider = provider;
-        _operations = operations;
+        _queue = queue;
         _eventBus = eventBus;
         _launcher = launcher;
+        _details = details;
 
         _eventBus.Subscribe<PackageChangedEvent>(e => _ = Refresh());
     }
@@ -152,7 +186,11 @@ public partial class InstalledViewModel : AsyncViewModel
         if (string.IsNullOrWhiteSpace(package.Id))
             return;
 
-        await _operations.UpdateAsync(package.Id);
+        await _queue.EnqueueAsync(new PackageRequest
+        {
+            PackageId = package.Id,
+            Operation = PackageOperation.Update
+        });
     }
 
     [RelayCommand]
@@ -165,7 +203,11 @@ public partial class InstalledViewModel : AsyncViewModel
         _allPackages.Remove(package);
         Unsubscribe(package);
 
-        await _operations.RemoveAsync(package.Id);
+        await _queue.EnqueueAsync(new PackageRequest
+        {
+            PackageId = package.Id,
+            Operation = PackageOperation.Remove
+        });
 
         OnPropertyChanged(nameof(PackageCount));
         OnPropertyChanged(nameof(SelectedCount));
@@ -214,7 +256,11 @@ public partial class InstalledViewModel : AsyncViewModel
 
         foreach (var package in selected)
         {
-            await _operations.RemoveAsync(package.Id);
+            await _queue.EnqueueAsync(new PackageRequest
+            {
+                PackageId = package.Id,
+                Operation = PackageOperation.Remove
+            });
 
             Packages.Remove(package);
             _allPackages.Remove(package);
@@ -233,7 +279,11 @@ public partial class InstalledViewModel : AsyncViewModel
             .ToList();
 
         foreach (var package in selected)
-            await _operations.UpdateAsync(package.Id);
+            await _queue.EnqueueAsync(new PackageRequest
+            {
+                PackageId = package.Id,
+                Operation = PackageOperation.Update
+            });
 
         await Refresh();
     }

@@ -9,22 +9,25 @@ public partial class WorkspaceModel : ObservableObject
     private Guid id = Guid.NewGuid();
 
     [ObservableProperty]
-    private string name = "";
+    private string name = string.Empty;
 
     [ObservableProperty]
-    private string description = "";
+    private string description = string.Empty;
 
     [ObservableProperty]
     private string icon = "💻";
 
     [ObservableProperty]
-    private string color = "#4F8CFF";
-
-    [ObservableProperty]
     private DateTime created = DateTime.Now;
 
     [ObservableProperty]
-    private DateTime lastUsed = DateTime.Now;
+    private DateTime modified = DateTime.Now;
+
+    [ObservableProperty]
+    private DateTime? lastUsed;
+
+    [ObservableProperty]
+    private bool favorite;
 
     [ObservableProperty]
     private ObservableCollection<WorkspacePackage> packages = new();

@@ -1,0 +1,22 @@
+<ItemsControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="WinGetXAvalonia.Controls.Shared.CommandBar">
+
+    <ItemsControl.Template>
+        <ControlTemplate TargetType="ItemsControl">
+
+            <StackPanel
+                Orientation="Horizontal"
+                Spacing="8"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center">
+
+                <ItemsPresenter/>
+
+            </StackPanel>
+
+        </ControlTemplate>
+    </ItemsControl.Template>
+
+</ItemsControl>

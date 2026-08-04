@@ -1,9 +1,13 @@
+using System.Collections.ObjectModel;
 using WinGetXAvalonia.Core.Events;
+using WinGetXAvalonia.Core.PackageEngine;
 using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
-using WinGetXAvalonia.Services.Operations;
+using WinGetXAvalonia.Services.PackageDetails;
+using WinGetXAvalonia.Services.Queue;
 using WinGetXAvalonia.ViewModels;
+using PackageOperation = WinGetXAvalonia.Core.PackageEngine.PackageOperation;
 
 namespace WinGetXAvalonia.Tests;
 
@@ -37,30 +41,37 @@ public class InstalledViewModelTests
             => Task.FromResult(new PackageDetails());
     }
 
-    private sealed class FakeOperationService : IOperationService
+    private sealed class FakeQueue : IOperationQueue
     {
-        public List<string> Removed { get; } = new();
+        public ObservableCollection<QueueItem> Items { get; } = new();
 
-        public List<string> Updated { get; } = new();
+        public List<PackageRequest> Enqueued { get; } = new();
 
-        public Task InstallAsync(string packageId) => Task.CompletedTask;
-
-        public Task UpdateAsync(string packageId)
+        public Task EnqueueAsync(PackageRequest request)
         {
-            Updated.Add(packageId);
+            Enqueued.Add(request);
+            Items.Add(new QueueItem
+            {
+                Request = request,
+                Status = QueueStatus.Waiting
+            });
             return Task.CompletedTask;
         }
 
-        public Task RemoveAsync(string packageId)
-        {
-            Removed.Add(packageId);
-            return Task.CompletedTask;
-        }
+        public Task StartAsync() => Task.CompletedTask;
 
-        public Task UpgradeAllAsync() => Task.CompletedTask;
+        public void Cancel(Guid id) { }
+
+        public void ClearCompleted() { }
     }
 
-    private static (InstalledViewModel vm, FakeProvider provider, FakeOperationService operations, FakeEventBus events) Create(
+    private sealed class FakeDetailsService : IPackageDetailsService
+    {
+        public Task<PackageDetailsModel?> GetAsync(string id)
+            => Task.FromResult<PackageDetailsModel?>(null);
+    }
+
+    private static (InstalledViewModel vm, FakeProvider provider, FakeQueue queue, FakeEventBus events) Create(
         params string[] ids)
     {
         var provider = new FakeProvider();
@@ -68,12 +79,12 @@ public class InstalledViewModelTests
         foreach (string id in ids)
             provider.Installed.Add(new InstalledPackage { Id = id, Name = id, Version = "1.0.0" });
 
-        var operations = new FakeOperationService();
+        var queue = new FakeQueue();
         var events = new FakeEventBus();
 
-        var vm = new InstalledViewModel(provider, operations, events, new LauncherService());
+        var vm = new InstalledViewModel(provider, queue, events, new LauncherService(), new FakeDetailsService());
 
-        return (vm, provider, operations, events);
+        return (vm, provider, queue, events);
     }
 
     [Fact]
@@ -124,7 +135,7 @@ public class InstalledViewModelTests
     [Fact]
     public async Task RemoveSelected_RemovesOnlySelected()
     {
-        var (vm, _, operations, _) = Create("a", "b", "c");
+        var (vm, _, queue, _) = Create("a", "b", "c");
         await vm.RefreshCommand.ExecuteAsync(null);
 
         vm.Packages[0].Selected = true;
@@ -135,13 +146,14 @@ public class InstalledViewModelTests
         Assert.Single(vm.Packages);
         Assert.Equal("b", vm.Packages[0].Id);
         Assert.Equal(0, vm.SelectedCount);
-        Assert.Equal(new[] { "a", "c" }, operations.Removed.OrderBy(x => x));
+        Assert.Equal(new[] { "a", "c" }, queue.Enqueued.Select(x => x.PackageId).OrderBy(x => x));
+        Assert.All(queue.Enqueued, x => Assert.Equal(PackageOperation.Remove, x.Operation));
     }
 
     [Fact]
     public async Task UpdateSelected_UpdatesEach_AndRefreshes()
     {
-        var (vm, _, operations, _) = Create("a", "b", "c");
+        var (vm, _, queue, _) = Create("a", "b", "c");
         await vm.RefreshCommand.ExecuteAsync(null);
 
         vm.Packages[0].Selected = true;
@@ -149,7 +161,8 @@ public class InstalledViewModelTests
 
         await vm.UpdateSelectedCommand.ExecuteAsync(null);
 
-        Assert.Equal(new[] { "a", "c" }, operations.Updated.OrderBy(x => x));
+        Assert.Equal(new[] { "a", "c" }, queue.Enqueued.Select(x => x.PackageId).OrderBy(x => x));
+        Assert.All(queue.Enqueued, x => Assert.Equal(PackageOperation.Update, x.Operation));
         Assert.Equal(3, vm.Packages.Count);
     }
 

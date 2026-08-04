@@ -3,12 +3,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Name="Root">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <TextBox
         PlaceholderText="{Binding #Root.Watermark}"
         Text="{Binding #Root.Text, Mode=TwoWay}"/>
 
-
-    <!-- kaneki -->
 </UserControl>

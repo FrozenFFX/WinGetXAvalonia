@@ -1,12 +1,8 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using Avalonia;
 using Avalonia.Controls;
 
 namespace WinGetXAvalonia.Controls.Shared;
 
-// kaneki
 public partial class SearchBox : UserControl
 {
     public SearchBox()
@@ -33,4 +29,3 @@ public partial class SearchBox : UserControl
         set => SetValue(TextProperty, value);
     }
 }
-// kaneki

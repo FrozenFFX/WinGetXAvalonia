@@ -7,7 +7,6 @@
     x:Class="WinGetXAvalonia.Controls.Shared.SectionHeader"
     x:CompileBindings="False"
     mc:Ignorable="d">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Grid ColumnDefinitions="*,Auto">
 
@@ -38,8 +37,6 @@
             RelativeSource={RelativeSource AncestorType=UserControl},
             Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}" />
 
-
-    <!-- kaneki -->
     </Grid>
 
 </UserControl>

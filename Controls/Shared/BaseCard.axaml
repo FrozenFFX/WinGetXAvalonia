@@ -2,7 +2,6 @@
     x:Class="WinGetXAvalonia.Controls.Shared.BaseCard"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!-- WinGetX - https://github.com/FrozenFFX -->
 
     <Border
         Margin="5"
@@ -13,10 +12,14 @@
         CornerRadius="{DynamicResource RadiusMedium}"
         Classes="BaseCard">
 
+        <Border.Transitions>
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.12"/>
+            </Transitions>
+        </Border.Transitions>
+
         <ContentPresenter/>
 
-
-    <!-- kaneki -->
     </Border>
 
 </UserControl>

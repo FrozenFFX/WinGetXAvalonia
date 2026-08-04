@@ -1,13 +1,9 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 using Avalonia;
 using Avalonia.Controls;
 using System.Windows.Input;
 
 namespace WinGetXAvalonia.Controls.Shared;
 
-// kaneki
 public partial class SectionHeader : UserControl
 {
     public SectionHeader()
@@ -51,4 +47,3 @@ public partial class SectionHeader : UserControl
         set => SetValue(ActionCommandProperty, value);
     }
 }
-// kaneki

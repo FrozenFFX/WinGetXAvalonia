@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:models="using:WinGetXAvalonia.Models"
              xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+             xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
              mc:Ignorable="d"
              d:DesignWidth="480"
              d:DesignHeight="120"
@@ -14,16 +15,10 @@
 
     <shared:BaseCard>
 
-        <Grid ColumnDefinitions="Auto,Auto,*,Auto">
-
-            <!-- SELECT -->
-            <CheckBox Grid.Column="0"
-                      IsChecked="{Binding Selected}"
-                      VerticalAlignment="Center"/>
+        <Grid ColumnDefinitions="Auto,*,Auto">
 
             <!-- ICON -->
-            <Border Grid.Column="1"
-                    Margin="12,0,0,0"
+            <Border Grid.Column="0"
                     Width="32"
                     Height="32"
                     CornerRadius="8"
@@ -36,7 +31,7 @@
             </Border>
 
             <!-- INFO -->
-            <StackPanel Grid.Column="2"
+            <StackPanel Grid.Column="1"
                         Margin="12,0,0,0"
                         Spacing="4"
                         VerticalAlignment="Center">
@@ -55,10 +50,25 @@
                            FontSize="{DynamicResource FontCaption}"
                            Foreground="{DynamicResource SubtextBrush}"
                            Opacity="0.7"/>
+
+                <TextBlock Text="{Binding Version,
+                           StringFormat=Installed {0}}"
+                           FontSize="{DynamicResource FontCaption}"
+                           Foreground="{DynamicResource SubtextBrush}"
+                           IsVisible="{Binding Version,
+                           Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"/>
+
+                <TextBlock Text="{Binding Available,
+                           StringFormat=▲ Available {0}}"
+                           FontSize="{DynamicResource FontCaption}"
+                           Foreground="{DynamicResource AccentBrush}"
+                           IsVisible="{Binding Available,
+                           Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"/>
             </StackPanel>
 
             <!-- ACTIONS -->
-            <WrapPanel Grid.Column="3"
+            <WrapPanel Grid.Column="2"
+                       Margin="12,0,0,0"
                        VerticalAlignment="Center"
                        ItemSpacing="8">
 

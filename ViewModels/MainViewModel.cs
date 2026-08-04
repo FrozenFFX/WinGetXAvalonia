@@ -2,6 +2,7 @@
 // WinGetX - https://github.com/FrozenFFX
 // ==========================================================
 using System.Collections.ObjectModel;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
@@ -120,6 +121,14 @@ public partial class MainViewModel : ViewModelBase
         });
 
         SelectedMenuItem = Menu[0];
+
+        installed.BrowseRequested += (_, _) =>
+        {
+            var discover = Menu.FirstOrDefault(m => m.Page == typeof(BrowseViewModel));
+
+            if (discover is not null)
+                SelectedMenuItem = discover;
+        };
     }
 
     partial void OnSelectedMenuItemChanged(NavigationItem? value)

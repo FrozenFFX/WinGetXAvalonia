@@ -26,6 +26,8 @@ public partial class InstalledViewModel : AsyncViewModel
     private readonly List<PackageModel> _allPackages = new();
     private bool _initialized;
 
+    public event EventHandler? BrowseRequested;
+
     public ObservableCollection<PackageModel> Packages { get; } = new();
 
     public int PackageCount => Packages.Count;
@@ -145,6 +147,10 @@ public partial class InstalledViewModel : AsyncViewModel
             });
         }
     }
+
+    [RelayCommand]
+    private void Browse()
+        => BrowseRequested?.Invoke(this, EventArgs.Empty);
 
     [RelayCommand]
     private async Task RemoveSelected()

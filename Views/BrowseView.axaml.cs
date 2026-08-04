@@ -17,8 +17,22 @@ public partial class BrowseView : UserControl
 
     private void OnSearchKeyDown(object? sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Enter && DataContext is BrowseViewModel vm)
+        if (DataContext is not BrowseViewModel vm)
+            return;
+
+        if (e.Key == Key.Enter)
+        {
+            if (vm.Suggestions.Count > 0)
+                vm.SearchText = vm.Suggestions[0];
+
             vm.SearchCommand.Execute(null);
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Down && vm.Suggestions.Count > 0)
+        {
+            vm.SearchText = vm.Suggestions[0];
+            e.Handled = true;
+        }
     }
 
     private void OnSearchSelectionChanged(object? sender, SelectionChangedEventArgs e)

@@ -23,7 +23,8 @@
             <shared:SearchBox
                 Grid.Row="0"
                 Grid.Column="0"
-                Width="320"
+                MinWidth="300"
+                HorizontalAlignment="Stretch"
                 Watermark="Search packages..."
                 Text="{Binding SearchText, ElementName=Root}" />
 
@@ -50,8 +51,10 @@
             <Button
                 Grid.Column="3"
                 Margin="12,0,0,0"
-                Width="100"
-                Content="Refresh"
+                Width="42"
+                Padding="0"
+                Content="🔄"
+                ToolTip.Tip="Refresh package list (F5)"
                 Command="{Binding RefreshCommand, ElementName=Root}" />
 
             <!-- Package Count -->
@@ -59,17 +62,28 @@
             <Border
                 Grid.Column="4"
                 Margin="16,0,0,0"
-                Padding="12,6"
+                Padding="10,5"
                 CornerRadius="{DynamicResource RadiusSmall}"
                 Background="{DynamicResource SurfaceBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1"
                 VerticalAlignment="Center">
 
-                <TextBlock>
+                <StackPanel Orientation="Horizontal" Spacing="6">
 
-                    <Run Text="{Binding PackageCount, ElementName=Root}" />
-                    <Run Text=" packages"/>
+                    <TextBlock
+                        Text="📦"
+                        FontSize="12"
+                        Opacity="0.7"
+                        VerticalAlignment="Center"/>
 
-                </TextBlock>
+                    <TextBlock FontWeight="SemiBold" VerticalAlignment="Center">
+
+                        <Run Text="{Binding PackageCount, ElementName=Root}" />
+                        <Run Text=" packages"/>
+
+                    </TextBlock>
+                </StackPanel>
 
             </Border>
 

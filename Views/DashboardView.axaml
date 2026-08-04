@@ -1,3 +1,6 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -13,9 +16,10 @@
 
         <ScrollViewer
             VerticalScrollBarVisibility="Auto"
-            HorizontalScrollBarVisibility="Disabled">
+            HorizontalScrollBarVisibility="Disabled"
+            HorizontalAlignment="Stretch">
 
-        <!-- TODO: Replace with Spacing Tokens -->
+      
         <Grid
             Margin="25"
             RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
@@ -145,7 +149,9 @@
 
                     </StackPanel>
 
-                    <ItemsControl ItemsSource="{Binding HeroInfo}">
+                    <ItemsControl
+                        ItemsSource="{Binding HeroInfo}"
+                        HorizontalAlignment="Stretch">
 
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -183,6 +189,11 @@
 
                     </ItemsControl>
 
+                    <Border
+                        Margin="0,10,0,0"
+                        Height="1"
+                        Background="{DynamicResource BorderBrush}"/>
+
                 </StackPanel>
 
             </shared:BaseCard>
@@ -194,7 +205,9 @@
 
                 <shared:SectionHeader Title="Overview"/>
 
-                <UniformGrid Columns="4">
+                <UniformGrid
+                    Columns="4"
+                    HorizontalAlignment="Stretch">
 
                     <dashboard:StatCard
                         Icon="📦"
@@ -237,7 +250,9 @@
 
                 <shared:BaseCard>
 
-                    <UniformGrid Columns="5">
+                    <UniformGrid
+                        Columns="5"
+                        HorizontalAlignment="Stretch">
 
                         <StackPanel
                             Orientation="Horizontal"
@@ -381,7 +396,9 @@
                 <ItemsControl ItemsSource="{Binding QuickActions}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <UniformGrid Columns="4"/>
+                            <UniformGrid
+                                Columns="4"
+                                HorizontalAlignment="Stretch"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
@@ -407,7 +424,9 @@
                 <ItemsControl ItemsSource="{Binding SystemCards}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <UniformGrid Columns="4"/>
+                            <UniformGrid
+                                Columns="4"
+                                HorizontalAlignment="Stretch"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
@@ -429,6 +448,13 @@
                 <shared:BaseCard>
 
                     <ItemsControl ItemsSource="{Binding Activity}">
+
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="models:ActivityItem">
 
@@ -477,7 +503,7 @@
         <controls:NotificationBell
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
-            Margin="0,20,0,0"
+            Margin="0,20,20,0"
             DataContext="{Binding Notifications}"/>
 
         <shared:LoadingOverlay

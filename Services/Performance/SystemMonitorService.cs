@@ -1,3 +1,6 @@
+// Copyright (c) 2026 FrozenFFX. All rights reserved.
+// https://github.com/FrozenFFX/WinGetXAvalonia
+
 using System.ComponentModel;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;

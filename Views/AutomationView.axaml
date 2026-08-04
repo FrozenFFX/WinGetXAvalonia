@@ -1,0 +1,94 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    x:Class="WinGetXAvalonia.Views.AutomationView"
+    x:DataType="vm:AutomationViewModel">
+
+    <Grid Margin="20">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <shared:SectionHeader
+            Title="Automation"
+            Description="Create automatic package workflows."/>
+
+        <Grid
+            Grid.Row="2"
+            ColumnDefinitions="320,12,*">
+
+            <Border
+                Grid.Column="0"
+                Padding="18"
+                Background="{DynamicResource CardBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="{DynamicResource RadiusMedium}">
+
+                <StackPanel Spacing="10">
+
+                    <Button Content="New Automation"/>
+
+                    <Button Content="Import"/>
+
+                    <Button Content="Export"/>
+
+                    <Separator/>
+
+                    <ListBox/>
+
+                </StackPanel>
+
+            </Border>
+
+            <GridSplitter
+                Grid.Column="1"
+                Width="6"
+                ResizeDirection="Columns"
+                ResizeBehavior="PreviousAndNext"/>
+
+            <Border
+                Grid.Column="2"
+                Padding="20"
+                Background="{DynamicResource CardBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="{DynamicResource RadiusMedium}">
+
+                <StackPanel Spacing="18">
+
+                    <TextBlock
+                        FontSize="24"
+                        FontWeight="SemiBold"
+                        Text="Automation Editor"/>
+
+                    <TextBox PlaceholderText="Name"/>
+
+                    <TextBox PlaceholderText="Trigger"/>
+
+                    <TextBox PlaceholderText="Condition"/>
+
+                    <TextBox PlaceholderText="Action"/>
+
+                    <Button
+                        HorizontalAlignment="Left"
+                        MinWidth="140"
+                        Content="Save"/>
+
+                </StackPanel>
+
+            </Border>
+
+        </Grid>
+
+    </Grid>
+
+</UserControl>

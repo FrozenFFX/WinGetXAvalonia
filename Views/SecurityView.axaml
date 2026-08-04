@@ -1,0 +1,64 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    x:Class="WinGetXAvalonia.Views.SecurityView"
+    x:DataType="vm:SecurityViewModel">
+
+    <Grid Margin="20">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <shared:SectionHeader
+            Title="Security"
+            Description="Security status and package verification."/>
+
+        <UniformGrid
+            Grid.Row="2"
+            Columns="4">
+
+            <Border Classes="card" Padding="18">
+                <StackPanel>
+                    <TextBlock FontSize="22" Text="🛡"/>
+                    <TextBlock FontWeight="SemiBold" Text="Trusted"/>
+                    <TextBlock Text="0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card" Padding="18">
+                <StackPanel>
+                    <TextBlock FontSize="22" Text="⚠"/>
+                    <TextBlock FontWeight="SemiBold" Text="Warnings"/>
+                    <TextBlock Text="0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card" Padding="18">
+                <StackPanel>
+                    <TextBlock FontSize="22" Text="❌"/>
+                    <TextBlock FontWeight="SemiBold" Text="Blocked"/>
+                    <TextBlock Text="0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card" Padding="18">
+                <StackPanel>
+                    <TextBlock FontSize="22" Text="✔"/>
+                    <TextBlock FontWeight="SemiBold" Text="Verified"/>
+                    <TextBlock Text="0"/>
+                </StackPanel>
+            </Border>
+
+        </UniformGrid>
+
+    </Grid>
+
+</UserControl>

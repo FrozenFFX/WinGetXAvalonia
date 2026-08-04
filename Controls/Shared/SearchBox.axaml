@@ -1,11 +1,56 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
 <UserControl
     x:Class="WinGetXAvalonia.Controls.Shared.SearchBox"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Name="Root">
 
-    <TextBox
-        PlaceholderText="{Binding #Root.Watermark}"
-        Text="{Binding #Root.Text, Mode=TwoWay}"/>
+    <Border
+        CornerRadius="10"
+        Background="{DynamicResource SurfaceBrush}"
+        BorderBrush="{DynamicResource BorderBrush}"
+        BorderThickness="1"
+        Padding="10,6">
+
+        <Grid
+            ColumnDefinitions="Auto,*,Auto"
+            ColumnSpacing="8">
+
+            <ContentPresenter
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                Content="{Binding LeftIcon, ElementName=Root}">
+
+                <ContentPresenter.Content>
+                    <TextBlock
+                        Text="🔍"
+                        FontSize="15"
+                        Opacity="0.65"/>
+                </ContentPresenter.Content>
+
+            </ContentPresenter>
+
+            <TextBox
+                Grid.Column="1"
+                Background="Transparent"
+                BorderThickness="0"
+                VerticalContentAlignment="Center"
+                PlaceholderText="{Binding Watermark, ElementName=Root}"
+                Text="{Binding Text, ElementName=Root, Mode=TwoWay}"/>
+
+            <Button
+                Grid.Column="2"
+                Width="26"
+                Height="26"
+                Padding="0"
+                Content="✕"
+                IsVisible="{Binding ShowClearButton, ElementName=Root}"
+                Click="Clear_Click"/>
+
+        </Grid>
+
+    </Border>
 
 </UserControl>

@@ -1,3 +1,6 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -44,9 +47,13 @@
             SaveButtonText="{Binding EditorAction}"
             Title="{Binding EditorTitle}"/>
 
-        <Grid Grid.Row="3">
+        <Grid
+            Grid.Row="3"
+            ColumnDefinitions="*,12,360">
 
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ScrollViewer
+                Grid.Column="0"
+                VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding Workspaces}">
 
                 <ItemsControl.ItemsPanel>
@@ -62,6 +69,34 @@
                 </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
+
+            <GridSplitter
+                Grid.Column="1"
+                Width="6"
+                ResizeDirection="Columns"
+                ResizeBehavior="PreviousAndNext"/>
+
+            <Border
+                Grid.Column="2"
+                Padding="20"
+                Background="{DynamicResource CardBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="{DynamicResource RadiusMedium}">
+
+                <StackPanel Spacing="12">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="SemiBold"
+                        Text="Workspace"/>
+
+                    <ContentControl
+                        Content="{Binding SelectedWorkspace}"/>
+
+                </StackPanel>
+
+            </Border>
 
             <!-- Empty state -->
             <StackPanel
@@ -118,6 +153,7 @@
 
                 <Button
                     Margin="0,8,0,0"
+                    MinWidth="140"
                     Content="Retry"
                     Command="{Binding RefreshCommand}"
                     HorizontalAlignment="Center"/>

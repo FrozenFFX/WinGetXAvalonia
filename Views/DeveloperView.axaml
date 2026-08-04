@@ -1,3 +1,6 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,75 +10,87 @@
     x:Class="WinGetXAvalonia.Views.DeveloperView"
     x:DataType="vm:DeveloperViewModel">
 
-    <ScrollViewer
-        VerticalScrollBarVisibility="Auto"
-        HorizontalScrollBarVisibility="Disabled">
+    <Grid>
 
-        <StackPanel Margin="25" Spacing="16">
+        <ScrollViewer
+            VerticalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Disabled">
 
-            <StackPanel Spacing="4">
+            <StackPanel Margin="25" Spacing="16">
 
-                <TextBlock
-                    FontSize="28"
-                    FontWeight="SemiBold"
-                    Text="Developer"/>
+                <StackPanel Spacing="4">
 
-                <TextBlock
-                    Opacity="0.7"
-                    Text="Developer tools and diagnostics."/>
+                    <TextBlock
+                        FontSize="28"
+                        FontWeight="SemiBold"
+                        Text="Developer"/>
+
+                    <TextBlock
+                        Opacity="0.7"
+                        Text="Developer tools and diagnostics."/>
+
+                </StackPanel>
+
+                <StackPanel Spacing="16">
+
+                    <shared:SectionHeader Title="Queue"/>
+
+                    <Border Classes="card" Padding="16">
+
+                        <Grid ColumnDefinitions="*,*,*,*">
+
+                            <StackPanel Spacing="4">
+                                <TextBlock Opacity="0.6" Text="Running"/>
+                                <TextBlock
+                                    FontSize="28"
+                                    FontWeight="Bold"
+                                    Text="{Binding Queue.RunningCount}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Spacing="4">
+                                <TextBlock Opacity="0.6" Text="Completed"/>
+                                <TextBlock
+                                    FontSize="28"
+                                    FontWeight="Bold"
+                                    Text="{Binding Queue.CompletedCount}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" Spacing="4">
+                                <TextBlock Opacity="0.6" Text="Failed"/>
+                                <TextBlock
+                                    FontSize="28"
+                                    FontWeight="Bold"
+                                    Text="{Binding Queue.FailedCount}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="3" Spacing="4">
+                                <TextBlock Opacity="0.6" Text="Cancelled"/>
+                                <TextBlock
+                                    FontSize="28"
+                                    FontWeight="Bold"
+                                    Text="{Binding Queue.CancelledCount}"/>
+                            </StackPanel>
+
+                        </Grid>
+
+                    </Border>
+
+                    <shared:SectionHeader Title="Live Operations"/>
+
+                    <controls:QueuePanel
+                        Margin="0,8,0,0"
+                        DataContext="{Binding Queue}"/>
+
+                </StackPanel>
 
             </StackPanel>
 
-            <StackPanel Spacing="16">
+        </ScrollViewer>
 
-                <shared:SectionHeader Title="Queue"/>
+        <shared:LoadingOverlay
+            IsLoading="{Binding IsLoading}"
+            Message="Loading developer tools..."/>
 
-                <Border Classes="card" Padding="16">
-
-                    <Grid ColumnDefinitions="*,*,*,*">
-
-                        <StackPanel Spacing="4">
-                            <TextBlock Opacity="0.6" Text="Running"/>
-                            <TextBlock
-                                FontSize="28"
-                                FontWeight="Bold"
-                                Text="{Binding Queue.RunningCount}"/>
-                        </StackPanel>
-
-                        <StackPanel Grid.Column="1" Spacing="4">
-                            <TextBlock Opacity="0.6" Text="Completed"/>
-                            <TextBlock
-                                FontSize="28"
-                                FontWeight="Bold"
-                                Text="{Binding Queue.CompletedCount}"/>
-                        </StackPanel>
-
-                        <StackPanel Grid.Column="2" Spacing="4">
-                            <TextBlock Opacity="0.6" Text="Failed"/>
-                            <TextBlock
-                                FontSize="28"
-                                FontWeight="Bold"
-                                Text="{Binding Queue.FailedCount}"/>
-                        </StackPanel>
-
-                        <StackPanel Grid.Column="3" Spacing="4">
-                            <TextBlock Opacity="0.6" Text="Cancelled"/>
-                            <TextBlock
-                                FontSize="28"
-                                FontWeight="Bold"
-                                Text="{Binding Queue.CancelledCount}"/>
-                        </StackPanel>
-
-                    </Grid>
-
-                </Border>
-
-                <controls:QueuePanel DataContext="{Binding Queue}"/>
-
-            </StackPanel>
-
-        </StackPanel>
-
-    </ScrollViewer>
+    </Grid>
 
 </UserControl>

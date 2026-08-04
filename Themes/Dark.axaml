@@ -1,22 +1,25 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{StaticResource Color.Background}"/>
-    <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="{StaticResource Color.Surface}"/>
-    <SolidColorBrush x:Key="DataGridBackgroundBrush" Color="{StaticResource Color.Surface}"/>
-    <SolidColorBrush x:Key="CardBackgroundBrush" Color="{StaticResource Color.Card}"/>
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#1B1D23"/>
+    <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#2A2E39"/>
+    <SolidColorBrush x:Key="DataGridBackgroundBrush" Color="#2A2E39"/>
+    <SolidColorBrush x:Key="CardBackgroundBrush" Color="#2F3440"/>
     <SolidColorBrush x:Key="CardHoverBrush" Color="#2C3340"/>
     <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="#2B313C"/>
     <SolidColorBrush x:Key="ButtonHoverBrush" Color="#3C4452"/>
     <SolidColorBrush x:Key="ButtonPressedBrush" Color="#4B5568"/>
     <SolidColorBrush x:Key="NavHoverBrush" Color="#2B313C"/>
     <SolidColorBrush x:Key="NavSelectedBrush" Color="#3C4452"/>
-    <SolidColorBrush x:Key="TextBrush" Color="{StaticResource Color.TextPrimary}"/>
-    <SolidColorBrush x:Key="SubtextBrush" Color="{StaticResource Color.TextSecondary}"/>
+    <SolidColorBrush x:Key="TextBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="SubtextBrush" Color="#B3FFFFFF"/>
     <SolidColorBrush x:Key="BorderBrush" Color="#3C4452"/>
-    <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource Color.Background}"/>
+    <SolidColorBrush x:Key="BackgroundBrush" Color="#1B1D23"/>
     <SolidColorBrush x:Key="SurfaceBrush" Color="#202020"/>
     <SolidColorBrush x:Key="CardBrush" Color="#2A2A2A"/>
-    <SolidColorBrush x:Key="SecondaryTextBrush" Color="{StaticResource Color.TextSecondary}"/>
+    <SolidColorBrush x:Key="SecondaryTextBrush" Color="#B3FFFFFF"/>
 
-    </ResourceDictionary>
+</ResourceDictionary>

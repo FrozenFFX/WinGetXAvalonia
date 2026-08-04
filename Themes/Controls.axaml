@@ -1,0 +1,28 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <StyleInclude Source="/Styles/Buttons.axaml"/>
+    <StyleInclude Source="/Styles/Components.axaml"/>
+    <StyleInclude Source="/Styles/Text.axaml"/>
+    <StyleInclude Source="/Styles/Navigation.axaml"/>
+    <StyleInclude Source="/Styles/SidebarStyles.axaml"/>
+    <StyleInclude Source="/Styles/DataGrid.axaml"/>
+    <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+
+    <Style Selector="TextBlock">
+        <Setter Property="FontFamily" Value="Segoe UI Variable"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+    </Style>
+
+    <Style Selector="Button">
+        <Setter Property="FontFamily" Value="Segoe UI Variable"/>
+    </Style>
+
+    <Style Selector="ToggleSwitch">
+        <Setter Property="FontFamily" Value="Segoe UI Variable"/>
+    </Style>
+
+</Styles>

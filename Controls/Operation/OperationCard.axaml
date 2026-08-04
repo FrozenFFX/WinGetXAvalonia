@@ -1,3 +1,6 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:models="using:WinGetXAvalonia.Models.Operations"
@@ -19,9 +22,29 @@
             <TextBlock Opacity="0.7"
                        Text="{Binding Subtitle}" />
 
-            <ProgressBar Minimum="0"
+            <ProgressBar Height="6"
+                         Minimum="0"
                          Maximum="100"
                          Value="{Binding Progress}" />
+
+            <TextBlock Margin="0,8,0,0"
+                       Opacity="0.65"
+                       Text="{Binding StatusMessage}" />
+
+            <Grid Margin="0,10,0,0"
+                  ColumnDefinitions="*,Auto,Auto"
+                  ColumnSpacing="8">
+
+                <Button Grid.Column="1"
+                        Content="Retry"
+                        Command="{Binding RetryCommand}"/>
+
+                <Button Grid.Column="2"
+                        Classes="Danger"
+                        Content="Cancel"
+                        Command="{Binding CancelCommand}"/>
+
+            </Grid>
 
         </StackPanel>
 

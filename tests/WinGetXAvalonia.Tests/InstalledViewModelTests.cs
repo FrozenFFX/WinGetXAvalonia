@@ -1,10 +1,13 @@
+// Copyright (c) 2026 FrozenFFX. All rights reserved.
+// https://github.com/FrozenFFX/WinGetXAvalonia
+
 using System.Collections.ObjectModel;
 using WinGetXAvalonia.Core.Events;
 using WinGetXAvalonia.Core.PackageEngine;
 using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
-using WinGetXAvalonia.Services.PackageDetails;
+using WinGetXAvalonia.Services.Operations;
 using WinGetXAvalonia.Services.Queue;
 using WinGetXAvalonia.ViewModels;
 using PackageOperation = WinGetXAvalonia.Core.PackageEngine.PackageOperation;
@@ -65,10 +68,15 @@ public class InstalledViewModelTests
         public void ClearCompleted() { }
     }
 
-    private sealed class FakeDetailsService : IPackageDetailsService
+    private sealed class FakeOperationService : IOperationService
     {
-        public Task<PackageDetailsModel?> GetAsync(string id)
-            => Task.FromResult<PackageDetailsModel?>(null);
+        public Task InstallAsync(string packageId) => Task.CompletedTask;
+
+        public Task UpdateAsync(string packageId) => Task.CompletedTask;
+
+        public Task RemoveAsync(string packageId) => Task.CompletedTask;
+
+        public Task UpgradeAllAsync() => Task.CompletedTask;
     }
 
     private static (InstalledViewModel vm, FakeProvider provider, FakeQueue queue, FakeEventBus events) Create(
@@ -82,7 +90,13 @@ public class InstalledViewModelTests
         var queue = new FakeQueue();
         var events = new FakeEventBus();
 
-        var vm = new InstalledViewModel(provider, queue, events, new LauncherService(), new FakeDetailsService());
+        var vm = new InstalledViewModel(
+            provider,
+            queue,
+            events,
+            new LauncherService(),
+            new FakeOperationService(),
+            new ClipboardService());
 
         return (vm, provider, queue, events);
     }

@@ -1,3 +1,6 @@
+// Copyright (c) 2026 FrozenFFX. All rights reserved.
+// https://github.com/FrozenFFX/WinGetXAvalonia
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;

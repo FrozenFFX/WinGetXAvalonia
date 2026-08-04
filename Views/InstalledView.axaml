@@ -1,3 +1,6 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -14,7 +17,6 @@
             Gesture="F5"
             Command="{Binding RefreshCommand}"/>
     </UserControl.KeyBindings>
-
     <Grid Margin="20">
 
         <Grid.RowDefinitions>
@@ -81,12 +83,12 @@
         </Border>
 
         <Grid Grid.Row="4"
-              ColumnDefinitions="2*,420"
-              ColumnSpacing="16">
+              ColumnDefinitions="2*,6,420">
 
             <Grid Grid.Column="0">
 
             <ListBox
+                Grid.Column="0"
                 ItemsSource="{Binding Packages}"
                 SelectionMode="Multiple"
                 SelectedItem="{Binding SelectedPackage}"
@@ -94,7 +96,25 @@
                 Background="Transparent"
                 SelectionChanged="OnSelectionChanged">
 
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
                 <ListBox.KeyBindings>
+                    <KeyBinding
+                        Gesture="Ctrl+A"
+                        Command="{Binding SelectAllCommand}"/>
+
+                    <KeyBinding
+                        Gesture="Ctrl+R"
+                        Command="{Binding RefreshCommand}"/>
+
+                    <KeyBinding
+                        Gesture="Ctrl+U"
+                        Command="{Binding UpdateSelectedCommand}"/>
+
                     <KeyBinding
                         Gesture="Delete"
                         Command="{Binding #Root.DataContext.RemoveSelectedCommand}"/>
@@ -134,6 +154,7 @@
 
                 <Button
                     Margin="0,8,0,0"
+                    MinWidth="180"
                     Content="Browse Packages"
                     Command="{Binding BrowseCommand}"
                     HorizontalAlignment="Center"/>
@@ -168,6 +189,7 @@
 
                 <Button
                     Margin="0,8,0,0"
+                    MinWidth="140"
                     Content="Retry"
                     Command="{Binding RefreshCommand}"
                     HorizontalAlignment="Center"/>
@@ -176,79 +198,18 @@
             </Grid>
 
             <!-- Details panel -->
-            <Border
+            <GridSplitter
                 Grid.Column="1"
-                Padding="18"
-                Background="{DynamicResource CardBrush}"
-                BorderBrush="{DynamicResource BorderBrush}"
-                BorderThickness="1"
-                CornerRadius="{DynamicResource RadiusMedium}"
-                IsVisible="{Binding HasSelection}">
+                Width="6"
+                ResizeDirection="Columns"
+                ResizeBehavior="PreviousAndNext"
+                Background="Transparent"/>
 
-                <StackPanel Spacing="12">
-
-                    <TextBlock
-                        FontSize="22"
-                        FontWeight="SemiBold"
-                        Text="{Binding PackageDetails.Name}"/>
-
-                    <TextBlock
-                        Opacity="0.7"
-                        Text="{Binding PackageDetails.Id}"/>
-
-                    <TextBlock
-                        Text="{Binding PackageDetails.Publisher}"/>
-
-                    <Separator/>
-
-                    <TextBlock
-                        Text="{Binding PackageDetails.InstalledVersion,
-                        StringFormat=Installed: {0}}"/>
-
-                    <TextBlock
-                        Text="{Binding PackageDetails.LatestVersion,
-                        StringFormat=Latest: {0}}"/>
-
-                    <TextBlock
-                        Text="{Binding PackageDetails.Source,
-                        StringFormat=Source: {0}}"/>
-
-                    <TextBlock
-                        Text="{Binding PackageDetails.Homepage,
-                        StringFormat=Homepage: {0}}"/>
-
-                    <TextBlock
-                        Text="{Binding PackageDetails.License,
-                        StringFormat=License: {0}}"/>
-
-                    <Separator/>
-
-                    <TextBlock
-                        Text="{Binding PackageDetails.Description}"
-                        Opacity="0.7"
-                        TextWrapping="Wrap"/>
-
-                    <Separator/>
-
-                    <Button
-                        Content="Open Homepage"
-                        Command="{Binding OpenHomepageCommand}"
-                        CommandParameter="{Binding SelectedPackage}"/>
-
-                    <Button
-                        Content="Update"
-                        Command="{Binding UpdateCommand}"
-                        CommandParameter="{Binding SelectedPackage}"/>
-
-                    <Button
-                        Classes="Danger"
-                        Content="Remove"
-                        Command="{Binding RemoveCommand}"
-                        CommandParameter="{Binding SelectedPackage}"/>
-
-                </StackPanel>
-
-            </Border>
+            <package:PackageDetailsPanel
+                Grid.Column="2"
+                DataContext="{Binding Details}"
+                IsVisible="{Binding SelectedPackage,
+                Converter={StaticResource NullToBoolConverter}}"/>
 
         </Grid>
 

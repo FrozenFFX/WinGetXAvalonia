@@ -1,3 +1,6 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:WinGetXAvalonia"
@@ -41,14 +44,11 @@
         <ResourceDictionary>
 
             <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Colors.axaml"/>
                 <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Radius.axaml"/>
                 <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Spacing.axaml"/>
-                <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Typography.axaml"/>
                 <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Motion.axaml"/>
                 <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Elevation.axaml"/>
                 <ResourceInclude Source="avares://WinGetXAvalonia/Resources/Studio.axaml"/>
-                <ResourceInclude Source="avares://WinGetXAvalonia/Styles/Brushes.axaml"/>
                 <ResourceInclude Source="avares://WinGetXAvalonia/Styles/Converters.axaml"/>
             </ResourceDictionary.MergedDictionaries>
 
@@ -73,29 +73,15 @@
     </Application.Resources>
 
     <Application.Styles>
+
         <FluentTheme/>
-        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
-        <StyleInclude Source="/Styles/Buttons.axaml"/>
-        <StyleInclude Source="/Styles/Components.axaml"/>
-        <StyleInclude Source="/Styles/Cards.axaml"/>
-        <StyleInclude Source="/Styles/CardStyles.axaml"/>
-        <StyleInclude Source="/Styles/AnimationStyles.axaml"/>
-        <StyleInclude Source="/Styles/SidebarStyles.axaml"/>
-        <StyleInclude Source="/Styles/Text.axaml"/>
-        <StyleInclude Source="/Styles/Navigation.axaml"/>
 
-        <Style Selector="TextBlock">
-            <Setter Property="FontFamily" Value="Segoe UI Variable"/>
-            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
-        </Style>
+        <StyleInclude Source="avares://WinGetXAvalonia/Themes/Colors.axaml"/>
+        <StyleInclude Source="avares://WinGetXAvalonia/Themes/Typography.axaml"/>
+        <StyleInclude Source="avares://WinGetXAvalonia/Themes/Controls.axaml"/>
+        <StyleInclude Source="avares://WinGetXAvalonia/Themes/Cards.axaml"/>
+        <StyleInclude Source="avares://WinGetXAvalonia/Themes/Animations.axaml"/>
 
-        <Style Selector="Button">
-            <Setter Property="FontFamily" Value="Segoe UI Variable"/>
-        </Style>
-
-        <Style Selector="ToggleSwitch">
-            <Setter Property="FontFamily" Value="Segoe UI Variable"/>
-        </Style>
     </Application.Styles>
 
 </Application>

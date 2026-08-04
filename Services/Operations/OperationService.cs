@@ -1,3 +1,6 @@
+// Copyright (c) 2026 FrozenFFX. All rights reserved.
+// https://github.com/FrozenFFX/WinGetXAvalonia
+
 using System;
 using System.Threading.Tasks;
 using WinGetXAvalonia.Core.Events;
@@ -16,19 +19,22 @@ public sealed class OperationService : IOperationService
     private readonly LoggerService _logger;
     private readonly IEventBus _eventBus;
     private readonly NotificationService _notifications;
+    private readonly IOperationCenter _center;
 
     public OperationService(
         IPackageProvider provider,
         IHistoryService history,
         LoggerService logger,
         IEventBus eventBus,
-        NotificationService notifications)
+        NotificationService notifications,
+        IOperationCenter center)
     {
         _provider = provider;
         _history = history;
         _logger = logger;
         _eventBus = eventBus;
         _notifications = notifications;
+        _center = center;
     }
 
     public Task InstallAsync(string packageId)
@@ -55,16 +61,24 @@ public sealed class OperationService : IOperationService
         if (string.IsNullOrWhiteSpace(packageId))
             return;
 
+        var active = _center.Start(operation, packageId);
+        active.StatusMessage = "Starting...";
+
         bool success;
         string? message = null;
 
         try
         {
             await work();
+            active.Progress = 100;
+            active.StatusMessage = "Completed";
+            _center.Complete(active.Id);
             success = true;
         }
         catch (Exception ex)
         {
+            active.StatusMessage = ex.Message;
+            _center.Fail(active.Id, ex.Message);
             success = false;
             message = ex.Message;
         }

@@ -1,4 +1,8 @@
+// Copyright (c) 2026 FrozenFFX. All rights reserved.
+// https://github.com/FrozenFFX/WinGetXAvalonia
+
 using System.Collections.ObjectModel;
+using Avalonia.Threading;
 using WinGetXAvalonia.Core.Events;
 using WinGetXAvalonia.Core.PackageEngine;
 using WinGetXAvalonia.Models;
@@ -14,49 +18,52 @@ namespace WinGetXAvalonia.Tests;
 
 public class ViewLocatorTests
 {
+    private static async Task<object> BuildAsync(object? dataContext)
+        => await Dispatcher.UIThread.InvokeAsync(() => (object)new ViewLocator().Build(dataContext)!);
+
     [Theory]
-    [InlineData(typeof(BlueprintsViewModel))]
-    [InlineData(typeof(AutomationViewModel))]
-    [InlineData(typeof(SecurityViewModel))]
-    public void PlaceholderModules_ResolveToPlaceholderView(Type viewModelType)
+    [InlineData(typeof(BlueprintsViewModel), typeof(BlueprintsView))]
+    [InlineData(typeof(AutomationViewModel), typeof(AutomationView))]
+    [InlineData(typeof(SecurityViewModel), typeof(SecurityView))]
+    public async Task PlaceholderModules_ResolveToDedicatedView(Type viewModelType, Type expectedViewType)
     {
         var vm = (ViewModelBase)Activator.CreateInstance(viewModelType)!;
-        Assert.IsType<PlaceholderView>(new ViewLocator().Build(vm));
+        Assert.IsType(expectedViewType, await BuildAsync(vm));
     }
 
     [Fact]
-    public void WorkspacesViewModel_ResolvesToWorkspacesView()
+    public async Task WorkspacesViewModel_ResolvesToWorkspacesView()
     {
         var vm = new WorkspacesViewModel(
             new FakeWorkspaceService(),
             new FakeDialogService(),
             new FakeFilePickerService());
 
-        Assert.IsType<WorkspacesView>(new ViewLocator().Build(vm));
+        Assert.IsType<WorkspacesView>(await BuildAsync(vm));
     }
 
     [Fact]
-    public void HistoryViewModel_ResolvesToHistoryView()
+    public async Task HistoryViewModel_ResolvesToHistoryView()
     {
         var vm = new HistoryViewModel(new FakeHistoryService(), new FakeDialogService(), new FakeEventBus());
 
-        Assert.IsType<HistoryView>(new ViewLocator().Build(vm));
+        Assert.IsType<HistoryView>(await BuildAsync(vm));
     }
 
     [Fact]
-    public void DeveloperViewModel_ResolvesToDeveloperView()
+    public async Task DeveloperViewModel_ResolvesToDeveloperView()
     {
         var vm = new DeveloperViewModel(new QueuePanelViewModel(new FakeOperationQueue()));
 
-        Assert.IsType<DeveloperView>(new ViewLocator().Build(vm));
+        Assert.IsType<DeveloperView>(await BuildAsync(vm));
     }
 
     [Fact]
-    public void StudioViewModel_ResolvesToStudioView()
+    public async Task StudioViewModel_ResolvesToStudioView()
     {
         var vm = new StudioViewModel(new FakeStudioService());
 
-        Assert.IsType<StudioView>(new ViewLocator().Build(vm));
+        Assert.IsType<StudioView>(await BuildAsync(vm));
     }
 
     private sealed class FakeWorkspaceService : IWorkspaceService

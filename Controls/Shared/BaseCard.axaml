@@ -1,3 +1,6 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
 <ContentControl
     x:Class="WinGetXAvalonia.Controls.Shared.BaseCard"
     xmlns="https://github.com/avaloniaui"
@@ -17,7 +20,9 @@
 
                 <Border.Transitions>
                     <Transitions>
-                        <DoubleTransition Property="Opacity" Duration="0:0:0.12"/>
+                        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.25"/>
+                        <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                        <BrushTransition Property="BorderBrush" Duration="0:0:0.2"/>
                     </Transitions>
                 </Border.Transitions>
 
@@ -29,5 +34,20 @@
 
         </ControlTemplate>
     </ContentControl.Template>
+
+    <ContentControl.Styles>
+        <Style Selector="Border.BaseCard">
+            <Setter Property="RenderTransform" Value="scale(1)"/>
+        </Style>
+
+        <Style Selector="Border.BaseCard:pointerover">
+            <Setter Property="RenderTransform" Value="scale(1.01)"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+        </Style>
+
+        <Style Selector="Border.BaseCard:pressed">
+            <Setter Property="RenderTransform" Value="scale(0.985)"/>
+        </Style>
+    </ContentControl.Styles>
 
 </ContentControl>

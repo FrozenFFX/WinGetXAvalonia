@@ -1,36 +1,50 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:WinGetXAvalonia.ViewModels"
              xmlns:models="using:WinGetXAvalonia.Models.Operations"
              xmlns:operation="using:WinGetXAvalonia.Controls.Operation"
+             xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
              x:Class="WinGetXAvalonia.Controls.Operation.OperationDrawer"
              x:DataType="vm:OperationDrawerViewModel">
 
-    <Border Width="360"
-            Padding="16"
-            Background="{DynamicResource SurfaceBrush}"
+    <Border Background="{DynamicResource SurfaceBrush}"
             BorderBrush="{DynamicResource BorderBrush}"
-            BorderThickness="1"
-            CornerRadius="{DynamicResource RadiusMedium}">
+            BorderThickness="1,0,0,0">
 
-        <Grid RowDefinitions="Auto,12,*">
+        <Grid RowDefinitions="Auto,*,Auto">
 
-            <TextBlock FontSize="20"
-                       FontWeight="Bold"
-                       Text="Operations" />
+            <shared:SectionHeader
+                Margin="16,16,16,0"
+                Title="Operations"
+                Description="{Binding Summary}"/>
 
-            <ListBox Grid.Row="2"
-                     ItemsSource="{Binding Operations}"
+            <ListBox Grid.Row="1"
+                     Margin="12,12,12,0"
                      BorderThickness="0"
-                     Background="Transparent">
+                     Background="Transparent"
+                     ItemsSource="{Binding Operations}">
+
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
 
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="models:OperationModel">
-                        <operation:OperationCard />
+                        <operation:OperationCard/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
 
             </ListBox>
+
+            <Button Grid.Row="2"
+                    Margin="12"
+                    Content="Clear Completed"
+                    Command="{Binding ClearCompletedCommand}"/>
 
         </Grid>
 

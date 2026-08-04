@@ -1,0 +1,85 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    x:Class="WinGetXAvalonia.Views.BlueprintsView"
+    x:DataType="vm:BlueprintsViewModel">
+
+    <Grid Margin="20">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <shared:SectionHeader
+            Title="Blueprints"
+            Description="Reusable installation templates."/>
+
+        <Grid
+            Grid.Row="2"
+            ColumnDefinitions="340,12,*">
+
+            <Border
+                Grid.Column="0"
+                Classes="card"
+                Padding="18">
+
+                <StackPanel Spacing="10">
+
+                    <Button Content="New Blueprint"/>
+
+                    <Button Content="Import"/>
+
+                    <Button Content="Export"/>
+
+                    <Separator/>
+
+                    <ListBox/>
+
+                </StackPanel>
+
+            </Border>
+
+            <GridSplitter
+                Grid.Column="1"
+                Width="6"/>
+
+            <Border
+                Grid.Column="2"
+                Classes="card"
+                Padding="20">
+
+                <StackPanel Spacing="14">
+
+                    <TextBlock
+                        FontSize="24"
+                        FontWeight="SemiBold"
+                        Text="Blueprint"/>
+
+                    <TextBox PlaceholderText="Name"/>
+
+                    <TextBox
+                        AcceptsReturn="True"
+                        Height="200"
+                        PlaceholderText="Description"/>
+
+                    <Button
+                        HorizontalAlignment="Left"
+                        MinWidth="140"
+                        Content="Save"/>
+
+                </StackPanel>
+
+            </Border>
+
+        </Grid>
+
+    </Grid>
+
+</UserControl>

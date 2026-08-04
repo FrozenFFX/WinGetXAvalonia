@@ -1,9 +1,14 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:conv="using:WinGetXAvalonia.Converters">
 
     <conv:ZeroToBoolConverter x:Key="ZeroToBoolConverter"/>
+
+    <conv:NullToBoolConverter x:Key="NullToBoolConverter"/>
 
     <conv:PositiveToBoolConverter x:Key="PositiveToBoolConverter"/>
 

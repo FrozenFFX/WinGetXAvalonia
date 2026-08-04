@@ -1,3 +1,6 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -77,12 +80,14 @@
 
                 <Button
                     Grid.Column="2"
+                    MinWidth="110"
                     Content="Export"
                     Command="{Binding ExportCommand}"/>
 
                 <Button
                     Grid.Column="3"
                     Classes="Danger"
+                    MinWidth="110"
                     Content="Clear"
                     Command="{Binding ClearCommand}"/>
             </Grid>
@@ -115,13 +120,23 @@
         </ItemsControl>
 
         <!-- List -->
-        <Grid Grid.Row="4">
+        <Grid
+            Grid.Row="4"
+            ColumnDefinitions="*,12,320">
 
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ScrollViewer
+                Grid.Column="0"
+                VerticalScrollBarVisibility="Auto">
 
                 <StackPanel Spacing="20">
 
                     <ItemsControl ItemsSource="{Binding Groups}">
+
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
 
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -136,6 +151,12 @@
 
                                     <ItemsControl ItemsSource="{Binding Items}">
 
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <VirtualizingStackPanel/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <controls:HistoryCard/>
@@ -148,6 +169,78 @@
                     </ItemsControl>
                 </StackPanel>
             </ScrollViewer>
+
+            <GridSplitter
+                Grid.Column="1"
+                Width="6"
+                ResizeDirection="Columns"
+                ResizeBehavior="PreviousAndNext"/>
+
+            <Border
+                Grid.Column="2"
+                Padding="18"
+                CornerRadius="{DynamicResource RadiusMedium}"
+                Background="{DynamicResource CardBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1">
+
+                <StackPanel Spacing="14">
+
+                    <TextBlock
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Text="Statistics"/>
+
+                    <Grid
+                        ColumnDefinitions="*,Auto"
+                        RowDefinitions="Auto,Auto,Auto,Auto"
+                        RowSpacing="10">
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Text="Total"/>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            FontWeight="SemiBold"
+                            Text="{Binding TotalOperations}"/>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Text="Successful"/>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            FontWeight="SemiBold"
+                            Text="{Binding SuccessfulOperations}"/>
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Text="Failed"/>
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            FontWeight="SemiBold"
+                            Text="{Binding FailedOperations}"/>
+
+                        <TextBlock
+                            Grid.Row="3"
+                            Text="Today"/>
+
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            FontWeight="SemiBold"
+                            Text="{Binding TodayOperations}"/>
+
+                    </Grid>
+
+                </StackPanel>
+
+            </Border>
 
             <!-- Empty state -->
             <StackPanel
@@ -204,6 +297,7 @@
 
                 <Button
                     Margin="0,8,0,0"
+                    MinWidth="140"
                     Content="Retry"
                     Command="{Binding RefreshCommand}"
                     HorizontalAlignment="Center"/>

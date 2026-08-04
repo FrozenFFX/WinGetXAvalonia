@@ -1,5 +1,9 @@
+// Copyright (c) 2026 FrozenFFX. All rights reserved.
+// https://github.com/FrozenFFX/WinGetXAvalonia
+
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 
 namespace WinGetXAvalonia.Controls;
 
@@ -17,5 +21,11 @@ public partial class PackageCard : UserControl
     public PackageCard()
     {
         InitializeComponent();
+    }
+
+    private void ShowContextMenu(object? sender, RoutedEventArgs e)
+    {
+        if (sender is Control anchor)
+            ContextMenu?.Open(anchor);
     }
 }

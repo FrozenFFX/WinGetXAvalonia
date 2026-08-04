@@ -298,3 +298,15 @@ Plan dondurulmuştur. Her oturum tek bir hedefe sahiptir:
 
 1. Bir Issue seç.
 2. Kodunu yaz.
+
+==================================================
+
+## ARTICLE XVI
+### SAHİPLİK
+
+Bu proje FrozenFFX'e aittir.
+
+- Sahip: FrozenFFX — https://github.com/FrozenFFX
+- Repository: https://github.com/FrozenFFX/WinGetXAvalonia
+- Tüm kaynak dosyalarda telif/attribution başlığı bulunur.
+- Attribution etiketi silinmez, değiştirilmez.

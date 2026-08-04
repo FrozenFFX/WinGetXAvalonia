@@ -1,3 +1,6 @@
+// Copyright (c) 2026 FrozenFFX. All rights reserved.
+// https://github.com/FrozenFFX/WinGetXAvalonia
+
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input.Platform;
@@ -37,6 +40,12 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
     [ObservableProperty]
     private PackageFilterMode selectedFilter = PackageFilterMode.All;
 
+    [ObservableProperty]
+    private PackageModel? selectedPackage;
+
+    [ObservableProperty]
+    private PackageDetailsViewModel? details;
+
     public ObservableRangeCollection<PackageModel> Updates { get; } = new();
 
     public int PackageCount => Updates.Count;
@@ -45,17 +54,26 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
         IPackageProvider provider,
         IOperationService operations,
         IEventBus eventBus,
-        ILauncherService launcher)
+        ILauncherService launcher,
+        IClipboardService clipboard)
     {
         _provider = provider;
         _operations = operations;
         _eventBus = eventBus;
         _launcher = launcher;
 
+        Details = new PackageDetailsViewModel(provider, operations, clipboard, launcher);
+
         _subscription =
             _eventBus.Subscribe<PackageChangedEvent>(e => _ = Refresh());
 
         Updates.CollectionChanged += (_, _) => OnPropertyChanged(nameof(PackageCount));
+    }
+
+    partial void OnSelectedPackageChanged(PackageModel? value)
+    {
+        if (Details is not null)
+            _ = Details.Load(value);
     }
 
     public Task InitializeAsync()

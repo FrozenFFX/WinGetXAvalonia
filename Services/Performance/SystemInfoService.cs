@@ -1,3 +1,6 @@
+// Copyright (c) 2026 FrozenFFX. All rights reserved.
+// https://github.com/FrozenFFX/WinGetXAvalonia
+
 using System.Runtime.InteropServices;
 
 namespace WinGetXAvalonia.Services.Performance;

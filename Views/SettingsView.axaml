@@ -1,7 +1,11 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:WinGetXAvalonia.ViewModels"
              xmlns:vms="using:WinGetXAvalonia.ViewModels.Settings"
+             xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
              x:Class="WinGetXAvalonia.Views.SettingsView"
              x:DataType="vm:SettingsViewModel">
 
@@ -25,16 +29,14 @@
 
     </UserControl.Styles>
 
-    <Grid Margin="30">
+    <Grid>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="260"/>
-            <ColumnDefinition Width="25"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <Grid
+            Margin="30"
+            ColumnDefinitions="260,8,*">
 
-        <Border
-            Grid.Column="0"
+            <Border
+                Grid.Column="0"
             Classes="card"
             Padding="15">
 
@@ -104,9 +106,22 @@
 
         </Border>
 
+        <GridSplitter
+            Grid.Column="1"
+            Width="6"
+            ResizeDirection="Columns"
+            ResizeBehavior="PreviousAndNext"/>
+
         <ContentControl
             Grid.Column="2"
+            Margin="0"
             Content="{Binding SelectedCategory}"/>
+
+    </Grid>
+
+    <shared:LoadingOverlay
+        IsLoading="{Binding IsLoading}"
+        Message="Loading settings..."/>
 
     </Grid>
 

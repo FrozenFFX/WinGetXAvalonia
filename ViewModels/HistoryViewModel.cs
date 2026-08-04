@@ -1,3 +1,6 @@
+// Copyright (c) 2026 FrozenFFX. All rights reserved.
+// https://github.com/FrozenFFX/WinGetXAvalonia
+
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -49,6 +52,14 @@ public partial class HistoryViewModel : AsyncViewModel
         var count => $"{count} operations"
     };
 
+    public int TotalOperations => _allItems.Count;
+
+    public int SuccessfulOperations => _allItems.Count(i => i.IsSuccess);
+
+    public int FailedOperations => _allItems.Count(i => !i.IsSuccess);
+
+    public int TodayOperations => _allItems.Count(i => i.Entry.Timestamp.Date == DateTime.Today);
+
     public HistoryViewModel(IHistoryService history, IDialogService dialogs, IEventBus eventBus)
     {
         _history = history;
@@ -97,6 +108,11 @@ public partial class HistoryViewModel : AsyncViewModel
                 _allItems.Add(new HistoryItemViewModel(entry));
 
             OperationsCount = _allItems.Count;
+
+            OnPropertyChanged(nameof(TotalOperations));
+            OnPropertyChanged(nameof(SuccessfulOperations));
+            OnPropertyChanged(nameof(FailedOperations));
+            OnPropertyChanged(nameof(TodayOperations));
 
             ApplyFilter();
 

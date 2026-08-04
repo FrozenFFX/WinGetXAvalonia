@@ -1,3 +1,6 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -8,7 +11,8 @@
              x:DataType="vm:BrowseViewModel"
              x:CompileBindings="False">
 
-    <Grid Margin="20" ColumnDefinitions="*,360">
+    <Grid Margin="20"
+          ColumnDefinitions="*,12,400">
 
         <!-- sol taraf: featured, kategoriler, arama, sonuçlar -->
         <Grid Grid.Column="0"
@@ -21,9 +25,11 @@
             <ListBox
                 Grid.Row="1"
                 Margin="0,4,0,0"
-                Height="150"
+                Height="170"
                 ItemsSource="{Binding Featured}"
                 SelectedItem="{Binding SelectedPackage}"
+                BorderThickness="0"
+                Background="Transparent"
                 ScrollViewer.HorizontalScrollBarVisibility="Auto">
 
                 <ListBox.ItemsPanel>
@@ -102,6 +108,7 @@
 
                 <Button
                     Grid.Column="1"
+                    MinWidth="110"
                     Content="Search"
                     Command="{Binding SearchCommand}"/>
             </Grid>
@@ -117,13 +124,22 @@
                 <ListBox
                     ItemsSource="{Binding Results}"
                     SelectedItem="{Binding SelectedPackage}"
+                    BorderThickness="0"
+                    Background="Transparent"
                     shared:ScrollToTopBehavior.ScrollToTopOnReset="True">
+
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <package:BrowseCard/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
+
                 </ListBox>
 
                 <shared:LoadingOverlay
@@ -220,9 +236,15 @@
 
         </Grid>
 
+        <GridSplitter
+            Grid.Column="1"
+            Width="6"
+            ResizeDirection="Columns"
+            ResizeBehavior="PreviousAndNext"/>
+
         <!-- sağ tarafta seçilen paketin detay paneli -->
         <Border
-            Grid.Column="1"
+            Grid.Column="2"
             Margin="16,0,0,0"
             VerticalAlignment="Stretch"
             Background="{DynamicResource CardBrush}"
@@ -312,6 +334,7 @@
                         Command="{Binding InstallOrUpdateCommand}"
                         CommandParameter="{Binding SelectedDetails.SelectedPackage}"
                         IsEnabled="{Binding SelectedDetails.SelectedPackage.CanInstall}"
+                        Height="42"
                         HorizontalAlignment="Stretch"/>
 
                     <ProgressBar
@@ -477,13 +500,15 @@
 
                         <Button
                             Content="Open Homepage"
+                            Height="38"
                             Command="{Binding OpenHomepageCommand}"
                             CommandParameter="{Binding SelectedDetails}"
                             IsVisible="{Binding SelectedDetails.HasHomepage}"/>
 
                         <Button
                             Grid.Column="1"
-                            Content="📋 Copy ID"
+                            Height="38"
+                            Content="Copy Package ID"
                             Command="{Binding CopyIdCommand}"
                             CommandParameter="{Binding SelectedDetails.SelectedPackage}"/>
                     </Grid>
@@ -523,6 +548,10 @@
 
                 </Border>
             </ScrollViewer>
+
+            <Border
+                IsVisible="{Binding SelectedDetails.SelectedPackage.IsBusy}"
+                Background="#66000000"/>
 
             <shared:LoadingOverlay
                 IsLoading="{Binding SelectedDetails.IsLoading}"

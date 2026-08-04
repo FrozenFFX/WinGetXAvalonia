@@ -1,3 +1,6 @@
+// Copyright (c) 2026 FrozenFFX. All rights reserved.
+// https://github.com/FrozenFFX/WinGetXAvalonia
+
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -41,9 +44,14 @@ public partial class DashboardViewModel : ViewModelBase
     private bool _initialized;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(StatusText))]
+    [NotifyPropertyChangedFor(nameof(TotalPackages))]
     private int installed;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(StatusText))]
+    [NotifyPropertyChangedFor(nameof(TotalPackages))]
+    [NotifyPropertyChangedFor(nameof(HasUpdates))]
     private int updates;
 
     [ObservableProperty]
@@ -56,7 +64,23 @@ public partial class DashboardViewModel : ViewModelBase
     private bool isLoading;
 
     [ObservableProperty]
+    private string searchText = "";
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsHealthy))]
     private PackageHealthSummary healthSummary = PackageHealthSummary.Empty;
+
+    public string StatusText =>
+        $"{Installed:N0} Installed • {Updates:N0} Updates";
+
+    public int TotalPackages =>
+        Installed + Updates;
+
+    public bool HasUpdates =>
+        Updates > 0;
+
+    public bool IsHealthy =>
+        HealthSummary.Failed == 0;
 
     public ObservableCollection<SystemCardModel> SystemCards { get; } = new();
 
@@ -391,6 +415,18 @@ public partial class DashboardViewModel : ViewModelBase
     [RelayCommand]
     private void OpenSettings()
         => _navigation.Navigate(_settingsPage);
+
+    [RelayCommand]
+    private Task Refresh()
+        => InitializeAsync();
+
+    partial void OnSearchTextChanged(string value)
+        => Search();
+
+    private void Search()
+    {
+        // Arama çubuğu UI polish aşamasında ekleniyor.
+    }
 
     [RelayCommand]
     private async Task UpgradeAll()

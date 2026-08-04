@@ -1,3 +1,6 @@
+// Copyright (c) 2026 FrozenFFX. All rights reserved.
+// https://github.com/FrozenFFX/WinGetXAvalonia
+
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input.Platform;
@@ -15,7 +18,7 @@ using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Queue;
 using PackageRequest = WinGetXAvalonia.Core.PackageEngine.PackageRequest;
 using PackageOperation = WinGetXAvalonia.Core.PackageEngine.PackageOperation;
-using WinGetXAvalonia.Services.PackageDetails;
+using WinGetXAvalonia.Services.Operations;
 
 namespace WinGetXAvalonia.ViewModels;
 
@@ -25,7 +28,6 @@ public partial class InstalledViewModel : AsyncViewModel
     private readonly IOperationQueue _queue;
     private readonly IEventBus _eventBus;
     private readonly ILauncherService _launcher;
-    private readonly IPackageDetailsService _details;
 
     private readonly List<PackageModel> _allPackages = new();
     private bool _refreshing;
@@ -52,31 +54,12 @@ public partial class InstalledViewModel : AsyncViewModel
     private PackageModel? selectedPackage;
 
     [ObservableProperty]
-    private PackageDetailsModel? packageDetails;
-
-    public bool HasSelection => SelectedPackage != null;
+    private PackageDetailsViewModel? details;
 
     partial void OnSelectedPackageChanged(PackageModel? value)
     {
-        OnPropertyChanged(nameof(HasSelection));
-
-        _ = LoadDetails(value);
-    }
-
-    private async Task LoadDetails(PackageModel? package)
-    {
-        if (package is null || string.IsNullOrWhiteSpace(package.Id))
-        {
-            PackageDetails = null;
-            return;
-        }
-
-        var id = package.Id;
-
-        var details = await _details.GetAsync(id);
-
-        if (SelectedPackage?.Id == id)
-            PackageDetails = details;
+        if (Details is not null)
+            _ = Details.Load(value);
     }
 
     public InstalledViewModel(
@@ -84,13 +67,15 @@ public partial class InstalledViewModel : AsyncViewModel
         IOperationQueue queue,
         IEventBus eventBus,
         ILauncherService launcher,
-        IPackageDetailsService details)
+        IOperationService operations,
+        IClipboardService clipboard)
     {
         _provider = provider;
         _queue = queue;
         _eventBus = eventBus;
         _launcher = launcher;
-        _details = details;
+
+        Details = new PackageDetailsViewModel(provider, operations, clipboard, launcher);
 
         _eventBus.Subscribe<PackageChangedEvent>(e => _ = Refresh());
     }
@@ -232,6 +217,15 @@ public partial class InstalledViewModel : AsyncViewModel
     }
 
     [RelayCommand]
+    private void SelectAll()
+    {
+        foreach (var package in Packages)
+            package.Selected = true;
+
+        OnPropertyChanged(nameof(SelectedCount));
+    }
+
+    [RelayCommand]
     private async Task OpenHomepage(PackageModel package)
     {
         if (package is null)
@@ -269,6 +263,8 @@ public partial class InstalledViewModel : AsyncViewModel
 
         OnPropertyChanged(nameof(PackageCount));
         OnPropertyChanged(nameof(SelectedCount));
+
+        SelectedPackage = null;
     }
 
     [RelayCommand]
@@ -286,6 +282,8 @@ public partial class InstalledViewModel : AsyncViewModel
             });
 
         await Refresh();
+
+        SelectedPackage = null;
     }
 
     private void ApplyFilter()
@@ -323,8 +321,17 @@ public partial class InstalledViewModel : AsyncViewModel
 
     private void OnPackagePropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(PackageModel.Selected))
-            OnPropertyChanged(nameof(SelectedCount));
+        switch (e.PropertyName)
+        {
+            case nameof(PackageModel.Selected):
+                OnPropertyChanged(nameof(SelectedCount));
+                break;
+
+            case nameof(PackageModel.Name):
+            case nameof(PackageModel.Version):
+                ApplyFilter();
+                break;
+        }
     }
 
     private static Avalonia.Controls.Window? CurrentWindow

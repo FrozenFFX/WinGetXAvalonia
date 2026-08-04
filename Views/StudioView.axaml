@@ -1,3 +1,6 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -119,16 +122,20 @@
         </ItemsControl>
 
         <!-- Tools -->
-        <Grid Grid.Row="4">
+        <Grid
+            Grid.Row="4"
+            ColumnDefinitions="*,12,360">
 
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ScrollViewer
+                Grid.Column="0"
+                VerticalScrollBarVisibility="Auto">
 
                 <ItemsControl ItemsSource="{Binding Tools}">
 
                     <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel/>
-                        </ItemsPanelTemplate>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
 
                     <ItemsControl.ItemTemplate>
@@ -147,6 +154,34 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
+
+            <GridSplitter
+                Grid.Column="1"
+                Width="6"
+                ResizeDirection="Columns"
+                ResizeBehavior="PreviousAndNext"/>
+
+            <Border
+                Grid.Column="2"
+                Padding="20"
+                Background="{DynamicResource CardBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="{DynamicResource RadiusMedium}">
+
+                <StackPanel Spacing="14">
+
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="SemiBold"
+                        Text="Tool Details"/>
+
+                    <ContentControl
+                        Content="{Binding SelectedTool}"/>
+
+                </StackPanel>
+
+            </Border>
 
             <!-- Empty state -->
             <StackPanel

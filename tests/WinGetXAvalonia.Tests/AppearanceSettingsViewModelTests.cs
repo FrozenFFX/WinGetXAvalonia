@@ -1,3 +1,7 @@
+// Copyright (c) 2026 FrozenFFX. All rights reserved.
+// https://github.com/FrozenFFX/WinGetXAvalonia
+
+using Avalonia.Threading;
 using WinGetXAvalonia.Services.Backup;
 using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Theme;
@@ -30,7 +34,7 @@ public class AppearanceSettingsViewModelTests
     {
         var (file, _, vm) = Create();
 
-        vm.SelectedTheme = "Light";
+        await Dispatcher.UIThread.InvokeAsync(() => vm.SelectedTheme = "Light");
         await Task.Delay(200);
 
         var reloaded = new SettingsStore(file);

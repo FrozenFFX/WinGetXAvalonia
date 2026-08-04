@@ -1,22 +1,43 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    x:Class="WinGetXAvalonia.Controls.SearchBar">
+    x:Class="WinGetXAvalonia.Controls.SearchBar"
+    x:Name="Root">
 
-    <Grid>
+    <Border
+        CornerRadius="10"
+        BorderBrush="{DynamicResource BorderBrush}"
+        BorderThickness="1"
+        Background="{DynamicResource SurfaceBrush}"
+        Padding="10,6">
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="100"/>
-        </Grid.ColumnDefinitions>
+        <Grid ColumnDefinitions="Auto,*,Auto"
+              ColumnSpacing="8">
 
-        <TextBox
-            PlaceholderText="Search..."/>
+            <TextBlock
+                Grid.Column="0"
+                Text="🔍"
+                VerticalAlignment="Center"
+                FontSize="16"
+                Opacity="0.65"/>
 
-        <Button
-            Grid.Column="1"
-            Content="Search"/>
+            <TextBox
+                Grid.Column="1"
+                Background="Transparent"
+                BorderThickness="0"
+                PlaceholderText="Search packages..."
+                VerticalContentAlignment="Center"/>
 
-    </Grid>
+            <Button
+                Grid.Column="2"
+                MinWidth="90"
+                Content="Search"/>
+
+        </Grid>
+
+    </Border>
 
 </UserControl>

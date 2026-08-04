@@ -1,6 +1,10 @@
+// Copyright (c) 2026 FrozenFFX. All rights reserved.
+// https://github.com/FrozenFFX/WinGetXAvalonia
+
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using WinGetXAvalonia.Models.Operations;
 using WinGetXAvalonia.Services.Operations;
 
@@ -23,6 +27,34 @@ public partial class OperationDrawerViewModel : ViewModelBase
     [ObservableProperty]
     private bool isOpen;
 
+    public int RunningCount => Operations.Count(x => x.Status == OperationStatus.Running);
+
+    public int PendingCount => Operations.Count(x => x.Status == OperationStatus.Waiting);
+
+    public int CompletedCount => Operations.Count(x => x.Status == OperationStatus.Completed);
+
+    public int FailedCount => Operations.Count(x => x.Status == OperationStatus.Failed);
+
+    public string Summary
+        => $"{RunningCount} Running • {PendingCount} Pending • {CompletedCount} Completed";
+
+    [RelayCommand]
+    private void ClearCompleted()
+    {
+        foreach (var operation in Operations
+            .Where(x => x.Status == OperationStatus.Completed)
+            .ToList())
+        {
+            Operations.Remove(operation);
+        }
+
+        OnPropertyChanged(nameof(Summary));
+        OnPropertyChanged(nameof(HasOperations));
+    }
+
     private void OnOperationsChanged(object? sender, NotifyCollectionChangedEventArgs e)
-        => OnPropertyChanged(nameof(HasOperations));
+    {
+        OnPropertyChanged(nameof(HasOperations));
+        OnPropertyChanged(nameof(Summary));
+    }
 }

@@ -1,30 +1,50 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="WinGetXAvalonia.Controls.Shared.LoadingOverlay"
     x:Name="Root">
 
-    <Grid IsVisible="{Binding IsLoading, ElementName=Root}">
+    <Grid
+        IsVisible="{Binding IsLoading, ElementName=Root}"
+        ZIndex="999">
 
         <Border
             Background="{DynamicResource BackgroundBrush}"
-            Opacity="0.85"/>
+            Opacity="0.82"/>
 
-        <StackPanel
+        <Border
+            Width="340"
+            Padding="24"
+            CornerRadius="{DynamicResource RadiusLarge}"
+            Background="{DynamicResource CardBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="1"
             HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Spacing="12">
+            VerticalAlignment="Center">
 
-            <ProgressBar
-                Width="240"
-                IsIndeterminate="True"/>
+            <StackPanel Spacing="18">
 
-            <TextBlock
-                Text="{Binding Message, ElementName=Root}"
-                HorizontalAlignment="Center"
-                Opacity="0.7"/>
+                <ProgressBar
+                    Height="6"
+                    IsIndeterminate="True"/>
 
-        </StackPanel>
+                <TextBlock
+                    Text="{Binding Message, ElementName=Root}"
+                    FontWeight="SemiBold"
+                    FontSize="16"
+                    HorizontalAlignment="Center"/>
+
+                <TextBlock
+                    Text="Please wait..."
+                    Opacity="0.60"
+                    HorizontalAlignment="Center"/>
+
+            </StackPanel>
+
+        </Border>
 
     </Grid>
 

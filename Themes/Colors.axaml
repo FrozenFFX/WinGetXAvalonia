@@ -1,35 +1,24 @@
-<ResourceDictionary
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<Styles
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- Primary -->
+    <Styles.Resources>
 
-    <SolidColorBrush
-        x:Key="PrimaryBrush"
-        Color="#3E8EF7"/>
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#3E8EF7"/>
 
-    <SolidColorBrush
-        x:Key="SuccessBrush"
-        Color="#27AE60"/>
+        <SolidColorBrush x:Key="SuccessBrush" Color="#4CAF50"/>
 
-    <SolidColorBrush
-        x:Key="WarningBrush"
-        Color="#F39C12"/>
+        <SolidColorBrush x:Key="WarningBrush" Color="#FFB300"/>
 
-    <SolidColorBrush
-        x:Key="DangerBrush"
-        Color="#E74C3C"/>
+        <SolidColorBrush x:Key="DangerBrush" Color="#F44336"/>
 
-    <!-- Legacy palette (used by Themes/Dark, Themes/Light, Styles/Brushes) -->
+        <SolidColorBrush x:Key="InfoBrush" Color="#2196F3"/>
 
-    <Color x:Key="Color.Background">#FF1B1D23</Color>
-    <Color x:Key="Color.Surface">#FF2A2E39</Color>
-    <Color x:Key="Color.Card">#FF2F3440</Color>
-    <Color x:Key="Color.TextPrimary">#FFFFFFFF</Color>
-    <Color x:Key="Color.TextSecondary">#B3FFFFFF</Color>
-    <Color x:Key="Color.Accent">#FF4F8CFF</Color>
-    <Color x:Key="Color.Success">#FF16C47F</Color>
-    <Color x:Key="Color.Warning">#FFF5A524</Color>
-    <Color x:Key="Color.Error">#FFE5484D</Color>
+        <SolidColorBrush x:Key="AccentBrush" Color="#3B82F6"/>
 
-</ResourceDictionary>
+    </Styles.Resources>
+
+</Styles>

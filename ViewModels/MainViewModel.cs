@@ -1,3 +1,6 @@
+// Copyright (c) 2026 FrozenFFX. All rights reserved.
+// https://github.com/FrozenFFX/WinGetXAvalonia
+
 using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -176,5 +179,11 @@ public partial class MainViewModel : ViewModelBase
             _ = workspaces.InitializeAsync();
         else if (page is StudioViewModel studio)
             _ = studio.InitializeAsync();
+        else if (page is BlueprintsViewModel blueprints)
+            _ = blueprints.InitializeAsync();
+        else if (page is AutomationViewModel automation)
+            _ = automation.InitializeAsync();
+        else if (page is SecurityViewModel security)
+            _ = security.InitializeAsync();
     }
 }

@@ -1,3 +1,6 @@
+// Copyright (c) 2026 FrozenFFX. All rights reserved.
+// https://github.com/FrozenFFX/WinGetXAvalonia
+
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Avalonia.Controls;
@@ -6,12 +9,7 @@ using WinGetXAvalonia.ViewModels;
 
 namespace WinGetXAvalonia;
 
-/// <summary>
-/// Given a view model, returns the corresponding view if possible.
-/// </summary>
-[RequiresUnreferencedCode(
-    "Default implementation of ViewLocator involves reflection which may be trimmed away.",
-    Url = "https://docs.avaloniaui.net/docs/concepts/view-locator")]
+[RequiresUnreferencedCode("Reflection is used to map view models to views.")]
 public class ViewLocator : IDataTemplate
 {
     public Control? Build(object? param)
@@ -26,11 +24,6 @@ public class ViewLocator : IDataTemplate
             .Replace("ViewModel", "View", StringComparison.Ordinal);
 
         var type = param.GetType().Assembly.GetType($"{ns}.{name}");
-
-        if (type == null && param is ViewModels.PlaceholderViewModel)
-        {
-            type = typeof(Views.PlaceholderView);
-        }
 
         if (type != null)
         {

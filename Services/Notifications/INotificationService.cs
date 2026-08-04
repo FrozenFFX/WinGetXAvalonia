@@ -1,9 +1,5 @@
-// ==========================================================
-// WinGetX - https://github.com/FrozenFFX
-// ==========================================================
 namespace WinGetXAvalonia.Services.Notifications;
 
-// kaneki
 public interface INotificationService
 {
     void ShowSuccess(string title, string message);
@@ -14,4 +10,3 @@ public interface INotificationService
 
     void ShowInfo(string title, string message);
 }
-// kaneki

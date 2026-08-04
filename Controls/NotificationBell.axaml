@@ -1,0 +1,142 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:models="using:WinGetXAvalonia.Services.Notifications"
+    x:Class="WinGetXAvalonia.Controls.NotificationBell"
+    x:Name="Root"
+    x:DataType="vm:NotificationCenterViewModel">
+
+    <Grid>
+
+        <ToggleButton
+            x:Name="BellButton"
+            Padding="10,8"
+            CornerRadius="{DynamicResource RadiusMedium}"
+            Background="{DynamicResource CardBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="1">
+
+            <StackPanel Orientation="Horizontal" Spacing="8">
+
+                <TextBlock FontSize="18" Text="🔔"/>
+
+                <Border
+                    CornerRadius="10"
+                    Padding="7,1"
+                    VerticalAlignment="Center"
+                    Background="{DynamicResource DangerBrush}"
+                    IsVisible="{Binding HasUnread}">
+
+                    <TextBlock
+                        FontSize="11"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text="{Binding UnreadCount}"/>
+
+                </Border>
+
+            </StackPanel>
+
+        </ToggleButton>
+
+        <Popup
+            IsOpen="{Binding #BellButton.IsChecked, Mode=TwoWay}"
+            IsLightDismissEnabled="True"
+            Placement="BottomEdgeAlignedRight"
+            PlacementTarget="{Binding #Root}"
+            WindowManagerAddShadowHint="True">
+
+            <Border
+                Classes="card"
+                Padding="16"
+                Width="360"
+                MaxHeight="440">
+
+                <Grid RowDefinitions="Auto,Auto,*">
+
+                    <Grid ColumnDefinitions="*,Auto">
+
+                        <TextBlock
+                            FontSize="16"
+                            FontWeight="SemiBold"
+                            Text="Notifications"/>
+
+                        <Button
+                            Grid.Column="1"
+                            Classes="Danger"
+                            Content="Clear"
+                            Command="{Binding ClearCommand}"/>
+
+                    </Grid>
+
+                    <Border
+                        Grid.Row="1"
+                        Height="1"
+                        Margin="0,10"
+                        Background="{DynamicResource BorderBrush}"/>
+
+                    <ScrollViewer
+                        Grid.Row="2"
+                        VerticalScrollBarVisibility="Auto">
+
+                        <StackPanel>
+
+                            <TextBlock
+                                IsVisible="{Binding IsEmpty}"
+                                Opacity="0.5"
+                                Text="No notifications yet."/>
+
+                            <ItemsControl ItemsSource="{Binding Items}">
+
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="models:NotificationModel">
+
+                                        <Grid
+                                            ColumnDefinitions="26,*"
+                                            Margin="0,6">
+
+                                            <TextBlock
+                                                FontSize="15"
+                                                VerticalAlignment="Top"
+                                                Text="{Binding Type, Converter={StaticResource NotificationTypeToIcon}}"/>
+
+                                            <StackPanel Grid.Column="1" Spacing="2">
+
+                                                <TextBlock
+                                                    FontWeight="SemiBold"
+                                                    Text="{Binding Title}"/>
+
+                                                <TextBlock
+                                                    Opacity="0.6"
+                                                    FontSize="12"
+                                                    TextWrapping="Wrap"
+                                                    Text="{Binding Message}"/>
+
+                                                <TextBlock
+                                                    Opacity="0.45"
+                                                    FontSize="11"
+                                                    Text="{Binding Timestamp, StringFormat='HH:mm'}"/>
+
+                                            </StackPanel>
+
+                                        </Grid>
+
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+
+                            </ItemsControl>
+
+                        </StackPanel>
+
+                    </ScrollViewer>
+
+                </Grid>
+
+            </Border>
+
+        </Popup>
+
+    </Grid>
+
+</UserControl>

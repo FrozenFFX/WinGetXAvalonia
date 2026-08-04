@@ -1,0 +1,17 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Studio brand accent (ARTICLE XII: theme token, tek tema sistemi) -->
+
+    <Color x:Key="Color.Studio">#7A6CF0</Color>
+
+    <SolidColorBrush
+        x:Key="StudioAccentBrush"
+        Color="{StaticResource Color.Studio}"/>
+
+    <SolidColorBrush
+        x:Key="StudioAccentSoftBrush"
+        Color="#1A7A6CF0"/>
+
+</ResourceDictionary>

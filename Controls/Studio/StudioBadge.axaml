@@ -1,0 +1,70 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="WinGetXAvalonia.Controls.Studio.StudioBadge"
+    x:Name="Root">
+
+    <UserControl.Styles>
+
+        <Style Selector="Border.StudioBadgePart">
+            <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+        </Style>
+
+        <Style Selector="Border.StudioBadgePart.info">
+            <Setter Property="Background" Value="{DynamicResource StudioAccentSoftBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource StudioAccentBrush}"/>
+        </Style>
+
+        <Style Selector="Border.StudioBadgePart.success">
+            <Setter Property="BorderBrush" Value="{DynamicResource SuccessBrush}"/>
+        </Style>
+
+        <Style Selector="Border.StudioBadgePart.warning">
+            <Setter Property="BorderBrush" Value="{DynamicResource WarningBrush}"/>
+        </Style>
+
+        <Style Selector="Border.StudioBadgePart.danger">
+            <Setter Property="BorderBrush" Value="{DynamicResource DangerBrush}"/>
+        </Style>
+
+        <Style Selector="TextBlock.StudioBadgeText">
+            <Setter Property="Foreground" Value="{DynamicResource SubtextBrush}"/>
+        </Style>
+
+        <Style Selector="TextBlock.StudioBadgeText.info">
+            <Setter Property="Foreground" Value="{DynamicResource StudioAccentBrush}"/>
+        </Style>
+
+        <Style Selector="TextBlock.StudioBadgeText.success">
+            <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}"/>
+        </Style>
+
+        <Style Selector="TextBlock.StudioBadgeText.warning">
+            <Setter Property="Foreground" Value="{DynamicResource WarningBrush}"/>
+        </Style>
+
+        <Style Selector="TextBlock.StudioBadgeText.danger">
+            <Setter Property="Foreground" Value="{DynamicResource DangerBrush}"/>
+        </Style>
+
+    </UserControl.Styles>
+
+    <Border
+        x:Name="PartBadge"
+        Classes="StudioBadgePart"
+        CornerRadius="999"
+        Padding="10,4"
+        Background="{DynamicResource SurfaceBrush}"
+        BorderBrush="{DynamicResource BorderBrush}"
+        BorderThickness="1">
+
+        <TextBlock
+            x:Name="PartText"
+            Classes="StudioBadgeText"
+            FontSize="{DynamicResource FontCaption}"
+            FontWeight="SemiBold"
+            Text="{Binding Text, ElementName=Root}"/>
+    </Border>
+
+</UserControl>

@@ -16,6 +16,7 @@ using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Performance;
 using WinGetXAvalonia.Services.Backup;
 using WinGetXAvalonia.Services.Dialogs;
+using WinGetXAvalonia.Services.Diagnostics;
 using WinGetXAvalonia.Services.History;
 using WinGetXAvalonia.Services.Interfaces;
 using WinGetXAvalonia.Services.Notifications;
@@ -55,6 +56,7 @@ class Program
                 services.AddSingleton<BlueprintsViewModel>();
                 services.AddSingleton<AutomationViewModel>();
                 services.AddSingleton<SecurityViewModel>();
+                services.AddSingleton<DiagnosticsViewModel>();
                 services.AddSingleton<StudioViewModel>();
                 services.AddSingleton<DeveloperViewModel>();
                 services.AddSingleton<SettingsViewModel>();
@@ -76,6 +78,7 @@ class Program
                 services.AddSingleton<AutoSaveService>();
                 services.AddSingleton<FavoritesService>();
                 services.AddSingleton<SystemInfoService>();
+                services.AddSingleton<IDiagnosticsService, DiagnosticsService>();
                 services.AddSingleton<LoggerService>();
                 services.AddSingleton<GithubService>();
                 services.AddSingleton<ClockService>();

@@ -1,0 +1,147 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    x:Class="WinGetXAvalonia.Views.DiagnosticsView"
+    x:DataType="vm:DiagnosticsViewModel">
+
+    <Grid Margin="20">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <shared:SectionHeader
+            Title="Diagnostics"
+            Description="System and environment information."/>
+
+        <Grid
+            Grid.Row="2"
+            ColumnDefinitions="1*,16,1*">
+
+            <Border Classes="card" Padding="18">
+
+                <StackPanel Spacing="14">
+
+                    <TextBlock
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Text="System"/>
+
+                    <Grid
+                        ColumnDefinitions="140,*"
+                        RowDefinitions="Auto,Auto,Auto,Auto">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Opacity="0.6" Text="Windows"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Report.WindowsVersion}"/>
+
+                        <TextBlock Grid.Row="1" Opacity="0.6" Text="Machine"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Report.MachineName}"/>
+
+                        <TextBlock Grid.Row="2" Opacity="0.6" Text="User"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Report.UserName}"/>
+
+                        <TextBlock Grid.Row="3" Opacity="0.6" Text="Processors"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Report.ProcessorCount}"/>
+
+                    </Grid>
+
+                </StackPanel>
+
+            </Border>
+
+            <Border
+                Grid.Column="2"
+                Classes="card"
+                Padding="18">
+
+                <StackPanel Spacing="14">
+
+                    <TextBlock
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Text="Runtime"/>
+
+                    <Grid
+                        ColumnDefinitions="140,*"
+                        RowDefinitions="Auto,Auto,Auto">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Opacity="0.6" Text=".NET"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Report.DotNetVersion}"/>
+
+                        <TextBlock Grid.Row="1" Opacity="0.6" Text="Architecture"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Report.Is64Bit}"/>
+
+                        <TextBlock Grid.Row="2" Opacity="0.6" Text="Winget"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Report.WingetInstalled}"/>
+
+                    </Grid>
+
+                </StackPanel>
+
+            </Border>
+
+        </Grid>
+
+        <StackPanel
+            Grid.Row="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Spacing="12"
+            IsVisible="{Binding HasError}">
+
+            <TextBlock
+                Text="⚠️"
+                FontSize="46"
+                Opacity="0.35"
+                HorizontalAlignment="Center"/>
+
+            <TextBlock
+                Text="Couldn't load diagnostics"
+                FontSize="18"
+                FontWeight="SemiBold"
+                HorizontalAlignment="Center"/>
+
+            <TextBlock
+                Text="{Binding ErrorMessage}"
+                Opacity="0.65"
+                TextAlignment="Center"
+                TextWrapping="Wrap"
+                MaxWidth="480"
+                HorizontalAlignment="Center"/>
+
+            <Button
+                Margin="0,8,0,0"
+                MinWidth="140"
+                Content="Retry"
+                Command="{Binding RefreshCommand}"
+                HorizontalAlignment="Center"/>
+        </StackPanel>
+
+        <shared:LoadingOverlay
+            Grid.RowSpan="3"
+            IsLoading="{Binding IsLoading}"
+            Message="Collecting diagnostics..."/>
+
+    </Grid>
+
+</UserControl>

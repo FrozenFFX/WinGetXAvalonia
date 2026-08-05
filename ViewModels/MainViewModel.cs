@@ -34,6 +34,7 @@ public partial class MainViewModel : ViewModelBase
         BlueprintsViewModel blueprints,
         AutomationViewModel automation,
         SecurityViewModel security,
+        DiagnosticsViewModel diagnostics,
         StudioViewModel studio,
         DeveloperViewModel developer,
         SettingsViewModel settings)
@@ -53,6 +54,7 @@ public partial class MainViewModel : ViewModelBase
             [typeof(BlueprintsViewModel)] = blueprints,
             [typeof(AutomationViewModel)] = automation,
             [typeof(SecurityViewModel)] = security,
+            [typeof(DiagnosticsViewModel)] = diagnostics,
             [typeof(StudioViewModel)] = studio,
             [typeof(DeveloperViewModel)] = developer,
             [typeof(SettingsViewModel)] = settings
@@ -119,6 +121,13 @@ public partial class MainViewModel : ViewModelBase
             Title = "Security",
             Icon = "🛡",
             Page = typeof(SecurityViewModel)
+        });
+
+        Menu.Add(new()
+        {
+            Title = "Diagnostics",
+            Icon = "🩺",
+            Page = typeof(DiagnosticsViewModel)
         });
 
         Menu.Add(new()
@@ -191,5 +200,7 @@ public partial class MainViewModel : ViewModelBase
             _ = automation.InitializeAsync();
         else if (page is SecurityViewModel security)
             _ = security.InitializeAsync();
+        else if (page is DiagnosticsViewModel diagnostics)
+            _ = diagnostics.InitializeAsync();
     }
 }

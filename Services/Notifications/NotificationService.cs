@@ -50,6 +50,18 @@ public sealed class NotificationService
         NotificationsChanged?.Invoke(this, EventArgs.Empty);
     }
 
+    public void Success(string message)
+        => Notify(NotificationType.Success, message);
+
+    public void Warning(string message)
+        => Notify(NotificationType.Warning, message);
+
+    public void Error(string message)
+        => Notify(NotificationType.Error, message);
+
+    public void Info(string message)
+        => Notify(NotificationType.Information, message);
+
     public void MarkAllRead()
     {
         foreach (var item in _items)

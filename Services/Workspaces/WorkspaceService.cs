@@ -1,6 +1,7 @@
 // Copyright (c) 2026 FrozenFFX. All rights reserved.
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
+using System.Linq;
 using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Services.Workspaces;
@@ -66,7 +67,9 @@ public class WorkspaceService : IWorkspaceService
             }
         }
 
-        return result;
+        return result
+            .OrderBy(x => x.Name)
+            .ToList();
     }
 
     public async Task<WorkspaceModel?> GetAsync(
@@ -86,6 +89,8 @@ public class WorkspaceService : IWorkspaceService
         WorkspaceModel workspace,
         CancellationToken cancellationToken = default)
     {
+        workspace.Modified = DateTime.Now;
+
         var path = GetWorkspacePath(workspace.Id);
         await File.WriteAllTextAsync(path, _serializer.Serialize(workspace), cancellationToken);
     }

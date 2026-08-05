@@ -2,6 +2,8 @@
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
 using System.Diagnostics;
+using System.Text.RegularExpressions;
+using WinGetXAvalonia.Core.Operations;
 using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Services.Core;
@@ -42,6 +44,59 @@ public class WingetService
             .ToList();
     }
 
+    private async Task<List<string>> RunWithProgress(
+        string arguments,
+        IOperationProgress? progress,
+        string launchingMessage)
+    {
+        _logger.Log(arguments);
+
+        ProcessStartInfo psi = new()
+        {
+            FileName = "winget",
+            Arguments = arguments,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+
+        using Process process = Process.Start(psi)!;
+
+        progress?.Report(10, launchingMessage);
+
+        var lines = new List<string>();
+
+        while (true)
+        {
+            string? line = await process.StandardOutput.ReadLineAsync();
+
+            if (line is null)
+                break;
+
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
+
+            lines.Add(line);
+
+            if (line.Contains('%'))
+            {
+                var match = Regex.Match(line, @"(\d+)%");
+
+                if (match.Success)
+                {
+                    progress?.Report(
+                        int.Parse(match.Groups[1].Value),
+                        line);
+                }
+            }
+        }
+
+        await process.WaitForExitAsync();
+
+        return lines;
+    }
+
     public Task<List<string>> GetInstalledApps()
         => Execute("list");
 
@@ -57,16 +112,34 @@ public class WingetService
     public Task<List<string>> Show(string id)
         => Execute($"show --id {id} --exact --accept-source-agreements");
 
-    public Task Install(string id)
+    public async Task Install(string id, IOperationProgress? progress = null)
     {
-        Process.Start("winget", $"install --id {id} -e");
-        return Task.CompletedTask;
+        if (string.IsNullOrWhiteSpace(id))
+            return;
+
+        progress?.Report(0, "Preparing installation...");
+
+        await RunWithProgress(
+            $"install --id {id} -e",
+            progress,
+            "Launching winget...");
+
+        progress?.Report(100, "Completed");
     }
 
-    public Task Uninstall(string id)
+    public async Task Uninstall(string id, IOperationProgress? progress = null)
     {
-        Process.Start("winget", $"uninstall --id {id}");
-        return Task.CompletedTask;
+        if (string.IsNullOrWhiteSpace(id))
+            return;
+
+        progress?.Report(0, "Preparing uninstall...");
+
+        await RunWithProgress(
+            $"uninstall --id {id}",
+            progress,
+            "Launching winget...");
+
+        progress?.Report(100, "Package removed");
     }
 
     public async Task Uninstall(PackageModel package)
@@ -74,16 +147,25 @@ public class WingetService
         if (string.IsNullOrWhiteSpace(package.Id))
             return;
 
-        Process.Start("winget",
-            $"uninstall --id \"{package.Id}\"");
-
-        await Task.CompletedTask;
+        await RunWithProgress(
+            $"uninstall --id \"{package.Id}\"",
+            null,
+            "Launching winget...");
     }
 
-    public Task Upgrade(string id)
+    public async Task Upgrade(string id, IOperationProgress? progress = null)
     {
-        Process.Start("winget", $"upgrade --id {id}");
-        return Task.CompletedTask;
+        if (string.IsNullOrWhiteSpace(id))
+            return;
+
+        progress?.Report(0, "Preparing update...");
+
+        await RunWithProgress(
+            $"upgrade --id {id}",
+            progress,
+            "Launching winget...");
+
+        progress?.Report(100, "Update complete");
     }
 
     public Task UpgradeAll()

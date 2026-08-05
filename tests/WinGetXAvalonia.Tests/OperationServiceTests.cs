@@ -2,6 +2,7 @@
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
 using WinGetXAvalonia.Core.Events;
+using WinGetXAvalonia.Core.Operations;
 using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Models.Operations;
@@ -35,7 +36,7 @@ public class OperationServiceTests
         public Task<IReadOnlyList<UpdatePackage>> GetUpdatesAsync()
             => Task.FromResult<IReadOnlyList<UpdatePackage>>(Updates.ToArray());
 
-        public async Task InstallAsync(string id)
+        public async Task InstallAsync(string id, IOperationProgress? progress = null)
         {
             Installed.Add(id);
 
@@ -43,13 +44,13 @@ public class OperationServiceTests
                 throw new InvalidOperationException("boom");
         }
 
-        public Task UpgradeAsync(string id)
+        public Task UpgradeAsync(string id, IOperationProgress? progress = null)
         {
             Upgraded.Add(id);
             return Task.CompletedTask;
         }
 
-        public Task UninstallAsync(string id)
+        public Task UninstallAsync(string id, IOperationProgress? progress = null)
         {
             Uninstalled.Add(id);
             return Task.CompletedTask;

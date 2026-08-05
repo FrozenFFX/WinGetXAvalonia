@@ -1,6 +1,7 @@
 // Copyright (c) 2026 FrozenFFX. All rights reserved.
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -41,8 +42,15 @@ public sealed class HistoryService : IHistoryService
         await _gate.WaitAsync();
         try
         {
+            entry.Timestamp = DateTime.Now;
+
             var entries = await LoadEntriesAsync();
             entries.Add(entry);
+
+            entries = entries
+                .OrderByDescending(x => x.Timestamp)
+                .ToList();
+
             await SaveEntriesAsync(entries);
         }
         finally
@@ -56,7 +64,11 @@ public sealed class HistoryService : IHistoryService
         await _gate.WaitAsync();
         try
         {
-            return await LoadEntriesAsync();
+            var entries = await LoadEntriesAsync();
+
+            return entries
+                .OrderByDescending(x => x.Timestamp)
+                .ToList();
         }
         finally
         {

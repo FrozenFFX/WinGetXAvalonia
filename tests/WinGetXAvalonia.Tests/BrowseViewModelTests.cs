@@ -1,6 +1,7 @@
 // Copyright (c) 2026 FrozenFFX. All rights reserved.
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
+using WinGetXAvalonia.Core.Operations;
 using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
@@ -39,11 +40,11 @@ public class BrowseViewModelTests
         public Task<IReadOnlyList<UpdatePackage>> GetUpdatesAsync()
             => Task.FromResult<IReadOnlyList<UpdatePackage>>(Updates);
 
-        public Task InstallAsync(string id) => Task.CompletedTask;
+        public Task InstallAsync(string id, IOperationProgress? progress = null) => Task.CompletedTask;
 
-        public Task UpgradeAsync(string id) => Task.CompletedTask;
+        public Task UpgradeAsync(string id, IOperationProgress? progress = null) => Task.CompletedTask;
 
-        public Task UninstallAsync(string id) => Task.CompletedTask;
+        public Task UninstallAsync(string id, IOperationProgress? progress = null) => Task.CompletedTask;
 
         public Task<string?> GetHomepageAsync(string id)
             => Task.FromResult(Homepage);

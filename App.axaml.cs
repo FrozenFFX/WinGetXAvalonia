@@ -15,6 +15,13 @@ public partial class App : Application
 {
     public override void Initialize()
     {
+        AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+        {
+            File.AppendAllText(
+                "crash.log",
+                e.ExceptionObject.ToString());
+        };
+
         AvaloniaXamlLoader.Load(this);
     }
 

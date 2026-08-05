@@ -164,6 +164,12 @@ public partial class MainViewModel : ViewModelBase
 
         Navigation.Navigate(page);
 
+        GC.Collect(
+            GC.MaxGeneration,
+            GCCollectionMode.Optimized,
+            false,
+            false);
+
         // sayfaları ilk ziyaret edildiğinde yüklüyoruz, sonra hazır bekliyor
         if (page is DashboardViewModel dashboard)
             _ = dashboard.InitializeAsync();

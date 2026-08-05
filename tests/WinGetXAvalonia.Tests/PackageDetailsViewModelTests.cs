@@ -1,6 +1,7 @@
 // Copyright (c) 2026 FrozenFFX. All rights reserved.
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
+using WinGetXAvalonia.Core.Operations;
 using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
@@ -18,11 +19,11 @@ public class PackageDetailsViewModelTests
         public Task<IReadOnlyList<PackageModel>> SearchAsync(string query)
             => Task.FromResult<IReadOnlyList<PackageModel>>([]);
 
-        public Task InstallAsync(string id) => Task.CompletedTask;
+        public Task InstallAsync(string id, IOperationProgress? progress = null) => Task.CompletedTask;
 
-        public Task UpgradeAsync(string id) => Task.CompletedTask;
+        public Task UpgradeAsync(string id, IOperationProgress? progress = null) => Task.CompletedTask;
 
-        public Task UninstallAsync(string id) => Task.CompletedTask;
+        public Task UninstallAsync(string id, IOperationProgress? progress = null) => Task.CompletedTask;
 
         public Task<IReadOnlyList<InstalledPackage>> GetInstalledAsync()
             => Task.FromResult<IReadOnlyList<InstalledPackage>>([]);

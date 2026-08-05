@@ -47,11 +47,11 @@ public class HistoryServiceTests
         Assert.Equal("Git.Git", entries[0].PackageId);
         Assert.Equal("2.51.0", entries[0].Version);
         Assert.True(entries[0].Success);
-        Assert.Equal(new DateTime(2026, 8, 3, 3, 42, 11), entries[0].Timestamp);
+        Assert.InRange(entries[0].Timestamp, DateTime.Now.AddMinutes(-1), DateTime.Now.AddMinutes(1));
     }
 
     [Fact]
-    public async Task AddAsync_MultipleEntries_KeepsOrder()
+    public async Task AddAsync_AssignsTimestampAndSortsNewestFirst()
     {
         var file = CreateTempFile();
         var service = new HistoryService(file);
@@ -62,8 +62,9 @@ public class HistoryServiceTests
         var entries = await service.GetAllAsync();
 
         Assert.Equal(2, entries.Count);
-        Assert.Equal("Git.Git", entries[0].PackageId);
-        Assert.Equal("Microsoft.PowerShell", entries[1].PackageId);
+        Assert.True(entries[0].Timestamp >= entries[1].Timestamp);
+        Assert.Equal("Microsoft.PowerShell", entries[0].PackageId);
+        Assert.Equal("Git.Git", entries[1].PackageId);
     }
 
     [Fact]

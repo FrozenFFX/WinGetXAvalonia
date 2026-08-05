@@ -1,6 +1,7 @@
 // Copyright (c) 2026 FrozenFFX. All rights reserved.
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
+using System.Runtime;
 using Avalonia;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -36,6 +37,8 @@ class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
+
         Host = Microsoft.Extensions.Hosting.Host
             .CreateDefaultBuilder(args)
             .ConfigureServices((_, services) =>

@@ -4,6 +4,7 @@
 using System;
 using System.Threading.Tasks;
 using WinGetXAvalonia.Core.Events;
+using WinGetXAvalonia.Core.Operations;
 using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
@@ -38,25 +39,25 @@ public sealed class OperationService : IOperationService
     }
 
     public Task InstallAsync(string packageId)
-        => RunAsync("Install", packageId, PackageOperation.Installed, () => _provider.InstallAsync(packageId));
+        => RunAsync("Install", packageId, PackageOperation.Installed, progress => _provider.InstallAsync(packageId, progress));
 
     public Task UpdateAsync(string packageId)
-        => RunAsync("Update", packageId, PackageOperation.Updated, () => _provider.UpgradeAsync(packageId));
+        => RunAsync("Update", packageId, PackageOperation.Updated, progress => _provider.UpgradeAsync(packageId, progress));
 
     public Task RemoveAsync(string packageId)
-        => RunAsync("Remove", packageId, PackageOperation.Removed, () => _provider.UninstallAsync(packageId));
+        => RunAsync("Remove", packageId, PackageOperation.Removed, progress => _provider.UninstallAsync(packageId, progress));
 
     public async Task UpgradeAllAsync()
     {
         foreach (var update in await _provider.GetUpdatesAsync())
-            await RunAsync("Update", update.Id, PackageOperation.Updated, () => _provider.UpgradeAsync(update.Id));
+            await RunAsync("Update", update.Id, PackageOperation.Updated, progress => _provider.UpgradeAsync(update.Id, progress));
     }
 
     private async Task RunAsync(
         string operation,
         string packageId,
         PackageOperation eventOperation,
-        Func<Task> work)
+        Func<IOperationProgress?, Task> work)
     {
         if (string.IsNullOrWhiteSpace(packageId))
             return;
@@ -64,12 +65,14 @@ public sealed class OperationService : IOperationService
         var active = _center.Start(operation, packageId);
         active.StatusMessage = "Starting...";
 
+        var reporter = new OperationProgressReporter(active);
+
         bool success;
         string? message = null;
 
         try
         {
-            await work();
+            await work(reporter);
             active.Progress = 100;
             active.StatusMessage = "Completed";
             _center.Complete(active.Id);

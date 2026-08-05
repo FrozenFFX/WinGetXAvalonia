@@ -1,6 +1,7 @@
 // Copyright (c) 2026 FrozenFFX. All rights reserved.
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
+using WinGetXAvalonia.Core.Operations;
 using WinGetXAvalonia.Helpers;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
@@ -17,22 +18,47 @@ public sealed class WingetProvider : IPackageProvider
     }
 
     public async Task<IReadOnlyList<PackageModel>> SearchAsync(string query)
-        => WingetParser.ParseSearch(await _winget.Search(query));
+    {
+        var results = WingetParser.ParseSearch(await _winget.Search(query));
 
-    public Task InstallAsync(string id)
-        => _winget.Install(id);
+        results = results
+            .DistinctBy(x => x.Id)
+            .OrderBy(x => x.Name)
+            .ToList();
 
-    public Task UpgradeAsync(string id)
-        => _winget.Upgrade(id);
+        return results;
+    }
 
-    public Task UninstallAsync(string id)
-        => _winget.Uninstall(id);
+    public Task InstallAsync(string id, IOperationProgress? progress = null)
+        => _winget.Install(id, progress);
+
+    public Task UpgradeAsync(string id, IOperationProgress? progress = null)
+        => _winget.Upgrade(id, progress);
+
+    public Task UninstallAsync(string id, IOperationProgress? progress = null)
+        => _winget.Uninstall(id, progress);
 
     public async Task<IReadOnlyList<InstalledPackage>> GetInstalledAsync()
-        => WingetParser.ParseInstalled(await _winget.GetInstalledApps());
+    {
+        var packages = WingetParser.ParseInstalled(await _winget.GetInstalledApps());
+
+        packages = packages
+            .OrderBy(x => x.Name)
+            .ToList();
+
+        return packages;
+    }
 
     public async Task<IReadOnlyList<UpdatePackage>> GetUpdatesAsync()
-        => WingetParser.ParseUpdates(await _winget.GetUpdates());
+    {
+        var updates = WingetParser.ParseUpdates(await _winget.GetUpdates());
+
+        updates = updates
+            .OrderBy(x => x.Name)
+            .ToList();
+
+        return updates;
+    }
 
     public async Task<string?> GetHomepageAsync(string id)
         => WingetParser.ParseHomepage(await _winget.Show(id));

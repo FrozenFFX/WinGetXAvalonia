@@ -86,6 +86,8 @@ class Program
                 services.AddSingleton<IBackupService, BackupService>();
                 services.AddSingleton<IExportService, ExportService>();
                 services.AddSingleton<IImportService, ImportService>();
+                services.AddSingleton<IPerformanceService, PerformanceService>();
+                services.AddSingleton<PackageCacheService>();
                 services.AddSingleton<LoggerService>();
                 services.AddSingleton<GithubService>();
                 services.AddSingleton<ClockService>();

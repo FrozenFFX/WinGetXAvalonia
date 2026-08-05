@@ -15,6 +15,15 @@ public partial class MainViewModel : ViewModelBase
 
     public OperationDrawerViewModel OperationDrawer { get; }
 
+    public string Version => "1.0.0";
+
+    public string BuildDate =>
+        new System.IO.FileInfo(typeof(MainViewModel).Assembly.Location)
+            .LastWriteTime.ToString("yyyy-MM-dd");
+
+    public string StatusText =>
+        $"Ready • {DateTime.Now:T}";
+
     public ObservableCollection<NavigationItem> Menu { get; } = new();
 
     private readonly Dictionary<Type, ViewModelBase> _pages;

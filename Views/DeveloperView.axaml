@@ -75,6 +75,31 @@
 
                     </Border>
 
+                    <shared:SectionHeader Title="Performance"/>
+
+                    <Border Classes="card" Padding="16">
+
+                        <Grid
+                            ColumnDefinitions="*,*"
+                            RowDefinitions="Auto,Auto,Auto,Auto"
+                            RowSpacing="10">
+
+                            <TextBlock Opacity="0.6" Text="Memory"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Snapshot.Memory}"/>
+
+                            <TextBlock Grid.Row="1" Opacity="0.6" Text="Threads"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Snapshot.Threads}"/>
+
+                            <TextBlock Grid.Row="2" Opacity="0.6" Text="Handles"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Snapshot.Handles}"/>
+
+                            <TextBlock Grid.Row="3" Opacity="0.6" Text="CPU Time"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Snapshot.CpuTime}"/>
+
+                        </Grid>
+
+                    </Border>
+
                     <shared:SectionHeader Title="Live Operations"/>
 
                     <controls:QueuePanel

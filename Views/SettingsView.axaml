@@ -112,6 +112,12 @@
                         Content="Restore Backup"
                         Command="{Binding RestoreCommand}"/>
 
+                    <Button
+                        Margin="0,12,0,0"
+                        HorizontalAlignment="Stretch"
+                        Content="Toggle Theme"
+                        Command="{Binding ToggleThemeCommand}"/>
+
                 </StackPanel>
 
             </Grid>

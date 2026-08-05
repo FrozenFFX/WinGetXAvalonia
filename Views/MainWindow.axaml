@@ -16,7 +16,9 @@
         Background="{DynamicResource WindowBackgroundBrush}"
         Title="WinGetX Studio">
 
-    <Grid ColumnDefinitions="260,*,12,340">
+    <Grid
+        RowDefinitions="*,32"
+        ColumnDefinitions="260,*,12,340">
 
         <Border Grid.Column="0"
                 Background="{DynamicResource SidebarBackgroundBrush}">
@@ -56,6 +58,37 @@
         <operation:OperationDrawer
             Grid.Column="3"
             DataContext="{Binding OperationDrawer}"/>
+
+        <Border
+            Grid.Row="1"
+            Grid.ColumnSpan="4"
+            Height="32"
+            Background="{DynamicResource SurfaceBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="1,1,0,0">
+
+            <Grid
+                Margin="12,0"
+                ColumnDefinitions="*,Auto,Auto"
+                ColumnSpacing="18">
+
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Text="{Binding StatusText}"/>
+
+                <TextBlock
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Text="{Binding Version}"/>
+
+                <TextBlock
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    Text="{Binding BuildDate}"/>
+
+            </Grid>
+
+        </Border>
 
     </Grid>
 

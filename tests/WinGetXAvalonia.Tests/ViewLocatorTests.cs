@@ -11,6 +11,7 @@ using WinGetXAvalonia.Services.Backup;
 using WinGetXAvalonia.Services.Dialogs;
 using WinGetXAvalonia.Services.History;
 using WinGetXAvalonia.Services.Queue;
+using WinGetXAvalonia.Services.Performance;
 using WinGetXAvalonia.Services.Studio;
 using WinGetXAvalonia.Services.Workspaces;
 using WinGetXAvalonia.ViewModels;
@@ -65,7 +66,9 @@ public class ViewLocatorTests
     [Fact]
     public async Task DeveloperViewModel_ResolvesToDeveloperView()
     {
-        var vm = new DeveloperViewModel(new QueuePanelViewModel(new FakeOperationQueue()));
+        var vm = new DeveloperViewModel(
+            new QueuePanelViewModel(new FakeOperationQueue()),
+            new FakePerformanceService());
 
         Assert.IsType<DeveloperView>(await BuildAsync(vm));
     }
@@ -137,6 +140,11 @@ public class ViewLocatorTests
     {
         public Task<IReadOnlyList<StudioTool>> GetToolsAsync()
             => Task.FromResult<IReadOnlyList<StudioTool>>(new List<StudioTool>());
+    }
+
+    private sealed class FakePerformanceService : IPerformanceService
+    {
+        public PerformanceSnapshot Capture() => new();
     }
 
     private sealed class FakeExportService : IExportService

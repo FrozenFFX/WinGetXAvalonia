@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Backup;
 using WinGetXAvalonia.Services.Dialogs;
+using WinGetXAvalonia.Services.Theme;
 using WinGetXAvalonia.ViewModels.Settings;
 
 namespace WinGetXAvalonia.ViewModels;
@@ -15,6 +16,7 @@ public partial class SettingsViewModel : ViewModelBase
     private readonly IBackupService _backup;
     private readonly IDialogService _dialogs;
     private readonly IFilePickerService _filePicker;
+    private readonly IThemeService _theme;
 
     public IReadOnlyList<SettingsCategoryViewModel> Categories { get; }
 
@@ -35,11 +37,13 @@ public partial class SettingsViewModel : ViewModelBase
         AboutSettingsViewModel about,
         IBackupService backupService,
         IDialogService dialogs,
-        IFilePickerService filePicker)
+        IFilePickerService filePicker,
+        IThemeService theme)
     {
         _backup = backupService;
         _dialogs = dialogs;
         _filePicker = filePicker;
+        _theme = theme;
         Categories = new SettingsCategoryViewModel[]
         {
             general,
@@ -53,6 +57,12 @@ public partial class SettingsViewModel : ViewModelBase
         };
 
         SelectedCategory = general;
+    }
+
+    [RelayCommand]
+    private void ToggleTheme()
+    {
+        _theme.ToggleTheme();
     }
 
     [RelayCommand]

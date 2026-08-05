@@ -8,4 +8,6 @@ public interface IThemeService
     ThemeMode CurrentTheme { get; }
 
     void ApplyTheme(ThemeMode theme);
+
+    void ToggleTheme();
 }

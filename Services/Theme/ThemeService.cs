@@ -33,6 +33,17 @@ public sealed class ThemeService : IThemeService
         };
     }
 
+    public void ToggleTheme()
+    {
+        if (Application.Current is not { } app)
+            return;
+
+        app.RequestedThemeVariant =
+            app.RequestedThemeVariant == ThemeVariant.Dark
+                ? ThemeVariant.Light
+                : ThemeVariant.Dark;
+    }
+
     private static ThemeMode Parse(string? value)
         => Enum.TryParse<ThemeMode>(value, true, out var theme)
             ? theme

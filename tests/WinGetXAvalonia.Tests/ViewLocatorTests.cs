@@ -1,11 +1,13 @@
 // Copyright (c) 2026 FrozenFFX. All rights reserved.
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Avalonia.Threading;
 using WinGetXAvalonia.Core.Events;
 using WinGetXAvalonia.Core.PackageEngine;
 using WinGetXAvalonia.Models;
+using WinGetXAvalonia.Services.Backup;
 using WinGetXAvalonia.Services.Dialogs;
 using WinGetXAvalonia.Services.History;
 using WinGetXAvalonia.Services.Queue;
@@ -22,13 +24,23 @@ public class ViewLocatorTests
         => await Dispatcher.UIThread.InvokeAsync(() => (object)new ViewLocator().Build(dataContext)!);
 
     [Theory]
-    [InlineData(typeof(BlueprintsViewModel), typeof(BlueprintsView))]
     [InlineData(typeof(AutomationViewModel), typeof(AutomationView))]
     [InlineData(typeof(SecurityViewModel), typeof(SecurityView))]
     public async Task PlaceholderModules_ResolveToDedicatedView(Type viewModelType, Type expectedViewType)
     {
         var vm = (ViewModelBase)Activator.CreateInstance(viewModelType)!;
         Assert.IsType(expectedViewType, await BuildAsync(vm));
+    }
+
+    [Fact]
+    public async Task BlueprintsViewModel_ResolvesToBlueprintsView()
+    {
+        var vm = new BlueprintsViewModel(
+            new FakeExportService(),
+            new FakeDialogService(),
+            new FakeFilePickerService());
+
+        Assert.IsType<BlueprintsView>(await BuildAsync(vm));
     }
 
     [Fact]
@@ -125,6 +137,12 @@ public class ViewLocatorTests
     {
         public Task<IReadOnlyList<StudioTool>> GetToolsAsync()
             => Task.FromResult<IReadOnlyList<StudioTool>>(new List<StudioTool>());
+    }
+
+    private sealed class FakeExportService : IExportService
+    {
+        public Task ExportJsonAsync<T>(IEnumerable<T> items, string file)
+            => Task.CompletedTask;
     }
 
     private sealed class FakeDialogService : IDialogService

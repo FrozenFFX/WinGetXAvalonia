@@ -100,6 +100,18 @@
                         Foreground="{DynamicResource SecondaryTextBrush}"
                         Text="v0.2.0-alpha"/>
 
+                    <Button
+                        Margin="0,12,0,0"
+                        HorizontalAlignment="Stretch"
+                        Content="Create Backup"
+                        Command="{Binding BackupCommand}"/>
+
+                    <Button
+                        Margin="0,8,0,0"
+                        HorizontalAlignment="Stretch"
+                        Content="Restore Backup"
+                        Command="{Binding RestoreCommand}"/>
+
                 </StackPanel>
 
             </Grid>

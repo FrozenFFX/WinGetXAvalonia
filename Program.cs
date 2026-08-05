@@ -83,6 +83,9 @@ class Program
                 services.AddSingleton<IDiagnosticsService, DiagnosticsService>();
                 services.AddSingleton<IWingetProcess, WingetProcess>();
                 services.AddSingleton<ISourceManagerService, SourceManagerService>();
+                services.AddSingleton<IBackupService, BackupService>();
+                services.AddSingleton<IExportService, ExportService>();
+                services.AddSingleton<IImportService, ImportService>();
                 services.AddSingleton<LoggerService>();
                 services.AddSingleton<GithubService>();
                 services.AddSingleton<ClockService>();

@@ -35,6 +35,7 @@ public partial class MainViewModel : ViewModelBase
         AutomationViewModel automation,
         SecurityViewModel security,
         DiagnosticsViewModel diagnostics,
+        SourceManagerViewModel sourceManager,
         StudioViewModel studio,
         DeveloperViewModel developer,
         SettingsViewModel settings)
@@ -55,6 +56,7 @@ public partial class MainViewModel : ViewModelBase
             [typeof(AutomationViewModel)] = automation,
             [typeof(SecurityViewModel)] = security,
             [typeof(DiagnosticsViewModel)] = diagnostics,
+            [typeof(SourceManagerViewModel)] = sourceManager,
             [typeof(StudioViewModel)] = studio,
             [typeof(DeveloperViewModel)] = developer,
             [typeof(SettingsViewModel)] = settings
@@ -132,6 +134,13 @@ public partial class MainViewModel : ViewModelBase
 
         Menu.Add(new()
         {
+            Title = "Sources",
+            Icon = "🌐",
+            Page = typeof(SourceManagerViewModel)
+        });
+
+        Menu.Add(new()
+        {
             Title = "Studio",
             Icon = "🎛",
             Page = typeof(StudioViewModel)
@@ -202,5 +211,7 @@ public partial class MainViewModel : ViewModelBase
             _ = security.InitializeAsync();
         else if (page is DiagnosticsViewModel diagnostics)
             _ = diagnostics.InitializeAsync();
+        else if (page is SourceManagerViewModel sourceManager)
+            _ = sourceManager.InitializeAsync();
     }
 }

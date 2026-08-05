@@ -1,0 +1,126 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:models="using:WinGetXAvalonia.Models"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    x:Class="WinGetXAvalonia.Views.SourceManagerView"
+    x:DataType="vm:SourceManagerViewModel">
+
+    <Grid Margin="20">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <shared:SectionHeader
+            Title="Sources"
+            Description="Manage WinGet sources."/>
+
+        <Grid
+            Grid.Row="2"
+            ColumnDefinitions="*,12,340">
+
+            <Border Classes="card" Padding="10">
+
+                <ListBox
+                    ItemsSource="{Binding Sources}"
+                    SelectedItem="{Binding SelectedSource}">
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:WingetSource">
+
+                            <StackPanel Margin="2,6" Spacing="2">
+
+                                <TextBlock
+                                    FontWeight="SemiBold"
+                                    Text="{Binding Name}"/>
+
+                                <TextBlock
+                                    Opacity="0.6"
+                                    Text="{Binding Argument}"/>
+
+                            </StackPanel>
+
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                </ListBox>
+
+            </Border>
+
+            <GridSplitter
+                Grid.Column="1"
+                Width="6"
+                ResizeDirection="Columns"
+                ResizeBehavior="PreviousAndNext"/>
+
+            <StackPanel
+                Grid.Column="2"
+                Spacing="10">
+
+                <Button
+                    Content="Update"
+                    Command="{Binding UpdateCommand}"/>
+
+                <Button
+                    Content="Reset"
+                    Command="{Binding ResetCommand}"/>
+
+                <Button
+                    Classes="Danger"
+                    Content="Remove"
+                    Command="{Binding RemoveCommand}"/>
+
+            </StackPanel>
+
+        </Grid>
+
+        <StackPanel
+            Grid.Row="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Spacing="12"
+            IsVisible="{Binding HasError}">
+
+            <TextBlock
+                Text="⚠️"
+                FontSize="46"
+                Opacity="0.35"
+                HorizontalAlignment="Center"/>
+
+            <TextBlock
+                Text="Couldn't load sources"
+                FontSize="18"
+                FontWeight="SemiBold"
+                HorizontalAlignment="Center"/>
+
+            <TextBlock
+                Text="{Binding ErrorMessage}"
+                Opacity="0.65"
+                TextAlignment="Center"
+                TextWrapping="Wrap"
+                MaxWidth="480"
+                HorizontalAlignment="Center"/>
+
+            <Button
+                Margin="0,8,0,0"
+                MinWidth="140"
+                Content="Retry"
+                Command="{Binding RefreshCommand}"
+                HorizontalAlignment="Center"/>
+        </StackPanel>
+
+        <shared:LoadingOverlay
+            Grid.RowSpan="3"
+            IsLoading="{Binding IsLoading}"
+            Message="Loading sources..."/>
+
+    </Grid>
+
+</UserControl>

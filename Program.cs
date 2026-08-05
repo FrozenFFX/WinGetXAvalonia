@@ -23,6 +23,7 @@ using WinGetXAvalonia.Services.Notifications;
 using WinGetXAvalonia.Services.Operations;
 using WinGetXAvalonia.Services.PackageDetails;
 using WinGetXAvalonia.Services.Queue;
+using WinGetXAvalonia.Services.Sources;
 using WinGetXAvalonia.Services.Studio;
 using WinGetXAvalonia.Services.Theme;
 using WinGetXAvalonia.Services.Workspaces;
@@ -57,6 +58,7 @@ class Program
                 services.AddSingleton<AutomationViewModel>();
                 services.AddSingleton<SecurityViewModel>();
                 services.AddSingleton<DiagnosticsViewModel>();
+                services.AddSingleton<SourceManagerViewModel>();
                 services.AddSingleton<StudioViewModel>();
                 services.AddSingleton<DeveloperViewModel>();
                 services.AddSingleton<SettingsViewModel>();
@@ -79,6 +81,8 @@ class Program
                 services.AddSingleton<FavoritesService>();
                 services.AddSingleton<SystemInfoService>();
                 services.AddSingleton<IDiagnosticsService, DiagnosticsService>();
+                services.AddSingleton<IWingetProcess, WingetProcess>();
+                services.AddSingleton<ISourceManagerService, SourceManagerService>();
                 services.AddSingleton<LoggerService>();
                 services.AddSingleton<GithubService>();
                 services.AddSingleton<ClockService>();

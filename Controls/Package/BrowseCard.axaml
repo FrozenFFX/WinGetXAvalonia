@@ -24,7 +24,7 @@
 
     <Grid>
 
-        <shared:BaseCard>
+        <shared:BaseCard ClipToBounds="True">
 
             <Grid ColumnDefinitions="Auto,*,Auto">
 

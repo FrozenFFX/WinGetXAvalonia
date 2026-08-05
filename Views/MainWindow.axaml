@@ -13,6 +13,9 @@
         x:DataType="vm:MainViewModel"
         Width="1400"
         Height="850"
+        ShowInTaskbar="True"
+        CanResize="True"
+        WindowStartupLocation="CenterScreen"
         Background="{DynamicResource WindowBackgroundBrush}"
         Title="WinGetX Studio">
 

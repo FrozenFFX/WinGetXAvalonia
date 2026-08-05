@@ -31,6 +31,29 @@ public partial class OperationModel : ObservableObject
     [ObservableProperty]
     private bool canPause = true;
 
+    [ObservableProperty]
+    private DateTime startedAt = DateTime.UtcNow;
+
+    [ObservableProperty]
+    private DateTime completedAt = DateTime.UtcNow;
+
+    public TimeSpan Duration
+    {
+        get
+        {
+            if (CompletedAt < StartedAt)
+                return TimeSpan.Zero;
+
+            return CompletedAt - StartedAt;
+        }
+    }
+
+    partial void OnStartedAtChanged(DateTime value)
+        => OnPropertyChanged(nameof(Duration));
+
+    partial void OnCompletedAtChanged(DateTime value)
+        => OnPropertyChanged(nameof(Duration));
+
     [RelayCommand]
     private void Retry()
     {

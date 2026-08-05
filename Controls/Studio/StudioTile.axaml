@@ -28,6 +28,7 @@
     </UserControl.Styles>
 
     <Button
+        ClipToBounds="True"
         Classes="StudioTile"
         Command="{Binding Command, ElementName=Root}"
         CommandParameter="{Binding CommandParameter, ElementName=Root}">

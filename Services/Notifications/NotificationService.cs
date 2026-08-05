@@ -6,6 +6,7 @@
 // ==========================================================
 
 using System.Collections.ObjectModel;
+using Avalonia.Threading;
 
 namespace WinGetXAvalonia.Services.Notifications;
 
@@ -37,12 +38,30 @@ public sealed class NotificationService
 
     public void Notify(NotificationType type, string title, string? message = null)
     {
-        _items.Insert(0, new NotificationModel
+        var item = new NotificationModel
         {
             Type = type,
             Title = title,
             Message = message ?? ""
-        });
+        };
+
+        Add(item);
+    }
+
+    private void Add(NotificationModel item)
+    {
+        if (Dispatcher.UIThread.CheckAccess())
+        {
+            AddCore(item);
+            return;
+        }
+
+        Dispatcher.UIThread.Invoke(() => AddCore(item));
+    }
+
+    private void AddCore(NotificationModel item)
+    {
+        _items.Insert(0, item);
 
         while (_items.Count > MaxNotifications)
             _items.RemoveAt(_items.Count - 1);

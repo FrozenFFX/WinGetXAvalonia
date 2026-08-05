@@ -10,7 +10,7 @@
     x:DataType="models:WorkspaceModel"
     x:CompileBindings="False">
 
-    <shared:BaseCard>
+    <shared:BaseCard ClipToBounds="True">
 
         <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="12">
 

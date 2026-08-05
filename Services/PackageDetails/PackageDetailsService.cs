@@ -28,7 +28,7 @@ public class PackageDetailsService : IPackageDetailsService
         if (_cache.TryGet(id, out var cached))
             return ToModel(cached);
 
-        var details = await _provider.GetDetailsAsync(id);
+        var details = await _provider.GetDetailsAsync(id).ConfigureAwait(false);
 
         _cache.Store(id, details);
 

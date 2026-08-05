@@ -1,0 +1,25 @@
+<Project>
+
+    <PropertyGroup>
+
+        <Nullable>enable</Nullable>
+
+        <ImplicitUsings>enable</ImplicitUsings>
+
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+        <AnalysisLevel>latest</AnalysisLevel>
+
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+        <Deterministic>true</Deterministic>
+
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+
+        <LangVersion>preview</LangVersion>
+
+        <DebugType>portable</DebugType>
+
+    </PropertyGroup>
+
+</Project>

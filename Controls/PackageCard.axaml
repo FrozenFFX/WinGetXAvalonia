@@ -43,7 +43,8 @@
                     Width="56"
                     Height="56"
                     CornerRadius="12"
-                    Background="{DynamicResource SurfaceBrush}">
+                    Background="{DynamicResource SurfaceBrush}"
+                    CacheMode="BitmapCache">
 
                     <TextBlock Text="{Binding Icon}"
                                FontSize="24"

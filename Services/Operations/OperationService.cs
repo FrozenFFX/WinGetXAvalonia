@@ -63,6 +63,7 @@ public sealed class OperationService : IOperationService
             return;
 
         var active = _center.Start(operation, packageId);
+        active.StartedAt = DateTime.UtcNow;
         active.StatusMessage = "Starting...";
 
         var reporter = new OperationProgressReporter(active);
@@ -85,6 +86,8 @@ public sealed class OperationService : IOperationService
             success = false;
             message = ex.Message;
         }
+
+        active.CompletedAt = DateTime.UtcNow;
 
         if (!success && message is not null)
             _logger.Error(new InvalidOperationException(message), $"Operation '{operation}' failed for '{packageId}'");

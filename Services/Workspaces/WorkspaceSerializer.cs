@@ -8,7 +8,7 @@ namespace WinGetXAvalonia.Services.Workspaces;
 
 public sealed class WorkspaceSerializer
 {
-    private static readonly JsonSerializerOptions Options = new()
+    public JsonSerializerOptions Options { get; } = new()
     {
         WriteIndented = true
     };

@@ -10,6 +10,7 @@ namespace WinGetXAvalonia.Core.Providers;
 
 public sealed class WingetProvider : IPackageProvider
 {
+    private readonly SemaphoreSlim _loadLock = new(1, 1);
     private readonly WingetService _winget;
 
     public WingetProvider(WingetService winget)
@@ -17,7 +18,24 @@ public sealed class WingetProvider : IPackageProvider
         _winget = winget;
     }
 
-    public async Task<IReadOnlyList<PackageModel>> SearchAsync(string query)
+    private async Task<T> WithLoadLockAsync<T>(Func<Task<T>> action)
+    {
+        await _loadLock.WaitAsync();
+
+        try
+        {
+            return await action();
+        }
+        finally
+        {
+            _loadLock.Release();
+        }
+    }
+
+    public Task<IReadOnlyList<PackageModel>> SearchAsync(string query)
+        => WithLoadLockAsync(() => SearchCoreAsync(query));
+
+    private async Task<IReadOnlyList<PackageModel>> SearchCoreAsync(string query)
     {
         var results = WingetParser.ParseSearch(await _winget.Search(query));
 
@@ -38,7 +56,10 @@ public sealed class WingetProvider : IPackageProvider
     public Task UninstallAsync(string id, IOperationProgress? progress = null)
         => _winget.Uninstall(id, progress);
 
-    public async Task<IReadOnlyList<InstalledPackage>> GetInstalledAsync()
+    public Task<IReadOnlyList<InstalledPackage>> GetInstalledAsync()
+        => WithLoadLockAsync(GetInstalledCoreAsync);
+
+    private async Task<IReadOnlyList<InstalledPackage>> GetInstalledCoreAsync()
     {
         var packages = WingetParser.ParseInstalled(await _winget.GetInstalledApps());
 
@@ -49,7 +70,10 @@ public sealed class WingetProvider : IPackageProvider
         return packages;
     }
 
-    public async Task<IReadOnlyList<UpdatePackage>> GetUpdatesAsync()
+    public Task<IReadOnlyList<UpdatePackage>> GetUpdatesAsync()
+        => WithLoadLockAsync(GetUpdatesCoreAsync);
+
+    private async Task<IReadOnlyList<UpdatePackage>> GetUpdatesCoreAsync()
     {
         var updates = WingetParser.ParseUpdates(await _winget.GetUpdates());
 
@@ -60,9 +84,15 @@ public sealed class WingetProvider : IPackageProvider
         return updates;
     }
 
-    public async Task<string?> GetHomepageAsync(string id)
+    public Task<string?> GetHomepageAsync(string id)
+        => WithLoadLockAsync(() => GetHomepageCoreAsync(id));
+
+    private async Task<string?> GetHomepageCoreAsync(string id)
         => WingetParser.ParseHomepage(await _winget.Show(id));
 
-    public async Task<PackageDetails> GetDetailsAsync(string id)
+    public Task<PackageDetails> GetDetailsAsync(string id)
+        => WithLoadLockAsync(() => GetDetailsCoreAsync(id));
+
+    private async Task<PackageDetails> GetDetailsCoreAsync(string id)
         => WingetParser.ParseDetails(await _winget.Show(id));
 }

@@ -2,6 +2,7 @@
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
 using System.Linq;
+using System.Text.Json;
 using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Services.Workspaces;
@@ -57,11 +58,17 @@ public class WorkspaceService : IWorkspaceService
 
             try
             {
-                var json = await File.ReadAllTextAsync(file, cancellationToken);
+                await using var stream = File.OpenRead(file);
 
-                result.Add(_serializer.Deserialize(json));
+                var workspace = await JsonSerializer.DeserializeAsync<WorkspaceModel>(
+                    stream,
+                    _serializer.Options,
+                    cancellationToken);
+
+                if (workspace is not null)
+                    result.Add(workspace);
             }
-            catch (InvalidDataException)
+            catch (Exception ex) when (ex is InvalidDataException or JsonException)
             {
                 // bozuk dosya tüm listeyi bozmasın
             }
@@ -81,8 +88,12 @@ public class WorkspaceService : IWorkspaceService
         if (!File.Exists(path))
             return null;
 
-        var json = await File.ReadAllTextAsync(path, cancellationToken);
-        return _serializer.Deserialize(json);
+        await using var stream = File.OpenRead(path);
+
+        return await JsonSerializer.DeserializeAsync<WorkspaceModel>(
+            stream,
+            _serializer.Options,
+            cancellationToken);
     }
 
     public async Task SaveAsync(
@@ -92,7 +103,14 @@ public class WorkspaceService : IWorkspaceService
         workspace.Modified = DateTime.Now;
 
         var path = GetWorkspacePath(workspace.Id);
-        await File.WriteAllTextAsync(path, _serializer.Serialize(workspace), cancellationToken);
+
+        await using var stream = File.Create(path);
+
+        await JsonSerializer.SerializeAsync(
+            stream,
+            workspace,
+            _serializer.Options,
+            cancellationToken);
     }
 
     public Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)

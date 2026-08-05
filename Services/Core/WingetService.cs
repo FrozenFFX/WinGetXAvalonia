@@ -2,6 +2,7 @@
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
 using System.Diagnostics;
+using System.Text;
 using System.Text.RegularExpressions;
 using WinGetXAvalonia.Core.Operations;
 using WinGetXAvalonia.Models;
@@ -28,10 +29,13 @@ public class WingetService
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,
-            CreateNoWindow = true
+            CreateNoWindow = true,
+            StandardOutputEncoding = Encoding.UTF8,
+            StandardErrorEncoding = Encoding.UTF8
         };
 
         using Process process = Process.Start(psi)!;
+        process.EnableRaisingEvents = true;
 
         string output = await process.StandardOutput.ReadToEndAsync();
 
@@ -58,10 +62,13 @@ public class WingetService
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,
-            CreateNoWindow = true
+            CreateNoWindow = true,
+            StandardOutputEncoding = Encoding.UTF8,
+            StandardErrorEncoding = Encoding.UTF8
         };
 
         using Process process = Process.Start(psi)!;
+        process.EnableRaisingEvents = true;
 
         progress?.Report(10, launchingMessage);
 

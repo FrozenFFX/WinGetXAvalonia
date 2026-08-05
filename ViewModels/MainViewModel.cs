@@ -17,6 +17,8 @@ public partial class MainViewModel : ViewModelBase
 
     public string Version => "1.0.0";
 
+    public string Footer => $"WinGetX {Version}";
+
     public string BuildDate =>
         new System.IO.FileInfo(typeof(MainViewModel).Assembly.Location)
             .LastWriteTime.ToString("yyyy-MM-dd");

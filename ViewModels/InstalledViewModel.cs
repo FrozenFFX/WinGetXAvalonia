@@ -28,6 +28,7 @@ public partial class InstalledViewModel : AsyncViewModel
     private readonly IOperationQueue _queue;
     private readonly IEventBus _eventBus;
     private readonly ILauncherService _launcher;
+    private readonly PackageCacheService _cache;
 
     private readonly List<PackageModel> _allPackages = new();
     private bool _refreshing;
@@ -68,12 +69,14 @@ public partial class InstalledViewModel : AsyncViewModel
         IEventBus eventBus,
         ILauncherService launcher,
         IOperationService operations,
-        IClipboardService clipboard)
+        IClipboardService clipboard,
+        PackageCacheService cache)
     {
         _provider = provider;
         _queue = queue;
         _eventBus = eventBus;
         _launcher = launcher;
+        _cache = cache;
 
         Details = new PackageDetailsViewModel(provider, operations, clipboard, launcher);
 
@@ -125,6 +128,8 @@ public partial class InstalledViewModel : AsyncViewModel
             ApplyFilter();
 
             State = _allPackages.Count == 0 ? LoadState.Empty : LoadState.Loaded;
+
+            _cache.Clear();
         }
         catch (Exception ex)
         {

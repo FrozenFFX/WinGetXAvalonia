@@ -19,11 +19,13 @@ public partial class BrowseViewModel : AsyncViewModel
     private readonly IPackageProvider _provider;
     private readonly IOperationService _operations;
     private readonly PackageSearchCache _cache;
+    private readonly PackageCacheService _detailsCache;
     private readonly IFeaturedCatalog _featured;
     private readonly IClipboardService _clipboard;
     private readonly ILauncherService _launcher;
 
     private bool _initialized;
+    private CancellationTokenSource? _searchCts;
     private CancellationTokenSource? _suggestCts;
     private PackageModel? _lastSelected;
     private PackageIndex? _index;
@@ -58,6 +60,7 @@ public partial class BrowseViewModel : AsyncViewModel
         IPackageProvider provider,
         IOperationService operations,
         PackageSearchCache cache,
+        PackageCacheService detailsCache,
         IFeaturedCatalog featured,
         IClipboardService clipboard,
         ILauncherService launcher)
@@ -65,6 +68,7 @@ public partial class BrowseViewModel : AsyncViewModel
         _provider = provider;
         _operations = operations;
         _cache = cache;
+        _detailsCache = detailsCache;
         _featured = featured;
         _clipboard = clipboard;
         _launcher = launcher;
@@ -116,7 +120,12 @@ public partial class BrowseViewModel : AsyncViewModel
         if (string.IsNullOrWhiteSpace(SearchText))
             return;
 
-        await RunSearchAsync(SearchText);
+        _searchCts?.Cancel();
+        _searchCts?.Dispose();
+
+        _searchCts = new CancellationTokenSource();
+
+        await RunSearchAsync(SearchText, _searchCts.Token);
     }
 
     [RelayCommand]
@@ -300,7 +309,7 @@ public partial class BrowseViewModel : AsyncViewModel
         }
     }
 
-    private async Task RunSearchAsync(string query)
+    private async Task RunSearchAsync(string query, CancellationToken token = default)
     {
         State = LoadState.Loading;
         ErrorMessage = null;
@@ -319,15 +328,25 @@ public partial class BrowseViewModel : AsyncViewModel
 
             foreach (var package in results)
             {
+                token.ThrowIfCancellationRequested();
+
                 PackageStateCalculator.Apply(package, _index);
                 enriched.Add(package);
             }
+
+            token.ThrowIfCancellationRequested();
 
             Results.ReplaceAll(enriched);
 
             SelectedPackage = null;
 
             State = Results.Count == 0 ? LoadState.Empty : LoadState.Loaded;
+
+            _detailsCache.Clear();
+        }
+        catch (OperationCanceledException)
+        {
+            // iptal edilen aramanın yerine yeni bir arama başladı, durumu o yönetir
         }
         catch (Exception ex)
         {

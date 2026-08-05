@@ -35,6 +35,12 @@ public partial class OperationDrawerViewModel : ViewModelBase
 
     public int FailedCount => Operations.Count(x => x.Status == OperationStatus.Failed);
 
+    public int Total => Operations.Count;
+
+    public bool HasRunning => RunningCount > 0;
+
+    public bool HasCompleted => CompletedCount > 0;
+
     public string Summary
         => $"{RunningCount} Running • {PendingCount} Pending • {CompletedCount} Completed";
 
@@ -50,11 +56,17 @@ public partial class OperationDrawerViewModel : ViewModelBase
 
         OnPropertyChanged(nameof(Summary));
         OnPropertyChanged(nameof(HasOperations));
+        OnPropertyChanged(nameof(Total));
+        OnPropertyChanged(nameof(HasRunning));
+        OnPropertyChanged(nameof(HasCompleted));
     }
 
     private void OnOperationsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         OnPropertyChanged(nameof(HasOperations));
+        OnPropertyChanged(nameof(Total));
+        OnPropertyChanged(nameof(HasRunning));
+        OnPropertyChanged(nameof(HasCompleted));
         OnPropertyChanged(nameof(Summary));
     }
 }

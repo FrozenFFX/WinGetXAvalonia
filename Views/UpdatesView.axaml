@@ -46,13 +46,15 @@
             Grid.Row="3"
             ColumnDefinitions="*,12,400">
 
-            <ScrollViewer Grid.Column="0">
+            <ScrollViewer
+                Grid.Column="0"
+                ScrollViewer.IsDeferredScrollingEnabled="True">
 
                 <ItemsControl ItemsSource="{Binding Updates}">
 
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <VirtualizingStackPanel/>
+                            <VirtualizingStackPanel CacheLength="0.5"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
 

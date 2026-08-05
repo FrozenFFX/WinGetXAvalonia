@@ -126,7 +126,8 @@
 
             <ScrollViewer
                 Grid.Column="0"
-                VerticalScrollBarVisibility="Auto">
+                VerticalScrollBarVisibility="Auto"
+                ScrollViewer.IsDeferredScrollingEnabled="True">
 
                 <StackPanel Spacing="20">
 
@@ -134,7 +135,7 @@
 
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <VirtualizingStackPanel/>
+                                <VirtualizingStackPanel CacheLength="0.5"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
 

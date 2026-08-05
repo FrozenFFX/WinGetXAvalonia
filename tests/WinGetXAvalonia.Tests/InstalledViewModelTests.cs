@@ -97,7 +97,8 @@ public class InstalledViewModelTests
             events,
             new LauncherService(),
             new FakeOperationService(),
-            new ClipboardService());
+            new ClipboardService(),
+            new PackageCacheService());
 
         return (vm, provider, queue, events);
     }

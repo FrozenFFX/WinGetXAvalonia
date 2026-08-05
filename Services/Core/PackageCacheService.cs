@@ -1,14 +1,20 @@
 // Copyright (c) 2026 FrozenFFX. All rights reserved.
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
-using System.Collections.Generic;
+using System;
+using Microsoft.Extensions.Caching.Memory;
 using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Services.Core;
 
 public sealed class PackageCacheService
 {
-    private readonly Dictionary<string, WinGetXAvalonia.Models.PackageDetails> _cache = new();
+    private const int SizeLimit = 512;
+
+    private readonly MemoryCache _cache = new(new MemoryCacheOptions
+    {
+        SizeLimit = SizeLimit
+    });
 
     public bool TryGet(
         string id,
@@ -21,7 +27,11 @@ public sealed class PackageCacheService
         string id,
         WinGetXAvalonia.Models.PackageDetails details)
     {
-        _cache[id] = details;
+        _cache.Set(id, details, new MemoryCacheEntryOptions
+        {
+            Size = 1,
+            SlidingExpiration = TimeSpan.FromMinutes(15)
+        });
     }
 
     public void Clear()

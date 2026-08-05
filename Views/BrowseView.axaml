@@ -126,11 +126,12 @@
                     SelectedItem="{Binding SelectedPackage}"
                     BorderThickness="0"
                     Background="Transparent"
+                    ScrollViewer.IsDeferredScrollingEnabled="True"
                     shared:ScrollToTopBehavior.ScrollToTopOnReset="True">
 
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <VirtualizingStackPanel/>
+                            <VirtualizingStackPanel CacheLength="0.5"/>
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
 

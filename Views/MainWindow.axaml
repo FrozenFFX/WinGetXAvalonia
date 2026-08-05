@@ -74,12 +74,12 @@
 
                 <TextBlock
                     VerticalAlignment="Center"
-                    Text="{Binding StatusText}"/>
+                    Text="{Binding Footer}"/>
 
                 <TextBlock
                     Grid.Column="1"
                     VerticalAlignment="Center"
-                    Text="{Binding Version}"/>
+                    Text="{Binding StatusText}"/>
 
                 <TextBlock
                     Grid.Column="2"

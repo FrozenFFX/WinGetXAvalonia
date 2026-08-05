@@ -25,6 +25,7 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
     private readonly IOperationService _operations;
     private readonly IEventBus _eventBus;
     private readonly ILauncherService _launcher;
+    private readonly PackageCacheService _cache;
 
     private readonly List<PackageModel> _allPackages = new();
     private IDisposable? _subscription;
@@ -55,12 +56,14 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
         IOperationService operations,
         IEventBus eventBus,
         ILauncherService launcher,
-        IClipboardService clipboard)
+        IClipboardService clipboard,
+        PackageCacheService cache)
     {
         _provider = provider;
         _operations = operations;
         _eventBus = eventBus;
         _launcher = launcher;
+        _cache = cache;
 
         Details = new PackageDetailsViewModel(provider, operations, clipboard, launcher);
 
@@ -119,6 +122,8 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
             ApplyFilter();
 
             State = _allPackages.Count == 0 ? LoadState.Empty : LoadState.Loaded;
+
+            _cache.Clear();
         }
         catch (Exception)
         {

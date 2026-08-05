@@ -91,6 +91,7 @@ public class BrowseViewModelTests
             provider,
             operations ?? new FakeOperationService(),
             new PackageSearchCache(),
+            new PackageCacheService(),
             catalog,
             new ClipboardService(),
             new LauncherService());

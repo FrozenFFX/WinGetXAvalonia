@@ -20,8 +20,7 @@ public partial class NotificationCenterViewModel : ViewModelBase
     [ObservableProperty]
     private bool hasUnread;
 
-    [ObservableProperty]
-    private bool isEmpty = true;
+    public bool IsEmpty => Items.Count == 0;
 
     public NotificationCenterViewModel(NotificationService service)
     {
@@ -48,7 +47,8 @@ public partial class NotificationCenterViewModel : ViewModelBase
 
         UnreadCount = _service.UnreadCount;
         HasUnread = UnreadCount > 0;
-        IsEmpty = Items.Count == 0;
+
+        OnPropertyChanged(nameof(IsEmpty));
     }
 
     [RelayCommand]

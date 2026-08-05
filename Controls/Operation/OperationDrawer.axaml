@@ -44,7 +44,8 @@
             <Button Grid.Row="2"
                     Margin="12"
                     Content="Clear Completed"
-                    Command="{Binding ClearCompletedCommand}"/>
+                    Command="{Binding ClearCompletedCommand}"
+                    IsEnabled="{Binding HasCompleted}"/>
 
         </Grid>
 

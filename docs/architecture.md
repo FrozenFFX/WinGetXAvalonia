@@ -70,6 +70,34 @@ Founder Edition ana projeden tamamen ayrıdır (ARTICLE XIII):
 - Açık kaynak sürüm (GitHub) Founder olmadan da eksiksiz çalışır.
 - Ortak iş mantığı ihtiyacı doğarsa paylaşılan çekirdek kararı `docs/founder-roadmap.md`'de değerlendirilir.
 
+## Event Sözleşmeleri (Event Contract Catalog)
+
+Event Engine tektir; her olay bir kez publish edilir, çok modül dinler
+(guardrails.md — Omurga). Sözleşme kataloğu (hedef):
+
+| # | Olay | Anlamı |
+|---|------|--------|
+| 1 | `AppStarted` | Uygulama açıldı; oturum başladı. |
+| 2 | `PackageChanged` | Paket kuruldu / güncellendi / kaldırıldı. |
+| 3 | `EnvironmentChanged` | Environment durumu değişti. |
+| 4 | `AutomationTriggered` | Otomasyon tetiklendi. |
+| 5 | `TaskStatusChanged` | Bir Task başladı / ilerledi / bitti. |
+| 6 | `SnapshotCreated` | Yeni snapshot alındı. |
+| 7 | `HistoryRecorded` | Yeni history kaydı oluştu. |
+| 8 | `SourceChanged` | Kaynak (winget, custom) eklendi / silindi / güncellendi. |
+| 9 | `SettingsChanged` | Ayar değişti; ilgili state tazelenir. |
+| 10 | `ThemeChanged` | Tema değişti; UI beslenir. |
+| 11 | `NotificationRaised` | Bildirim yayınlandı. |
+| 12 | `SecurityVerdictChanged` | Güven kararı (trust) değişti. |
+| 13 | `IssueDetected` | Diagnostics yeni bir sorun buldu. |
+| 14 | `BlueprintImported` | Blueprint içe aktarıldı. |
+| 15 | `WorkspaceOpened` | Workspace açıldı; state yüklendi. |
+| 16 | `DiscoverRefreshed` | Discover içeriği tazelendi. |
+| 17 | `SessionEnded` | Oturum kapandı; özet işlenir. |
+
+Mevcut kodda `AppEvent` + `PackageChangedEvent` vardır; katalog hedeftir.
+Yeni olay eklenmeden önce kataloğa girilir — kopuk olay, kopuk modül demektir.
+
 ## Geçiş
 
 Tek projeden çoklu projeye geçiş adım adım yapılır, her adımda kod derlenir ve testler yeşil kalır:

@@ -9,11 +9,13 @@
     x:Name="Root">
 
     <Border
+        Classes="panel"
         Padding="16"
-        Background="{DynamicResource CardBrush}"
-        BorderBrush="{DynamicResource BorderBrush}"
+        Background="{DynamicResource Card}"
+        BorderBrush="{DynamicResource Border}"
         BorderThickness="1"
         CornerRadius="{DynamicResource RadiusMedium}">
+
 
         <StackPanel Spacing="6">
 

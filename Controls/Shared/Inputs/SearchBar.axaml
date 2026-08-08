@@ -4,6 +4,7 @@
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
     x:Class="WinGetXAvalonia.Controls.Shared.SearchBar"
     x:Name="Root">
@@ -24,7 +25,7 @@
                 Opacity="0.5"
                 VerticalAlignment="Center"/>
 
-            <TextBox
+            <shared:AppTextField
                 Grid.Column="1"
                 Margin="8,0"
                 Padding="0"
@@ -34,7 +35,7 @@
                 PlaceholderText="{Binding Watermark, ElementName=Root}"
                 Text="{Binding Text, ElementName=Root, Mode=TwoWay}"/>
 
-            <Button
+            <shared:AppButton
                 Grid.Column="2"
                 Content="✕"
                 FontSize="12"

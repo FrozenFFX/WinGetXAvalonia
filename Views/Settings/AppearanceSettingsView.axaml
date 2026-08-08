@@ -3,8 +3,9 @@
 
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
              xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
-             xmlns:services="using:WinGetXAvalonia.Services.Theme"
+             xmlns:models="using:WinGetXAvalonia.Models"
              x:Class="WinGetXAvalonia.Views.Settings.AppearanceSettingsView"
              x:DataType="vm:AppearanceSettingsViewModel">
 
@@ -27,7 +28,14 @@
 
     </UserControl.Styles>
 
-    <ScrollViewer>
+    <Grid
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        ClipToBounds="True">
+
+    <ScrollViewer
+        HorizontalScrollBarVisibility="Disabled"
+        VerticalScrollBarVisibility="Auto">
 
         <StackPanel Spacing="22">
 
@@ -35,7 +43,7 @@
                 Classes="title"
                 Text="Appearance"/>
 
-            <Border Classes="card">
+            <shared:AppCard>
 
                 <StackPanel Spacing="16">
 
@@ -54,9 +62,9 @@
 
                 </StackPanel>
 
-            </Border>
+            </shared:AppCard>
 
-            <Border Classes="card">
+            <shared:AppCard>
 
                 <StackPanel Spacing="16">
 
@@ -78,13 +86,13 @@
 
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <WrapPanel/>
+                                <WrapPanel HorizontalAlignment="Left"/>
                             </ItemsPanelTemplate>
                         </ListBox.ItemsPanel>
 
                         <ListBox.ItemTemplate>
 
-                            <DataTemplate DataType="services:AccentDefinition">
+                            <DataTemplate DataType="models:AccentDefinition">
 
                                 <Border
                                     Width="34"
@@ -102,9 +110,9 @@
 
                 </StackPanel>
 
-            </Border>
+            </shared:AppCard>
 
-            <Border Classes="card">
+            <shared:AppCard>
 
                 <StackPanel Spacing="20">
 
@@ -135,10 +143,12 @@
 
                 </StackPanel>
 
-            </Border>
+            </shared:AppCard>
 
         </StackPanel>
 
     </ScrollViewer>
+
+    </Grid>
 
 </UserControl>

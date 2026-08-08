@@ -64,7 +64,7 @@ public partial class SourceManagerViewModel : AsyncViewModel
         return _service.RemoveAsync(SelectedSource.Name);
     }
 
-    public Task InitializeAsync()
+    public override Task InitializeAsync()
     {
         return Refresh();
     }

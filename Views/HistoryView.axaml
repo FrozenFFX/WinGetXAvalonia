@@ -7,6 +7,7 @@
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
     xmlns:controls="using:WinGetXAvalonia.Controls"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
     x:Class="WinGetXAvalonia.Views.HistoryView"
     x:Name="Root"
     x:DataType="vm:HistoryViewModel">
@@ -27,6 +28,17 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
             <Setter Property="CornerRadius" Value="15"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.15"/>
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="ToggleButton.FilterChip:pointerover:not(:checked)">
+            <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
         </Style>
 
         <Style Selector="ToggleButton.FilterChip:checked">
@@ -37,279 +49,244 @@
 
     </UserControl.Styles>
 
-    <Grid Margin="20">
+    <Grid
+        Margin="24"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        ClipToBounds="True">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="12"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <!-- Header -->
         <shared:SectionHeader
+            Grid.Row="0"
             Title="History"
             Description="{Binding OperationsSummary}"/>
 
         <!-- Toolbar -->
-        <Border
-            Grid.Row="1"
-            Margin="0,0,0,8"
-            Padding="16"
-            CornerRadius="{DynamicResource RadiusMedium}"
-            Background="{DynamicResource CardBrush}"
-            BorderBrush="{DynamicResource BorderBrush}"
-            BorderThickness="1">
-
-            <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="10">
-
-                <shared:SearchBox
-                    MinWidth="320"
-                    MaxWidth="600"
-                    HorizontalAlignment="Stretch"
-                    Watermark="Search history..."
-                    Text="{Binding SearchText}"/>
-
-                <Button
-                    Grid.Column="1"
-                    Width="42"
-                    Padding="0"
-                    Content="🔄"
-                    ToolTip.Tip="Refresh history (F5)"
-                    Command="{Binding RefreshCommand}"/>
-
-                <Button
-                    Grid.Column="2"
-                    MinWidth="110"
-                    Content="Export"
-                    Command="{Binding ExportCommand}"/>
-
-                <Button
-                    Grid.Column="3"
-                    Classes="Danger"
-                    MinWidth="110"
-                    Content="Clear"
-                    Command="{Binding ClearCommand}"/>
-            </Grid>
-        </Border>
-
-        <!-- Filter chips -->
-        <ItemsControl
-            Grid.Row="2"
-            ItemsSource="{Binding Filters}">
-
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <ToggleButton
-                        Classes="FilterChip"
-                        Margin="0,0,8,8"
-                        IsChecked="{Binding IsActive, Mode=OneWay}"
-                        Command="{Binding $parent[ItemsControl].DataContext.SelectFilterCommand}"
-                        CommandParameter="{Binding}">
-
-                        <TextBlock Text="{Binding Label}"/>
-                    </ToggleButton>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-
-        <!-- List -->
         <Grid
-            Grid.Row="4"
-            ColumnDefinitions="*,12,320">
-
-            <ScrollViewer
-                Grid.Column="0"
-                VerticalScrollBarVisibility="Auto"
-                ScrollViewer.IsDeferredScrollingEnabled="True">
-
-                <StackPanel Spacing="20">
-
-                    <ItemsControl ItemsSource="{Binding Groups}">
-
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel CacheLength="0.5"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-
-                                <StackPanel Spacing="8">
-
-                                    <TextBlock
-                                        Margin="5,0,0,0"
-                                        FontSize="16"
-                                        FontWeight="SemiBold"
-                                        Text="{Binding Title}"/>
-
-                                    <ItemsControl ItemsSource="{Binding Items}">
-
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <VirtualizingStackPanel/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <controls:HistoryCard/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-            </ScrollViewer>
-
-            <GridSplitter
-                Grid.Column="1"
-                Width="6"
-                ResizeDirection="Columns"
-                ResizeBehavior="PreviousAndNext"/>
+            Grid.Row="1"
+            RowDefinitions="Auto,Auto">
 
             <Border
-                Grid.Column="2"
-                Padding="18"
+                Grid.Row="0"
+                Margin="0,0,0,12"
+                Padding="16"
                 CornerRadius="{DynamicResource RadiusMedium}"
                 Background="{DynamicResource CardBrush}"
                 BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="1">
 
-                <StackPanel Spacing="14">
+                <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="10">
 
-                    <TextBlock
-                        FontSize="20"
-                        FontWeight="SemiBold"
-                        Text="Statistics"/>
+                    <shared:SearchBox
+                        MinWidth="320"
+                        MaxWidth="560"
+                        HorizontalAlignment="Stretch"
+                        Watermark="Search history..."
+                        Text="{Binding SearchText}"/>
 
-                    <Grid
-                        ColumnDefinitions="*,Auto"
-                        RowDefinitions="Auto,Auto,Auto,Auto"
-                        RowSpacing="10">
+                    <shared:AppButton
+                        Grid.Column="1"
+                        Width="42"
+                        Padding="0"
+                        Content="🔄"
+                        ToolTip.Tip="Refresh history (F5)"
+                        Command="{Binding RefreshCommand}"/>
 
-                        <TextBlock
-                            Grid.Row="0"
-                            Text="Total"/>
+                    <shared:AppButton
+                        Grid.Column="2"
+                        MinWidth="110"
+                        Content="Export"
+                        Command="{Binding ExportCommand}"/>
 
-                        <TextBlock
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            FontWeight="SemiBold"
-                            Text="{Binding TotalOperations}"/>
+                    <shared:AppButton
+                        Grid.Column="3"
+                        Classes="Danger"
+                        MinWidth="110"
+                        Content="Clear"
+                        Command="{Binding ClearCommand}"/>
 
-                        <TextBlock
-                            Grid.Row="1"
-                            Text="Successful"/>
-
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            FontWeight="SemiBold"
-                            Text="{Binding SuccessfulOperations}"/>
-
-                        <TextBlock
-                            Grid.Row="2"
-                            Text="Failed"/>
-
-                        <TextBlock
-                            Grid.Row="2"
-                            Grid.Column="1"
-                            FontWeight="SemiBold"
-                            Text="{Binding FailedOperations}"/>
-
-                        <TextBlock
-                            Grid.Row="3"
-                            Text="Today"/>
-
-                        <TextBlock
-                            Grid.Row="3"
-                            Grid.Column="1"
-                            FontWeight="SemiBold"
-                            Text="{Binding TodayOperations}"/>
-
-                    </Grid>
-
-                </StackPanel>
+                </Grid>
 
             </Border>
 
-            <!-- Empty state -->
-            <StackPanel
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Spacing="12"
-                IsVisible="{Binding IsEmpty}">
+            <ItemsControl
+                Grid.Row="1"
+                ItemsSource="{Binding Filters}">
 
-                <TextBlock
-                    Text="📜"
-                    FontSize="46"
-                    Opacity="0.35"
-                    HorizontalAlignment="Center"/>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel HorizontalAlignment="Left"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-                <TextBlock
-                    Text="No history available"
-                    FontSize="18"
-                    FontWeight="SemiBold"
-                    HorizontalAlignment="Center"/>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <ToggleButton
+                            Classes="FilterChip"
+                            Margin="0,0,8,8"
+                            IsChecked="{Binding IsActive, Mode=OneWay}"
+                            Command="{Binding $parent[ItemsControl].DataContext.SelectFilterCommand}"
+                            CommandParameter="{Binding}">
 
-                <TextBlock
-                    Text="Operations you run will appear here."
-                    Opacity="0.65"
-                    TextAlignment="Center"
-                    HorizontalAlignment="Center"/>
-            </StackPanel>
+                            <TextBlock Text="{Binding Label}"/>
 
-            <!-- Error state -->
-            <StackPanel
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Spacing="12"
-                IsVisible="{Binding HasError}">
+                        </ToggleButton>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
 
-                <TextBlock
-                    Text="⚠️"
-                    FontSize="46"
-                    Opacity="0.35"
-                    HorizontalAlignment="Center"/>
-
-                <TextBlock
-                    Text="Couldn't load history"
-                    FontSize="18"
-                    FontWeight="SemiBold"
-                    HorizontalAlignment="Center"/>
-
-                <TextBlock
-                    Text="{Binding ErrorMessage}"
-                    Opacity="0.65"
-                    TextAlignment="Center"
-                    TextWrapping="Wrap"
-                    MaxWidth="480"
-                    HorizontalAlignment="Center"/>
-
-                <Button
-                    Margin="0,8,0,0"
-                    MinWidth="140"
-                    Content="Retry"
-                    Command="{Binding RefreshCommand}"
-                    HorizontalAlignment="Center"/>
-            </StackPanel>
+            </ItemsControl>
 
         </Grid>
 
-        <shared:LoadingOverlay
-            Grid.RowSpan="5"
+        <!-- Master-Detail -->
+        <shared:MasterDetailPage
+            Grid.Row="3"
             IsLoading="{Binding IsLoading}"
-            Message="Loading history..."/>
+            LoadingMessage="Loading history..."
+            DetailWidth="0.8*">
+
+            <shared:MasterDetailPage.MasterContent>
+
+                <Grid>
+
+                    <ScrollViewer
+                        VerticalScrollBarVisibility="Auto"
+                        ScrollViewer.IsDeferredScrollingEnabled="True">
+
+                        <StackPanel Spacing="20">
+
+                            <ListBox
+                                ItemsSource="{Binding Groups}"
+                                BorderThickness="0"
+                                Background="Transparent">
+
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel CacheLength="0.5"/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+
+                                        <StackPanel Spacing="8">
+
+                                            <TextBlock
+                                                Margin="5,0,0,0"
+                                                FontSize="16"
+                                                FontWeight="SemiBold"
+                                                Text="{Binding Title}"/>
+
+                                            <ItemsControl ItemsSource="{Binding Items}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <VirtualizingStackPanel/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <controls:HistoryCard/>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+
+                                        </StackPanel>
+
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+
+                            </ListBox>
+
+                        </StackPanel>
+
+                    </ScrollViewer>
+
+                    <!-- Empty state -->
+                    <shared:AppEmptyState
+                        IsVisible="{Binding IsEmpty}"
+                        Icon="📜"
+                        Title="No history available"
+                        Description="Operations you run will appear here.">
+
+                        <shared:AppEmptyState.Examples>
+                            <sys:String>Installs, updates and removals in one place</sys:String>
+                            <sys:String>Roll back to any snapshot in two clicks</sys:String>
+                            <sys:String>Compare what changed between two points</sys:String>
+                        </shared:AppEmptyState.Examples>
+
+                    </shared:AppEmptyState>
+
+                    <!-- Error state -->
+                    <shared:AppEmptyState
+                        IsVisible="{Binding HasError}"
+                        Icon="⚠️"
+                        Title="Couldn't load history"
+                        Description="{Binding ErrorMessage}"
+                        ActionText="Retry"
+                        ActionCommand="{Binding RefreshCommand}"/>
+
+                </Grid>
+
+            </shared:MasterDetailPage.MasterContent>
+
+            <shared:MasterDetailPage.DetailContent>
+
+                <Border
+                    Padding="18"
+                    CornerRadius="{DynamicResource RadiusMedium}"
+                    Background="{DynamicResource CardBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1">
+
+                    <StackPanel Spacing="14">
+
+                        <TextBlock
+                            FontSize="20"
+                            FontWeight="SemiBold"
+                            Text="Statistics"/>
+
+                        <Grid
+                            ColumnDefinitions="*,Auto"
+                            RowDefinitions="Auto,Auto,Auto,Auto"
+                            RowSpacing="10">
+
+                            <TextBlock Grid.Row="0" Text="Total"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1"
+                                       FontWeight="SemiBold"
+                                       Text="{Binding TotalOperations}"/>
+
+                            <TextBlock Grid.Row="1" Text="Successful"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1"
+                                       FontWeight="SemiBold"
+                                       Text="{Binding SuccessfulOperations}"/>
+
+                            <TextBlock Grid.Row="2" Text="Failed"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1"
+                                       FontWeight="SemiBold"
+                                       Text="{Binding FailedOperations}"/>
+
+                            <TextBlock Grid.Row="3" Text="Today"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1"
+                                       FontWeight="SemiBold"
+                                       Text="{Binding TodayOperations}"/>
+
+                        </Grid>
+
+                    </StackPanel>
+
+                </Border>
+
+            </shared:MasterDetailPage.DetailContent>
+
+        </shared:MasterDetailPage>
 
     </Grid>
 

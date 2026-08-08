@@ -1,0 +1,57 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<ContentControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinGetXAvalonia.Controls.Shared"
+    x:Class="WinGetXAvalonia.Controls.Shared.SectionCard">
+
+    <ContentControl.Template>
+        <ControlTemplate TargetType="local:SectionCard">
+
+            <Border
+                Classes="panel"
+                Margin="0"
+                Padding="22"
+                CornerRadius="18"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource BorderBrush}"
+                Background="{DynamicResource CardBrush}"
+                ClipToBounds="True">
+
+                <Grid
+                    RowDefinitions="Auto,18,*"
+                    RowSpacing="0">
+
+                    <Grid
+                        ColumnDefinitions="*,Auto"
+                        VerticalAlignment="Center">
+
+                        <TextBlock
+                            FontSize="20"
+                            FontWeight="SemiBold"
+                            Text="{TemplateBinding Title}"/>
+
+                        <ContentPresenter
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Content="{TemplateBinding HeaderContent}"/>
+
+                    </Grid>
+
+                    <ContentPresenter
+                        Grid.Row="2"
+                        Margin="0,4,0,0"
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"/>
+
+                </Grid>
+
+            </Border>
+
+        </ControlTemplate>
+    </ContentControl.Template>
+
+</ContentControl>

@@ -1,0 +1,53 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:models="using:WinGetXAvalonia.Models"
+    x:Class="WinGetXAvalonia.Views.DetailListView"
+    x:DataType="vm:DetailListViewModel">
+
+    <ItemsControl ItemsSource="{Binding Items}">
+
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <VirtualizingStackPanel Orientation="Vertical"/>
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+
+        <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="models:HeroInfoItem">
+
+                <Grid
+                    Margin="0,0,0,14"
+                    ColumnDefinitions="Auto,*,Auto"
+                    ColumnSpacing="12">
+
+                    <TextBlock
+                        FontSize="16"
+                        VerticalAlignment="Center"
+                        Text="{Binding Icon}"/>
+
+                    <TextBlock
+                        Grid.Column="1"
+                        Opacity="0.60"
+                        VerticalAlignment="Center"
+                        Text="{Binding Label}"/>
+
+                    <TextBlock
+                        Grid.Column="2"
+                        FontWeight="SemiBold"
+                        VerticalAlignment="Center"
+                        TextAlignment="Right"
+                        Text="{Binding Value}"/>
+
+                </Grid>
+
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+
+    </ItemsControl>
+
+</UserControl>

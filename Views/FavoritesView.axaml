@@ -7,7 +7,10 @@
              x:Class="WinGetXAvalonia.Views.FavoritesView"
              x:DataType="vm:FavoritesViewModel">
 
-    <Grid Margin="20">
+    <Grid Margin="24"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          ClipToBounds="True">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

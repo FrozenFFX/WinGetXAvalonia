@@ -40,7 +40,7 @@ public partial class DiagnosticsViewModel : AsyncViewModel
         }
     }
 
-    public Task InitializeAsync()
+    public override Task InitializeAsync()
     {
         return Refresh();
     }

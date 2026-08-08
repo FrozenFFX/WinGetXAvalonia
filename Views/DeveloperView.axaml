@@ -10,13 +10,16 @@
     x:Class="WinGetXAvalonia.Views.DeveloperView"
     x:DataType="vm:DeveloperViewModel">
 
-    <Grid>
+    <Grid
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        ClipToBounds="True">
 
         <ScrollViewer
             VerticalScrollBarVisibility="Auto"
             HorizontalScrollBarVisibility="Disabled">
 
-            <StackPanel Margin="25" Spacing="16">
+            <StackPanel Margin="24" Spacing="16">
 
                 <StackPanel Spacing="4">
 
@@ -35,7 +38,7 @@
 
                     <shared:SectionHeader Title="Queue"/>
 
-                    <Border Classes="card" Padding="16">
+                    <shared:AppCard>
 
                         <Grid ColumnDefinitions="*,*,*,*">
 
@@ -73,11 +76,11 @@
 
                         </Grid>
 
-                    </Border>
+                    </shared:AppCard>
 
                     <shared:SectionHeader Title="Performance"/>
 
-                    <Border Classes="card" Padding="16">
+                    <shared:AppCard>
 
                         <Grid
                             ColumnDefinitions="*,*"
@@ -98,7 +101,7 @@
 
                         </Grid>
 
-                    </Border>
+                    </shared:AppCard>
 
                     <shared:SectionHeader Title="Live Operations"/>
 

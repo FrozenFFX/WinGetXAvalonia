@@ -144,6 +144,18 @@ public class WorkspaceService : IWorkspaceService
         await SaveAsync(workspace, cancellationToken);
     }
 
+    public async Task ImportJsonAsync(string json, CancellationToken cancellationToken = default)
+    {
+        var workspace = await _importer.ImportJsonAsync(json, cancellationToken);
+
+        workspace.Id = Guid.NewGuid();
+        workspace.Created = DateTime.Now;
+        workspace.Modified = DateTime.Now;
+        workspace.LastUsed = null;
+
+        await SaveAsync(workspace, cancellationToken);
+    }
+
     public async Task ExportAsync(
         Guid id,
         string path,
@@ -153,6 +165,76 @@ public class WorkspaceService : IWorkspaceService
             ?? throw new FileNotFoundException("Workspace not found.", GetWorkspacePath(id));
 
         await _exporter.ExportAsync(workspace, path, cancellationToken);
+    }
+
+    public async Task EnsureExampleWorkspacesAsync(
+        CancellationToken cancellationToken = default)
+    {
+        var marker = Path.Combine(_folder, ".examples-seeded");
+
+        if (File.Exists(marker))
+            return;
+
+        foreach (var preset in CreateExampleWorkspaces())
+            await SaveAsync(preset, cancellationToken);
+
+        await File.WriteAllTextAsync(
+            marker,
+            DateTime.Now.ToString("O"),
+            cancellationToken);
+    }
+
+    public static IReadOnlyList<WorkspaceModel> CreateExampleWorkspaces()
+    {
+        var gaming = Preset("Gaming", "Essential gaming setup", "🎮",
+            ("Valve.Steam", "Steam"),
+            ("EpicGames.EpicGamesLauncher", "Epic Games Launcher"),
+            ("Discord.Discord", "Discord"),
+            ("OBSProject.OBSStudio", "OBS Studio"));
+
+        var developer = Preset("Developer", "Coding tools and runtimes", "💻",
+            ("Git.Git", "Git"),
+            ("Microsoft.VisualStudioCode", "Visual Studio Code"),
+            ("Microsoft.PowerShell", "PowerShell"),
+            ("GitHub.cli", "GitHub CLI"),
+            ("Docker.DockerDesktop", "Docker Desktop"),
+            ("OpenJS.NodeJS.LTS", "Node.js LTS"));
+
+        var designer = Preset("Designer", "Creative and design tools", "🎨",
+            ("Figma.Figma", "Figma"),
+            ("BlenderFoundation.Blender", "Blender"),
+            ("GIMP.GIMP", "GIMP"),
+            ("Inkscape.Inkscape", "Inkscape"));
+
+        return new[] { gaming, developer, designer };
+    }
+
+    private static WorkspaceModel Preset(
+        string name,
+        string description,
+        string icon,
+        params (string Id, string Name)[] packages)
+    {
+        var workspace = new WorkspaceModel
+        {
+            Name = name,
+            Description = description,
+            Icon = icon,
+            Favorite = true
+        };
+
+        foreach (var (id, packageName) in packages)
+        {
+            workspace.Packages.Add(new WorkspacePackage
+            {
+                Id = id,
+                Name = packageName,
+                Version = "2.0.0",
+                Source = "winget"
+            });
+        }
+
+        return workspace;
     }
 
     private string GetWorkspacePath(Guid id)

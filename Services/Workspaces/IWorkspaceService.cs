@@ -30,8 +30,15 @@ public interface IWorkspaceService
         string path,
         CancellationToken cancellationToken = default);
 
+    Task ImportJsonAsync(
+        string json,
+        CancellationToken cancellationToken = default);
+
     Task ExportAsync(
         Guid id,
         string path,
+        CancellationToken cancellationToken = default);
+
+    Task EnsureExampleWorkspacesAsync(
         CancellationToken cancellationToken = default);
 }

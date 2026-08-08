@@ -2,8 +2,11 @@
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
 using System.Collections.ObjectModel;
+using WinGetXAvalonia.Core.Operations;
+using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Dialogs;
+using WinGetXAvalonia.Services.Operations;
 using WinGetXAvalonia.Services.Workspaces;
 using WinGetXAvalonia.ViewModels;
 
@@ -20,6 +23,8 @@ public class WorkspacesViewModelTests
         public List<string> Imported { get; } = new();
 
         public List<(Guid Id, string File)> Exported { get; } = new();
+
+        public int EnsureCalls { get; private set; }
 
         public bool ThrowOnGetAll { get; set; }
 
@@ -57,11 +62,69 @@ public class WorkspacesViewModelTests
             return Task.CompletedTask;
         }
 
+        public Task ImportJsonAsync(string json, CancellationToken cancellationToken = default)
+        {
+            Imported.Add(json);
+            return Task.CompletedTask;
+        }
+
         public Task ExportAsync(Guid id, string file, CancellationToken cancellationToken = default)
         {
             Exported.Add((id, file));
             return Task.CompletedTask;
         }
+
+        public Task EnsureExampleWorkspacesAsync(CancellationToken cancellationToken = default)
+        {
+            EnsureCalls++;
+            return Task.CompletedTask;
+        }
+    }
+
+    private sealed class FakeOperationService : IOperationService
+    {
+        public List<string> Installed { get; } = new();
+
+        public Task InstallAsync(string packageId)
+        {
+            Installed.Add(packageId);
+            return Task.CompletedTask;
+        }
+
+        public Task UpdateAsync(string packageId) => Task.CompletedTask;
+
+        public Task RemoveAsync(string packageId) => Task.CompletedTask;
+
+        public Task UpgradeAllAsync() => Task.CompletedTask;
+    }
+
+    private sealed class FakeProvider : IPackageProvider
+    {
+        public List<InstalledPackage> Installed { get; } = new();
+
+        public Task<IReadOnlyList<PackageModel>> SearchAsync(string query)
+            => Task.FromResult<IReadOnlyList<PackageModel>>(Array.Empty<PackageModel>());
+
+        public Task<IReadOnlyList<InstalledPackage>> GetInstalledAsync()
+            => Task.FromResult<IReadOnlyList<InstalledPackage>>(Installed);
+
+        public Task<IReadOnlyList<UpdatePackage>> GetUpdatesAsync()
+            => Task.FromResult<IReadOnlyList<UpdatePackage>>(Array.Empty<UpdatePackage>());
+
+        public Task InstallAsync(string id, IOperationProgress? progress = null)
+            => Task.CompletedTask;
+
+        public Task UpgradeAsync(string id, IOperationProgress? progress = null)
+            => Task.CompletedTask;
+
+        public Task UninstallAsync(string id, IOperationProgress? progress = null)
+            => Task.CompletedTask;
+
+        public Task<string?> GetHomepageAsync(string id)
+            => Task.FromResult<string?>(null);
+
+        public Task<PackageDetails> GetDetailsAsync(string id)
+            => Task.FromResult(new PackageDetails());
     }
 
     private sealed class FakeDialogService : IDialogService
@@ -108,11 +171,15 @@ public class WorkspacesViewModelTests
 
     private static WorkspacesViewModel Create(
         FakeWorkspaceService? service = null,
-        FakeDialogService? dialogs = null)
+        FakeDialogService? dialogs = null,
+        FakeOperationService? operations = null,
+        FakeProvider? provider = null)
         => new(
             service ?? new FakeWorkspaceService(),
             dialogs ?? new FakeDialogService(),
-            new FakeFilePickerService());
+            new FakeFilePickerService(),
+            operations,
+            provider);
 
     [Fact]
     public async Task Load_PopulatesWorkspaces_NewestFirst()
@@ -351,5 +418,219 @@ public class WorkspacesViewModelTests
         Assert.Single(vm.Workspaces);
         Assert.Equal("Gaming", vm.Workspaces[0].Name);
         Assert.Single(service.Items);
+    }
+
+    [Fact]
+    public async Task InitializeAsync_EnsuresExampleWorkspaces()
+    {
+        var service = new FakeWorkspaceService();
+        var vm = Create(service);
+
+        await vm.InitializeAsync();
+
+        Assert.Equal(1, service.EnsureCalls);
+    }
+
+    [Fact]
+    public async Task InstallAll_InstallsOnlyPendingPackages()
+    {
+        var service = new FakeWorkspaceService();
+        var operations = new FakeOperationService();
+        var workspace = new WorkspaceModel { Name = "Dev" };
+        workspace.Packages.Add(new WorkspacePackage { Id = "Git.Git", Name = "Git" });
+        workspace.Packages.Add(new WorkspacePackage { Id = "Microsoft.VisualStudioCode", Name = "VS Code" });
+        workspace.Packages[1].InstallState = PackageInstallState.Installed;
+        service.Items.Add(workspace);
+
+        var vm = Create(service, operations: operations);
+        await vm.InitializeAsync();
+
+        await vm.InstallAllCommand.ExecuteAsync(null);
+
+        Assert.Equal(new[] { "Git.Git" }, operations.Installed);
+        Assert.Equal(PackageInstallState.Installed, workspace.Packages[0].InstallState);
+    }
+
+    [Fact]
+    public async Task InstallAll_NothingPending_DoesNothing()
+    {
+        var service = new FakeWorkspaceService();
+        var operations = new FakeOperationService();
+        var workspace = new WorkspaceModel { Name = "Dev" };
+        workspace.Packages.Add(new WorkspacePackage
+        {
+            Id = "Git.Git",
+            Name = "Git",
+            InstallState = PackageInstallState.Installed
+        });
+        service.Items.Add(workspace);
+
+        var vm = Create(service, operations: operations);
+        await vm.InitializeAsync();
+
+        await vm.InstallAllCommand.ExecuteAsync(null);
+
+        Assert.Empty(operations.Installed);
+    }
+
+    [Fact]
+    public async Task InstallPackage_UpdatesStateAfterSuccess()
+    {
+        var service = new FakeWorkspaceService();
+        var operations = new FakeOperationService();
+        var workspace = new WorkspaceModel { Name = "Dev" };
+        workspace.Packages.Add(new WorkspacePackage { Id = "Git.Git", Name = "Git" });
+        service.Items.Add(workspace);
+
+        var vm = Create(service, operations: operations);
+        await vm.InitializeAsync();
+
+        await vm.InstallPackageCommand.ExecuteAsync(workspace.Packages[0]);
+
+        Assert.Contains("Git.Git", operations.Installed);
+        Assert.Equal(PackageInstallState.Installed, workspace.Packages[0].InstallState);
+    }
+
+    [Fact]
+    public async Task InstallPackage_NoOperationService_DoesNothing()
+    {
+        var service = new FakeWorkspaceService();
+        var workspace = new WorkspaceModel { Name = "Dev" };
+        workspace.Packages.Add(new WorkspacePackage { Id = "Git.Git", Name = "Git" });
+        service.Items.Add(workspace);
+
+        var vm = Create(service);
+        await vm.InitializeAsync();
+
+        await vm.InstallPackageCommand.ExecuteAsync(workspace.Packages[0]);
+
+        Assert.Equal(PackageInstallState.NotInstalled, workspace.Packages[0].InstallState);
+    }
+
+    [Fact]
+    public async Task InstallAllLabel_ReflectsPendingCount()
+    {
+        var service = new FakeWorkspaceService();
+        var operations = new FakeOperationService();
+        var workspace = new WorkspaceModel { Name = "Dev" };
+        workspace.Packages.Add(new WorkspacePackage { Id = "Git.Git", Name = "Git" });
+        workspace.Packages.Add(new WorkspacePackage
+        {
+            Id = "Docker.DockerDesktop",
+            Name = "Docker",
+            InstallState = PackageInstallState.Installed
+        });
+        service.Items.Add(workspace);
+
+        var vm = Create(service, operations: operations);
+        await vm.InitializeAsync();
+
+        Assert.Equal("Install All (1)", vm.InstallAllLabel);
+
+        await vm.InstallAllCommand.ExecuteAsync(null);
+
+        Assert.Equal("Install All", vm.InstallAllLabel);
+    }
+
+    [Fact]
+    public async Task AddPackage_AddsAndPersists()
+    {
+        var service = new FakeWorkspaceService();
+        var workspace = new WorkspaceModel { Name = "Dev" };
+        service.Items.Add(workspace);
+
+        var vm = Create(service);
+        await vm.InitializeAsync();
+
+        vm.OpenPackageEditorCommand.Execute(null);
+        Assert.True(vm.IsPackageEditorOpen);
+
+        vm.NewPackageId = "Git.Git";
+        vm.NewPackageName = "Git";
+        await vm.AddPackageCommand.ExecuteAsync(null);
+
+        Assert.False(vm.IsPackageEditorOpen);
+        Assert.Single(workspace.Packages);
+        Assert.Equal("Git.Git", workspace.Packages[0].Id);
+        Assert.Equal("Git", workspace.Packages[0].Name);
+        Assert.Equal(1, workspace.PackageCount);
+    }
+
+    [Fact]
+    public async Task AddPackage_BlankId_KeepsEditorOpen()
+    {
+        var service = new FakeWorkspaceService();
+        var workspace = new WorkspaceModel { Name = "Dev" };
+        service.Items.Add(workspace);
+
+        var vm = Create(service);
+        await vm.InitializeAsync();
+
+        vm.OpenPackageEditorCommand.Execute(null);
+        vm.NewPackageId = "   ";
+        await vm.AddPackageCommand.ExecuteAsync(null);
+
+        Assert.Empty(workspace.Packages);
+        Assert.True(vm.IsPackageEditorOpen);
+    }
+
+    [Fact]
+    public async Task AddPackage_DuplicateId_Ignored()
+    {
+        var service = new FakeWorkspaceService();
+        var workspace = new WorkspaceModel { Name = "Dev" };
+        workspace.Packages.Add(new WorkspacePackage { Id = "Git.Git", Name = "Git" });
+        service.Items.Add(workspace);
+
+        var vm = Create(service);
+        await vm.InitializeAsync();
+
+        vm.OpenPackageEditorCommand.Execute(null);
+        vm.NewPackageId = "git.git";
+        await vm.AddPackageCommand.ExecuteAsync(null);
+
+        Assert.Single(workspace.Packages);
+    }
+
+    [Fact]
+    public async Task RemovePackage_RemovesAndPersists()
+    {
+        var service = new FakeWorkspaceService();
+        var workspace = new WorkspaceModel { Name = "Dev" };
+        workspace.Packages.Add(new WorkspacePackage { Id = "Git.Git", Name = "Git" });
+        workspace.Packages.Add(new WorkspacePackage { Id = "Docker.DockerDesktop", Name = "Docker" });
+        service.Items.Add(workspace);
+
+        var vm = Create(service);
+        await vm.InitializeAsync();
+
+        await vm.RemovePackageCommand.ExecuteAsync(workspace.Packages[0]);
+
+        Assert.Single(workspace.Packages);
+        Assert.Equal("Docker.DockerDesktop", workspace.Packages[0].Id);
+        Assert.Equal(1, workspace.PackageCount);
+        Assert.True(vm.HasPackages);
+    }
+
+    [Fact]
+    public async Task RefreshInstallStates_MarksInstalledPackages()
+    {
+        var service = new FakeWorkspaceService();
+        var provider = new FakeProvider();
+        provider.Installed.Add(new InstalledPackage { Id = "Git.Git", Version = "2.45.0" });
+
+        var workspace = new WorkspaceModel { Name = "Dev" };
+        workspace.Packages.Add(new WorkspacePackage { Id = "Git.Git", Name = "Git" });
+        workspace.Packages.Add(new WorkspacePackage { Id = "Docker.DockerDesktop", Name = "Docker" });
+        service.Items.Add(workspace);
+
+        var vm = Create(service, provider: provider);
+        await vm.InitializeAsync();
+
+        await vm.RefreshInstallStatesCommand.ExecuteAsync(null);
+
+        Assert.Equal(PackageInstallState.Installed, workspace.Packages[0].InstallState);
+        Assert.Equal(PackageInstallState.NotInstalled, workspace.Packages[1].InstallState);
+        Assert.Equal("Install All (1)", vm.InstallAllLabel);
     }
 }

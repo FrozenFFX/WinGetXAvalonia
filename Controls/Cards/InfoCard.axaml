@@ -1,0 +1,62 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<ContentControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinGetXAvalonia.Controls.Cards"
+    x:Class="WinGetXAvalonia.Controls.Cards.InfoCard">
+
+    <ContentControl.Template>
+
+        <ControlTemplate TargetType="local:InfoCard">
+
+            <Border
+                x:Name="CardBorder"
+                Classes="panel"
+                Classes.interactive="{Binding Command, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource NullToBoolConverter}}"
+                Margin="4"
+                Padding="0"
+                CornerRadius="16"
+                BorderThickness="1">
+
+                <Button
+                    Height="NaN"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Padding="0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    IsHitTestVisible="{Binding Command, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource NullToBoolConverter}}"
+                    Command="{TemplateBinding Command}"
+                    Focusable="False">
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <ContentPresenter
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"/>
+                        </ControlTemplate>
+                    </Button.Template>
+
+                    <Grid Margin="20">
+
+                        <ContentPresenter
+                            Content="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                            ContentTemplate="{Binding ContentTemplate, RelativeSource={RelativeSource TemplatedParent}}"/>
+
+                    </Grid>
+
+                </Button>
+
+            </Border>
+
+        </ControlTemplate>
+
+    </ContentControl.Template>
+
+</ContentControl>

@@ -40,6 +40,11 @@ public partial class StudioViewModel : AsyncViewModel
         var count => $"{count} tools"
     };
 
+    public bool IsToolSelected => SelectedTool is not null;
+
+    partial void OnSelectedToolChanged(StudioToolViewModel? value)
+        => OnPropertyChanged(nameof(IsToolSelected));
+
     public StudioViewModel(IStudioService studio)
     {
         _studio = studio;
@@ -47,7 +52,7 @@ public partial class StudioViewModel : AsyncViewModel
         SeedFilters();
     }
 
-    public Task InitializeAsync()
+    public override Task InitializeAsync()
         => RefreshAsync();
 
     partial void OnSearchTextChanged(string value)
@@ -132,3 +137,4 @@ public partial class StudioViewModel : AsyncViewModel
         Filters.Add(new() { Mode = StudioToolStatus.ComingSoon, Label = "Coming Soon" });
     }
 }
+

@@ -5,11 +5,17 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:models="using:WinGetXAvalonia.Models"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
+    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
     x:Class="WinGetXAvalonia.Views.AutomationView"
     x:DataType="vm:AutomationViewModel">
 
-    <Grid Margin="20">
+    <Grid Margin="24"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          ClipToBounds="True">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -19,71 +25,215 @@
 
         <shared:SectionHeader
             Title="Automation"
-            Description="Create automatic package workflows."/>
+            Description="Create automatic package workflows triggered by events."/>
 
         <Grid
             Grid.Row="2"
-            ColumnDefinitions="320,12,*">
+            ColumnDefinitions="280,10,*">
 
-            <Border
-                Grid.Column="0"
-                Padding="18"
-                Background="{DynamicResource CardBrush}"
-                BorderBrush="{DynamicResource BorderBrush}"
-                BorderThickness="1"
-                CornerRadius="{DynamicResource RadiusMedium}">
+            <!-- Sol: liste paneli -->
 
-                <StackPanel Spacing="10">
+            <shared:AppToolbar
+                Grid.Column="0">
 
-                    <Button Content="New Automation"/>
+                <Grid RowDefinitions="Auto,12,Auto,12,*">
 
-                    <Button Content="Import"/>
+                    <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
 
-                    <Button Content="Export"/>
+                        <shared:AppButton
+                            Grid.Column="0"
+                            Classes="Accent"
+                            HorizontalAlignment="Stretch"
+                            Content="New Automation"
+                            Command="{Binding NewCommand}"/>
 
-                    <Separator/>
+                        <shared:AppButton
+                            Grid.Column="1"
+                            Content="Import"
+                            Command="{Binding ImportCommand}"/>
 
-                    <ListBox/>
+                        <shared:AppButton
+                            Grid.Column="2"
+                            Content="Export"
+                            Command="{Binding ExportCommand}"/>
 
-                </StackPanel>
+                    </Grid>
 
-            </Border>
+                    <shared:SearchBox
+                        Grid.Row="2"
+                        Watermark="Search automations..."
+                        Text="{Binding SearchText}"/>
+
+                    <Grid Grid.Row="4">
+
+                        <ListBox
+                            ItemsSource="{Binding FilteredAutomations}"
+                            SelectedItem="{Binding SelectedAutomation}"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+
+                            <ListBox.ItemTemplate>
+
+                                <DataTemplate x:DataType="models:AutomationItem">
+
+                                    <Border
+                                        Padding="10,8"
+                                        CornerRadius="10">
+
+                                        <StackPanel Spacing="2">
+
+                                            <TextBlock
+                                                Text="{Binding Name}"
+                                                FontWeight="SemiBold"
+                                                TextTrimming="CharacterEllipsis"
+                                                MaxLines="1"/>
+
+                                            <TextBlock
+                                                Text="{Binding Trigger}"
+                                                FontSize="12"
+                                                Opacity="0.6"
+                                                TextTrimming="CharacterEllipsis"
+                                                MaxLines="1"
+                                                IsVisible="{Binding Trigger,
+                                                Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"/>
+
+                                        </StackPanel>
+
+                                    </Border>
+
+                                </DataTemplate>
+
+                            </ListBox.ItemTemplate>
+
+                        </ListBox>
+
+                        <shared:AppEmptyState
+                            IsVisible="{Binding HasNoItems}"
+                            Icon="⚙"
+                            Title="No automations"
+                            Description="Create your first automation to get started."
+                            ActionText="New Automation"
+                            ActionCommand="{Binding NewCommand}">
+
+                            <shared:AppEmptyState.Examples>
+                                <sys:String>Notify me when Chrome updates</sys:String>
+                                <sys:String>Refresh Pip after Python installs</sys:String>
+                                <sys:String>Take a snapshot before every update</sys:String>
+                            </shared:AppEmptyState.Examples>
+
+                        </shared:AppEmptyState>
+
+                    </Grid>
+
+                </Grid>
+
+            </shared:AppToolbar>
+
+            <!-- Ayırıcı -->
 
             <GridSplitter
                 Grid.Column="1"
-                Width="6"
+                Width="4"
                 ResizeDirection="Columns"
                 ResizeBehavior="PreviousAndNext"/>
 
+            <!-- Sağ: editör -->
+
             <Border
                 Grid.Column="2"
+                Classes="card"
                 Padding="20"
-                Background="{DynamicResource CardBrush}"
-                BorderBrush="{DynamicResource BorderBrush}"
-                BorderThickness="1"
-                CornerRadius="{DynamicResource RadiusMedium}">
+                ClipToBounds="True">
 
-                <StackPanel Spacing="18">
+                <ScrollViewer
+                    HorizontalScrollBarVisibility="Disabled">
 
-                    <TextBlock
-                        FontSize="24"
-                        FontWeight="SemiBold"
-                        Text="Automation Editor"/>
+                    <StackPanel Spacing="14">
 
-                    <TextBox PlaceholderText="Name"/>
+                        <StackPanel Spacing="4">
 
-                    <TextBox PlaceholderText="Trigger"/>
+                            <TextBlock
+                                FontSize="22"
+                                FontWeight="SemiBold"
+                                Text="{Binding EditorTitle}"/>
 
-                    <TextBox PlaceholderText="Condition"/>
+                            <TextBlock
+                                Opacity="0.65"
+                                Text="{Binding EditorDescription}"/>
 
-                    <TextBox PlaceholderText="Action"/>
+                        </StackPanel>
 
-                    <Button
-                        HorizontalAlignment="Left"
-                        MinWidth="140"
-                        Content="Save"/>
+                        <StackPanel Spacing="6">
 
-                </StackPanel>
+                            <TextBlock FontSize="12" Opacity="0.7" Text="Name"/>
+
+                            <shared:AppTextField
+                                PlaceholderText="Automation name"
+                                Text="{Binding Name}"/>
+
+                        </StackPanel>
+
+                        <StackPanel Spacing="6">
+
+                            <TextBlock FontSize="12" Opacity="0.7" Text="Trigger"/>
+
+                            <shared:AppTextField
+                                PlaceholderText="e.g. On update available, On startup"
+                                Text="{Binding Trigger}"/>
+
+                        </StackPanel>
+
+                        <StackPanel Spacing="6">
+
+                            <TextBlock FontSize="12" Opacity="0.7" Text="Condition"/>
+
+                            <shared:AppTextField
+                                PlaceholderText="When this condition is met"
+                                Text="{Binding Condition}"/>
+
+                        </StackPanel>
+
+                        <StackPanel Spacing="6">
+
+                            <TextBlock FontSize="12" Opacity="0.7" Text="Action"/>
+
+                            <shared:AppTextField
+                                PlaceholderText="What to run, e.g. upgrade all packages"
+                                Text="{Binding Action}"/>
+
+                        </StackPanel>
+
+                        <shared:AppSeparator/>
+
+                        <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="10">
+
+                            <shared:AppButton
+                                Classes="Accent"
+                                MinWidth="120"
+                                Content="Save"
+                                Command="{Binding SaveCommand}"/>
+
+                            <shared:AppButton
+                                Grid.Column="1"
+                                Classes="Danger"
+                                MinWidth="110"
+                                Content="Delete"
+                                Command="{Binding DeleteCommand}"
+                                IsVisible="{Binding IsEditing}"/>
+
+                        </Grid>
+
+                    </StackPanel>
+
+                </ScrollViewer>
 
             </Border>
 

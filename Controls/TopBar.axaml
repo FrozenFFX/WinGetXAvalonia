@@ -7,14 +7,67 @@
     x:Class="WinGetXAvalonia.Controls.TopBar"
     x:CompileBindings="False">
 
-    <Grid Height="60">
+    <Border
+        Height="42"
+        Padding="20,0"
+        Background="{DynamicResource TitleBarBrush}"
+        BorderBrush="{DynamicResource BorderBrush}"
+        BorderThickness="0,0,0,1">
 
-        <TextBlock
-            Margin="20"
-            FontSize="32"
-            FontWeight="Bold"
-            Text="{Binding Title}"/>
+        <Grid
+            ColumnDefinitions="Auto,24,*,24,Auto"
+            VerticalAlignment="Center">
 
-    </Grid>
+            <TextBlock
+                VerticalAlignment="Center"
+                FontSize="18"
+                FontWeight="SemiBold"
+                Text="{Binding Title}"/>
+
+            <Border
+                Grid.Column="2"
+                MaxWidth="560"
+                Height="36"
+                HorizontalAlignment="Center"
+                CornerRadius="10"
+                Background="{DynamicResource CardBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1">
+
+                <TextBox
+                    Width="560"
+                    Height="34"
+                    BorderThickness="0"
+                    PlaceholderText="Search packages, updates..."
+                    Background="Transparent"
+                    Foreground="{DynamicResource TextBrush}"
+                    IsHitTestVisible="True"
+                    Focusable="True"
+                    Padding="12,0"
+                    VerticalContentAlignment="Center"/>
+
+            </Border>
+
+            <StackPanel
+                Grid.Column="4"
+                Orientation="Horizontal"
+                Spacing="8"
+                VerticalAlignment="Center">
+
+                <Button
+                    Width="36"
+                    Height="36"
+                    CornerRadius="10"/>
+
+                <Button
+                    Width="36"
+                    Height="36"
+                    CornerRadius="18"/>
+
+            </StackPanel>
+
+        </Grid>
+
+    </Border>
 
 </UserControl>

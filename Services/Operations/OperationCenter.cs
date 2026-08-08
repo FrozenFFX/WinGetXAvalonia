@@ -1,79 +1,106 @@
 // Copyright (c) 2026 FrozenFFX. All rights reserved.
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using WinGetXAvalonia.Models.Operations;
+using WinGetXAvalonia.Services.Analytics;
+using WinGetXAvalonia.Services.Core;
 
 namespace WinGetXAvalonia.Services.Operations;
 
 public class OperationCenter : IOperationCenter
 {
-    public ObservableCollection<OperationModel> Operations { get; }
-        = new();
+    private readonly LoggerService? _logger;
+    private readonly IAnalyticsService? _analytics;
+    private readonly ConcurrentDictionary<Guid, OperationModel> _operations = new();
+
+    public OperationCenter(
+        LoggerService? logger = null,
+        IAnalyticsService? analytics = null)
+    {
+        _logger = logger;
+        _analytics = analytics;
+    }
+
+    public ObservableCollection<OperationModel> Operations { get; } = new();
 
     public OperationModel Start(string title, string subtitle)
     {
-        var op = new OperationModel
+        var operation = new OperationModel
         {
             Title = title,
             Subtitle = subtitle,
-            Status = OperationStatus.Running,
-            Progress = 0
+            Status = OperationStatus.Running
         };
 
-        Operations.Insert(0, op);
+        _operations[operation.Id] = operation;
+        Operations.Insert(0, operation);
+        _logger?.Log($"Started operation: {title}");
 
-        return op;
+        return operation;
     }
 
     public void ReportProgress(Guid id, double progress, string subtitle)
     {
-        var op = Operations.FirstOrDefault(x => x.Id == id);
-
-        if (op is null)
+        if (!_operations.TryGetValue(id, out var operation))
             return;
 
-        op.Progress = progress;
-        op.Subtitle = subtitle;
+        operation!.Progress = progress;
+        operation.Subtitle = subtitle;
     }
 
     public void Complete(Guid id)
     {
-        var op = Operations.FirstOrDefault(x => x.Id == id);
-
-        if (op is null)
+        if (!_operations.TryGetValue(id, out var operation))
             return;
 
-        op.Progress = 100;
-        op.Status = OperationStatus.Completed;
+        operation!.Status = OperationStatus.Completed;
+        operation.Progress = 100;
+        operation.StatusMessage = "Completed";
+        operation.CompletedAt = DateTime.UtcNow;
+        _logger?.Log($"Completed operation: {operation.Title}");
+        _analytics?.Record(Feature(operation), "Completed", true, operation.Duration.TotalMilliseconds);
     }
 
     public void Fail(Guid id, string error)
     {
-        var op = Operations.FirstOrDefault(x => x.Id == id);
-
-        if (op is null)
+        if (!_operations.TryGetValue(id, out var operation))
             return;
 
-        op.Status = OperationStatus.Failed;
-        op.Subtitle = error;
+        operation!.Status = OperationStatus.Failed;
+        operation.StatusMessage = error;
+        operation.Subtitle = error;
+        operation.CompletedAt = DateTime.UtcNow;
+        _logger?.Log($"Failed operation: {operation.Title}. Error: {error}");
+        _analytics?.Record(Feature(operation), "Failed", false, operation.Duration.TotalMilliseconds);
     }
 
     public void Remove(Guid id)
     {
-        var op = Operations.FirstOrDefault(x => x.Id == id);
-
-        if (op != null)
-            Operations.Remove(op);
+        if (_operations.TryRemove(id, out var operation))
+        {
+            Operations.Remove(operation!);
+        }
     }
 
     public void ClearCompleted()
     {
-        foreach (var item in Operations
-            .Where(x => x.Status == OperationStatus.Completed)
-            .ToList())
+        foreach (var operation in Operations
+                     .Where(x => x.Status == OperationStatus.Completed)
+                     .ToList())
         {
-            Operations.Remove(item);
+            _operations.TryRemove(operation.Id, out _);
+            Operations.Remove(operation);
         }
+    }
+
+    private static string Feature(OperationModel operation)
+    {
+        string subtitle = string.IsNullOrWhiteSpace(operation.Subtitle)
+            ? operation.Title
+            : operation.Subtitle;
+
+        return "Operation." + subtitle.TrimEnd('.', ' ').Trim();
     }
 }

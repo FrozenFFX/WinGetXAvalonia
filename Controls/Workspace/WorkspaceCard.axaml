@@ -10,88 +10,108 @@
     x:DataType="models:WorkspaceModel"
     x:CompileBindings="False">
 
-    <shared:BaseCard ClipToBounds="True">
+    <Panel>
 
-        <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="12">
+        <shared:BaseCard>
 
-            <Grid ColumnDefinitions="Auto,*">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="12">
 
-                <Border
-                    Width="44"
-                    Height="44"
-                    CornerRadius="8"
-                    Background="{DynamicResource SurfaceBrush}">
+                <Grid ColumnDefinitions="Auto,*">
 
-                    <TextBlock
-                        FontSize="22"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="{Binding Icon}"/>
-                </Border>
+                    <Border
+                        Width="44"
+                        Height="44"
+                        CornerRadius="8"
+                        Background="{DynamicResource SurfaceBrush}">
 
-                <StackPanel Grid.Column="1" Margin="12,0,0,0" Spacing="2">
+                        <TextBlock
+                            FontSize="22"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="{Binding Icon}"/>
+                    </Border>
 
-                    <TextBlock
-                        FontWeight="SemiBold"
-                        FontSize="{DynamicResource FontSubtitle}"
-                        Text="{Binding Name}"
-                        TextTrimming="CharacterEllipsis"/>
+                    <StackPanel Grid.Column="1" Margin="12,0,0,0" Spacing="2">
 
-                    <TextBlock
-                        Opacity="0.7"
-                        Text="{Binding Description}"
-                        TextWrapping="Wrap"
-                        TextTrimming="CharacterEllipsis"
-                        MaxLines="2"/>
-                </StackPanel>
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            FontSize="{DynamicResource FontSubtitle}"
+                            Text="{Binding Name}"
+                            TextTrimming="CharacterEllipsis"/>
+
+                        <TextBlock
+                            Opacity="0.7"
+                            Text="{Binding Description}"
+                            TextWrapping="Wrap"
+                            TextTrimming="CharacterEllipsis"
+                            MaxLines="2"/>
+                    </StackPanel>
+                </Grid>
+
+                <WrapPanel Grid.Row="1" ItemSpacing="8">
+
+                    <Border
+                        Padding="8,3"
+                        Background="{DynamicResource SurfaceBrush}"
+                        CornerRadius="20">
+
+                        <TextBlock Text="{Binding PackageCount, StringFormat='📦 {0} Packages'}"/>
+                    </Border>
+
+                    <Border
+                        Padding="8,3"
+                        Background="{DynamicResource SurfaceBrush}"
+                        CornerRadius="20">
+
+                        <TextBlock Text="{Binding Modified, StringFormat='🕒 {0:g}'}"/>
+                    </Border>
+                </WrapPanel>
+
+                <UniformGrid Grid.Row="2" Columns="2" Rows="1" ColumnSpacing="8">
+
+                    <shared:AppButton
+                        Content="Open"
+                        Command="{Binding $parent[ItemsControl].DataContext.OpenCommand}"
+                        CommandParameter="{Binding}"/>
+
+                    <shared:AppButton
+                        Content="Edit"
+                        Command="{Binding $parent[ItemsControl].DataContext.EditCommand}"
+                        CommandParameter="{Binding}"/>
+                </UniformGrid>
+
+                <UniformGrid Grid.Row="3" Columns="2" Rows="1" ColumnSpacing="8">
+
+                    <shared:AppButton
+                        Content="Export"
+                        Command="{Binding $parent[ItemsControl].DataContext.ExportCommand}"
+                        CommandParameter="{Binding}"/>
+
+                    <shared:AppButton
+                        Classes="Danger"
+                        Content="Delete"
+                        Command="{Binding $parent[ItemsControl].DataContext.DeleteWorkspaceCommand}"
+                        CommandParameter="{Binding}"/>
+                </UniformGrid>
             </Grid>
+        </shared:BaseCard>
 
-            <WrapPanel Grid.Row="1" ItemSpacing="8">
+        <Border
+            IsHitTestVisible="False"
+            IsVisible="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+            BorderBrush="{DynamicResource AccentBrush}"
+            BorderThickness="2"
+            CornerRadius="18"
+            BoxShadow="{DynamicResource AccentGlow}">
+            <Border.Transitions>
+                <Transitions>
+                    <BoxShadowsTransition Property="BoxShadow"
+                                          Duration="{DynamicResource MotionDurationNormal}"
+                                          Easing="{DynamicResource MotionEasingOut}"/>
+                </Transitions>
+            </Border.Transitions>
+        </Border>
 
-                <Border
-                    Padding="8,3"
-                    Background="{DynamicResource SurfaceBrush}"
-                    CornerRadius="20">
-
-                    <TextBlock Text="{Binding PackageCount, StringFormat='📦 {0} Packages'}"/>
-                </Border>
-
-                <Border
-                    Padding="8,3"
-                    Background="{DynamicResource SurfaceBrush}"
-                    CornerRadius="20">
-
-                    <TextBlock Text="{Binding Modified, StringFormat='🕒 {0:g}'}"/>
-                </Border>
-            </WrapPanel>
-
-            <UniformGrid Grid.Row="2" Columns="2" Rows="1" ColumnSpacing="8">
-
-                <Button
-                    Content="Open"
-                    Command="{Binding $parent[ItemsControl].DataContext.OpenCommand}"
-                    CommandParameter="{Binding}"/>
-
-                <Button
-                    Content="Edit"
-                    Command="{Binding $parent[ItemsControl].DataContext.EditCommand}"
-                    CommandParameter="{Binding}"/>
-            </UniformGrid>
-
-            <UniformGrid Grid.Row="3" Columns="2" Rows="1" ColumnSpacing="8">
-
-                <Button
-                    Content="Export"
-                    Command="{Binding $parent[ItemsControl].DataContext.ExportCommand}"
-                    CommandParameter="{Binding}"/>
-
-                <Button
-                    Classes="Danger"
-                    Content="Delete"
-                    Command="{Binding $parent[ItemsControl].DataContext.DeleteWorkspaceCommand}"
-                    CommandParameter="{Binding}"/>
-            </UniformGrid>
-        </Grid>
-    </shared:BaseCard>
+    </Panel>
 
 </UserControl>

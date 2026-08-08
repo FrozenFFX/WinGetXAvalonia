@@ -1,0 +1,50 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="WinGetXAvalonia.Controls.Shared.PageHeader"
+    x:Name="Root">
+
+    <Grid
+        ColumnDefinitions="*,Auto"
+        ColumnSpacing="20">
+
+        <StackPanel
+            VerticalAlignment="Center"
+            Spacing="6">
+
+            <TextBlock
+                FontSize="30"
+                FontWeight="Bold"
+                Text="{Binding #Root.Title}"/>
+
+            <TextBlock
+                MaxWidth="720"
+                FontSize="13"
+                Opacity="0.65"
+                TextWrapping="Wrap"
+                Text="{Binding #Root.Description}"/>
+
+        </StackPanel>
+
+        <StackPanel
+            Grid.Column="1"
+            Orientation="Horizontal"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Spacing="10">
+
+            <Button
+                MinWidth="130"
+                Height="38"
+                Padding="18,0"
+                Content="{Binding #Root.ActionText}"
+                Command="{Binding #Root.ActionCommand}"/>
+
+        </StackPanel>
+
+    </Grid>
+
+</UserControl>

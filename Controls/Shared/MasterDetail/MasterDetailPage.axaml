@@ -1,0 +1,62 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<ContentControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinGetXAvalonia.Controls.Shared"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    x:Class="WinGetXAvalonia.Controls.Shared.MasterDetailPage">
+
+    <ContentControl.Styles>
+
+        <Style Selector="GridSplitter#DetailSplitter">
+            <Setter Property="Width" Value="2"/>
+            <Setter Property="Background" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="ResizeDirection" Value="Columns"/>
+            <Setter Property="ResizeBehavior" Value="PreviousAndNext"/>
+        </Style>
+
+    </ContentControl.Styles>
+
+    <ContentControl.Template>
+        <ControlTemplate TargetType="local:MasterDetailPage">
+
+            <Grid
+                Margin="{TemplateBinding Margin}"
+                ClipToBounds="True">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" MinWidth="300"/>
+                    <ColumnDefinition Width="2"/>
+                    <ColumnDefinition Width="{TemplateBinding DetailWidth}"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Master list -->
+                <ContentPresenter
+                    Grid.Column="0"
+                    Content="{TemplateBinding MasterContent}"
+                    ContentTemplate="{TemplateBinding MasterContentTemplate}"/>
+
+                <!-- Splitter -->
+                <GridSplitter x:Name="DetailSplitter" Grid.Column="1"/>
+
+                <!-- Detail panel -->
+                <ContentPresenter
+                    Grid.Column="2"
+                    Content="{TemplateBinding DetailContent}"
+                    ContentTemplate="{TemplateBinding DetailContentTemplate}"/>
+
+                <!-- Loading overlay -->
+                <shared:LoadingOverlay
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    IsLoading="{TemplateBinding IsLoading}"
+                    Message="{TemplateBinding LoadingMessage}"/>
+
+            </Grid>
+
+        </ControlTemplate>
+    </ContentControl.Template>
+
+</ContentControl>

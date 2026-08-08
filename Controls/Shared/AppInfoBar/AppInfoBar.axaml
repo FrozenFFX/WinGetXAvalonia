@@ -1,0 +1,52 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    x:Class="WinGetXAvalonia.Controls.Shared.AppInfoBar"
+    x:Name="Root"
+    IsVisible="{Binding #Root.IsOpen}">
+
+    <Border
+        x:Name="PART_Border"
+        Padding="14,10"
+        BorderThickness="1"
+        CornerRadius="{DynamicResource RadiusMedium}">
+
+        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+
+            <TextBlock
+                x:Name="PART_Icon"
+                FontSize="16"
+                VerticalAlignment="Center"/>
+
+            <StackPanel
+                Grid.Column="1"
+                Spacing="2"
+                VerticalAlignment="Center">
+
+                <TextBlock
+                    x:Name="PART_Title"
+                    FontWeight="SemiBold"/>
+
+                <TextBlock
+                    x:Name="PART_Message"
+                    Opacity="0.8"
+                    TextWrapping="Wrap"/>
+
+            </StackPanel>
+
+            <shared:AppButton
+                Grid.Column="2"
+                x:Name="PART_Close"
+                Classes="ghost"
+                Content="✕"
+                VerticalAlignment="Center"/>
+
+        </Grid>
+
+    </Border>
+
+</UserControl>

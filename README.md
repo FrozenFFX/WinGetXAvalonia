@@ -1,5 +1,17 @@
 # WinGetXAvalonia
 
+> **North Star**
+>
+> WinGetX Studio is the digital operating center for everything related to software on Windows.
+>
+> **Slogan**
+>
+> WinGetX Studio is the intelligent software management platform for Windows — bringing installation, configuration, automation, security, recovery, and software intelligence together in one extensible ecosystem.
+
+WinGetX Studio, Windows'u değiştiren bir araç değil; Windows'u daha anlaşılır,
+daha güvenli ve daha yönetilebilir hale getiren bir platformdur. Vizyon ve
+Altın Kural: `docs/vision.md`.
+
 A modern, open-source package manager client for Windows, built on Avalonia UI and
 the Windows Package Manager (winget).
 

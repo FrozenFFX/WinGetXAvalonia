@@ -161,4 +161,59 @@ public class WorkspaceServiceTests
                 File.Delete(source);
         }
     }
+
+    [Fact]
+    public async Task EnsureExamples_SeedsPresets_OnFirstRun()
+    {
+        var service = CreateService(out _);
+
+        await service.EnsureExampleWorkspacesAsync();
+
+        var all = await service.GetAllAsync();
+
+        Assert.Equal(3, all.Count);
+        Assert.Contains(all, w => w.Name == "Gaming");
+        Assert.Contains(all, w => w.Name == "Developer");
+        Assert.Contains(all, w => w.Name == "Designer");
+    }
+
+    [Fact]
+    public async Task EnsureExamples_DoesNotSeedTwice()
+    {
+        var service = CreateService(out _);
+
+        await service.EnsureExampleWorkspacesAsync();
+        await service.EnsureExampleWorkspacesAsync();
+
+        var all = await service.GetAllAsync();
+
+        Assert.Equal(3, all.Count);
+    }
+
+    [Fact]
+    public async Task EnsureExamples_KeepsUserWorkspaces()
+    {
+        var service = CreateService(out _);
+        await service.SaveAsync(new WorkspaceModel { Name = "Mine" });
+
+        await service.EnsureExampleWorkspacesAsync();
+
+        var all = await service.GetAllAsync();
+
+        Assert.Equal(4, all.Count);
+        Assert.Contains(all, w => w.Name == "Mine");
+    }
+
+    [Fact]
+    public void CreateExamples_ContainRealPackageIds()
+    {
+        var presets = WorkspaceService.CreateExampleWorkspaces();
+
+        Assert.Equal(3, presets.Count);
+
+        var developer = presets.Single(w => w.Name == "Developer");
+
+        Assert.Contains(developer.Packages, p => p.Id == "Git.Git");
+        Assert.Contains(developer.Packages, p => p.Id == "Microsoft.VisualStudioCode");
+    }
 }

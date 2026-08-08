@@ -45,4 +45,20 @@
         <Setter Property="Background" Value="#33E74C3C"/>
     </Style>
 
+    <Style Selector="TextBox">
+
+        <Setter Property="Height" Value="38"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="FontFamily" Value="Segoe UI Variable"/>
+
+    </Style>
+
+    <Style Selector="ComboBox">
+
+        <Setter Property="Height" Value="38"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="FontFamily" Value="Segoe UI Variable"/>
+
+    </Style>
+
 </Styles>

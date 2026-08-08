@@ -1,0 +1,82 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<ContentControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinGetXAvalonia.Controls.Layout"
+    x:Class="WinGetXAvalonia.Controls.Layout.DetailHost">
+
+    <ContentControl.Template>
+
+        <ControlTemplate TargetType="local:DetailHost">
+
+            <Border
+                Background="{DynamicResource SurfaceBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1,0,0,0"
+                Padding="0">
+
+                <Grid
+                    RowDefinitions="Auto,Auto,*,Auto"
+                    RowSpacing="0">
+
+                    <StackPanel
+                        Grid.Row="0"
+                        Margin="24,24,24,0"
+                        Spacing="4">
+
+                        <TextBlock
+                            FontSize="20"
+                            FontWeight="SemiBold"
+                            Text="{TemplateBinding Title}"/>
+
+                        <TextBlock
+                            FontSize="13"
+                            Opacity="0.60"
+                            Text="{TemplateBinding Subtitle}"/>
+
+                    </StackPanel>
+
+                    <Border
+                        Grid.Row="1"
+                        Margin="24,16,24,0"
+                        Height="1"
+                        Background="{DynamicResource BorderBrush}"/>
+
+                    <ScrollViewer
+                        Grid.Row="2"
+                        Margin="28,24"
+                        HorizontalScrollBarVisibility="Disabled"
+                        VerticalScrollBarVisibility="Auto">
+
+                        <ContentPresenter
+                            x:Name="PART_ContentPresenter"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"/>
+
+                    </ScrollViewer>
+
+                    <Border
+                        Grid.Row="3"
+                        Padding="16"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="0,1,0,0">
+
+                        <Button
+                            Height="38"
+                            HorizontalAlignment="Stretch"
+                            Command="{ReflectionBinding CloseDetailCommand}"
+                            Content="Close"/>
+
+                    </Border>
+
+                </Grid>
+
+            </Border>
+
+        </ControlTemplate>
+
+    </ContentControl.Template>
+
+</ContentControl>

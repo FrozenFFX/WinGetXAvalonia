@@ -7,4 +7,6 @@ namespace WinGetXAvalonia.ViewModels;
 
 public partial class ViewModelBase : ObservableObject
 {
+    public virtual Task InitializeAsync()
+        => Task.CompletedTask;
 }

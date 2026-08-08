@@ -6,505 +6,658 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
     xmlns:models="using:WinGetXAvalonia.Models"
+    xmlns:notifications="using:WinGetXAvalonia.Services.Notifications"
     xmlns:controls="using:WinGetXAvalonia.Controls"
-    xmlns:dashboard="using:WinGetXAvalonia.Controls.Dashboard"
+    xmlns:cards="using:WinGetXAvalonia.Controls.Cards"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     x:Class="WinGetXAvalonia.Views.DashboardView"
     x:DataType="vm:DashboardViewModel">
 
-    <Grid>
+    <Grid
+        RowDefinitions="Auto,16,*">
 
-        <ScrollViewer
-            VerticalScrollBarVisibility="Auto"
-            HorizontalScrollBarVisibility="Disabled"
-            HorizontalAlignment="Stretch">
+        <!-- Header + Notification Bell -->
 
-      
         <Grid
-            Margin="25"
-            RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
-            RowSpacing="16">
-
-            <Grid.Styles>
-
-                <Style Selector="Control#HeroSection">
-                    <Style.Animations>
-                        <Animation Duration="0:0:0.35" FillMode="Both">
-                            <KeyFrame Cue="0%">
-                                <Setter Property="Opacity" Value="0"/>
-                            </KeyFrame>
-                            <KeyFrame Cue="100%">
-                                <Setter Property="Opacity" Value="1"/>
-                            </KeyFrame>
-                        </Animation>
-                    </Style.Animations>
-                </Style>
-
-                <Style Selector="Control#OverviewSection">
-                    <Style.Animations>
-                        <Animation Duration="0:0:0.35" Delay="0:0:0.04" FillMode="Both">
-                            <KeyFrame Cue="0%">
-                                <Setter Property="Opacity" Value="0"/>
-                            </KeyFrame>
-                            <KeyFrame Cue="100%">
-                                <Setter Property="Opacity" Value="1"/>
-                            </KeyFrame>
-                        </Animation>
-                    </Style.Animations>
-                </Style>
-
-                <Style Selector="Control#HealthSection">
-                    <Style.Animations>
-                        <Animation Duration="0:0:0.35" Delay="0:0:0.05" FillMode="Both">
-                            <KeyFrame Cue="0%">
-                                <Setter Property="Opacity" Value="0"/>
-                            </KeyFrame>
-                            <KeyFrame Cue="100%">
-                                <Setter Property="Opacity" Value="1"/>
-                            </KeyFrame>
-                        </Animation>
-                    </Style.Animations>
-                </Style>
-
-                <Style Selector="Control#OperationsSection">
-                    <Style.Animations>
-                        <Animation Duration="0:0:0.35" Delay="0:0:0.06" FillMode="Both">
-                            <KeyFrame Cue="0%">
-                                <Setter Property="Opacity" Value="0"/>
-                            </KeyFrame>
-                            <KeyFrame Cue="100%">
-                                <Setter Property="Opacity" Value="1"/>
-                            </KeyFrame>
-                        </Animation>
-                    </Style.Animations>
-                </Style>
-
-                <Style Selector="Control#QuickActionsSection">
-                    <Style.Animations>
-                        <Animation Duration="0:0:0.35" Delay="0:0:0.08" FillMode="Both">
-                            <KeyFrame Cue="0%">
-                                <Setter Property="Opacity" Value="0"/>
-                            </KeyFrame>
-                            <KeyFrame Cue="100%">
-                                <Setter Property="Opacity" Value="1"/>
-                            </KeyFrame>
-                        </Animation>
-                    </Style.Animations>
-                </Style>
-
-                <Style Selector="Control#SystemSection">
-                    <Style.Animations>
-                        <Animation Duration="0:0:0.35" Delay="0:0:0.12" FillMode="Both">
-                            <KeyFrame Cue="0%">
-                                <Setter Property="Opacity" Value="0"/>
-                            </KeyFrame>
-                            <KeyFrame Cue="100%">
-                                <Setter Property="Opacity" Value="1"/>
-                            </KeyFrame>
-                        </Animation>
-                    </Style.Animations>
-                </Style>
-
-                <Style Selector="Control#ActivitySection">
-                    <Style.Animations>
-                        <Animation Duration="0:0:0.35" Delay="0:0:0.16" FillMode="Both">
-                            <KeyFrame Cue="0%">
-                                <Setter Property="Opacity" Value="0"/>
-                            </KeyFrame>
-                            <KeyFrame Cue="100%">
-                                <Setter Property="Opacity" Value="1"/>
-                            </KeyFrame>
-                        </Animation>
-                    </Style.Animations>
-                </Style>
-
-            </Grid.Styles>
-
-            <!-- Hero -->
-            <shared:BaseCard
-                Grid.Row="0"
-                x:Name="HeroSection">
-
-                <StackPanel Spacing="16">
-
-                    <StackPanel Spacing="4">
-
-                        <TextBlock
-                            FontSize="28"
-                            FontWeight="SemiBold"
-                            Text="{Binding Time.Greeting, StringFormat='👋 {0}'}"/>
-
-                        <TextBlock
-                            Opacity="0.6"
-                            Text="{Binding Time.CurrentDate}"/>
-
-                        <TextBlock
-                            FontSize="40"
-                            FontWeight="Bold"
-                            Text="{Binding Time.CurrentTime}"/>
-
-                        <TextBlock
-                            Opacity="0.7"
-                            Text="{Binding Updates, StringFormat='{}{0} Updates Available'}"/>
-
-                    </StackPanel>
-
-                    <ItemsControl
-                        ItemsSource="{Binding HeroInfo}"
-                        HorizontalAlignment="Stretch">
-
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="models:HeroInfoItem">
-
-                                <Border
-                                    Classes="card"
-                                    CornerRadius="{DynamicResource RadiusSmall}"
-                                    Padding="12,8"
-                                    Margin="0,0,8,0">
-
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-
-                                        <TextBlock Text="{Binding Icon}"/>
-
-                                        <TextBlock
-                                            Opacity="0.7"
-                                            Text="{Binding Label}"/>
-
-                                        <TextBlock
-                                            FontWeight="SemiBold"
-                                            Text="{Binding Value}"/>
-
-                                    </StackPanel>
-
-                                </Border>
-
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-
-                    </ItemsControl>
-
-                    <Border
-                        Margin="0,10,0,0"
-                        Height="1"
-                        Background="{DynamicResource BorderBrush}"/>
-
-                </StackPanel>
-
-            </shared:BaseCard>
-
-            <!-- Overview -->
-            <StackPanel
-                Grid.Row="1"
-                x:Name="OverviewSection">
-
-                <shared:SectionHeader Title="Overview"/>
-
-                <UniformGrid
-                    Columns="4"
-                    HorizontalAlignment="Stretch">
-
-                    <dashboard:StatCard
-                        Icon="📦"
-                        Title="Installed"
-                        Value="{Binding Installed, StringFormat='{}{0:N0}'}"
-                        Subtitle="packages"
-                        AccentBrush="{DynamicResource PrimaryBrush}"/>
-
-                    <dashboard:StatCard
-                        Icon="⬇️"
-                        Title="Updates"
-                        Value="{Binding Updates, StringFormat='{}{0:N0}'}"
-                        Subtitle="available"
-                        AccentBrush="{DynamicResource SuccessBrush}"/>
-
-                    <dashboard:StatCard
-                        Icon="⭐"
-                        Title="Favorites"
-                        Value="{Binding Favorites, StringFormat='{}{0:N0}'}"
-                        Subtitle="saved"
-                        AccentBrush="{DynamicResource WarningBrush}"/>
-
-                    <dashboard:StatCard
-                        Icon="🗂"
-                        Title="Sources"
-                        Value="{Binding Sources, StringFormat='{}{0:N0}'}"
-                        Subtitle="winget"
-                        AccentBrush="{DynamicResource DangerBrush}"/>
-
-                </UniformGrid>
-
-            </StackPanel>
-
-            <!-- Package Health -->
-            <StackPanel
-                Grid.Row="2"
-                x:Name="HealthSection">
-
-                <shared:SectionHeader Title="Package Health"/>
-
-                <shared:BaseCard>
-
-                    <UniformGrid
-                        Columns="5"
-                        HorizontalAlignment="Stretch">
-
-                        <StackPanel
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Center"
-                            Spacing="8">
-
-                            <TextBlock Text="🟢"/>
-
-                            <StackPanel Spacing="2">
-
-                                <TextBlock
-                                    FontSize="18"
-                                    FontWeight="SemiBold"
-                                    Text="{Binding HealthSummary.Healthy, StringFormat='{}{0:N0}'}"/>
-
-                                <TextBlock
-                                    FontSize="11"
-                                    Opacity="0.6"
-                                    Text="Healthy"/>
-
-                            </StackPanel>
-
-                        </StackPanel>
-
-                        <StackPanel
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Center"
-                            Spacing="8">
-
-                            <TextBlock Text="🟡"/>
-
-                            <StackPanel Spacing="2">
-
-                                <TextBlock
-                                    FontSize="18"
-                                    FontWeight="SemiBold"
-                                    Text="{Binding HealthSummary.Outdated, StringFormat='{}{0:N0}'}"/>
-
-                                <TextBlock
-                                    FontSize="11"
-                                    Opacity="0.6"
-                                    Text="Outdated"/>
-
-                            </StackPanel>
-
-                        </StackPanel>
-
-                        <StackPanel
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Center"
-                            Spacing="8">
-
-                            <TextBlock Text="🔴"/>
-
-                            <StackPanel Spacing="2">
-
-                                <TextBlock
-                                    FontSize="18"
-                                    FontWeight="SemiBold"
-                                    Text="{Binding HealthSummary.Deprecated, StringFormat='{}{0:N0}'}"/>
-
-                                <TextBlock
-                                    FontSize="11"
-                                    Opacity="0.6"
-                                    Text="Deprecated"/>
-
-                            </StackPanel>
-
-                        </StackPanel>
-
-                        <StackPanel
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Center"
-                            Spacing="8">
-
-                            <TextBlock Text="❓"/>
-
-                            <StackPanel Spacing="2">
-
-                                <TextBlock
-                                    FontSize="18"
-                                    FontWeight="SemiBold"
-                                    Text="{Binding HealthSummary.UnknownSource, StringFormat='{}{0:N0}'}"/>
-
-                                <TextBlock
-                                    FontSize="11"
-                                    Opacity="0.6"
-                                    Text="Unknown Source"/>
-
-                            </StackPanel>
-
-                        </StackPanel>
-
-                        <StackPanel
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Center"
-                            Spacing="8">
-
-                            <TextBlock Text="❌"/>
-
-                            <StackPanel Spacing="2">
-
-                                <TextBlock
-                                    FontSize="18"
-                                    FontWeight="SemiBold"
-                                    Text="{Binding HealthSummary.Failed, StringFormat='{}{0:N0}'}"/>
-
-                                <TextBlock
-                                    FontSize="11"
-                                    Opacity="0.6"
-                                    Text="Failed"/>
-
-                            </StackPanel>
-
-                        </StackPanel>
-
-                    </UniformGrid>
-
-                </shared:BaseCard>
-
-            </StackPanel>
-
-            <!-- Operations -->
-            <StackPanel
-                Grid.Row="3"
-                x:Name="OperationsSection">
-
-                <shared:SectionHeader Title="Operations"/>
-
-                <controls:QueuePanel DataContext="{Binding Queue}"/>
-
-            </StackPanel>
-
-            <!-- Quick Actions -->
-            <StackPanel
-                Grid.Row="4"
-                x:Name="QuickActionsSection">
-
-                <shared:SectionHeader Title="Quick Actions"/>
-
-                <ItemsControl ItemsSource="{Binding QuickActions}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid
-                                Columns="4"
-                                HorizontalAlignment="Stretch"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="models:QuickActionItem">
-                            <dashboard:QuickActionCard
-                                Icon="{Binding Icon}"
-                                Title="{Binding Title}"
-                                Description="{Binding Description}"
-                                Command="{Binding Command}"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-
-            </StackPanel>
-
-            <!-- System -->
-            <StackPanel
-                Grid.Row="5"
-                x:Name="SystemSection">
-
-                <shared:SectionHeader Title="System"/>
-
-                <ItemsControl ItemsSource="{Binding SystemCards}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid
-                                Columns="4"
-                                HorizontalAlignment="Stretch"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <controls:SystemCard/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-
-            </StackPanel>
-
-            <!-- Recent Activity -->
-            <StackPanel
-                Grid.Row="6"
-                x:Name="ActivitySection">
-
-                <shared:SectionHeader Title="Recent Activity"/>
-
-                <shared:BaseCard>
-
-                    <ItemsControl ItemsSource="{Binding Activity}">
-
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="models:ActivityItem">
-
-                                <Grid ColumnDefinitions="24,*" Margin="0,8">
-
-                                    <TextBlock
-                                        FontSize="14"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding Icon}"/>
-
-                                    <StackPanel Grid.Column="1" Margin="12,0,0,0" Spacing="2">
-
-                                        <TextBlock
-                                            FontWeight="SemiBold"
-                                            Text="{Binding Title}"/>
-
-                                        <StackPanel Orientation="Horizontal" Spacing="8">
-
-                                            <TextBlock
-                                                FontWeight="SemiBold"
-                                                Opacity="0.55"
-                                                Text="{Binding Timestamp, StringFormat='HH:mm'}"/>
-
-                                            <TextBlock
-                                                Opacity="0.55"
-                                                Text="{Binding Type}"/>
-
-                                        </StackPanel>
-
-                                    </StackPanel>
-
-                                </Grid>
-
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
-                </shared:BaseCard>
-
-            </StackPanel>
+            Grid.Row="0"
+            ColumnDefinitions="*,Auto"
+            ColumnSpacing="16">
+
+            <shared:PageHeader
+                Grid.Column="0"
+                Title="Dashboard"
+                Description="Manage packages and monitor your system."/>
+
+            <controls:NotificationBell
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                DataContext="{Binding Notifications}"/>
 
         </Grid>
 
-        </ScrollViewer>
+        <!-- Main Content | System -->
 
-        <controls:NotificationBell
-            HorizontalAlignment="Right"
-            VerticalAlignment="Top"
-            Margin="0,20,20,0"
-            DataContext="{Binding Notifications}"/>
+        <Grid
+            Grid.Row="2">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="{Binding SystemPanelVisible, Converter={StaticResource SystemPanelWidthConverter}}"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ======================= MAIN CONTENT ======================= -->
+
+            <ScrollViewer
+                Grid.Column="0"
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto"
+                HorizontalContentAlignment="Stretch">
+
+                <StackPanel
+                    Spacing="20"
+                    Margin="0,0,0,16">
+
+                    <!-- Stats (4 cards in a row) -->
+
+                    <UniformGrid
+                        Columns="4"
+                        Rows="1"
+                        HorizontalAlignment="Stretch">
+
+                        <cards:StatCard
+                            Icon="📦"
+                            Secondary="{Binding Favorites, StringFormat='{}{0} favorites'}"
+                            Subtitle="Installed"
+                            Value="{Binding Installed, StringFormat='{}{0:N0}'}"
+                            Command="{Binding OpenPackagesCommand}"/>
+
+                        <cards:StatCard
+                            Icon="⬆"
+                            Secondary="{Binding Updates, StringFormat='{}{0} pending'}"
+                            Subtitle="Updates"
+                            Value="{Binding Updates, StringFormat='{}{0:N0}'}"
+                            Command="{Binding UpdateAllCommand}"/>
+
+                        <cards:StatCard
+                            Icon="📜"
+                            Subtitle="History"
+                            Value="{Binding History, StringFormat='{}{0:N0}'}"
+                            Command="{Binding OpenHistoryCommand}"/>
+
+                        <cards:StatCard
+                            Icon="🌐"
+                            Secondary="{Binding Favorites, StringFormat='{}{0} pinned'}"
+                            Subtitle="Sources"
+                            Value="{Binding Sources, StringFormat='{}{0:N0}'}"
+                            Command="{Binding RefreshSourcesCommand}"/>
+
+                    </UniformGrid>
+
+                    <!-- Recent Activity | Notifications -->
+
+                    <Grid
+                        ColumnDefinitions="1.3*,18,1*">
+
+                        <!-- Recent Activity -->
+
+                        <cards:AppCard Grid.Column="0">
+
+                            <StackPanel Spacing="16">
+
+                                <Grid ColumnDefinitions="*,Auto">
+
+                                    <TextBlock
+                                        FontSize="20"
+                                        FontWeight="SemiBold"
+                                        Text="Recent Activity"/>
+
+                                    <shared:AppButton
+                                        Grid.Column="1"
+                                        Width="110"
+                                        Height="36"
+                                        Content="Refresh"
+                                        Command="{Binding RefreshCommand}"/>
+
+                                </Grid>
+
+                                <ItemsControl
+                                    ItemsSource="{Binding Activity}"
+                                    IsVisible="{Binding HasActivity}">
+
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel Orientation="Vertical"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="models:ActivityItem">
+
+                                            <Border
+                                                Margin="0,0,0,8"
+                                                Padding="14"
+                                                CornerRadius="12"
+                                                Background="{DynamicResource SurfaceBrush}">
+
+                                                <Grid
+                                                    ColumnDefinitions="44,*,Auto"
+                                                    ColumnSpacing="12">
+
+                                                    <Border
+                                                        Width="42"
+                                                        Height="42"
+                                                        CornerRadius="21"
+                                                        HorizontalAlignment="Left"
+                                                        VerticalAlignment="Center"
+                                                        Background="{DynamicResource AccentBrush}">
+
+                                                        <TextBlock
+                                                            FontSize="20"
+                                                            HorizontalAlignment="Center"
+                                                            VerticalAlignment="Center"
+                                                            Text="{Binding Icon}"/>
+
+                                                    </Border>
+
+                                                    <StackPanel
+                                                        Grid.Column="1"
+                                                        VerticalAlignment="Center"
+                                                        Spacing="2">
+
+                                                        <TextBlock
+                                                            FontSize="14"
+                                                            FontWeight="SemiBold"
+                                                            TextTrimming="CharacterEllipsis"
+                                                            Text="{Binding Title}"/>
+
+                                                        <TextBlock
+                                                            FontSize="12"
+                                                            Opacity="0.55"
+                                                            Text="{Binding Timestamp, StringFormat='{}{0:dd.MM HH:mm}'}"/>
+
+                                                    </StackPanel>
+
+                                                    <Border
+                                                        Grid.Column="2"
+                                                        Padding="10,4"
+                                                        CornerRadius="20"
+                                                        VerticalAlignment="Center"
+                                                        Background="#173B82F6">
+
+                                                        <TextBlock
+                                                            FontSize="11"
+                                                            FontWeight="SemiBold"
+                                                            Foreground="White"
+                                                            Text="{Binding Type}"/>
+
+                                                    </Border>
+
+                                                </Grid>
+
+                                            </Border>
+
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+
+                                </ItemsControl>
+
+                                <shared:EmptyState
+                                    IsVisible="{Binding HasNoActivity}"
+                                    HorizontalAlignment="Center"
+                                    Icon="📦"
+                                    Title="No recent activity"
+                                    Description="Install a package to begin."/>
+
+                            </StackPanel>
+
+                        </cards:AppCard>
+
+                        <Border
+                            Grid.Column="1"
+                            Width="1"
+                            Margin="0,8"
+                            VerticalAlignment="Stretch"
+                            Background="{DynamicResource BorderBrush}"/>
+
+                        <!-- Notifications -->
+
+                        <cards:InfoCard
+                            Grid.Column="2"
+                            Command="{Binding ShowNotificationsDetailsCommand}">
+
+                            <StackPanel Spacing="14">
+
+                                <TextBlock
+                                    FontSize="20"
+                                    FontWeight="SemiBold"
+                                    Text="Notifications"/>
+
+                                <ItemsControl
+                                    ItemsSource="{Binding Notifications.Items}"
+                                    IsVisible="{Binding HasNotifications}">
+
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="notifications:NotificationModel">
+
+                                            <Border
+                                                Margin="0,0,0,8"
+                                                Padding="12"
+                                                CornerRadius="10"
+                                                Background="{DynamicResource SurfaceBrush}">
+
+                                                <Grid
+                                                    ColumnDefinitions="*,Auto"
+                                                    ColumnSpacing="10">
+
+                                                    <StackPanel Spacing="2">
+
+                                                        <TextBlock
+                                                            FontSize="13"
+                                                            FontWeight="SemiBold"
+                                                            Text="{Binding Title}"/>
+
+                                                        <TextBlock
+                                                            FontSize="12"
+                                                            Opacity="0.6"
+                                                            Text="{Binding Message}"
+                                                            TextWrapping="Wrap"/>
+
+                                                    </StackPanel>
+
+                                                    <TextBlock
+                                                        Grid.Column="1"
+                                                        FontSize="11"
+                                                        Opacity="0.5"
+                                                        VerticalAlignment="Center"
+                                                        Text="{Binding Timestamp, StringFormat='{}{0:HH:mm}'}"/>
+
+                                                </Grid>
+
+                                            </Border>
+
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+
+                                </ItemsControl>
+
+                                <shared:EmptyState
+                                    IsVisible="{Binding HasNoNotifications}"
+                                    HorizontalAlignment="Center"
+                                    Icon="🔔"
+                                    Title="No notifications"
+                                    Description="Everything is working normally."/>
+
+                            </StackPanel>
+
+                        </cards:InfoCard>
+
+                    </Grid>
+
+                    <!-- Quick Actions | Favorite Sources -->
+
+                    <Grid
+                        ColumnDefinitions="*,18,*">
+
+                        <!-- Quick Actions -->
+
+                        <cards:AppCard Grid.Column="0">
+
+                            <StackPanel Spacing="16">
+
+                                <TextBlock
+                                    FontSize="20"
+                                    FontWeight="SemiBold"
+                                    Text="Quick Actions"/>
+
+                                <UniformGrid
+                                    Columns="2"
+                                    Rows="2"
+                                    ColumnSpacing="10"
+                                    HorizontalAlignment="Stretch"
+                                    RowSpacing="10">
+
+                                    <cards:ActionCard
+                                        Icon="📦"
+                                        Title="Installed"
+                                        Description="Manage packages"
+                                        Command="{Binding OpenPackagesCommand}"/>
+
+                                    <cards:ActionCard
+                                        Icon="⬆"
+                                        Title="Update All"
+                                        Description="Upgrade packages"
+                                        Command="{Binding UpdateAllCommand}"/>
+
+                                    <cards:ActionCard
+                                        Icon="🔍"
+                                        Title="Browse"
+                                        Description="Search packages"
+                                        Command="{Binding BrowseCommand}"/>
+
+                                    <cards:ActionCard
+                                        Icon="📜"
+                                        Title="History"
+                                        Description="Recent operations"
+                                        Command="{Binding OpenHistoryCommand}"/>
+
+                                </UniformGrid>
+
+                            </StackPanel>
+
+                        </cards:AppCard>
+
+                        <Border
+                            Grid.Column="1"
+                            Width="1"
+                            Margin="0,8"
+                            VerticalAlignment="Stretch"
+                            Background="{DynamicResource BorderBrush}"/>
+
+                        <!-- Favorite Sources -->
+
+                        <cards:InfoCard Grid.Column="2">
+
+                            <StackPanel Spacing="14">
+
+                                <TextBlock
+                                    FontSize="20"
+                                    FontWeight="SemiBold"
+                                    Text="Favorite Sources"/>
+
+                                <ItemsControl
+                                    ItemsSource="{Binding FavoriteSources}"
+                                    IsVisible="{Binding HasFavoriteSources}">
+
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="models:FavoriteSource">
+
+                                            <Grid
+                                                Margin="0,0,0,8"
+                                                ColumnDefinitions="*,Auto">
+
+                                                <TextBlock
+                                                    FontWeight="SemiBold"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding Name}"/>
+
+                                                <Border
+                                                    Grid.Column="1"
+                                                    Padding="8,3"
+                                                    CornerRadius="12"
+                                                    BorderBrush="{DynamicResource BorderBrush}"
+                                                    BorderThickness="1"
+                                                    Background="{DynamicResource SurfaceBrush}">
+
+                                                    <Grid
+                                                        ColumnDefinitions="Auto,Auto"
+                                                        ColumnSpacing="5">
+
+                                                        <Border
+                                                            Width="6"
+                                                            Height="6"
+                                                            CornerRadius="3"
+                                                            VerticalAlignment="Center"
+                                                            Background="{DynamicResource SuccessBrush}"/>
+
+                                                        <TextBlock
+                                                            Grid.Column="1"
+                                                            FontSize="11"
+                                                            Opacity="0.6"
+                                                            Text="Online"/>
+
+                                                    </Grid>
+
+                                                </Border>
+
+                                            </Grid>
+
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+
+                                </ItemsControl>
+
+                                <shared:EmptyState
+                                    IsVisible="{Binding HasNoFavoriteSources}"
+                                    HorizontalAlignment="Center"
+                                    Icon="📌"
+                                    Title="No pinned sources"
+                                    Description="Pin frequently used sources here."/>
+
+                            </StackPanel>
+
+                        </cards:InfoCard>
+
+                    </Grid>
+
+                </StackPanel>
+
+            </ScrollViewer>
+
+            <!-- Separator -->
+
+            <Border
+                Grid.Column="1"
+                Width="1"
+                Margin="0,8"
+                VerticalAlignment="Stretch"
+                Background="{DynamicResource BorderBrush}"/>
+
+            <!-- ======================= SYSTEM ======================= -->
+
+            <Border
+                Grid.Column="2"
+                CornerRadius="16"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1"
+                Background="{DynamicResource CardBrush}">
+
+                <Grid
+                    RowDefinitions="Auto,Auto,*">
+
+                    <!-- Header + Close -->
+
+                    <Grid
+                        Grid.Row="0"
+                        Margin="20,16,12,14"
+                        ColumnDefinitions="*,Auto"
+                        ColumnSpacing="8">
+
+                        <StackPanel
+                            VerticalAlignment="Center"
+                            Spacing="2">
+
+                            <TextBlock
+                                FontSize="20"
+                                FontWeight="SemiBold"
+                                Text="System"/>
+
+                            <TextBlock
+                                FontSize="12"
+                                Opacity="0.6"
+                                Text="{Binding OsSubtitle}"/>
+
+                        </StackPanel>
+
+                        <Button
+                            Grid.Column="1"
+                            Width="30"
+                            Height="30"
+                            Padding="0"
+                            CornerRadius="8"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            FontSize="15"
+                            Content="✕"
+                            Command="{Binding CloseSystemPanelCommand}"
+                            ToolTip.Tip="Close"/>
+
+                    </Grid>
+
+                    <Border
+                        Grid.Row="1"
+                        Height="1"
+                        Margin="0,0,0,16"
+                        Background="{DynamicResource BorderBrush}"/>
+
+                    <!-- Scrollable content -->
+
+                    <ScrollViewer
+                        Grid.Row="2"
+                        HorizontalScrollBarVisibility="Disabled"
+                        VerticalScrollBarVisibility="Auto"
+                        HorizontalContentAlignment="Stretch">
+
+                        <StackPanel
+                            Spacing="16"
+                            Margin="20,0,20,20">
+
+                            <!-- System hero -->
+
+                            <cards:InfoCard
+                                Command="{Binding ShowSystemDetailsCommand}">
+
+                                <StackPanel Spacing="14">
+
+                                    <Border
+                                        Width="52"
+                                        Height="52"
+                                        CornerRadius="26"
+                                        HorizontalAlignment="Left"
+                                        Background="#263B82F6">
+
+                                        <TextBlock
+                                            FontSize="26"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="🪟"/>
+
+                                    </Border>
+
+                                    <StackPanel Spacing="2">
+
+                                        <TextBlock
+                                            FontSize="24"
+                                            FontWeight="SemiBold"
+                                            Text="{Binding OsDisplayName}"/>
+
+                                        <TextBlock
+                                            FontSize="12"
+                                            Opacity="0.6"
+                                            Text="{Binding OsSubtitle}"/>
+
+                                    </StackPanel>
+
+                                </StackPanel>
+
+                            </cards:InfoCard>
+
+                            <!-- Live system cards -->
+
+                            <ItemsControl ItemsSource="{Binding SystemCards}">
+
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="2"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="models:SystemCardModel">
+
+                                        <Border
+                                            Margin="0,0,0,8"
+                                            Padding="10"
+                                            CornerRadius="10"
+                                            Background="{DynamicResource SurfaceBrush}">
+
+                                            <Grid
+                                                ColumnDefinitions="Auto,*"
+                                                ColumnSpacing="10">
+
+                                                <TextBlock
+                                                    FontSize="16"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding Icon}"/>
+
+                                                <StackPanel
+                                                    Grid.Column="1"
+                                                    Spacing="2">
+
+                                                    <TextBlock
+                                                        FontSize="11"
+                                                        Opacity="0.6"
+                                                        Text="{Binding Title}"/>
+
+                                                    <TextBlock
+                                                        FontSize="14"
+                                                        FontWeight="SemiBold"
+                                                        TextTrimming="CharacterEllipsis"
+                                                        ToolTip.Tip="{Binding Value}"
+                                                        Text="{Binding Value}"/>
+
+                                                </StackPanel>
+
+                                            </Grid>
+
+                                        </Border>
+
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+
+                            </ItemsControl>
+
+                            <!-- System Health -->
+
+                            <cards:InfoCard
+                                Command="{Binding ShowHealthDetailsCommand}">
+
+                                <StackPanel Spacing="14">
+
+                                    <TextBlock
+                                        FontSize="20"
+                                        FontWeight="SemiBold"
+                                        Text="System Health"/>
+
+                                    <ProgressBar
+                                        Height="8"
+                                        Maximum="100"
+                                        Value="{Binding HealthScore}"/>
+
+                                    <Grid ColumnDefinitions="*,Auto">
+
+                                        <TextBlock
+                                            Opacity="0.6"
+                                            Text="Health Score"/>
+
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            FontWeight="SemiBold"
+                                            Text="{Binding HealthScore, StringFormat='{}{0}%'}"/>
+
+                                    </Grid>
+
+                                    <TextBlock
+                                        FontSize="13"
+                                        Opacity="0.6"
+                                        Text="{Binding HealthStatusText}"
+                                        TextWrapping="Wrap"/>
+
+                                </StackPanel>
+
+                            </cards:InfoCard>
+
+                        </StackPanel>
+
+                    </ScrollViewer>
+
+                </Grid>
+
+            </Border>
+
+        </Grid>
 
         <shared:LoadingOverlay
             IsLoading="{Binding IsLoading}"

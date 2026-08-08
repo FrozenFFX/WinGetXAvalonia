@@ -3,6 +3,8 @@
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using WinGetXAvalonia.Core.Domain.Dashboard;
@@ -19,7 +21,7 @@ using WinGetXAvalonia.ViewModels.Settings;
 
 namespace WinGetXAvalonia.ViewModels;
 
-public partial class DashboardViewModel : ViewModelBase
+public partial class DashboardViewModel : ViewModelBase, IDisposable
 {
     private readonly WingetService _winget;
     private readonly ISystemMonitorService _monitor;
@@ -34,6 +36,11 @@ public partial class DashboardViewModel : ViewModelBase
     private readonly IHistoryService _history;
     private readonly InstalledViewModel _installedPage;
     private readonly SettingsViewModel _settingsPage;
+    private readonly WorkspacesViewModel _workspacesPage;
+    private readonly BrowseViewModel _browsePage;
+    private readonly HistoryViewModel _historyPage;
+
+    private IDisposable? _subscription;
 
     private SystemCardModel? _cpuCard;
     private SystemCardModel? _ramCard;
@@ -61,6 +68,10 @@ public partial class DashboardViewModel : ViewModelBase
     private int sources;
 
     [ObservableProperty]
+    private int history;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(StatusText))]
     private bool isLoading;
 
     [ObservableProperty]
@@ -68,13 +79,37 @@ public partial class DashboardViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsHealthy))]
+    [NotifyPropertyChangedFor(nameof(HealthScore))]
+    [NotifyPropertyChangedFor(nameof(HealthStatusText))]
     private PackageHealthSummary healthSummary = PackageHealthSummary.Empty;
+
+    [ObservableProperty]
+    private string wingetVersion = "N/A";
+
+    [ObservableProperty]
+    private bool systemPanelVisible = true;
+
+    public event Action? SearchRequested;
+
+    public event Action<object, string, string?>? DetailRequested;
+
+    public string GreetingText =>
+        $"👋 {Time.Greeting}, {Environment.UserName}";
 
     public string StatusText =>
         $"{Installed:N0} Installed • {Updates:N0} Updates";
 
+    public string OsDisplayName =>
+        SystemInfoService.GetOsLabel();
+
+    public string OsSubtitle =>
+        $"{_system.GetMachineName()}";
+
     public int TotalPackages =>
         Installed + Updates;
+
+    public double Usage =>
+        _system.GetRamUsage();
 
     public bool HasUpdates =>
         Updates > 0;
@@ -82,13 +117,43 @@ public partial class DashboardViewModel : ViewModelBase
     public bool IsHealthy =>
         HealthSummary.Failed == 0;
 
+    public int HealthScore
+    {
+        get
+        {
+            if (HealthSummary.Total == 0)
+                return 0;
+
+            int unhealthy = HealthSummary.Deprecated
+                + HealthSummary.UnknownSource
+                + HealthSummary.Failed;
+
+            return (int)Math.Round(
+                100.0 * (HealthSummary.Total - unhealthy) / HealthSummary.Total);
+        }
+    }
+
+    public string HealthStatusText => HealthScore switch
+    {
+        >= 70 => "Everything is working normally.",
+        >= 40 => "Some packages need attention.",
+        _ => "Your package setup needs attention."
+    };
+
     public ObservableCollection<SystemCardModel> SystemCards { get; } = new();
 
-    public ObservableCollection<QuickActionItem> QuickActions { get; } = new();
+    public ObservableCollection<FavoriteSource> FavoriteSources { get; } = new();
 
     public ObservableCollection<ActivityItem> Activity { get; } = new();
 
     public ObservableCollection<HeroInfoItem> HeroInfo { get; } = new();
+
+    public bool HasActivity => Activity.Count > 0;
+    public bool HasNoActivity => !HasActivity;
+    public bool HasFavoriteSources => FavoriteSources.Count > 0;
+    public bool HasNoFavoriteSources => !HasFavoriteSources;
+    public bool HasNotifications => !Notifications.IsEmpty;
+    public bool HasNoNotifications => !HasNotifications;
 
     public ITimeService Time { get; }
 
@@ -111,7 +176,10 @@ public partial class DashboardViewModel : ViewModelBase
         QueuePanelViewModel queue,
         NotificationCenterViewModel notifications,
         InstalledViewModel installedPage,
-        SettingsViewModel settingsPage)
+        SettingsViewModel settingsPage,
+        WorkspacesViewModel workspacesPage,
+        BrowseViewModel browsePage,
+        HistoryViewModel historyPage)
     {
         _winget = winget;
         _monitor = monitor;
@@ -126,26 +194,36 @@ public partial class DashboardViewModel : ViewModelBase
         _history = history;
         _installedPage = installedPage;
         _settingsPage = settingsPage;
+        _workspacesPage = workspacesPage;
+        _browsePage = browsePage;
+        _historyPage = historyPage;
 
         Time = time;
         Queue = queue;
         Notifications = notifications;
         _time.Start();
 
+        _time.PropertyChanged += OnTimeChanged;
+
         _monitor.PropertyChanged += OnMonitorChanged;
         _monitor.Start();
 
         _clock.Tick += OnClockTick;
 
-        _eventBus.Subscribe<PackageChangedEvent>(e => _ = LoadCountsAsync());
+        _subscription =
+            _eventBus.Subscribe<PackageChangedEvent>(e =>
+                Dispatcher.UIThread.Post(() => _ = LoadCountsAsync()));
 
-        BuildQuickActions();
         BuildSystemCards();
         BuildHeroInfo();
         BuildMockActivity();
+
+        Activity.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasActivity));
+        FavoriteSources.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasFavoriteSources));
+        Notifications.Items.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasNotifications));
     }
 
-    public async Task InitializeAsync()
+    public override async Task InitializeAsync()
     {
         // ana ekran her seferinde baştan yüklenmesin, bir kez yeter
         if (_initialized)
@@ -159,20 +237,27 @@ public partial class DashboardViewModel : ViewModelBase
         await LoadWingetVersionAsync();
 
         IsLoading = false;
+
+#if DEBUG
+        System.IO.File.AppendAllText(
+            @"C:\Users\depgo\AppData\Local\Temp\opencode\statcard.log",
+            $"[{DateTime.Now:HH:mm:ss.fff}] INITIALIZE done: Installed={Installed} Updates={Updates} Sources={Sources} History={History} Favorites={Favorites} IsLoading={IsLoading}{Environment.NewLine}");
+#endif
     }
 
     private async Task LoadWingetVersionAsync()
     {
         try
         {
-            var version = (await _winget.Version()).Trim();
+            WingetVersion = (await _winget.Version()).Trim();
 
             if (_wingetChip is not null)
-                _wingetChip.Value = version;
+                _wingetChip.Value = WingetVersion;
         }
         catch (Exception ex)
         {
             _logger.Error(ex, "Failed to load winget version");
+            WingetVersion = "N/A";
             if (_wingetChip is not null)
                 _wingetChip.Value = "N/A";
         }
@@ -200,10 +285,15 @@ public partial class DashboardViewModel : ViewModelBase
                 WingetParser.ParseUpdates(updatesTask.Result),
                 historyTask.Result);
 
+            BuildActivity(historyTask.Result);
+
             Installed = stats.InstalledCount;
             Updates = stats.UpdateCount;
             Sources = stats.SourceCount;
+            History = historyTask.Result.Count;
             Favorites = stats.FavoriteCount;
+
+            BuildFavoriteSources();
         }
         catch (Exception ex)
         {
@@ -215,41 +305,6 @@ public partial class DashboardViewModel : ViewModelBase
             Favorites = _favorites.Favorites.Count;
             HealthSummary = PackageHealthSummary.Empty;
         }
-    }
-
-    private void BuildQuickActions()
-    {
-        QuickActions.Add(new()
-        {
-            Icon = "📦",
-            Title = "Install Packages",
-            Description = "Browse the winget catalog and install",
-            Command = OpenPackagesCommand
-        });
-
-        QuickActions.Add(new()
-        {
-            Icon = "⬆️",
-            Title = "Upgrade All",
-            Description = "Update every installed package",
-            Command = UpgradeAllCommand
-        });
-
-        QuickActions.Add(new()
-        {
-            Icon = "🔄",
-            Title = "Refresh Sources",
-            Description = "Reload winget package sources",
-            Command = RefreshSourcesCommand
-        });
-
-        QuickActions.Add(new()
-        {
-            Icon = "⚙️",
-            Title = "Open Settings",
-            Description = "Tune WinGetX to your taste",
-            Command = OpenSettingsCommand
-        });
     }
 
     private void BuildHeroInfo()
@@ -333,33 +388,64 @@ public partial class DashboardViewModel : ViewModelBase
 
     private void BuildMockActivity()
     {
-        Activity.Add(new()
-        {
-            Timestamp = DateTime.Now.AddMinutes(-3),
-            Title = "Visual Studio Code updated to 1.92.0",
-            Type = ActivityType.Update
-        });
+        Activity.Clear();
+    }
 
-        Activity.Add(new()
-        {
-            Timestamp = DateTime.Now.AddMinutes(-12),
-            Title = "Google Chrome installed",
-            Type = ActivityType.Install
-        });
+    private void BuildFavoriteSources()
+    {
+        FavoriteSources.Clear();
 
-        Activity.Add(new()
+        foreach (var group in _favorites.Favorites
+                     .Where(p => !string.IsNullOrWhiteSpace(p.Source))
+                     .GroupBy(p => p.Source)
+                     .OrderByDescending(g => g.Count())
+                     .Take(6))
         {
-            Timestamp = DateTime.Now.AddHours(-1),
-            Title = "Spotify uninstalled",
-            Type = ActivityType.Uninstall
-        });
+            FavoriteSources.Add(new FavoriteSource
+            {
+                Name = group.Key,
+                Count = group.Count()
+            });
+        }
+    }
 
-        Activity.Add(new()
+    private void BuildActivity(IReadOnlyList<HistoryEntry> history)
+    {
+        Activity.Clear();
+
+        foreach (var entry in history
+                     .OrderByDescending(e => e.Timestamp)
+                     .Take(8))
         {
-            Timestamp = DateTime.Now.AddHours(-3),
-            Title = "7-Zip upgraded to 24.09",
-            Type = ActivityType.Upgrade
-        });
+            Activity.Add(new ActivityItem
+            {
+                Timestamp = entry.Timestamp,
+                Title = string.IsNullOrWhiteSpace(entry.PackageName)
+                    ? (string.IsNullOrWhiteSpace(entry.PackageId) ? "Package operation" : entry.PackageId)
+                    : entry.PackageName,
+                Type = ToActivityType(entry.Operation, entry.Success)
+            });
+        }
+    }
+
+    private static ActivityType ToActivityType(string operation, bool success)
+    {
+        if (!success)
+            return ActivityType.Error;
+
+        return operation switch
+        {
+            "Install" => ActivityType.Install,
+            "Update" => ActivityType.Upgrade,
+            "Remove" => ActivityType.Uninstall,
+            _ => ActivityType.Info
+        };
+    }
+
+    private void OnTimeChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ITimeService.Greeting))
+            OnPropertyChanged(nameof(GreetingText));
     }
 
     private void OnMonitorChanged(object? sender, PropertyChangedEventArgs e)
@@ -413,6 +499,20 @@ public partial class DashboardViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void Browse()
+    {
+        _navigation.Navigate(_browsePage);
+        _ = _browsePage.InitializeAsync();
+    }
+
+    [RelayCommand]
+    private void OpenHistory()
+    {
+        _navigation.Navigate(_historyPage);
+        _ = _historyPage.InitializeAsync();
+    }
+
+    [RelayCommand]
     private void OpenSettings()
         => _navigation.Navigate(_settingsPage);
 
@@ -420,16 +520,77 @@ public partial class DashboardViewModel : ViewModelBase
     private Task Refresh()
         => InitializeAsync();
 
-    partial void OnSearchTextChanged(string value)
-        => Search();
-
-    private void Search()
+    [RelayCommand]
+    private void CloseSystemPanel()
     {
-        // Arama çubuğu UI polish aşamasında ekleniyor.
+        SystemPanelVisible = false;
+        _logger.Log("System panel closed");
     }
 
     [RelayCommand]
-    private async Task UpgradeAll()
+    private void ShowSystemDetails()
+    {
+        var vm = new DetailListViewModel();
+
+        foreach (var item in _system.GetOsDetails())
+            vm.Items.Add(item);
+
+        DetailRequested?.Invoke(vm, "System", _system.GetMachineName());
+    }
+
+    [RelayCommand]
+    private void ShowNotificationsDetails()
+    {
+        var vm = new DetailListViewModel();
+
+        foreach (var item in Notifications.Items)
+        {
+            vm.Items.Add(new HeroInfoItem
+            {
+                Icon = item.IsRead ? "🔕" : "🔔",
+                Label = item.Title,
+                Value = $"{item.Timestamp:HH:mm} • {item.Message}"
+            });
+        }
+
+        DetailRequested?.Invoke(
+            vm,
+            "Notifications",
+            Notifications.Items.Count == 0
+                ? "No notifications"
+                : $"{Notifications.UnreadCount} unread");
+    }
+
+    [RelayCommand]
+    private void ShowHealthDetails()
+    {
+        var vm = new DetailListViewModel();
+
+        void Add(string label, string value)
+            => vm.Items.Add(new HeroInfoItem { Icon = "🩺", Label = label, Value = value });
+
+        Add("Score", $"{HealthScore}%");
+        Add("Total", HealthSummary.Total.ToString());
+        Add("Healthy", HealthSummary.Healthy.ToString());
+        Add("Outdated", HealthSummary.Outdated.ToString());
+        Add("Deprecated", HealthSummary.Deprecated.ToString());
+        Add("Unknown Source", HealthSummary.UnknownSource.ToString());
+        Add("Failed", HealthSummary.Failed.ToString());
+        Add("Status", HealthStatusText);
+
+        DetailRequested?.Invoke(vm, "System Health", $"{HealthScore}% score");
+    }
+
+    [RelayCommand]
+    private void Search()
+        => SearchRequested?.Invoke();
+
+    [RelayCommand]
+    private void OpenWorkspace()
+        => _navigation.Navigate(_workspacesPage);
+
+    [RelayCommand]
+    private async Task UpdateAll()
     {
         await _winget.UpgradeAll();
         await LoadCountsAsync();
@@ -440,5 +601,13 @@ public partial class DashboardViewModel : ViewModelBase
     {
         await _winget.RefreshSources();
         await LoadCountsAsync();
+    }
+
+    public void Dispose()
+    {
+        _time.PropertyChanged -= OnTimeChanged;
+        _monitor.PropertyChanged -= OnMonitorChanged;
+        _clock.Tick -= OnClockTick;
+        _subscription?.Dispose();
     }
 }

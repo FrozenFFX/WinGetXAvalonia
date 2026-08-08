@@ -25,23 +25,12 @@ public class ViewLocator : IDataTemplate
 
         var type = param.GetType().Assembly.GetType($"{ns}.{name}");
 
-        if (type != null)
-        {
-            try
-            {
-                return (Control)Activator.CreateInstance(type)!;
-            }
-            catch (Exception ex)
-            {
-                return new TextBlock
-                {
-                    Text = ex.ToString(),
-                    TextWrapping = Avalonia.Media.TextWrapping.Wrap
-                };
-            }
-        }
+        if (type == null)
+            return new TextBlock { Text = $"{ns}.{name} not found" };
 
-        return new TextBlock { Text = "Not Found: " + $"{ns}.{name}" };
+        var control = (Control)Activator.CreateInstance(type)!;
+
+        return control;
     }
 
     public bool Match(object? data)

@@ -23,6 +23,7 @@ public partial class BrowseViewModel : AsyncViewModel
     private readonly IFeaturedCatalog _featured;
     private readonly IClipboardService _clipboard;
     private readonly ILauncherService _launcher;
+    private readonly LoggerService? _logger;
 
     private bool _initialized;
     private CancellationTokenSource? _searchCts;
@@ -32,6 +33,11 @@ public partial class BrowseViewModel : AsyncViewModel
 
     [ObservableProperty]
     private string searchText = "";
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(EmptySearchTitle))]
+    [NotifyPropertyChangedFor(nameof(EmptySearchDescription))]
+    private string? lastQuery;
 
     [ObservableProperty]
     private string? selectedSuggestion;
@@ -49,12 +55,29 @@ public partial class BrowseViewModel : AsyncViewModel
 
     public ObservableRangeCollection<string> Suggestions { get; } = new();
 
-    public string ResultsSummary => Results.Count switch
+    public string ResultsSummary => State switch
     {
-        0 => "No packages found",
-        1 => "1 package found",
-        var count => $"{count} packages found"
+        LoadState.None => string.Empty,
+        LoadState.Loading => string.Empty,
+        LoadState.Error => string.Empty,
+        LoadState.Empty => "No packages found",
+        _ => Results.Count switch
+        {
+            0 => "No packages found",
+            1 => "1 package found",
+            var count => $"{count} packages found"
+        }
     };
+
+    public string EmptySearchTitle =>
+        string.IsNullOrWhiteSpace(LastQuery)
+            ? "No packages found"
+            : $"No results for \"{LastQuery}\"";
+
+    public string EmptySearchDescription =>
+        string.IsNullOrWhiteSpace(LastQuery)
+            ? "Try a different package name or category."
+            : "Check the spelling, try a shorter name, or browse a category instead.";
 
     public BrowseViewModel(
         IPackageProvider provider,
@@ -63,7 +86,8 @@ public partial class BrowseViewModel : AsyncViewModel
         PackageCacheService detailsCache,
         IFeaturedCatalog featured,
         IClipboardService clipboard,
-        ILauncherService launcher)
+        ILauncherService launcher,
+        LoggerService? logger = null)
     {
         _provider = provider;
         _operations = operations;
@@ -72,13 +96,34 @@ public partial class BrowseViewModel : AsyncViewModel
         _featured = featured;
         _clipboard = clipboard;
         _launcher = launcher;
+        _logger = logger;
 
         SelectedDetails = new PackageDetailsViewModel(provider, operations, clipboard, launcher);
 
         SeedCategories();
+
+        Results.CollectionChanged += (_, _) =>
+        {
+            OnPropertyChanged(nameof(ResultsSummary));
+        };
+
+        // State değişince "Results" başlığının özeti de güncellenmeli.
+        PropertyChanged += (_, e) =>
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(IsInitial):
+                case nameof(IsLoading):
+                case nameof(IsEmpty):
+                case nameof(HasError):
+                case nameof(IsLoaded):
+                    OnPropertyChanged(nameof(ResultsSummary));
+                    break;
+            }
+        };
     }
 
-    public async Task InitializeAsync()
+    public override async Task InitializeAsync()
     {
         if (_initialized)
             return;
@@ -89,7 +134,7 @@ public partial class BrowseViewModel : AsyncViewModel
     }
 
     partial void OnSearchTextChanged(string value)
-        => _ = RefreshSuggestionsAsync(value);
+        => RefreshSuggestionsAsync(value).FireAndForget(_logger, "Browse suggestions");
 
     partial void OnSelectedSuggestionChanged(string? value)
     {
@@ -110,13 +155,90 @@ public partial class BrowseViewModel : AsyncViewModel
             value.Selected = true;
             _lastSelected = value;
         }
+        else
+        {
+            _lastSelected = null;
+            SelectedDetails.Clear();
+        }
 
         _ = SelectedDetails.Load(value);
     }
 
-    [RelayCommand]
+    private AsyncRelayCommand? _searchCommand;
+    private RelayCommand? _clearSearchCommand;
+    private AsyncRelayCommand<PackageCategory?>? _selectCategoryCommand;
+    private AsyncRelayCommand<PackageModel?>? _installCommand;
+    private AsyncRelayCommand<PackageModel?>? _updateCommand;
+    private AsyncRelayCommand<PackageDetailsViewModel?>? _openHomepageCommand;
+    private RelayCommand<PackageModel?>? _copyIdCommand;
+    private RelayCommand<PackageModel?>? _copyNameCommand;
+    private AsyncRelayCommand<PackageModel?>? _installOrUpdateCommand;
+
+    public AsyncRelayCommand SearchCommand => _searchCommand ??= new AsyncRelayCommand(SearchInternal);
+    public RelayCommand ClearSearchCommand => _clearSearchCommand ??= new RelayCommand(ClearSearchInternal);
+    public AsyncRelayCommand<PackageCategory?> SelectCategoryCommand => _selectCategoryCommand ??= new AsyncRelayCommand<PackageCategory?>(SelectCategoryInternal);
+    public AsyncRelayCommand<PackageModel?> InstallCommand => _installCommand ??= new AsyncRelayCommand<PackageModel?>(InstallInternal);
+    public AsyncRelayCommand<PackageModel?> UpdateCommand => _updateCommand ??= new AsyncRelayCommand<PackageModel?>(UpdateInternal);
+    public AsyncRelayCommand<PackageDetailsViewModel?> OpenHomepageCommand => _openHomepageCommand ??= new AsyncRelayCommand<PackageDetailsViewModel?>(OpenHomepageInternal);
+    public RelayCommand<PackageModel?> CopyIdCommand => _copyIdCommand ??= new RelayCommand<PackageModel?>(async (package) => await CopyIdInternal(package));
+    public RelayCommand<PackageModel?> CopyNameCommand => _copyNameCommand ??= new RelayCommand<PackageModel?>(async (package) => await CopyNameInternal(package));
+    public AsyncRelayCommand<PackageModel?> InstallOrUpdateCommand => _installOrUpdateCommand ??= new AsyncRelayCommand<PackageModel?>(InstallOrUpdateInternal);
+
     public async Task Search()
     {
+        await SearchInternal();
+    }
+
+    public void ClearSearch()
+    {
+        ClearSearchInternal();
+    }
+
+    public async Task SelectCategory(PackageCategory? category)
+    {
+        await SelectCategoryInternal(category);
+    }
+
+    public async Task Install(PackageModel? package)
+    {
+        await InstallInternal(package);
+    }
+
+    public async Task Update(PackageModel? package)
+    {
+        await UpdateInternal(package);
+    }
+
+    public async Task OpenHomepage(PackageDetailsViewModel? details)
+    {
+        await OpenHomepageInternal(details);
+    }
+
+    public async Task CopyId(PackageModel? package)
+    {
+        await CopyIdInternal(package);
+    }
+
+    public async Task CopyName(PackageModel? package)
+    {
+        await CopyNameInternal(package);
+    }
+
+    public async Task InstallOrUpdate(PackageModel? package)
+    {
+        await InstallOrUpdateInternal(package);
+    }
+
+    private async Task SearchInternal()
+    {
+        if (SearchText == SearchText.Trim())
+        {
+        }
+        else
+        {
+            SearchText = SearchText.Trim();
+        }
+
         if (string.IsNullOrWhiteSpace(SearchText))
             return;
 
@@ -128,14 +250,14 @@ public partial class BrowseViewModel : AsyncViewModel
         await RunSearchAsync(SearchText, _searchCts.Token);
     }
 
-    [RelayCommand]
-    private void ClearSearch()
+    private void ClearSearchInternal()
     {
         _suggestCts?.Cancel();
         _suggestCts?.Dispose();
         _suggestCts = null;
 
         SearchText = "";
+        LastQuery = null;
         SelectedSuggestion = null;
         Suggestions.Clear();
         Results.Clear();
@@ -145,10 +267,15 @@ public partial class BrowseViewModel : AsyncViewModel
         ErrorMessage = null;
 
         OnPropertyChanged(nameof(ResultsSummary));
+
+        SelectedDetails.Clear();
+
+        _detailsCache.Clear();
+
+        _lastSelected = null;
     }
 
-    [RelayCommand]
-    private async Task SelectCategory(PackageCategory? category)
+    private async Task SelectCategoryInternal(PackageCategory? category)
     {
         if (category is null || string.IsNullOrWhiteSpace(category.Query))
             return;
@@ -158,26 +285,27 @@ public partial class BrowseViewModel : AsyncViewModel
         await RunSearchAsync(category.Query);
     }
 
-    [RelayCommand]
-    private async Task Install(PackageModel? package)
+    private async Task InstallInternal(PackageModel? package)
     {
         if (package is null || string.IsNullOrWhiteSpace(package.Id))
             return;
 
         await _operations.InstallAsync(package.Id);
+
+        await SelectedDetails.Load(package);
     }
 
-    [RelayCommand]
-    private async Task Update(PackageModel? package)
+    private async Task UpdateInternal(PackageModel? package)
     {
         if (package is null || string.IsNullOrWhiteSpace(package.Id))
             return;
 
         await _operations.UpdateAsync(package.Id);
+
+        await SelectedDetails.Load(package);
     }
 
-    [RelayCommand]
-    private async Task OpenHomepage(PackageDetailsViewModel? details)
+    private async Task OpenHomepageInternal(PackageDetailsViewModel? details)
     {
         if (details is null || !details.HasHomepage)
             return;
@@ -185,8 +313,7 @@ public partial class BrowseViewModel : AsyncViewModel
         await _launcher.OpenUrlAsync(details.HomepageDisplay);
     }
 
-    [RelayCommand]
-    private async Task CopyId(PackageModel? package)
+    private async Task CopyIdInternal(PackageModel? package)
     {
         if (package is null || string.IsNullOrWhiteSpace(package.Id))
             return;
@@ -194,8 +321,7 @@ public partial class BrowseViewModel : AsyncViewModel
         await _clipboard.CopyTextAsync(package.Id);
     }
 
-    [RelayCommand]
-    private async Task CopyName(PackageModel? package)
+    private async Task CopyNameInternal(PackageModel? package)
     {
         if (package is null || string.IsNullOrWhiteSpace(package.Name))
             return;
@@ -203,8 +329,7 @@ public partial class BrowseViewModel : AsyncViewModel
         await _clipboard.CopyTextAsync(package.Name);
     }
 
-    [RelayCommand]
-    private async Task InstallOrUpdate(PackageModel? package)
+    private async Task InstallOrUpdateInternal(PackageModel? package)
     {
         if (package is null || string.IsNullOrWhiteSpace(package.Id))
             return;
@@ -242,6 +367,8 @@ public partial class BrowseViewModel : AsyncViewModel
             package.Available = "";
             package.InstallState = PackageInstallState.Installed;
         }
+
+        await SelectedDetails.Load(package);
     }
 
     private async Task LoadFeaturedAsync()
@@ -252,8 +379,9 @@ public partial class BrowseViewModel : AsyncViewModel
         {
             items = await _featured.GetAsync();
         }
-        catch
+        catch (Exception ex)
         {
+            _logger?.Error(ex, "Failed to load featured catalog");
             return;
         }
 
@@ -275,8 +403,11 @@ public partial class BrowseViewModel : AsyncViewModel
 
         foreach (var package in packages)
         {
-            if (package is not null)
+            if (package is not null &&
+                Featured.All(x => x.Id != package.Id))
+            {
                 Featured.Add(package);
+            }
         }
     }
 
@@ -302,9 +433,10 @@ public partial class BrowseViewModel : AsyncViewModel
 
             return package;
         }
-        catch
+        catch (Exception ex)
         {
             // tek bir paket çökmüşse listeyi komple bozmayalım
+            _logger?.Error(ex, $"Failed to load featured item '{item.Id}'");
             return null;
         }
     }
@@ -313,6 +445,7 @@ public partial class BrowseViewModel : AsyncViewModel
     {
         State = LoadState.Loading;
         ErrorMessage = null;
+        LastQuery = query;
         Results.Clear();
 
         try
@@ -338,7 +471,10 @@ public partial class BrowseViewModel : AsyncViewModel
 
             Results.ReplaceAll(enriched);
 
-            SelectedPackage = null;
+            if (Results.Count > 0)
+            {
+                SelectedPackage = Results[0];
+            }
 
             State = Results.Count == 0 ? LoadState.Empty : LoadState.Loaded;
 
@@ -350,6 +486,9 @@ public partial class BrowseViewModel : AsyncViewModel
         }
         catch (Exception ex)
         {
+            SelectedPackage = null;
+            SelectedDetails.Clear();
+
             State = LoadState.Error;
             ErrorMessage = ex.Message;
         }
@@ -397,8 +536,9 @@ public partial class BrowseViewModel : AsyncViewModel
         catch (OperationCanceledException)
         {
         }
-        catch
+        catch (Exception ex)
         {
+            _logger?.Error(ex, "Failed to refresh search suggestions");
         }
     }
 
@@ -438,16 +578,18 @@ public partial class BrowseViewModel : AsyncViewModel
         {
             index.AddInstalled(await _provider.GetInstalledAsync());
         }
-        catch
+        catch (Exception ex)
         {
+            _logger?.Error(ex, "Failed to load installed index for enrichment");
         }
 
         try
         {
             index.AddUpdates(await _provider.GetUpdatesAsync());
         }
-        catch
+        catch (Exception ex)
         {
+            _logger?.Error(ex, "Failed to load updates index for enrichment");
         }
 
         _index = index;
@@ -455,10 +597,10 @@ public partial class BrowseViewModel : AsyncViewModel
 
     private void SeedCategories()
     {
-        Categories.Add(new() { Name = "Development", Query = "git vscode docker", Icon = "💻" });
-        Categories.Add(new() { Name = "Browsers", Query = "chrome firefox edge", Icon = "🌐" });
-        Categories.Add(new() { Name = "Media", Query = "vlc spotify", Icon = "🎬" });
-        Categories.Add(new() { Name = "Utilities", Query = "powertoys 7zip", Icon = "🛠" });
+        Categories.Add(new() { Name = "Development", Query = "vscode", Icon = "💻" });
+        Categories.Add(new() { Name = "Browsers", Query = "chrome", Icon = "🌐" });
+        Categories.Add(new() { Name = "Media", Query = "vlc", Icon = "🎬" });
+        Categories.Add(new() { Name = "Utilities", Query = "powertoys", Icon = "🛠" });
         Categories.Add(new() { Name = "Gaming", Query = "steam", Icon = "🎮" });
         Categories.Add(new() { Name = "Design", Query = "figma", Icon = "🎨" });
     }

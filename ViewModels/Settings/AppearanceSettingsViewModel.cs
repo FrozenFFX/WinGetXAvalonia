@@ -2,6 +2,7 @@
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Backup;
 using WinGetXAvalonia.Services.Interfaces;
@@ -43,7 +44,7 @@ public partial class AppearanceSettingsViewModel : SettingsCategoryViewModel
     {
         _themeManager = themeManager;
         _theme = theme;
-        Accents = themeManager.Accents;
+        Accents = themeManager.AllAccents;
 
         BeginInit();
 

@@ -11,11 +11,13 @@
         <ControlTemplate TargetType="local:Card">
 
             <Border
+                Classes="card"
                 Padding="{TemplateBinding Padding}"
-                Background="{DynamicResource CardBrush}"
-                BorderBrush="{DynamicResource BorderBrush}"
+                Background="{DynamicResource Card}"
+                BorderBrush="{DynamicResource Border}"
                 BorderThickness="1"
                 CornerRadius="{DynamicResource RadiusMedium}">
+
 
                 <ContentPresenter
                     Content="{TemplateBinding Content}"

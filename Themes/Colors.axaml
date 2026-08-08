@@ -7,14 +7,22 @@
 
     <Styles.Resources>
 
+        <SolidColorBrush x:Key="Primary" Color="#3E8EF7"/>
         <SolidColorBrush x:Key="PrimaryBrush" Color="#3E8EF7"/>
 
-        <SolidColorBrush x:Key="SuccessBrush" Color="#4CAF50"/>
+        <SolidColorBrush x:Key="PrimaryHover" Color="#2F7CE8"/>
+        <SolidColorBrush x:Key="PrimaryHoverBrush" Color="#2F7CE8"/>
 
-        <SolidColorBrush x:Key="WarningBrush" Color="#FFB300"/>
-
+        <SolidColorBrush x:Key="Danger" Color="#F44336"/>
         <SolidColorBrush x:Key="DangerBrush" Color="#F44336"/>
 
+        <SolidColorBrush x:Key="Success" Color="#4CAF50"/>
+        <SolidColorBrush x:Key="SuccessBrush" Color="#4CAF50"/>
+
+        <SolidColorBrush x:Key="Warning" Color="#FFB300"/>
+        <SolidColorBrush x:Key="WarningBrush" Color="#FFB300"/>
+
+        <SolidColorBrush x:Key="Info" Color="#2196F3"/>
         <SolidColorBrush x:Key="InfoBrush" Color="#2196F3"/>
 
         <SolidColorBrush x:Key="AccentBrush" Color="#3B82F6"/>

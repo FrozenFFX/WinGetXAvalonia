@@ -7,6 +7,13 @@ namespace WinGetXAvalonia.Services.Core;
 
 public class LauncherService : ILauncherService
 {
+    private readonly LoggerService? _logger;
+
+    public LauncherService(LoggerService? logger = null)
+    {
+        _logger = logger;
+    }
+
     public Task OpenUrlAsync(string url)
     {
         if (!string.IsNullOrWhiteSpace(url))
@@ -31,10 +38,19 @@ public class LauncherService : ILauncherService
         return Task.CompletedTask;
     }
 
-    private static void Launch(string target)
-        => Process.Start(new ProcessStartInfo
+    private void Launch(string target)
+    {
+        try
         {
-            FileName = target,
-            UseShellExecute = true
-        });
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = target,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error(ex, $"Failed to launch '{target}'");
+        }
+    }
 }

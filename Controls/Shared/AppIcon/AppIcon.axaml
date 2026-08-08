@@ -1,0 +1,19 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="WinGetXAvalonia.Controls.Shared.AppIcon"
+    x:Name="Root"
+    HorizontalAlignment="Left"
+    VerticalAlignment="Top">
+
+    <Path
+        Width="{Binding #Root.Size}"
+        Height="{Binding #Root.Size}"
+        Stretch="Uniform"
+        Fill="{Binding #Root.AccentBrush}"
+        Data="{Binding #Root.Source, Converter={StaticResource IconGeometry}}"/>
+
+</UserControl>

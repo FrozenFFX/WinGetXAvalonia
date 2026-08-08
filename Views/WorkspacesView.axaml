@@ -7,7 +7,9 @@
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     xmlns:workspace="using:WinGetXAvalonia.Controls.Workspace"
+    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
     x:Class="WinGetXAvalonia.Views.WorkspacesView"
+    x:Name="Root"
     x:DataType="vm:WorkspacesViewModel">
 
     <UserControl.KeyBindings>
@@ -16,155 +18,147 @@
             Command="{Binding RefreshCommand}"/>
     </UserControl.KeyBindings>
 
-    <Grid Margin="20">
+    <Grid
+        Margin="0"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        ClipToBounds="False">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <!-- Header -->
         <shared:SectionHeader
+            Grid.Row="0"
             Title="Workspaces"
             Description="{Binding WorkspacesSummary}"/>
 
         <!-- Toolbar -->
-        <workspace:WorkspaceToolbar
-            Grid.Row="1"
-            SearchText="{Binding SearchText}"
-            Count="{Binding WorkspaceCount}"
-            CreateCommand="{Binding NewWorkspaceCommand}"
-            ImportCommand="{Binding ImportCommand}"
-            RefreshCommand="{Binding RefreshCommand}"/>
-
-        <workspace:WorkspaceEditor
-            Grid.Row="2"
-            IsVisible="{Binding IsEditorOpen}"
-            Name="{Binding NewWorkspaceName}"
-            Description="{Binding NewWorkspaceDescription}"
-            SaveCommand="{Binding SaveWorkspaceCommand}"
-            SaveButtonText="{Binding EditorAction}"
-            Title="{Binding EditorTitle}"/>
-
         <Grid
-            Grid.Row="3"
-            ColumnDefinitions="*,12,360">
+            Grid.Row="1"
+            RowDefinitions="Auto,Auto">
 
-            <ScrollViewer
-                Grid.Column="0"
-                VerticalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{Binding Workspaces}">
+            <workspace:WorkspaceToolbar
+                Grid.Row="0"
+                SearchText="{Binding SearchText}"
+                Count="{Binding WorkspaceCount}"
+                CreateCommand="{Binding NewWorkspaceCommand}"
+                ImportCommand="{Binding ImportCommand}"
+                RefreshCommand="{Binding RefreshCommand}"/>
 
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <workspace:WorkspaceCard Width="420" Margin="0,0,12,12"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-
-            <GridSplitter
-                Grid.Column="1"
-                Width="6"
-                ResizeDirection="Columns"
-                ResizeBehavior="PreviousAndNext"/>
-
-            <Border
-                Grid.Column="2"
-                Padding="20"
-                Background="{DynamicResource CardBrush}"
-                BorderBrush="{DynamicResource BorderBrush}"
-                BorderThickness="1"
-                CornerRadius="{DynamicResource RadiusMedium}">
-
-                <StackPanel Spacing="12">
-
-                    <TextBlock
-                        FontSize="22"
-                        FontWeight="SemiBold"
-                        Text="Workspace"/>
-
-                    <ContentControl
-                        Content="{Binding SelectedWorkspace}"/>
-
-                </StackPanel>
-
-            </Border>
-
-            <!-- Empty state -->
-            <StackPanel
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Spacing="12"
-                IsVisible="{Binding IsEmpty}">
-
-                <TextBlock
-                    Text="💻"
-                    FontSize="46"
-                    Opacity="0.35"
-                    HorizontalAlignment="Center"/>
-
-                <TextBlock
-                    Text="No workspaces"
-                    FontSize="18"
-                    FontWeight="SemiBold"
-                    HorizontalAlignment="Center"/>
-
-                <TextBlock
-                    Text="Create your first workspace to group package installs."
-                    Opacity="0.65"
-                    TextAlignment="Center"
-                    HorizontalAlignment="Center"/>
-            </StackPanel>
-
-            <!-- Error state -->
-            <StackPanel
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Spacing="12"
-                IsVisible="{Binding HasError}">
-
-                <TextBlock
-                    Text="⚠️"
-                    FontSize="46"
-                    Opacity="0.35"
-                    HorizontalAlignment="Center"/>
-
-                <TextBlock
-                    Text="Couldn't load workspaces"
-                    FontSize="18"
-                    FontWeight="SemiBold"
-                    HorizontalAlignment="Center"/>
-
-                <TextBlock
-                    Text="{Binding ErrorMessage}"
-                    Opacity="0.65"
-                    TextAlignment="Center"
-                    TextWrapping="Wrap"
-                    MaxWidth="480"
-                    HorizontalAlignment="Center"/>
-
-                <Button
-                    Margin="0,8,0,0"
-                    MinWidth="140"
-                    Content="Retry"
-                    Command="{Binding RefreshCommand}"
-                    HorizontalAlignment="Center"/>
-            </StackPanel>
+            <workspace:WorkspaceEditor
+                Grid.Row="1"
+                Margin="0,12,0,0"
+                IsVisible="{Binding IsEditorOpen}"
+                Name="{Binding NewWorkspaceName}"
+                Description="{Binding NewWorkspaceDescription}"
+                SaveCommand="{Binding SaveWorkspaceCommand}"
+                SaveButtonText="{Binding EditorAction}"
+                Title="{Binding EditorTitle}"/>
 
         </Grid>
 
-        <shared:LoadingOverlay
-            Grid.RowSpan="4"
+        <!-- Master-Detail -->
+        <shared:MasterDetailPage
+            Grid.Row="3"
             IsLoading="{Binding IsLoading}"
-            Message="Loading workspaces..."/>
+            LoadingMessage="Loading workspaces..."
+            DetailWidth="0.8*">
+
+            <shared:MasterDetailPage.MasterContent>
+
+                <Grid>
+
+                    <ListBox
+                        ItemsSource="{Binding Workspaces}"
+                        SelectedItem="{Binding SelectedWorkspace}"
+                        BorderThickness="0"
+                        Background="Transparent">
+
+                        <ListBox.Styles>
+                            <Style Selector="ListBoxItem">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="0"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                            <Style Selector="ListBoxItem:selected">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                        </ListBox.Styles>
+
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel HorizontalAlignment="Left"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <workspace:WorkspaceCard Width="420" Margin="0,0,12,12"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+
+                    </ListBox>
+
+                    <!-- Empty state -->
+                    <shared:AppEmptyState
+                        IsVisible="{Binding IsEmpty}"
+                        Icon="💻"
+                        Title="No workspaces"
+                        Description="Create your first workspace to group package installs.">
+
+                        <shared:AppEmptyState.Examples>
+                            <sys:String>Group related apps into one workspace</sys:String>
+                            <sys:String>Export and share your setup</sys:String>
+                            <sys:String>Install a whole workspace at once</sys:String>
+                        </shared:AppEmptyState.Examples>
+
+                    </shared:AppEmptyState>
+
+                    <!-- Error state -->
+                    <shared:AppEmptyState
+                        IsVisible="{Binding HasError}"
+                        Icon="⚠️"
+                        Title="Couldn't load workspaces"
+                        Description="{Binding ErrorMessage}"
+                        ActionText="Retry"
+                        ActionCommand="{Binding RefreshCommand}"/>
+
+                </Grid>
+
+            </shared:MasterDetailPage.MasterContent>
+
+            <shared:MasterDetailPage.DetailContent>
+
+                <Border
+                    Padding="24"
+                    Background="{DynamicResource CardBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="{DynamicResource RadiusMedium}">
+
+                    <Panel>
+
+                        <workspace:WorkspacePackages
+                            IsVisible="{Binding !IsNothingSelected}"/>
+
+                        <shared:AppEmptyState
+                            IsVisible="{Binding IsNothingSelected}"
+                            Icon="💻"
+                            Title="Select a workspace"
+                            Description="Choose a workspace to see and edit its packages."/>
+
+                    </Panel>
+
+                </Border>
+
+            </shared:MasterDetailPage.DetailContent>
+
+        </shared:MasterDetailPage>
 
     </Grid>
 

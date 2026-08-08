@@ -2,6 +2,7 @@
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
@@ -16,7 +17,7 @@ using WinGetXAvalonia.Services.History;
 
 namespace WinGetXAvalonia.ViewModels;
 
-public partial class HistoryViewModel : AsyncViewModel
+public partial class HistoryViewModel : AsyncViewModel, IDisposable
 {
     private static readonly JsonSerializerOptions ExportOptions = new()
     {
@@ -30,6 +31,7 @@ public partial class HistoryViewModel : AsyncViewModel
     private readonly IEventBus _eventBus;
 
     private readonly List<HistoryItemViewModel> _allItems = new();
+    private IDisposable? _subscription;
 
     public ObservableCollection<HistoryFilterOption> Filters { get; } = new();
 
@@ -66,12 +68,19 @@ public partial class HistoryViewModel : AsyncViewModel
         _dialogs = dialogs;
         _eventBus = eventBus;
 
-        _eventBus.Subscribe<PackageChangedEvent>(e => _ = RefreshAsync());
+        _subscription =
+            _eventBus.Subscribe<PackageChangedEvent>(e =>
+                Dispatcher.UIThread.Post(() => _ = RefreshAsync()));
 
         SeedFilters();
+
+        Groups.CollectionChanged += (_, _) =>
+        {
+            OnPropertyChanged(nameof(TotalOperations));
+        };
     }
 
-    public Task InitializeAsync()
+    public override Task InitializeAsync()
         => RefreshAsync();
 
     partial void OnSearchTextChanged(string value)
@@ -139,6 +148,10 @@ public partial class HistoryViewModel : AsyncViewModel
         await _history.ClearAsync();
 
         await RefreshAsync();
+
+        Groups.Clear();
+
+        OperationsCount = 0;
     }
 
     [RelayCommand]
@@ -163,7 +176,10 @@ public partial class HistoryViewModel : AsyncViewModel
     {
         var entries = await _history.GetAllAsync();
 
-        string json = JsonSerializer.Serialize(entries.ToList(), ExportOptions);
+        string json =
+            JsonSerializer.Serialize(
+                entries.OrderByDescending(x => x.Timestamp),
+                ExportOptions);
 
         string? directory = Path.GetDirectoryName(path);
         if (!string.IsNullOrEmpty(directory))
@@ -197,6 +213,8 @@ public partial class HistoryViewModel : AsyncViewModel
 
         foreach (var group in BuildGroups(filtered.ToList(), DateTime.Now))
             Groups.Add(group);
+
+        OnPropertyChanged(nameof(TotalOperations));
     }
 
     public static List<HistoryGroupViewModel> BuildGroups(
@@ -253,4 +271,10 @@ public partial class HistoryViewModel : AsyncViewModel
         Filters.Add(new() { Mode = HistoryFilterMode.Removed, Label = "Removed" });
         Filters.Add(new() { Mode = HistoryFilterMode.Failed, Label = "Failed" });
     }
+
+    public void Dispose()
+    {
+        _subscription?.Dispose();
+    }
 }
+

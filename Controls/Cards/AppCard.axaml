@@ -1,0 +1,56 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<ContentControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinGetXAvalonia.Controls.Cards"
+    x:Class="WinGetXAvalonia.Controls.Cards.AppCard">
+
+    <ContentControl.Template>
+
+        <ControlTemplate TargetType="local:AppCard">
+
+            <Border
+                Classes="AppCard"
+                Margin="6"
+                Padding="22"
+                MinHeight="110"
+                CornerRadius="18"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource BorderBrush}"
+                Background="{DynamicResource CardBrush}"
+                ClipToBounds="True">
+
+                <ContentPresenter
+                    Content="{TemplateBinding Content}"
+                    ContentTemplate="{TemplateBinding ContentTemplate}"/>
+
+            </Border>
+
+        </ControlTemplate>
+
+    </ContentControl.Template>
+
+    <ContentControl.Styles>
+
+        <Style Selector="Border">
+
+            <Setter Property="Transitions">
+
+                <Transitions>
+
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.18"/>
+
+                    <TransformOperationsTransition Property="RenderTransform"
+                                                   Duration="0:0:0.18"/>
+
+                </Transitions>
+
+            </Setter>
+
+        </Style>
+
+    </ContentControl.Styles>
+
+</ContentControl>

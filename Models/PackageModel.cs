@@ -41,6 +41,9 @@ public partial class PackageModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(IsBusy), nameof(InstallButtonText), nameof(CanInstall), nameof(InstalledVersionDisplay))]
     private PackageInstallState installState = PackageInstallState.NotInstalled;
 
+    [ObservableProperty]
+    private int score;
+
     public bool HasUpdate => !string.IsNullOrWhiteSpace(Available);
 
     public bool IsBusy => InstallState is PackageInstallState.Installing or PackageInstallState.Updating;

@@ -1,0 +1,99 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="WinGetXAvalonia.Controls.Cards.StatCard"
+    x:Name="Root">
+
+    <Border
+        x:Name="Card"
+        Classes="card"
+        MinHeight="100"
+        Padding="0"
+        Cursor="Hand">
+
+        <Button
+            x:Name="CardButton"
+            Height="NaN"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Background="Transparent"
+            BorderThickness="0"
+            Padding="0"
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            Command="{Binding #Root.Command}"
+            Focusable="False">
+
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <ContentPresenter
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"/>
+                </ControlTemplate>
+            </Button.Template>
+
+            <Grid
+                Margin="16"
+                RowDefinitions="Auto,4,Auto"
+                ColumnDefinitions="Auto,12,*">
+
+                <!-- Icon -->
+
+                <Border
+                    Grid.Row="0"
+                    Grid.RowSpan="3"
+                    Grid.Column="0"
+                    Width="48"
+                    Height="48"
+                    Padding="10"
+                    CornerRadius="12"
+                    Background="{DynamicResource AccentBrush}">
+
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="24"
+                        Text="{Binding #Root.Icon}"/>
+
+                </Border>
+
+                <!-- Value -->
+
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    FontSize="32"
+                    FontWeight="Bold"
+                    Text="{Binding #Root.Value}"/>
+
+                <!-- Subtitle + Secondary -->
+
+                <StackPanel
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    Spacing="2">
+
+                    <TextBlock
+                        FontSize="12"
+                        Opacity="0.65"
+                        Text="{Binding #Root.Subtitle}"/>
+
+                    <TextBlock
+                        FontSize="11"
+                        Opacity="0.45"
+                        Text="{Binding #Root.Secondary}"/>
+
+                </StackPanel>
+
+            </Grid>
+
+        </Button>
+
+    </Border>
+
+</UserControl>

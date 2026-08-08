@@ -8,6 +8,9 @@ using Avalonia.Threading;
 
 namespace WinGetXAvalonia.Tests;
 
+[CollectionDefinition("UiDispatcher", DisableParallelization = true)]
+public sealed class UiDispatcherCollection;
+
 public static class TestPlatform
 {
     private static readonly Lazy<object> _ui = new(StartUiThread, LazyThreadSafetyMode.ExecutionAndPublication);

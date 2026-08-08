@@ -4,6 +4,7 @@
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
     x:Class="WinGetXAvalonia.Controls.Shared.EmptyState"
     x:Name="Root">
@@ -33,7 +34,7 @@
             TextAlignment="Center"
             TextWrapping="Wrap"/>
 
-        <Button
+        <shared:AppButton
             Content="{Binding ActionText, ElementName=Root}"
             Command="{Binding ActionCommand, ElementName=Root}"
             IsVisible="{Binding ActionCommand, ElementName=Root,

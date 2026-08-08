@@ -29,16 +29,17 @@
 
     </UserControl.Styles>
 
-    <Grid>
+    <Grid
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        ClipToBounds="True">
 
         <Grid
-            Margin="30"
+            Margin="24"
             ColumnDefinitions="260,8,*">
 
-            <Border
-                Grid.Column="0"
-            Classes="card"
-            Padding="15">
+            <shared:AppCard
+                Grid.Column="0">
 
             <Grid RowDefinitions="Auto,*,Auto">
 
@@ -100,19 +101,19 @@
                         Foreground="{DynamicResource SecondaryTextBrush}"
                         Text="v0.2.0-alpha"/>
 
-                    <Button
+                    <shared:AppButton
                         Margin="0,12,0,0"
                         HorizontalAlignment="Stretch"
                         Content="Create Backup"
                         Command="{Binding BackupCommand}"/>
 
-                    <Button
+                    <shared:AppButton
                         Margin="0,8,0,0"
                         HorizontalAlignment="Stretch"
                         Content="Restore Backup"
                         Command="{Binding RestoreCommand}"/>
 
-                    <Button
+                    <shared:AppButton
                         Margin="0,12,0,0"
                         HorizontalAlignment="Stretch"
                         Content="Toggle Theme"
@@ -122,7 +123,7 @@
 
             </Grid>
 
-        </Border>
+        </shared:AppCard>
 
         <GridSplitter
             Grid.Column="1"

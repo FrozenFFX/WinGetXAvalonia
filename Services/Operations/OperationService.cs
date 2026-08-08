@@ -49,8 +49,17 @@ public sealed class OperationService : IOperationService
 
     public async Task UpgradeAllAsync()
     {
-        foreach (var update in await _provider.GetUpdatesAsync())
-            await RunAsync("Update", update.Id, PackageOperation.Updated, progress => _provider.UpgradeAsync(update.Id, progress));
+        var updates = await _provider.GetUpdatesAsync();
+
+        foreach (var update in updates
+                     .Where(x => !string.IsNullOrWhiteSpace(x.Id)))
+        {
+            await RunAsync(
+                "Update",
+                update.Id,
+                PackageOperation.Updated,
+                progress => _provider.UpgradeAsync(update.Id, progress));
+        }
     }
 
     private async Task RunAsync(
@@ -62,9 +71,12 @@ public sealed class OperationService : IOperationService
         if (string.IsNullOrWhiteSpace(packageId))
             return;
 
+        packageId = packageId.Trim();
+
         var active = _center.Start(operation, packageId);
         active.StartedAt = DateTime.UtcNow;
-        active.StatusMessage = "Starting...";
+        active.Progress = 0;
+        active.StatusMessage = "Preparing...";
 
         var reporter = new OperationProgressReporter(active);
 
@@ -73,7 +85,12 @@ public sealed class OperationService : IOperationService
 
         try
         {
+            reporter.Report(0, "Starting");
+
             await work(reporter);
+
+            reporter.Report(100, "Completed");
+
             active.Progress = 100;
             active.StatusMessage = "Completed";
             _center.Complete(active.Id);
@@ -81,6 +98,8 @@ public sealed class OperationService : IOperationService
         }
         catch (Exception ex)
         {
+            reporter.Report((int)active.Progress, ex.Message);
+
             active.StatusMessage = ex.Message;
             _center.Fail(active.Id, ex.Message);
             success = false;
@@ -94,7 +113,7 @@ public sealed class OperationService : IOperationService
 
         await _history.AddAsync(new HistoryEntry
         {
-            Timestamp = DateTime.Now,
+            Timestamp = DateTime.UtcNow,
             Operation = operation,
             PackageId = packageId,
             Success = success,

@@ -10,9 +10,13 @@ public static class WingetParser
 {
     public static List<InstalledPackage> ParseInstalled(List<string> lines)
     {
+        lines = lines
+            .Where(x => !x.StartsWith("---"))
+            .ToList();
+
         var list = new List<InstalledPackage>();
 
-        foreach (string line in lines.Skip(2))
+        foreach (string line in lines.Skip(1))
         {
             if (string.IsNullOrWhiteSpace(line))
                 continue;
@@ -35,9 +39,13 @@ public static class WingetParser
 
     public static List<UpdatePackage> ParseUpdates(List<string> lines)
     {
+        lines = lines
+            .Where(x => !x.StartsWith("---"))
+            .ToList();
+
         var list = new List<UpdatePackage>();
 
-        foreach (string line in lines.Skip(2))
+        foreach (string line in lines.Skip(1))
         {
             if (string.IsNullOrWhiteSpace(line))
                 continue;
@@ -61,9 +69,13 @@ public static class WingetParser
 
     public static List<PackageModel> ParseSearch(List<string> lines)
     {
+        lines = lines
+            .Where(x => !x.StartsWith("---"))
+            .ToList();
+
         var list = new List<PackageModel>();
 
-        foreach (string line in lines.Skip(2))
+        foreach (string line in lines.Skip(1))
         {
             if (string.IsNullOrWhiteSpace(line))
                 continue;
@@ -150,6 +162,8 @@ public static class WingetParser
 
     private static (string Name, string? Id, string Version, string Available, string Source) SplitRow(string line)
     {
+        line = line.Replace('\t', ' ');
+
         string[] p = Regex.Split(line.Trim(), @"\s{2,}");
 
         if (p.Length < 3)
@@ -177,5 +191,13 @@ public static class WingetParser
     }
 
     private static string CleanVersion(string? value)
-        => value?.TrimStart('>').Trim() ?? "";
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "";
+
+        return value
+            .Trim()
+            .TrimStart('>')
+            .Trim();
+    }
 }

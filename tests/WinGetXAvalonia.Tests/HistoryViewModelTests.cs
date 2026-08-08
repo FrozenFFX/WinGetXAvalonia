@@ -103,9 +103,11 @@ public class HistoryViewModelTests
     {
         var (vm, history, _, _) = Create();
 
-        history.Entries.Add(Entry(timestamp: DateTime.Now.AddHours(-3)));
-        history.Entries.Add(Entry(timestamp: DateTime.Now.AddHours(-1)));
-        history.Entries.Add(Entry(timestamp: DateTime.Now.AddHours(-2)));
+        var today = DateTime.Today.AddHours(12);
+
+        history.Entries.Add(Entry(timestamp: today.AddHours(-3)));
+        history.Entries.Add(Entry(timestamp: today.AddHours(-1)));
+        history.Entries.Add(Entry(timestamp: today.AddHours(-2)));
 
         await vm.RefreshCommand.ExecuteAsync(null);
 

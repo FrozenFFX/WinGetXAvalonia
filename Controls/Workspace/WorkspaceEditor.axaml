@@ -4,6 +4,7 @@
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     x:Class="WinGetXAvalonia.Controls.Workspace.WorkspaceEditor"
     x:Name="Root"
     x:CompileBindings="False">
@@ -26,20 +27,20 @@
 
                 <StackPanel Spacing="8">
 
-                    <TextBox
+                    <shared:AppTextField
                         Text="{Binding Name, ElementName=Root}"
                         PlaceholderText="Workspace name">
                         <TextBox.KeyBindings>
                             <KeyBinding Gesture="Enter" Command="{Binding SaveCommand, ElementName=Root}"/>
                         </TextBox.KeyBindings>
-                    </TextBox>
+                    </shared:AppTextField>
 
-                    <TextBox
+                    <shared:AppTextField
                         Text="{Binding Description, ElementName=Root}"
                         PlaceholderText="Workspace description (optional)"/>
                 </StackPanel>
 
-                <Button
+                <shared:AppButton
                     Grid.Column="1"
                     VerticalAlignment="Top"
                     Content="{Binding SaveButtonText, ElementName=Root}"

@@ -1,0 +1,782 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:models="using:WinGetXAvalonia.Models"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    xmlns:cards="using:WinGetXAvalonia.Controls.Cards"
+    x:Class="WinGetXAvalonia.Views.EnterpriseView"
+    x:DataType="vm:EnterpriseViewModel"
+    x:CompileBindings="False">
+
+    <UserControl.KeyBindings>
+        <KeyBinding
+            Gesture="F5"
+            Command="{Binding LoadCommand}"/>
+    </UserControl.KeyBindings>
+
+    <Grid
+        Margin="0"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        ClipToBounds="False">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <shared:SectionHeader
+            Grid.Row="0"
+            Title="Enterprise"
+            Description="Manage your company fleet — remotely."/>
+
+        <TabControl
+            Grid.Row="2"
+            BorderThickness="0"
+            Background="Transparent"
+            Padding="0,12,0,0">
+
+            <!-- ─────────── Dashboard ─────────── -->
+
+            <TabItem Header="🏢 Dashboard">
+
+                <Grid RowDefinitions="Auto,16,*">
+
+                    <Grid
+                        Grid.Row="0"
+                        ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+                        ColumnSpacing="12">
+
+                        <cards:StatCard
+                            Icon="🖥"
+                            Subtitle="Total Computers"
+                            Value="{Binding Total}"/>
+
+                        <cards:StatCard
+                            Grid.Column="1"
+                            Icon="🟢"
+                            Subtitle="Online"
+                            Value="{Binding Online}"/>
+
+                        <cards:StatCard
+                            Grid.Column="2"
+                            Icon="🔴"
+                            Subtitle="Offline"
+                            Value="{Binding Offline}"/>
+
+                        <cards:StatCard
+                            Grid.Column="3"
+                            Icon="⬆"
+                            Subtitle="Pending Updates"
+                            Value="{Binding PendingUpdates}"/>
+
+                        <cards:StatCard
+                            Grid.Column="4"
+                            Icon="🚨"
+                            Subtitle="Critical Updates"
+                            Value="{Binding CriticalUpdates}"/>
+
+                        <cards:StatCard
+                            Grid.Column="5"
+                            Icon="❌"
+                            Subtitle="Failed Installations"
+                            Value="{Binding FailedInstallations}"/>
+
+                    </Grid>
+
+                    <shared:MasterDetailPage
+                        Grid.Row="2"
+                        IsLoading="{Binding IsLoading}"
+                        LoadingMessage="Loading fleet..."
+                        DetailWidth="0.7*">
+
+                        <shared:MasterDetailPage.MasterContent>
+
+                            <Grid RowDefinitions="Auto,10,*">
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+
+                                    <shared:SearchBox
+                                        Grid.Column="0"
+                                        Watermark="Search computers..."
+                                        Text="{Binding SearchText}"/>
+
+                                    <shared:AppButton
+                                        Grid.Column="1"
+                                        Width="44"
+                                        Content="⟳"
+                                        ToolTip.Tip="Refresh"
+                                        Command="{Binding LoadCommand}"/>
+
+                                </Grid>
+
+                                <Grid Grid.Row="2">
+
+                                    <ListBox
+                                        ItemsSource="{Binding FilteredComputers}"
+                                        SelectedItem="{Binding SelectedComputer}"
+                                        BorderThickness="0"
+                                        Background="Transparent"
+                                        ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                                        <ListBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel/>
+                                            </ItemsPanelTemplate>
+                                        </ListBox.ItemsPanel>
+
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate x:DataType="models:CompanyComputer">
+
+                                                <Border
+                                                    Padding="14,12"
+                                                    CornerRadius="12"
+                                                    Margin="0,0,0,8">
+
+                                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+
+                                                        <Border
+                                                            Grid.Column="0"
+                                                            Width="42"
+                                                            Height="42"
+                                                            CornerRadius="21"
+                                                            Background="{DynamicResource SurfaceBrush}">
+
+                                                            <TextBlock
+                                                                Text="🖥"
+                                                                FontSize="20"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center"/>
+                                                        </Border>
+
+                                                        <StackPanel
+                                                            Grid.Column="1"
+                                                            VerticalAlignment="Center"
+                                                            Spacing="2">
+
+                                                            <TextBlock
+                                                                Text="{Binding Name}"
+                                                                FontWeight="SemiBold"
+                                                                TextTrimming="CharacterEllipsis"
+                                                                MaxLines="1"/>
+
+                                                            <TextBlock
+                                                                Text="{Binding Os}"
+                                                                FontSize="12"
+                                                                Opacity="0.6"
+                                                                TextTrimming="CharacterEllipsis"
+                                                                MaxLines="1"/>
+
+                                                            <TextBlock
+                                                                FontSize="12"
+                                                                Opacity="0.6">
+                                                                <Run Text="{Binding InstalledSummary, Mode=OneWay}"/>
+                                                            </TextBlock>
+
+                                                        </StackPanel>
+
+                                                        <StackPanel
+                                                            Grid.Column="2"
+                                                            Spacing="4"
+                                                            VerticalAlignment="Center"
+                                                            HorizontalAlignment="Right">
+
+                                                            <TextBlock
+                                                                FontSize="12"
+                                                                FontWeight="SemiBold"
+                                                                Text="{Binding StateText}"/>
+
+                                                            <TextBlock
+                                                                FontSize="11"
+                                                                Opacity="0.6"
+                                                                Text="{Binding LastSeen,
+                                                                StringFormat='{}{0:dd.MM HH:mm}'}"/>
+
+                                                        </StackPanel>
+
+                                                    </Grid>
+
+                                                </Border>
+
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+
+                                    </ListBox>
+
+                                    <shared:AppEmptyState
+                                        IsVisible="{Binding IsEmpty}"
+                                        Icon="🏢"
+                                        Title="No computers in the fleet"
+                                        Description="Add managed devices to start using Enterprise."/>
+
+                                    <shared:AppEmptyState
+                                        IsVisible="{Binding HasError}"
+                                        Icon="⚠️"
+                                        Title="Couldn't load the fleet"
+                                        Description="{Binding ErrorMessage}"
+                                        ActionText="Retry"
+                                        ActionCommand="{Binding LoadCommand}"/>
+
+                                </Grid>
+
+                            </Grid>
+
+                        </shared:MasterDetailPage.MasterContent>
+
+                        <shared:MasterDetailPage.DetailContent>
+
+                            <Border
+                                Padding="20"
+                                Background="{DynamicResource CardBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="{DynamicResource RadiusMedium}">
+
+                                <Panel>
+
+                                    <ScrollViewer IsVisible="{Binding !IsNothingSelected}">
+
+                                        <StackPanel Spacing="16">
+
+                                            <Grid ColumnDefinitions="*,Auto">
+
+                                                <StackPanel Spacing="2">
+
+                                                    <TextBlock
+                                                        FontSize="20"
+                                                        FontWeight="SemiBold"
+                                                        Text="{Binding SelectedComputer.Name}"/>
+
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        Opacity="0.6"
+                                                        Text="{Binding SelectedComputer.Os}"/>
+
+                                                </StackPanel>
+
+                                                <TextBlock
+                                                    Grid.Column="1"
+                                                    FontSize="13"
+                                                    FontWeight="SemiBold"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding SelectedComputer.StateText}"/>
+
+                                            </Grid>
+
+                                            <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10">
+
+                                                <shared:AppCard Grid.Column="0">
+                                                    <StackPanel Spacing="2">
+                                                        <TextBlock Text="CPU" FontSize="11" Opacity="0.6"/>
+                                                        <TextBlock Text="{Binding SelectedComputer.Cpu}" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                                    </StackPanel>
+                                                </shared:AppCard>
+
+                                                <shared:AppCard Grid.Column="1">
+                                                    <StackPanel Spacing="2">
+                                                        <TextBlock Text="RAM" FontSize="11" Opacity="0.6"/>
+                                                        <TextBlock Text="{Binding SelectedComputer.Ram}" FontSize="13" FontWeight="SemiBold"/>
+                                                    </StackPanel>
+                                                </shared:AppCard>
+
+                                                <shared:AppCard Grid.Column="2">
+                                                    <StackPanel Spacing="2">
+                                                        <TextBlock Text="Pending Updates" FontSize="11" Opacity="0.6"/>
+                                                        <TextBlock Text="{Binding SelectedComputer.PendingUpdates}" FontSize="13" FontWeight="SemiBold"/>
+                                                    </StackPanel>
+                                                </shared:AppCard>
+
+                                                <shared:AppCard Grid.Column="3">
+                                                    <StackPanel Spacing="2">
+                                                        <TextBlock Text="Critical" FontSize="11" Opacity="0.6"/>
+                                                        <TextBlock Text="{Binding SelectedComputer.CriticalUpdates}" FontSize="13" FontWeight="SemiBold"/>
+                                                    </StackPanel>
+                                                </shared:AppCard>
+
+                                            </Grid>
+
+                                            <shared:AppSeparator/>
+
+                                            <StackPanel Spacing="6">
+
+                                                <TextBlock FontSize="14" FontWeight="SemiBold" Text="Remote Installation"/>
+
+                                                <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10">
+
+                                                    <shared:AppButton
+                                                        Classes="Accent"
+                                                        Content="Chrome"
+                                                        Command="{Binding InstallPackageCommand}"
+                                                        CommandParameter="Google Chrome"/>
+
+                                                    <shared:AppButton
+                                                        Grid.Column="1"
+                                                        Classes="Accent"
+                                                        Content="Git"
+                                                        Command="{Binding InstallPackageCommand}"
+                                                        CommandParameter="Git"/>
+
+                                                    <shared:AppButton
+                                                        Grid.Column="2"
+                                                        Classes="Accent"
+                                                        Content="VSCode"
+                                                        Command="{Binding InstallPackageCommand}"
+                                                        CommandParameter="Visual Studio Code"/>
+
+                                                    <shared:AppButton
+                                                        Grid.Column="3"
+                                                        Classes="Danger"
+                                                        Content="Restart"
+                                                        Command="{Binding RestartCommand}"/>
+
+                                                </Grid>
+
+                                            </StackPanel>
+
+                                            <StackPanel Spacing="6">
+
+                                                <TextBlock FontSize="14" FontWeight="SemiBold" Text="Send PowerShell"/>
+
+                                                <shared:AppTextField
+                                                    AcceptsReturn="True"
+                                                    MinHeight="80"
+                                                    TextWrapping="Wrap"
+                                                    Text="{Binding PowerShellScript}"/>
+
+                                                <shared:AppButton
+                                                    HorizontalAlignment="Right"
+                                                    MinWidth="140"
+                                                    Content="Send Script"
+                                                    Command="{Binding SendPowerShellCommand}"/>
+
+                                            </StackPanel>
+
+                                            <shared:AppSeparator/>
+
+                                            <StackPanel Spacing="6">
+
+                                                <Grid ColumnDefinitions="*,Auto">
+
+                                                    <TextBlock FontSize="14" FontWeight="SemiBold" Text="Command Log"/>
+
+                                                    <TextBlock
+                                                        Grid.Column="1"
+                                                        FontSize="12"
+                                                        Opacity="0.6"
+                                                        Text="Last actions"/>
+
+                                                </Grid>
+
+                                                <ItemsControl ItemsSource="{Binding Commands}">
+
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate x:DataType="models:RemoteCommand">
+
+                                                            <Border
+                                                                Margin="0,0,0,6"
+                                                                Padding="12,10"
+                                                                CornerRadius="10"
+                                                                Background="{DynamicResource SurfaceBrush}">
+
+                                                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+
+                                                                    <TextBlock
+                                                                        Grid.Column="0"
+                                                                        Text="⚡"
+                                                                        VerticalAlignment="Center"/>
+
+                                                                    <StackPanel Grid.Column="1" Spacing="1">
+
+                                                                        <TextBlock
+                                                                            FontSize="13"
+                                                                            FontWeight="SemiBold"
+                                                                            Text="{Binding Payload}"
+                                                                            TextTrimming="CharacterEllipsis"
+                                                                            MaxLines="1"/>
+
+                                                                        <TextBlock
+                                                                            FontSize="11"
+                                                                            Opacity="0.6">
+                                                                            <Run Text="{Binding ComputerName, Mode=OneWay}"/>
+                                                                            <Run Text="•"/>
+                                                                            <Run Text="{Binding Kind, Mode=OneWay}"/>
+                                                                            <Run Text="•"/>
+                                                                            <Run Text="{Binding Timestamp, Mode=OneWay, StringFormat='{}{0:HH:mm:ss}'}"/>
+                                                                        </TextBlock>
+
+                                                                    </StackPanel>
+
+                                                                    <TextBlock
+                                                                        Grid.Column="2"
+                                                                        FontSize="12"
+                                                                        VerticalAlignment="Center"
+                                                                        Text="{Binding Status}"/>
+
+                                                                </Grid>
+
+                                                            </Border>
+
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+
+                                                </ItemsControl>
+
+                                            </StackPanel>
+
+                                        </StackPanel>
+
+                                    </ScrollViewer>
+
+                                    <shared:AppEmptyState
+                                        IsVisible="{Binding IsNothingSelected}"
+                                        Icon="🖥"
+                                        Title="Select a computer"
+                                        Description="Choose a device to run remote commands."/>
+
+                                </Panel>
+
+                            </Border>
+
+                        </shared:MasterDetailPage.DetailContent>
+
+                    </shared:MasterDetailPage>
+
+                </Grid>
+
+            </TabItem>
+
+            <!-- ─────────── Policies ─────────── -->
+
+            <TabItem Header="📜 Policies">
+
+                <Grid RowDefinitions="Auto,10,*" Margin="0,4,0,0">
+
+                    <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+
+                        <shared:AppButton
+                            Classes="Accent"
+                            HorizontalAlignment="Stretch"
+                            Content="New Policy"
+                            Command="{Binding NewPolicyCommand}"/>
+
+                        <shared:AppButton
+                            Grid.Column="1"
+                            Content="Check Violations"
+                            Command="{Binding EvaluatePoliciesCommand}"/>
+
+                        <shared:AppButton
+                            Grid.Column="2"
+                            Content="⟳"
+                            Width="44"
+                            ToolTip.Tip="Refresh"
+                            Command="{Binding LoadCommand}"/>
+
+                    </Grid>
+
+                    <Grid Grid.Row="2" ColumnDefinitions="1.4*,12,*">
+
+                        <Border
+                            Grid.Column="0"
+                            Padding="4"
+                            Classes="card">
+
+                            <Grid>
+
+                                <ListBox
+                                    ItemsSource="{Binding Policies}"
+                                    SelectedItem="{Binding SelectedPolicy}"
+                                    BorderThickness="0"
+                                    Background="Transparent"
+                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate x:DataType="models:PolicyRule">
+
+                                            <Border Padding="14,10" CornerRadius="10">
+
+                                                <StackPanel Spacing="2">
+
+                                                    <TextBlock
+                                                        FontWeight="SemiBold"
+                                                        Text="{Binding Name}"/>
+
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        Opacity="0.6"
+                                                        Text="{Binding Description}"
+                                                        TextTrimming="CharacterEllipsis"
+                                                        MaxLines="1"/>
+
+                                                </StackPanel>
+
+                                            </Border>
+
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+
+                                </ListBox>
+
+                                <shared:AppEmptyState
+                                    IsVisible="{Binding IsEmpty}"
+                                    Icon="📜"
+                                    Title="No policies"
+                                    Description="Create your first company policy."/>
+
+                            </Grid>
+
+                        </Border>
+
+                        <GridSplitter Grid.Column="1"/>
+
+                        <Border
+                            Grid.Column="2"
+                            Padding="20"
+                            Classes="card">
+
+                            <StackPanel Spacing="14">
+
+                                <StackPanel Spacing="4">
+
+                                    <TextBlock
+                                        FontSize="20"
+                                        FontWeight="SemiBold"
+                                        Text="{Binding EditorPolicyTitle}"/>
+
+                                    <TextBlock
+                                        FontSize="12"
+                                        Opacity="0.6"
+                                        Text="Policies are enforced across the fleet."/>
+
+                                </StackPanel>
+
+                                <StackPanel Spacing="6">
+
+                                    <TextBlock FontSize="12" Opacity="0.7" Text="Name"/>
+
+                                    <shared:AppTextField
+                                        PlaceholderText="e.g. No Steam"
+                                        Text="{Binding PolicyName}"/>
+
+                                </StackPanel>
+
+                                <StackPanel Spacing="6">
+
+                                    <TextBlock FontSize="12" Opacity="0.7" Text="Action"/>
+
+                                    <ComboBox
+                                        ItemsSource="{Binding PolicyActionOptions}"
+                                        SelectedIndex="{Binding PolicyActionIndex}"
+                                        HorizontalAlignment="Stretch"/>
+
+                                </StackPanel>
+
+                                <StackPanel Spacing="6">
+
+                                    <TextBlock FontSize="12" Opacity="0.7" Text="Package"/>
+
+                                    <shared:AppTextField
+                                        PlaceholderText="e.g. Steam"
+                                        Text="{Binding PolicyPackage}"/>
+
+                                </StackPanel>
+
+                                <StackPanel Spacing="6">
+
+                                    <TextBlock FontSize="12" Opacity="0.7" Text="Description"/>
+
+                                    <shared:AppTextField
+                                        AcceptsReturn="True"
+                                        MinHeight="70"
+                                        TextWrapping="Wrap"
+                                        PlaceholderText="What does this policy do?"
+                                        Text="{Binding PolicyDescription}"/>
+
+                                </StackPanel>
+
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+
+                                    <CheckBox
+                                        Content="Enabled"
+                                        IsChecked="{Binding PolicyEnabled}"
+                                        VerticalAlignment="Center"/>
+
+                                </Grid>
+
+                                <shared:AppSeparator/>
+
+                                <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="10">
+
+                                    <shared:AppButton
+                                        Classes="Accent"
+                                        MinWidth="120"
+                                        Content="Save"
+                                        Command="{Binding SavePolicyCommand}"/>
+
+                                    <shared:AppButton
+                                        Grid.Column="1"
+                                        Classes="Danger"
+                                        MinWidth="110"
+                                        Content="Delete"
+                                        Command="{Binding DeletePolicyCommand}"
+                                        IsVisible="{Binding IsEditingPolicy}"/>
+
+                                </Grid>
+
+                                <shared:AppSeparator/>
+
+                                <StackPanel Spacing="8">
+
+                                    <Grid ColumnDefinitions="*,Auto">
+
+                                        <TextBlock FontSize="14" FontWeight="SemiBold" Text="Violations"/>
+
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            FontSize="12"
+                                            Opacity="0.6"
+                                            Text="{Binding Violations.Count, StringFormat='{}{0} found'}"/>
+
+                                    </Grid>
+
+                                    <ItemsControl ItemsSource="{Binding Violations}">
+
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="models:PolicyViolation">
+
+                                                <Border
+                                                    Margin="0,0,0,6"
+                                                    Padding="12,10"
+                                                    CornerRadius="10"
+                                                    Background="{DynamicResource SurfaceBrush}">
+
+                                                    <StackPanel Spacing="2">
+
+                                                        <TextBlock
+                                                            FontSize="13"
+                                                            FontWeight="SemiBold">
+                                                            <Run Text="{Binding ComputerName, Mode=OneWay}"/>
+                                                            <Run Text="—"/>
+                                                            <Run Text="{Binding Package, Mode=OneWay}"/>
+                                                        </TextBlock>
+
+                                                        <TextBlock
+                                                            FontSize="12"
+                                                            Opacity="0.7"
+                                                            Text="{Binding Message}"
+                                                            TextWrapping="Wrap"/>
+
+                                                    </StackPanel>
+
+                                                </Border>
+
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+
+                                    </ItemsControl>
+
+                                    <shared:AppEmptyState
+                                        IsVisible="{Binding !HasViolations}"
+                                        Icon="✅"
+                                        Title="No violations"
+                                        Description="Run Check Violations to scan the fleet."/>
+
+                                </StackPanel>
+
+                            </StackPanel>
+
+                        </Border>
+
+                    </Grid>
+
+                </Grid>
+
+            </TabItem>
+
+            <!-- ─────────── Reports ─────────── -->
+
+            <TabItem Header="📊 Reports">
+
+                <StackPanel Spacing="14" Margin="0,4,0,0">
+
+                    <shared:AppCard>
+
+                        <StackPanel Spacing="12">
+
+                            <StackPanel Spacing="2">
+
+                                <TextBlock FontSize="18" FontWeight="SemiBold" Text="Weekly Fleet Report"/>
+
+                                <TextBlock
+                                    FontSize="12"
+                                    Opacity="0.6"
+                                    Text="Export the current state of your fleet in multiple formats."/>
+
+                            </StackPanel>
+
+                            <TextBlock
+                                FontSize="13"
+                                Opacity="0.75">
+                                <Run Text="{Binding FleetSummary, Mode=OneWay}"/>
+                                <Run Text="•"/>
+                                <Run Text="{Binding PendingUpdates, Mode=OneWay}"/>
+                                <Run Text=" pending updates"/>
+                            </TextBlock>
+
+                            <shared:AppSeparator/>
+
+                            <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="10">
+
+                                <shared:AppButton
+                                    Content="JSON"
+                                    Command="{Binding ExportJsonCommand}"/>
+
+                                <shared:AppButton
+                                    Grid.Column="1"
+                                    Content="CSV"
+                                    Command="{Binding ExportCsvCommand}"/>
+
+                                <shared:AppButton
+                                    Grid.Column="2"
+                                    Content="HTML"
+                                    IsEnabled="False"/>
+
+                                <shared:AppButton
+                                    Grid.Column="3"
+                                    Content="Excel"
+                                    IsEnabled="False"/>
+
+                                <shared:AppButton
+                                    Grid.Column="4"
+                                    Content="PDF"
+                                    IsEnabled="False"/>
+
+                            </Grid>
+
+                            <TextBlock
+                                FontSize="11"
+                                Opacity="0.5"
+                                Text="HTML, Excel and PDF exports are planned for an upcoming release."/>
+
+                        </StackPanel>
+
+                    </shared:AppCard>
+
+                </StackPanel>
+
+            </TabItem>
+
+        </TabControl>
+
+        <shared:LoadingOverlay
+            Grid.Row="2"
+            IsLoading="{Binding IsLoading}"
+            Message="Loading enterprise data..."/>
+
+    </Grid>
+
+</UserControl>

@@ -1,0 +1,73 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="WinGetXAvalonia.Controls.Cards.ActionCard"
+    x:Name="Root">
+
+    <Border
+        Classes="card"
+        Margin="6"
+        Padding="0"
+        CornerRadius="16"
+        BorderBrush="{DynamicResource BorderBrush}"
+        BorderThickness="1"
+        Background="{DynamicResource CardBrush}">
+
+        <Button
+            Height="NaN"
+            Background="Transparent"
+            BorderThickness="0"
+            Padding="0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            Command="{Binding #Root.Command}"
+            Focusable="False">
+
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <ContentPresenter
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"/>
+                </ControlTemplate>
+            </Button.Template>
+
+            <StackPanel Margin="20" Spacing="14">
+
+                <Border
+                    Width="56"
+                    Height="56"
+                    CornerRadius="14"
+                    Background="{DynamicResource AccentBrush}">
+
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="28"
+                        Text="{Binding #Root.Icon}"/>
+
+                </Border>
+
+                <TextBlock
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    Text="{Binding #Root.Title}"/>
+
+                <TextBlock
+                    Opacity=".65"
+                    TextWrapping="Wrap"
+                    Text="{Binding #Root.Description}"/>
+
+            </StackPanel>
+
+        </Button>
+
+    </Border>
+
+</UserControl>

@@ -27,7 +27,7 @@ public partial class DeveloperViewModel : AsyncViewModel
         _performance = performance;
     }
 
-    public Task InitializeAsync()
+    public override Task InitializeAsync()
         => Refresh();
 
     [RelayCommand]

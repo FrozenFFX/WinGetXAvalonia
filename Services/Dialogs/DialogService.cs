@@ -69,7 +69,16 @@ public sealed class DialogService : IDialogService
             if (owner is not null)
             {
                 _ = window.ShowDialog<bool>(owner).ContinueWith(t =>
-                    tcs.TrySetResult(t.Result == true), TaskScheduler.FromCurrentSynchronizationContext());
+                {
+                    try
+                    {
+                        tcs.TrySetResult(t.Result == true);
+                    }
+                    catch (Exception)
+                    {
+                        tcs.TrySetResult(false);
+                    }
+                }, TaskScheduler.FromCurrentSynchronizationContext());
             }
             else
             {
@@ -87,44 +96,51 @@ public sealed class DialogService : IDialogService
 
         Dispatcher.UIThread.Post(async () =>
         {
-            var owner = OwnerWindow();
-            var window = CreateWindow(title);
-
-            window.Content = new StackPanel
-            {
-                Margin = new Thickness(24),
-                Spacing = 16,
-                Children =
-                {
-                    new ProgressBar
-                    {
-                        Width = 320,
-                        IsIndeterminate = true
-                    },
-                    new TextBlock
-                    {
-                        Text = "Please wait...",
-                        Opacity = 0.7,
-                        HorizontalAlignment = HorizontalAlignment.Center
-                    }
-                }
-            };
-
-            if (owner is not null)
-                window.Show(owner);
-            else
-                window.Show();
-
             try
             {
-                await operation(new Progress<double>());
-                window.Close();
-                tcs.SetResult();
+                var owner = OwnerWindow();
+                var window = CreateWindow(title);
+
+                window.Content = new StackPanel
+                {
+                    Margin = new Thickness(24),
+                    Spacing = 16,
+                    Children =
+                    {
+                        new ProgressBar
+                        {
+                            Width = 320,
+                            IsIndeterminate = true
+                        },
+                        new TextBlock
+                        {
+                            Text = "Please wait...",
+                            Opacity = 0.7,
+                            HorizontalAlignment = HorizontalAlignment.Center
+                        }
+                    }
+                };
+
+                if (owner is not null)
+                    window.Show(owner);
+                else
+                    window.Show();
+
+                try
+                {
+                    await operation(new Progress<double>());
+                    window.Close();
+                    tcs.SetResult();
+                }
+                catch (Exception ex)
+                {
+                    window.Close();
+                    tcs.SetException(ex);
+                }
             }
             catch (Exception ex)
             {
-                window.Close();
-                tcs.SetException(ex);
+                tcs.TrySetException(ex);
             }
         });
 

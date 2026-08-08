@@ -2,6 +2,7 @@
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
 using WinGetXAvalonia.Models;
+using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Interfaces;
 
 namespace WinGetXAvalonia.Services.Backup;
@@ -9,13 +10,18 @@ namespace WinGetXAvalonia.Services.Backup;
 public sealed class AutoSaveService
 {
     private readonly ISettingsService _settings;
+    private readonly LoggerService? _logger;
     private readonly TimeSpan _delay;
     private CancellationTokenSource? _cts;
 
-    public AutoSaveService(ISettingsService settings, TimeSpan? delay = null)
+    public AutoSaveService(
+        ISettingsService settings,
+        TimeSpan? delay = null,
+        LoggerService? logger = null)
     {
         _settings = settings;
         _delay = delay ?? TimeSpan.FromMilliseconds(500);
+        _logger = logger;
     }
 
     public void Schedule(Action<AppSettings> update)
@@ -23,7 +29,7 @@ public sealed class AutoSaveService
         _cts?.Cancel();
         _cts = new CancellationTokenSource();
 
-        _ = SaveLater(update, _cts.Token);
+        SaveLater(update, _cts.Token).FireAndForget(_logger, "Auto-save settings");
     }
 
     private async Task SaveLater(
@@ -38,6 +44,10 @@ public sealed class AutoSaveService
         }
         catch (OperationCanceledException)
         {
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error(ex, "Failed to auto-save settings");
         }
     }
 }

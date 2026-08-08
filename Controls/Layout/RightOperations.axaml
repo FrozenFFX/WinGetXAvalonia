@@ -1,0 +1,91 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:operation="using:WinGetXAvalonia.Controls.Operation"
+    xmlns:models="using:WinGetXAvalonia.Models.Operations"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    x:Class="WinGetXAvalonia.Controls.Layout.RightOperations"
+    x:DataType="vm:OperationDrawerViewModel">
+
+    <Border
+        Padding="0"
+        Background="{DynamicResource SurfaceBrush}"
+        BorderBrush="{DynamicResource BorderBrush}"
+        BorderThickness="1,0,0,0"
+        IsVisible="{Binding HasOperations}">
+
+        <Grid
+            RowDefinitions="Auto,Auto,*"
+            RowSpacing="0">
+
+            <Grid
+                Grid.Row="0"
+                Margin="20,20,20,0"
+                ColumnDefinitions="*,Auto">
+
+                <StackPanel
+                    Spacing="6">
+
+                    <TextBlock
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Text="Operations"/>
+
+                    <TextBlock
+                        Margin="0,2,0,0"
+                        FontSize="13"
+                        Opacity="0.60"
+                        Text="{Binding Summary}"/>
+
+                </StackPanel>
+
+                <shared:AppButton
+                    Grid.Column="1"
+                    Height="34"
+                    Padding="12,0"
+                    VerticalAlignment="Center"
+                    Content="Clear Completed"
+                    ToolTip.Tip="Remove completed operations"
+                    Command="{Binding ClearCompletedCommand}"
+                    IsEnabled="{Binding HasCompleted}"/>
+
+            </Grid>
+
+            <Border
+                Grid.Row="1"
+                Margin="20,16,20,0"
+                Height="1"
+                Background="{DynamicResource BorderBrush}"/>
+
+            <ListBox
+                Grid.Row="2"
+                Margin="16,16,16,0"
+                BorderThickness="0"
+                Background="Transparent"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ItemsSource="{Binding Operations}">
+
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel
+                            Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="models:OperationModel">
+                        <operation:OperationCard/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+            </ListBox>
+
+        </Grid>
+
+    </Border>
+
+</UserControl>

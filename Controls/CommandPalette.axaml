@@ -1,0 +1,182 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+             xmlns:vm="using:WinGetXAvalonia.ViewModels"
+             xmlns:models="using:WinGetXAvalonia.Models"
+             xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
+             x:Class="WinGetXAvalonia.Controls.CommandPalette"
+             x:Name="Root"
+             x:DataType="vm:CommandPaletteViewModel"
+             IsVisible="{Binding IsOpen}">
+
+    <Panel>
+
+        <Border Background="{DynamicResource Background}"
+                Opacity="0.55"
+                Tapped="OnBackdropTapped"/>
+
+        <Border Width="640"
+                MaxHeight="520"
+                Margin="24"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="{DynamicResource Card}"
+                BorderBrush="{DynamicResource Border}"
+                BorderThickness="1"
+                CornerRadius="{DynamicResource RadiusLarge}"
+                BoxShadow="{DynamicResource Elevation2}">
+
+            <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+                <Border Margin="20,20,20,12"
+                        Background="{DynamicResource Surface}"
+                        BorderBrush="{DynamicResource Border}"
+                        BorderThickness="1"
+                        CornerRadius="{DynamicResource RadiusMedium}"
+                        Padding="14,0"
+                        Height="52">
+
+                    <Grid ColumnDefinitions="Auto,*">
+
+                        <TextBlock Text="{Binding Prefix}"
+                                   FontSize="16"
+                                   Opacity="0.7"
+                                   VerticalAlignment="Center"/>
+
+                        <shared:AppTextField x:Name="SearchBox"
+                                 Grid.Column="1"
+                                 Margin="12,0,0,0"
+                                 Padding="0"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 FontSize="18"
+                                 CaretBrush="{DynamicResource PrimaryBrush}"
+                                 SelectionBrush="{DynamicResource PrimaryBrush}"
+                                 VerticalContentAlignment="Center"
+                                 PlaceholderText="{Binding PlaceholderText}"
+                                 Text="{Binding SearchText, Mode=TwoWay}">
+
+                            <TextBox.KeyBindings>
+                                <KeyBinding Gesture="Enter" Command="{Binding ExecuteCommand}"/>
+                                <KeyBinding Gesture="Up" Command="{Binding MoveUpCommand}"/>
+                                <KeyBinding Gesture="Down" Command="{Binding MoveDownCommand}"/>
+                                <KeyBinding Gesture="Escape" Command="{Binding CloseCommand}"/>
+                            </TextBox.KeyBindings>
+
+                        </shared:AppTextField>
+
+                    </Grid>
+
+                </Border>
+
+                <ListBox Grid.Row="2"
+                         Margin="12,0,12,8"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ItemsSource="{Binding Results}"
+                         SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
+                         DoubleTapped="OnListDoubleTapped">
+
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Padding" Value="10,8"/>
+                            <Setter Property="Margin" Value="0,1"/>
+                            <Setter Property="CornerRadius" Value="{DynamicResource RadiusSmall}"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListBox.Styles>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:CommandPaletteItem">
+
+                            <Grid>
+
+                                <TextBlock IsVisible="{Binding IsHeader}"
+                                           Margin="4,12,4,2"
+                                           Text="{Binding Title}"
+                                           Foreground="{DynamicResource SubtextBrush}"
+                                           FontSize="{DynamicResource FontSecondary}"
+                                           FontWeight="SemiBold"
+                                           TextTrimming="CharacterEllipsis"/>
+
+                                <Border IsVisible="{Binding IsHeader,
+                                        Converter={x:Static conv:BoolConverters.Not}}"
+                                        Padding="8,4"
+                                        CornerRadius="{DynamicResource RadiusSmall}">
+
+                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                          ColumnSpacing="12">
+
+                                        <TextBlock Text="{Binding Icon}"
+                                                   FontSize="18"
+                                                   Width="26"
+                                                   VerticalAlignment="Center"/>
+
+                                        <StackPanel Grid.Column="1"
+                                                    VerticalAlignment="Center"
+                                                    Spacing="2">
+
+                                            <TextBlock Text="{Binding Title}"
+                                                       FontSize="{DynamicResource FontBody}"
+                                                       FontWeight="SemiBold"
+                                                       TextTrimming="CharacterEllipsis"/>
+
+                                            <TextBlock Text="{Binding Subtitle}"
+                                                       FontSize="{DynamicResource FontCaption}"
+                                                       Foreground="{DynamicResource SubtextBrush}"
+                                                       Opacity="0.85"
+                                                       TextTrimming="CharacterEllipsis"/>
+
+                                        </StackPanel>
+
+                                        <TextBlock Grid.Column="2"
+                                                   Text="↵"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource SubtextBrush}"
+                                                   Opacity="0.5"/>
+
+                                    </Grid>
+
+                                </Border>
+
+                            </Grid>
+
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                </ListBox>
+
+                <StackPanel Grid.Row="3"
+                            Margin="20,8,20,16"
+                            Orientation="Horizontal"
+                            Spacing="18">
+
+                    <TextBlock Text="↑↓ Navigate"
+                               FontSize="{DynamicResource FontSecondary}"
+                               Foreground="{DynamicResource SubtextBrush}"/>
+
+                    <TextBlock Text="↵ Execute"
+                               FontSize="{DynamicResource FontSecondary}"
+                               Foreground="{DynamicResource SubtextBrush}"/>
+
+                    <TextBlock Text="Esc Close"
+                               FontSize="{DynamicResource FontSecondary}"
+                               Foreground="{DynamicResource SubtextBrush}"/>
+
+                    <TextBlock Text="Ctrl+K Close"
+                               FontSize="{DynamicResource FontSecondary}"
+                               Foreground="{DynamicResource SubtextBrush}"/>
+
+                </StackPanel>
+
+            </Grid>
+
+        </Border>
+
+    </Panel>
+
+</UserControl>

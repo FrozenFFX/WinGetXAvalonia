@@ -4,6 +4,7 @@
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     x:Class="WinGetXAvalonia.Controls.SearchBar"
     x:Name="Root">
 
@@ -24,14 +25,14 @@
                 FontSize="16"
                 Opacity="0.65"/>
 
-            <TextBox
+            <shared:AppTextField
                 Grid.Column="1"
                 Background="Transparent"
                 BorderThickness="0"
                 PlaceholderText="Search packages..."
                 VerticalContentAlignment="Center"/>
 
-            <Button
+            <shared:AppButton
                 Grid.Column="2"
                 MinWidth="90"
                 Content="Search"/>

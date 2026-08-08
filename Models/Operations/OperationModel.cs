@@ -48,6 +48,12 @@ public partial class OperationModel : ObservableObject
         }
     }
 
+    public bool CanRetry =>
+        Status is OperationStatus.Failed or OperationStatus.Cancelled;
+
+    partial void OnStatusChanged(OperationStatus value)
+        => OnPropertyChanged(nameof(CanRetry));
+
     partial void OnStartedAtChanged(DateTime value)
         => OnPropertyChanged(nameof(Duration));
 

@@ -3,11 +3,19 @@
 
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
              xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
              x:Class="WinGetXAvalonia.Views.Settings.AboutSettingsView"
              x:DataType="vm:AboutSettingsViewModel">
 
-    <ScrollViewer>
+    <Grid
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        ClipToBounds="True">
+
+    <ScrollViewer
+        HorizontalScrollBarVisibility="Disabled"
+        VerticalScrollBarVisibility="Auto">
 
         <StackPanel Spacing="22">
 
@@ -15,7 +23,7 @@
                 Classes="title"
                 Text="About"/>
 
-            <Border Classes="card">
+            <shared:AppCard>
 
                 <StackPanel Spacing="16">
 
@@ -34,9 +42,9 @@
 
                 </StackPanel>
 
-            </Border>
+            </shared:AppCard>
 
-            <Border Classes="card">
+            <shared:AppCard>
 
                 <StackPanel Spacing="12">
 
@@ -62,9 +70,9 @@
 
                 </StackPanel>
 
-            </Border>
+            </shared:AppCard>
 
-            <Border Classes="card">
+            <shared:AppCard>
 
                 <StackPanel Spacing="12">
 
@@ -97,9 +105,9 @@
 
                 </StackPanel>
 
-            </Border>
+            </shared:AppCard>
 
-            <Border Classes="card">
+            <shared:AppCard>
 
                 <StackPanel Spacing="10">
 
@@ -112,27 +120,29 @@
                         Opacity="0.7"
                         Text="Resources"/>
 
-                    <Button
+                    <shared:AppButton
                         Content="GitHub"
                         HorizontalAlignment="Stretch"
                         Command="{Binding OpenGitHubCommand}"/>
 
-                    <Button
+                    <shared:AppButton
                         Content="Report Issue"
                         HorizontalAlignment="Stretch"
                         IsEnabled="False"/>
 
-                    <Button
+                    <shared:AppButton
                         Content="License"
                         HorizontalAlignment="Stretch"
                         IsEnabled="False"/>
 
                 </StackPanel>
 
-            </Border>
+            </shared:AppCard>
 
         </StackPanel>
 
     </ScrollViewer>
+
+    </Grid>
 
 </UserControl>

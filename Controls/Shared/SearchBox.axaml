@@ -5,18 +5,32 @@
     x:Class="WinGetXAvalonia.Controls.Shared.SearchBox"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     x:Name="Root">
 
     <Border
-        CornerRadius="10"
+        Height="42"
+        CornerRadius="12"
         Background="{DynamicResource SurfaceBrush}"
         BorderBrush="{DynamicResource BorderBrush}"
         BorderThickness="1"
-        Padding="10,6">
+        Padding="12,0">
+
+        <Border.Transitions>
+            <Transitions>
+                <BrushTransition
+                    Property="BorderBrush"
+                    Duration="0:0:0.15"/>
+                <BrushTransition
+                    Property="Background"
+                    Duration="0:0:0.15"/>
+            </Transitions>
+        </Border.Transitions>
 
         <Grid
             ColumnDefinitions="Auto,*,Auto"
-            ColumnSpacing="8">
+            ColumnSpacing="10"
+            VerticalAlignment="Center">
 
             <ContentPresenter
                 Grid.Column="0"
@@ -26,25 +40,29 @@
                 <ContentPresenter.Content>
                     <TextBlock
                         Text="🔍"
-                        FontSize="15"
-                        Opacity="0.65"/>
+                        FontSize="16"
+                        Margin="0,2,0,0"
+                        VerticalAlignment="Center"
+                        Opacity="0.60"/>
                 </ContentPresenter.Content>
 
             </ContentPresenter>
 
-            <TextBox
+            <shared:AppTextField
                 Grid.Column="1"
                 Background="Transparent"
                 BorderThickness="0"
                 VerticalContentAlignment="Center"
+                HorizontalContentAlignment="Left"
                 PlaceholderText="{Binding Watermark, ElementName=Root}"
                 Text="{Binding Text, ElementName=Root, Mode=TwoWay}"/>
 
-            <Button
+            <shared:AppButton
                 Grid.Column="2"
-                Width="26"
-                Height="26"
+                Width="28"
+                Height="28"
                 Padding="0"
+                CornerRadius="8"
                 Content="✕"
                 IsVisible="{Binding ShowClearButton, ElementName=Root}"
                 Click="Clear_Click"/>

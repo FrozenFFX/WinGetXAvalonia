@@ -4,6 +4,7 @@
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
     x:Class="WinGetXAvalonia.Controls.Studio.StudioSection"
     x:Name="Root">
@@ -52,7 +53,7 @@
                             Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"/>
                 </StackPanel>
 
-                <Button
+                <shared:AppButton
                     Grid.Column="2"
                     VerticalAlignment="Center"
                     Content="{Binding ActionText, ElementName=Root}"
@@ -61,7 +62,7 @@
                         Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"/>
             </Grid>
 
-            <Border Height="1" Background="{DynamicResource BorderBrush}"/>
+            <shared:AppSeparator/>
 
             <ContentPresenter Content="{Binding Content, ElementName=Root}"/>
         </StackPanel>

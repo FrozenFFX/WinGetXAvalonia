@@ -7,12 +7,16 @@
              xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
              xmlns:package="using:WinGetXAvalonia.Controls.Package"
              xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
              x:Class="WinGetXAvalonia.Views.BrowseView"
              x:DataType="vm:BrowseViewModel"
              x:CompileBindings="False">
 
-    <Grid Margin="20"
-          ColumnDefinitions="*,12,400">
+    <Grid Margin="24"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          ClipToBounds="True"
+          ColumnDefinitions="55*,12,45*">
 
         <!-- sol taraf: featured, kategoriler, arama, sonuçlar -->
         <Grid Grid.Column="0"
@@ -30,7 +34,7 @@
                 SelectedItem="{Binding SelectedPackage}"
                 BorderThickness="0"
                 Background="Transparent"
-                ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -58,13 +62,13 @@
 
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel/>
+                        <WrapPanel HorizontalAlignment="Left"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button
+                        <shared:AppButton
                             Margin="0,0,8,8"
                             HorizontalContentAlignment="Center"
                             Command="{Binding $parent[ItemsControl].DataContext.SelectCategoryCommand}"
@@ -74,7 +78,7 @@
                                 <TextBlock Text="{Binding Icon}"/>
                                 <TextBlock Text="{Binding Name}"/>
                             </StackPanel>
-                        </Button>
+                        </shared:AppButton>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -106,7 +110,7 @@
                     </AutoCompleteBox.KeyBindings>
                 </AutoCompleteBox>
 
-                <Button
+                <shared:AppButton
                     Grid.Column="1"
                     MinWidth="110"
                     Content="Search"
@@ -147,91 +151,46 @@
                     IsLoading="{Binding IsLoading}"
                     Message="Searching packages..."/>
 
+                <!-- Başlangıç durumu: henüz arama yapılmadı -->
+                <shared:AppEmptyState
+                    IsVisible="{Binding IsInitial}"
+                    Icon="🔎"
+                    Title="Search to find packages"
+                    Description="Search by name, or pick a category to get started.">
+
+                    <shared:AppEmptyState.Examples>
+                        <sys:String>Find and install apps in one click</sys:String>
+                        <sys:String>Categories help you discover new tools</sys:String>
+                        <sys:String>Results are enriched with update status</sys:String>
+                    </shared:AppEmptyState.Examples>
+
+                </shared:AppEmptyState>
+
                 <!-- Empty state -->
-                <Border
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Padding="32"
-                    Background="{DynamicResource CardBrush}"
-                    BorderBrush="{DynamicResource BorderBrush}"
-                    BorderThickness="1"
-                    CornerRadius="{DynamicResource RadiusMedium}"
-                    MaxWidth="480"
-                    IsVisible="{Binding IsEmpty}">
+                <shared:AppEmptyState
+                    IsVisible="{Binding IsEmpty}"
+                    Icon="🔍"
+                    Title="{Binding EmptySearchTitle}"
+                    Description="{Binding EmptySearchDescription}"
+                    ActionText="Clear Search"
+                    ActionCommand="{Binding ClearSearchCommand}">
 
-                    <StackPanel Spacing="12">
+                    <shared:AppEmptyState.Examples>
+                        <sys:String>Check the spelling of the package name</sys:String>
+                        <sys:String>Try a shorter or more common name</sys:String>
+                        <sys:String>Browse a category instead</sys:String>
+                    </shared:AppEmptyState.Examples>
 
-                        <TextBlock
-                            Text="🔍"
-                            FontSize="46"
-                            Opacity="0.35"
-                            HorizontalAlignment="Center"/>
-
-                        <TextBlock
-                            Text="No packages found"
-                            FontSize="18"
-                            FontWeight="SemiBold"
-                            HorizontalAlignment="Center"/>
-
-                        <TextBlock
-                            Text="Try another package name or category."
-                            Opacity="0.65"
-                            TextAlignment="Center"
-                            HorizontalAlignment="Center"/>
-
-                        <Button
-                            Margin="0,8,0,0"
-                            Content="Clear Search"
-                            Command="{Binding ClearSearchCommand}"
-                            HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
+                </shared:AppEmptyState>
 
                 <!-- Error state -->
-                <Border
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Padding="32"
-                    Background="{DynamicResource CardBrush}"
-                    BorderBrush="{DynamicResource BorderBrush}"
-                    BorderThickness="1"
-                    CornerRadius="{DynamicResource RadiusMedium}"
-                    MaxWidth="480"
-                    IsVisible="{Binding HasError}">
-
-                    <StackPanel Spacing="12">
-
-                        <TextBlock
-                            Text="⚠️"
-                            FontSize="46"
-                            Opacity="0.5"
-                            HorizontalAlignment="Center"/>
-
-                        <TextBlock
-                            Text="Unable to load packages"
-                            FontSize="18"
-                            FontWeight="SemiBold"
-                            HorizontalAlignment="Center"/>
-
-                        <TextBlock
-                            Text="Reason:"
-                            Opacity="0.7"
-                            HorizontalAlignment="Center"/>
-
-                        <TextBlock
-                            Text="{Binding ErrorMessage}"
-                            Foreground="{DynamicResource DangerBrush}"
-                            TextAlignment="Center"
-                            TextWrapping="Wrap"
-                            HorizontalAlignment="Center"/>
-
-                        <Button
-                            Margin="0,8,0,0"
-                            Content="Retry"
-                            Command="{Binding SearchCommand}"
-                            HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
+                <shared:AppEmptyState
+                    IsVisible="{Binding HasError}"
+                    Icon="⚠️"
+                    Title="Unable to load packages"
+                    Description="{Binding ErrorMessage}"
+                    ActionText="Retry"
+                    ActionCommand="{Binding SearchCommand}"/>
 
             </Grid>
 
@@ -257,26 +216,48 @@
 
             <!-- Boş durum: hiç paket seçilmedi -->
             <StackPanel
-                Spacing="12"
                 IsVisible="{Binding SelectedDetails.SelectedPackage,
                 Converter={x:Static conv:ObjectConverters.IsNull}}"
+                MaxWidth="380"
                 HorizontalAlignment="Center"
-                VerticalAlignment="Center">
+                VerticalAlignment="Center"
+                Spacing="18">
 
-                <TextBlock
-                    Text="📦"
-                    FontSize="46"
-                    Opacity="0.35"
-                    HorizontalAlignment="Center"/>
+                <shared:AppEmptyState
+                    Icon="📦"
+                    Title="Select a package to view details."
+                    Description="Choose a package from the catalog or try one of these categories."/>
 
-                <TextBlock
-                    Text="Select a package to view details."
-                    FontSize="18"
-                    FontWeight="SemiBold"
-                    HorizontalAlignment="Center"
-                    TextAlignment="Center"
-                    TextWrapping="Wrap"
-                    MaxWidth="240"/>
+                <ItemsControl
+                    ItemsSource="{Binding Categories}">
+
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel
+                                HorizontalAlignment="Center"
+                                ItemSpacing="8"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <shared:AppButton
+                                Height="34"
+                                Padding="14,0"
+                                HorizontalContentAlignment="Center"
+                                Command="{Binding $parent[ItemsControl].DataContext.SelectCategoryCommand}"
+                                CommandParameter="{Binding}">
+
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <TextBlock Text="{Binding Icon}"/>
+                                    <TextBlock Text="{Binding Name}"/>
+                                </StackPanel>
+                            </shared:AppButton>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+
+                </ItemsControl>
+
             </StackPanel>
 
             <!-- Detay içeriği -->
@@ -330,7 +311,7 @@
                     </StackPanel>
 
                     <!-- Kur / Güncelle -->
-                    <Button
+                    <shared:AppButton
                         Content="{Binding SelectedDetails.SelectedPackage.InstallButtonText}"
                         Command="{Binding InstallOrUpdateCommand}"
                         CommandParameter="{Binding SelectedDetails.SelectedPackage}"
@@ -342,7 +323,7 @@
                         IsIndeterminate="True"
                         IsVisible="{Binding SelectedDetails.SelectedPackage.IsBusy}"/>
 
-                    <Border Height="1" Background="{DynamicResource BorderBrush}"/>
+                    <shared:AppSeparator/>
 
                     <!-- Versiyonlar: iki sütun -->
                     <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*">
@@ -373,7 +354,7 @@
                             Text="{Binding SelectedDetails.SelectedPackage.AvailableVersionDisplay}"/>
                     </Grid>
 
-                    <Border Height="1" Background="{DynamicResource BorderBrush}"/>
+                    <shared:AppSeparator/>
 
                     <!-- Health Score -->
                     <StackPanel Spacing="10">
@@ -462,7 +443,7 @@
                         </Grid>
                     </StackPanel>
 
-                    <Border Height="1" Background="{DynamicResource BorderBrush}"/>
+                    <shared:AppSeparator/>
 
                     <!-- Description -->
                     <StackPanel Spacing="4">
@@ -499,14 +480,14 @@
                     <!-- Homepage + Copy ID -->
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
 
-                        <Button
+                        <shared:AppButton
                             Content="Open Homepage"
                             Height="38"
                             Command="{Binding OpenHomepageCommand}"
                             CommandParameter="{Binding SelectedDetails}"
                             IsVisible="{Binding SelectedDetails.HasHomepage}"/>
 
-                        <Button
+                        <shared:AppButton
                             Grid.Column="1"
                             Height="38"
                             Content="Copy Package ID"

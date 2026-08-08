@@ -8,6 +8,7 @@
     xmlns:controls="using:WinGetXAvalonia.Controls"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     xmlns:package="using:WinGetXAvalonia.Controls.Package"
+    xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
     x:Class="WinGetXAvalonia.Views.InstalledView"
     x:Name="Root"
     x:DataType="vm:InstalledViewModel">
@@ -16,208 +17,169 @@
         <KeyBinding
             Gesture="F5"
             Command="{Binding RefreshCommand}"/>
+        <KeyBinding
+            Gesture="Ctrl+A"
+            Command="{Binding SelectAllCommand}"/>
+        <KeyBinding
+            Gesture="Ctrl+R"
+            Command="{Binding RefreshCommand}"/>
+        <KeyBinding
+            Gesture="Ctrl+U"
+            Command="{Binding UpdateSelectedCommand}"/>
+        <KeyBinding
+            Gesture="Delete"
+            Command="{Binding #Root.DataContext.RemoveSelectedCommand}"/>
     </UserControl.KeyBindings>
-    <Grid Margin="20">
+
+    <Grid
+        Margin="24"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        ClipToBounds="True">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="12"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <!-- Header -->
         <shared:SectionHeader
+            Grid.Row="0"
             Title="Installed Packages"
             Description="Manage all installed applications."/>
 
-        <package:PackageToolbar
+        <!-- Toolbar (with bulk actions) -->
+        <Grid
             Grid.Row="1"
-            SearchText="{Binding SearchText}"
-            PackageCount="{Binding PackageCount}"
-            RefreshCommand="{Binding RefreshCommand}"
-            SelectedSort="{Binding SelectedSort}"
-            SelectedFilter="{Binding SelectedFilter}"/>
+            HorizontalAlignment="Stretch"
+            RowDefinitions="Auto,Auto">
 
-        <!-- Bulk actions -->
-        <Border
-            Grid.Row="2"
-            Margin="0,0,0,0"
-            Padding="12,8"
-            Background="{DynamicResource CardBrush}"
-            BorderBrush="{DynamicResource BorderBrush}"
-            BorderThickness="1"
-            CornerRadius="{DynamicResource RadiusMedium}"
-            IsVisible="{Binding SelectedCount,
-            Converter={StaticResource PositiveToBoolConverter}}">
+            <package:PackageToolbar
+                Grid.Row="0"
+                SearchText="{Binding SearchText}"
+                PackageCount="{Binding PackageCount}"
+                RefreshCommand="{Binding RefreshCommand}"
+                SelectedSort="{Binding SelectedSort}"
+                SelectedFilter="{Binding SelectedFilter}"/>
 
-            <Border.Transitions>
-                <Transitions>
-                    <DoubleTransition Property="Height" Duration="0:0:0.2"/>
-                    <DoubleTransition Property="Opacity" Duration="0:0:0.2"/>
-                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.25"/>
-                </Transitions>
-            </Border.Transitions>
+            <Border
+                Grid.Row="1"
+                Margin="0,12,0,0"
+                Padding="12,8"
+                Background="{DynamicResource CardBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="{DynamicResource RadiusMedium}"
+                IsVisible="{Binding SelectedCount,
+                Converter={StaticResource PositiveToBoolConverter}}">
 
-            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
+                <Border.Transitions>
+                    <Transitions>
+                        <DoubleTransition Property="Height" Duration="0:0:0.2"/>
+                        <DoubleTransition Property="Opacity" Duration="0:0:0.2"/>
+                        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.25"/>
+                    </Transitions>
+                </Border.Transitions>
 
-                <TextBlock
-                    FontWeight="SemiBold"
-                    VerticalAlignment="Center"
-                    Text="{Binding SelectedCount,
-                    StringFormat={}{0} selected}"/>
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
 
-                <Button
-                    Grid.Column="2"
-                    Content="{Binding SelectedCount,
-                    StringFormat=Update ({0})}"
-                    Command="{Binding UpdateSelectedCommand}"/>
+                    <TextBlock
+                        FontWeight="SemiBold"
+                        VerticalAlignment="Center"
+                        Text="{Binding SelectedCount,
+                        StringFormat={}{0} selected}"/>
 
-                <Button
-                    Grid.Column="3"
-                    Classes="Danger"
-                    Content="{Binding SelectedCount,
-                    StringFormat=Remove ({0})}"
-                    Command="{Binding RemoveSelectedCommand}"/>
-            </Grid>
-        </Border>
-
-        <Grid Grid.Row="4"
-              ColumnDefinitions="2*,6,420">
-
-            <Grid Grid.Column="0">
-
-            <ListBox
-                Grid.Column="0"
-                ItemsSource="{Binding Packages}"
-                SelectionMode="Multiple"
-                SelectedItem="{Binding SelectedPackage}"
-                BorderThickness="0"
-                Background="Transparent"
-                ScrollViewer.IsDeferredScrollingEnabled="True"
-                SelectionChanged="OnSelectionChanged">
-
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <VirtualizingStackPanel CacheLength="0.5"/>
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-
-                <ListBox.KeyBindings>
-                    <KeyBinding
-                        Gesture="Ctrl+A"
-                        Command="{Binding SelectAllCommand}"/>
-
-                    <KeyBinding
-                        Gesture="Ctrl+R"
-                        Command="{Binding RefreshCommand}"/>
-
-                    <KeyBinding
-                        Gesture="Ctrl+U"
+                    <shared:AppButton
+                        Grid.Column="2"
+                        Content="{Binding SelectedCount,
+                        StringFormat=Update ({0})}"
                         Command="{Binding UpdateSelectedCommand}"/>
 
-                    <KeyBinding
-                        Gesture="Delete"
-                        Command="{Binding #Root.DataContext.RemoveSelectedCommand}"/>
-                </ListBox.KeyBindings>
+                    <shared:AppButton
+                        Grid.Column="3"
+                        Classes="Danger"
+                        Content="{Binding SelectedCount,
+                        StringFormat=Remove ({0})}"
+                        Command="{Binding RemoveSelectedCommand}"/>
+                </Grid>
 
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <controls:PackageCard/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-
-            <!-- Empty state -->
-            <StackPanel
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Spacing="12"
-                IsVisible="{Binding IsEmpty}">
-
-                <TextBlock
-                    Text="📦"
-                    FontSize="46"
-                    Opacity="0.35"
-                    HorizontalAlignment="Center"/>
-
-                <TextBlock
-                    Text="No installed packages"
-                    FontSize="18"
-                    FontWeight="SemiBold"
-                    HorizontalAlignment="Center"/>
-
-                <TextBlock
-                    Text="Applications installed with WinGet will appear here."
-                    Opacity="0.65"
-                    TextAlignment="Center"
-                    HorizontalAlignment="Center"/>
-
-                <Button
-                    Margin="0,8,0,0"
-                    MinWidth="180"
-                    Content="Browse Packages"
-                    Command="{Binding BrowseCommand}"
-                    HorizontalAlignment="Center"/>
-            </StackPanel>
-
-            <!-- Error state -->
-            <StackPanel
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Spacing="12"
-                IsVisible="{Binding HasError}">
-
-                <TextBlock
-                    Text="⚠️"
-                    FontSize="46"
-                    Opacity="0.35"
-                    HorizontalAlignment="Center"/>
-
-                <TextBlock
-                    Text="Couldn't load installed packages"
-                    FontSize="18"
-                    FontWeight="SemiBold"
-                    HorizontalAlignment="Center"/>
-
-                <TextBlock
-                    Text="{Binding ErrorMessage}"
-                    Opacity="0.65"
-                    TextAlignment="Center"
-                    TextWrapping="Wrap"
-                    MaxWidth="480"
-                    HorizontalAlignment="Center"/>
-
-                <Button
-                    Margin="0,8,0,0"
-                    MinWidth="140"
-                    Content="Retry"
-                    Command="{Binding RefreshCommand}"
-                    HorizontalAlignment="Center"/>
-            </StackPanel>
-
-            </Grid>
-
-            <!-- Details panel -->
-            <GridSplitter
-                Grid.Column="1"
-                Width="6"
-                ResizeDirection="Columns"
-                ResizeBehavior="PreviousAndNext"
-                Background="Transparent"/>
-
-            <package:PackageDetailsPanel
-                Grid.Column="2"
-                DataContext="{Binding Details}"
-                IsVisible="{Binding SelectedPackage,
-                Converter={StaticResource NullToBoolConverter}}"/>
+            </Border>
 
         </Grid>
 
-        <shared:LoadingOverlay
-            Grid.RowSpan="5"
-            IsLoading="{Binding IsLoading}"
-            Message="Loading installed packages..."/>
+        <!-- Master-Detail -->
+<shared:MasterDetailPage
+    Grid.Row="3"
+    HorizontalAlignment="Stretch"
+    VerticalAlignment="Stretch"
+    IsLoading="{Binding IsLoading}"
+    LoadingMessage="Loading installed packages..."
+    DetailWidth="{Binding SelectedPackage,
+    Converter={StaticResource DetailWidthConverter}}">
+
+            <shared:MasterDetailPage.MasterContent>
+
+                <Grid>
+
+<ListBox
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    ItemsSource="{Binding Packages}"
+                    SelectedItem="{Binding SelectedPackage}"
+                    BorderThickness="0"
+                    Background="Transparent"
+                    ScrollViewer.IsDeferredScrollingEnabled="True">
+
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel CacheLength="0.5"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <controls:PackageCard/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+
+                    </ListBox>
+
+                    <!-- Empty state -->
+                    <shared:AppEmptyState
+                        IsVisible="{Binding IsEmpty}"
+                        Icon="📦"
+                        Title="No installed packages"
+                        Description="Applications installed with WinGet will appear here."
+                        ActionText="Browse Packages"
+                        ActionCommand="{Binding BrowseCommand}"/>
+
+                    <!-- Error state -->
+                    <shared:AppEmptyState
+                        IsVisible="{Binding HasError}"
+                        Icon="⚠️"
+                        Title="Couldn't load installed packages"
+                        Description="{Binding ErrorMessage}"
+                        ActionText="Retry"
+                        ActionCommand="{Binding RefreshCommand}"/>
+
+                </Grid>
+
+            </shared:MasterDetailPage.MasterContent>
+
+            <shared:MasterDetailPage.DetailContent>
+
+                <package:PackageDetailsPanel
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    DataContext="{Binding Details}"
+                    IsVisible="{Binding SelectedPackage,
+                    Converter={x:Static conv:ObjectConverters.IsNotNull}}"/>
+
+            </shared:MasterDetailPage.DetailContent>
+
+        </shared:MasterDetailPage>
 
     </Grid>
 

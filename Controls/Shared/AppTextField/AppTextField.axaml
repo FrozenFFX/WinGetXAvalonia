@@ -1,0 +1,54 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<TextBox
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="WinGetXAvalonia.Controls.Shared.AppTextField"
+    MinHeight="40"
+    Padding="12,0"
+    CornerRadius="10"
+    BorderThickness="1"
+    Background="{DynamicResource SurfaceBrush}"
+    BorderBrush="{DynamicResource BorderBrush}"
+    HorizontalContentAlignment="Left"
+    VerticalContentAlignment="Center"
+    TextWrapping="NoWrap"
+    RenderTransformOrigin="0.5,0.5">
+
+    <TextBox.Styles>
+
+        <Style Selector="TextBox:pointerover">
+            <Setter Property="BorderBrush"
+                    Value="{DynamicResource AccentBrush}"/>
+        </Style>
+
+        <Style Selector="TextBox:focus">
+            <Setter Property="BorderBrush"
+                    Value="{DynamicResource AccentBrush}"/>
+        </Style>
+
+        <Style Selector="TextBox:disabled">
+            <Setter Property="Opacity"
+                    Value="0.55"/>
+        </Style>
+
+    </TextBox.Styles>
+
+    <TextBox.Transitions>
+
+        <Transitions>
+
+            <BrushTransition
+                Property="BorderBrush"
+                Duration="0:0:0.15"/>
+
+            <BrushTransition
+                Property="Background"
+                Duration="0:0:0.15"/>
+
+        </Transitions>
+
+    </TextBox.Transitions>
+
+</TextBox>

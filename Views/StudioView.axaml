@@ -27,6 +27,17 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
             <Setter Property="CornerRadius" Value="15"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.15"/>
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="ToggleButton.FilterChip:pointerover:not(:checked)">
+            <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource StudioAccentBrush}"/>
         </Style>
 
         <Style Selector="ToggleButton.FilterChip:checked">
@@ -37,7 +48,10 @@
 
     </UserControl.Styles>
 
-    <Grid Margin="20">
+    <Grid Margin="24"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          ClipToBounds="True">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -65,12 +79,12 @@
 
                 <shared:SearchBox
                     MinWidth="320"
-                    MaxWidth="600"
+                    MaxWidth="560"
                     HorizontalAlignment="Stretch"
                     Watermark="Search studio tools..."
                     Text="{Binding SearchText}"/>
 
-                <Button
+                <shared:AppButton
                     Grid.Column="1"
                     Width="42"
                     Padding="0"
@@ -102,7 +116,7 @@
 
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel/>
+                    <WrapPanel HorizontalAlignment="Left"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
 
@@ -134,15 +148,15 @@
 
                     <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel/>
+                        <WrapPanel HorizontalAlignment="Left"/>
                     </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <studio:StudioTile
-                                Width="320"
-                                Margin="0,0,12,12"
+                                Width="336"
+                                Margin="0,0,8,12"
                                 Icon="{Binding Icon}"
                                 Title="{Binding Title}"
                                 Description="{Binding Description}"
@@ -163,85 +177,147 @@
 
             <Border
                 Grid.Column="2"
-                Padding="20"
+                Padding="24"
                 Background="{DynamicResource CardBrush}"
                 BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="1"
                 CornerRadius="{DynamicResource RadiusMedium}">
 
-                <StackPanel Spacing="14">
+                <Grid>
 
-                    <TextBlock
-                        FontSize="22"
-                        FontWeight="SemiBold"
-                        Text="Tool Details"/>
+                    <StackPanel
+                        Spacing="16"
+                        IsVisible="{Binding IsToolSelected}">
 
-                    <ContentControl
-                        Content="{Binding SelectedTool}"/>
+                        <TextBlock
+                            FontSize="22"
+                            FontWeight="SemiBold"
+                            Text="Tool Details"/>
 
-                </StackPanel>
+                        <ContentControl
+                            Content="{Binding SelectedTool}"/>
+
+                    </StackPanel>
+
+                    <ScrollViewer
+                        IsVisible="{Binding !IsToolSelected}"
+                        HorizontalScrollBarVisibility="Disabled"
+                        VerticalScrollBarVisibility="Auto">
+
+                        <StackPanel
+                            Spacing="16">
+
+                            <StackPanel Spacing="8">
+
+                                <TextBlock
+                                    FontSize="22"
+                                    FontWeight="SemiBold"
+                                    Text="Studio"/>
+                                <TextBlock
+                                    Opacity="0.6"
+                                    TextWrapping="Wrap"
+                                    Text="Select a tool from the list to open its details."/>
+
+                            </StackPanel>
+
+                            <Border
+                                Height="1"
+                                Background="{DynamicResource BorderBrush}"/>
+
+                            <StackPanel Spacing="8">
+
+                                <TextBlock
+                                    FontSize="13"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource AccentBrush}"
+                                    Text="⚡ Keyboard Shortcuts"/>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                    <TextBlock
+                                        Opacity="0.7"
+                                        VerticalAlignment="Center"
+                                        Text="Open command palette"/>
+                                    <Border
+                                        Grid.Column="1"
+                                        Padding="8,3"
+                                        CornerRadius="6"
+                                        Background="{DynamicResource SurfaceBrush}"
+                                        BorderBrush="{DynamicResource BorderBrush}"
+                                        BorderThickness="1">
+                                        <TextBlock
+                                            FontSize="12"
+                                            FontWeight="SemiBold"
+                                            Text="Ctrl + K"/>
+                                    </Border>
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                    <TextBlock
+                                        Opacity="0.7"
+                                        VerticalAlignment="Center"
+                                        Text="Refresh studio tools"/>
+                                    <Border
+                                        Grid.Column="1"
+                                        Padding="8,3"
+                                        CornerRadius="6"
+                                        Background="{DynamicResource SurfaceBrush}"
+                                        BorderBrush="{DynamicResource BorderBrush}"
+                                        BorderThickness="1">
+                                        <TextBlock
+                                            FontSize="12"
+                                            FontWeight="SemiBold"
+                                            Text="F5"/>
+                                    </Border>
+                                </Grid>
+
+                            </StackPanel>
+
+                            <Border
+                                Height="1"
+                                Background="{DynamicResource BorderBrush}"/>
+
+                            <StackPanel Spacing="8">
+
+                                <TextBlock
+                                    FontSize="13"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource AccentBrush}"
+                                    Text="💡 Tips"/>
+
+                                <TextBlock
+                                    Opacity="0.7"
+                                    TextWrapping="Wrap"
+                                    Text="Use filters to focus on Ready or Experimental tools."/>
+                                <TextBlock
+                                    Opacity="0.7"
+                                    TextWrapping="Wrap"
+                                    Text="Search by name, description or category."/>
+
+                            </StackPanel>
+
+                        </StackPanel>
+
+                    </ScrollViewer>
+
+                </Grid>
 
             </Border>
 
             <!-- Empty state -->
-            <StackPanel
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Spacing="12"
-                IsVisible="{Binding IsEmpty}">
-
-                <TextBlock
-                    Text="🎛"
-                    FontSize="46"
-                    Opacity="0.35"
-                    HorizontalAlignment="Center"/>
-
-                <TextBlock
-                    Text="No studio tools found"
-                    FontSize="18"
-                    FontWeight="SemiBold"
-                    HorizontalAlignment="Center"/>
-
-                <TextBlock
-                    Text="Try a different search or filter."
-                    Opacity="0.65"
-                    TextAlignment="Center"
-                    HorizontalAlignment="Center"/>
-            </StackPanel>
+            <shared:AppEmptyState
+                IsVisible="{Binding IsEmpty}"
+                Icon="🎛"
+                Title="No studio tools found"
+                Description="Try a different search or filter."/>
 
             <!-- Error state -->
-            <StackPanel
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Spacing="12"
-                IsVisible="{Binding HasError}">
-
-                <TextBlock
-                    Text="⚠️"
-                    FontSize="46"
-                    Opacity="0.35"
-                    HorizontalAlignment="Center"/>
-
-                <TextBlock
-                    Text="Couldn't load studio tools"
-                    FontSize="18"
-                    FontWeight="SemiBold"
-                    HorizontalAlignment="Center"/>
-
-                <TextBlock
-                    Text="{Binding ErrorMessage}"
-                    Opacity="0.65"
-                    TextAlignment="Center"
-                    TextWrapping="Wrap"
-                    MaxWidth="480"
-                    HorizontalAlignment="Center"/>
-
-                <Button
-                    Margin="0,8,0,0"
-                    Content="Retry"
-                    Command="{Binding RefreshCommand}"
-                    HorizontalAlignment="Center"/>
-            </StackPanel>
+            <shared:AppEmptyState
+                IsVisible="{Binding HasError}"
+                Icon="⚠️"
+                Title="Couldn't load studio tools"
+                Description="{Binding ErrorMessage}"
+                ActionText="Retry"
+                ActionCommand="{Binding RefreshCommand}"/>
 
         </Grid>
 

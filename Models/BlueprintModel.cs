@@ -10,4 +10,6 @@ public sealed class BlueprintModel
     public string Name { get; set; } = "";
 
     public string Description { get; set; } = "";
+
+    public string Steps { get; set; } = "";
 }

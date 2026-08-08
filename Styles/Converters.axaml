@@ -16,6 +16,8 @@
 
     <conv:BoolToClassConverter x:Key="BoolToClassConverter"/>
 
+    <conv:BoolToExpanderGlyphConverter x:Key="ExpanderGlyphConverter"/>
+
     <conv:BoolToBrushConverter x:Key="BoolToBrushConverter"/>
 
     <conv:NotificationTypeToIconConverter x:Key="NotificationTypeToIcon"/>
@@ -23,5 +25,15 @@
     <conv:PackageCardModeToBoolConverter x:Key="IsDefaultCardMode" Match="Default"/>
 
     <conv:PackageCardModeToBoolConverter x:Key="IsUpdatesCardMode" Match="Updates"/>
+
+    <conv:IconGeometryConverter x:Key="IconGeometry"/>
+
+    <conv:ObjectToDetailWidthConverter x:Key="DetailWidthConverter"/>
+
+    <conv:BooleanToDetailWidthConverter x:Key="DetailColumnWidthConverter"/>
+
+    <conv:BooleanToOperationsWidthConverter x:Key="OperationsColumnWidthConverter"/>
+
+    <conv:BooleanToSystemPanelWidthConverter x:Key="SystemPanelWidthConverter"/>
 
     </ResourceDictionary>

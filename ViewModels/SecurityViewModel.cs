@@ -32,7 +32,7 @@ public partial class SecurityViewModel : AsyncViewModel
         return Task.CompletedTask;
     }
 
-    public Task InitializeAsync()
+    public override Task InitializeAsync()
     {
         return Refresh();
     }

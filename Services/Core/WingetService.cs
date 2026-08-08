@@ -38,9 +38,18 @@ public class WingetService
         process.EnableRaisingEvents = true;
 
         string output = await process.StandardOutput.ReadToEndAsync();
+        string error = await process.StandardError.ReadToEndAsync();
 
         await Task.Yield();
         await process.WaitForExitAsync();
+
+        if (process.ExitCode != 0)
+        {
+            throw new InvalidOperationException(
+                string.IsNullOrWhiteSpace(error) && string.IsNullOrWhiteSpace(output)
+                    ? $"winget exited with code {process.ExitCode}."
+                    : string.IsNullOrWhiteSpace(error) ? output.Trim() : error.Trim());
+        }
 
         return output
             .Split(Environment.NewLine)
@@ -70,7 +79,9 @@ public class WingetService
         using Process process = Process.Start(psi)!;
         process.EnableRaisingEvents = true;
 
-        progress?.Report(10, launchingMessage);
+        int activeProgress = 10;
+
+        progress?.Report(activeProgress, launchingMessage);
 
         var lines = new List<string>();
 
@@ -92,14 +103,25 @@ public class WingetService
 
                 if (match.Success)
                 {
+                    activeProgress = int.Parse(match.Groups[1].Value);
+
                     progress?.Report(
-                        int.Parse(match.Groups[1].Value),
+                        activeProgress,
                         line);
                 }
             }
         }
 
         await process.WaitForExitAsync();
+
+        if (process.ExitCode != 0)
+        {
+            string error = await process.StandardError.ReadToEndAsync();
+
+            progress?.Report(activeProgress, error);
+
+            throw new InvalidOperationException(error);
+        }
 
         return lines;
     }
@@ -111,13 +133,13 @@ public class WingetService
         => Execute("upgrade");
 
     public Task<List<string>> Search(string query)
-        => Execute($"search {query}");
+        => Execute($"search --query \"{query}\" --accept-source-agreements");
 
     public Task<List<string>> GetSources()
         => Execute("source list");
 
     public Task<List<string>> Show(string id)
-        => Execute($"show --id {id} --exact --accept-source-agreements");
+        => Execute($"show --id \"{id}\" --exact --accept-source-agreements");
 
     public async Task Install(string id, IOperationProgress? progress = null)
     {
@@ -127,7 +149,7 @@ public class WingetService
         progress?.Report(0, "Preparing installation...");
 
         await RunWithProgress(
-            $"install --id {id} -e",
+            $"install --id \"{id}\" --exact --accept-package-agreements --accept-source-agreements",
             progress,
             "Launching winget...");
 
@@ -142,7 +164,7 @@ public class WingetService
         progress?.Report(0, "Preparing uninstall...");
 
         await RunWithProgress(
-            $"uninstall --id {id}",
+            $"uninstall --id \"{id}\" --exact",
             progress,
             "Launching winget...");
 
@@ -168,7 +190,7 @@ public class WingetService
         progress?.Report(0, "Preparing update...");
 
         await RunWithProgress(
-            $"upgrade --id {id}",
+            $"upgrade --id \"{id}\" --exact --accept-package-agreements --accept-source-agreements",
             progress,
             "Launching winget...");
 

@@ -1,0 +1,33 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<ContentControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinGetXAvalonia.Controls.Shared"
+    x:Class="WinGetXAvalonia.Controls.Shared.AppSidebarSection">
+
+    <ContentControl.Template>
+        <ControlTemplate TargetType="local:AppSidebarSection">
+
+            <StackPanel
+                Margin="0,14"
+                Spacing="6">
+
+                <TextBlock
+                    Margin="14,0"
+                    FontSize="11"
+                    FontWeight="SemiBold"
+                    Opacity=".50"
+                    Text="{TemplateBinding Title}"/>
+
+                <ContentPresenter
+                    Content="{TemplateBinding Content}"
+                    ContentTemplate="{TemplateBinding ContentTemplate}"/>
+
+            </StackPanel>
+
+        </ControlTemplate>
+    </ContentControl.Template>
+
+</ContentControl>

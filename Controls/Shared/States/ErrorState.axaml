@@ -4,6 +4,7 @@
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
     x:Class="WinGetXAvalonia.Controls.Shared.ErrorState"
     x:Name="Root">
@@ -34,7 +35,7 @@
             TextAlignment="Center"
             TextWrapping="Wrap"/>
 
-        <Button
+        <shared:AppButton
             Content="{Binding RetryText, ElementName=Root}"
             Command="{Binding RetryCommand, ElementName=Root}"
             IsVisible="{Binding RetryCommand, ElementName=Root,

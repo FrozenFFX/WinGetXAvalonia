@@ -1,0 +1,36 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="WinGetXAvalonia.Controls.Shared.AppProgress"
+    x:Name="Root">
+
+    <StackPanel Spacing="8">
+
+        <Grid ColumnDefinitions="*,Auto">
+
+            <TextBlock
+                FontWeight="SemiBold"
+                Text="{Binding #Root.Title}"/>
+
+            <TextBlock
+                Grid.Column="1"
+                FontSize="12"
+                Opacity="0.7"
+                Text="{Binding #Root.Value, StringFormat='{}{0:0}%'}"
+                IsVisible="{Binding #Root.ShowValue}"/>
+
+        </Grid>
+
+        <ProgressBar
+            Height="6"
+            Minimum="0"
+            Maximum="100"
+            Value="{Binding #Root.Value, Mode=TwoWay}"
+            IsIndeterminate="{Binding #Root.IsIndeterminate}"/>
+
+    </StackPanel>
+
+</UserControl>

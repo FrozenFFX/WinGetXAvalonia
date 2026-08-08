@@ -1,0 +1,27 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<!-- AppCard: kart yüzeyi. Hareket dili Motion.axaml'daki Border.card'dan gelir. -->
+
+<ContentControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinGetXAvalonia.Controls.Shared"
+    x:Class="WinGetXAvalonia.Controls.Shared.AppCard">
+
+    <ContentControl.Template>
+        <ControlTemplate TargetType="local:AppCard">
+
+            <Border
+                Classes="card">
+
+                <ContentPresenter
+                    Content="{TemplateBinding Content}"
+                    ContentTemplate="{TemplateBinding ContentTemplate}"/>
+
+            </Border>
+
+        </ControlTemplate>
+    </ContentControl.Template>
+
+</ContentControl>

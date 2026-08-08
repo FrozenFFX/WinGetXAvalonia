@@ -15,39 +15,24 @@
              x:DataType="models:PackageModel"
              x:CompileBindings="False">
 
-    <UserControl.Styles>
-        <Style Selector="Border.BaseCard">
-            <Setter Property="RenderTransform" Value="scale(1)"/>
-        </Style>
-
-        <Style Selector="Border.BaseCard:pointerover">
-            <Setter Property="RenderTransform" Value="scale(1.01)"/>
-            <Setter Property="BoxShadow" Value="0 8 24 0 #33000000"/>
-        </Style>
-
-        <Style Selector="Border.BaseCard:pressed">
-            <Setter Property="RenderTransform" Value="scale(0.99)"/>
-        </Style>
-    </UserControl.Styles>
-
     <Grid>
 
         <shared:BaseCard>
 
-            <Grid ColumnDefinitions="56,*,auto"
+            <Grid ColumnDefinitions="44,*,auto"
                   ColumnSpacing="12">
 
                 <!-- ikon -->
                 <Border
                     Grid.Column="0"
-                    Width="56"
-                    Height="56"
+                    Width="44"
+                    Height="44"
                     CornerRadius="12"
                     Background="{DynamicResource SurfaceBrush}"
                     CacheMode="BitmapCache">
 
                     <TextBlock Text="{Binding Icon}"
-                               FontSize="24"
+                               FontSize="20"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"/>
                 </Border>
@@ -130,7 +115,7 @@
                     ColumnSpacing="6"
                     VerticalAlignment="Center">
 
-                    <Button
+                    <shared:AppButton
                         Width="40"
                         Height="40"
                         Classes="Accent"
@@ -142,9 +127,9 @@
                         <TextBlock Text="▲"
                                    FontSize="16"
                                    FontWeight="Bold"/>
-                    </Button>
+                    </shared:AppButton>
 
-                    <Button
+                    <shared:AppButton
                         Grid.Column="1"
                         Width="40"
                         Height="40"
@@ -154,9 +139,9 @@
 
                         <TextBlock Text="🗑"
                                    FontSize="16"/>
-                    </Button>
+                    </shared:AppButton>
 
-                    <Button
+                    <shared:AppButton
                         Grid.Column="2"
                         Width="40"
                         Height="40"
@@ -165,7 +150,7 @@
                         <TextBlock Text="⋯"
                                    FontSize="16"
                                    FontWeight="Bold"/>
-                    </Button>
+                    </shared:AppButton>
                 </Grid>
 
             </Grid>

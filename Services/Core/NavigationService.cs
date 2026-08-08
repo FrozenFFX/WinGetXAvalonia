@@ -11,11 +11,13 @@ public partial class NavigationService : ObservableObject
     [ObservableProperty]
     private ViewModelBase? currentPage;
 
-    public void Navigate(ViewModelBase page)
+    public bool Navigate(ViewModelBase page)
     {
-        if (CurrentPage == page)
-            return;
+        if (page is null)
+            return false;
 
         CurrentPage = page;
+
+        return true;
     }
 }

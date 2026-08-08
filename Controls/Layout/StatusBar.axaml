@@ -1,0 +1,59 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="WinGetXAvalonia.Controls.Layout.StatusBar"
+    x:CompileBindings="False">
+
+    <Border
+        Background="{DynamicResource SurfaceBrush}"
+        BorderBrush="{DynamicResource BorderBrush}"
+        BorderThickness="0,1,0,0">
+
+        <Grid
+            Margin="16,0"
+            ColumnDefinitions="Auto,*,Auto"
+            ColumnSpacing="12">
+
+            <TextBlock
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                Text="{Binding StatusText}"/>
+
+            <StackPanel
+                Grid.Column="2"
+                Orientation="Horizontal"
+                Spacing="10"
+                VerticalAlignment="Center">
+
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Opacity="0.6"
+                    Text="WinGetX Studio"/>
+
+                <Border
+                    Width="6"
+                    Height="6"
+                    CornerRadius="3"
+                    VerticalAlignment="Center"
+                    Background="{DynamicResource SuccessBrush}"/>
+
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontWeight="SemiBold"
+                    Text="{Binding Version}"/>
+
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Opacity="0.6"
+                    Text="{Binding BuildDate}"/>
+
+            </StackPanel>
+
+        </Grid>
+
+    </Border>
+
+</UserControl>

@@ -1,0 +1,258 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:models="using:WinGetXAvalonia.Models"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    x:Class="WinGetXAvalonia.Views.SoftwareIdentityView"
+    x:DataType="vm:SoftwareIdentityViewModel"
+    x:CompileBindings="False">
+
+    <UserControl.KeyBindings>
+        <KeyBinding
+            Gesture="F5"
+            Command="{Binding LoadCommand}"/>
+    </UserControl.KeyBindings>
+
+    <Grid
+        Margin="24"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        ClipToBounds="True">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <shared:SectionHeader
+            Grid.Row="0"
+            Title="Software Identity"
+            Description="Living profiles for every piece of software on your machine."/>
+
+        <Grid Grid.Row="2" RowDefinitions="Auto,12,*">
+
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="10">
+
+                <shared:SearchBox
+                    Grid.Column="0"
+                    Watermark="Search software..."
+                    Text="{Binding SearchText}"/>
+
+                <shared:AppButton
+                    Grid.Column="1"
+                    Width="44"
+                    Content="⟳"
+                    ToolTip.Tip="Refresh"
+                    Command="{Binding LoadCommand}"/>
+
+                <shared:AppButton
+                    Grid.Column="2"
+                    Content="Export JSON"
+                    Command="{Binding ExportJsonCommand}"/>
+
+            </Grid>
+
+            <Grid Grid.Row="2">
+
+                <shared:MasterDetailPage
+                    IsLoading="{Binding IsLoading}"
+                    LoadingMessage="Loading identities..."
+                    DetailWidth="0.65*">
+
+                    <shared:MasterDetailPage.MasterContent>
+
+                        <Grid>
+
+                            <shared:AppEmptyState
+                                IsVisible="{Binding IsEmpty}"
+                                Icon="🧬"
+                                Title="No software profiles yet"
+                                Description="Install software or record an install to start tracking identities."/>
+
+                            <shared:AppEmptyState
+                                IsVisible="{Binding HasError}"
+                                Icon="⚠️"
+                                Title="Failed to load identities"
+                                Description="{Binding ErrorMessage}"/>
+
+                            <ListBox
+                                IsVisible="{Binding IsLoaded}"
+                                ItemsSource="{Binding FilteredIdentities}"
+                                SelectedItem="{Binding SelectedIdentity}"
+                                Background="Transparent"
+                                BorderThickness="0">
+
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:DataType="models:SoftwareIdentity">
+
+                                        <Border
+                                            Classes="card"
+                                            Margin="0,0,0,8"
+                                            Padding="16">
+
+                                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+
+                                                <StackPanel Spacing="2">
+
+                                                    <TextBlock
+                                                        FontSize="{DynamicResource FontCardTitle}"
+                                                        FontWeight="SemiBold"
+                                                        Text="{Binding Name}"/>
+
+                                                    <TextBlock
+                                                        FontSize="{DynamicResource FontCaption}"
+                                                        Opacity="0.65"
+                                                        Text="{Binding Publisher}"/>
+
+                                                </StackPanel>
+
+                                                <StackPanel
+                                                    Grid.Column="1"
+                                                    HorizontalAlignment="Right"
+                                                    Spacing="4">
+
+                                                    <TextBlock
+                                                        FontSize="{DynamicResource FontCaption}"
+                                                        Text="{Binding Version}"/>
+
+                                                    <StackPanel Orientation="Horizontal" Spacing="8">
+
+                                                        <shared:AppBadge Text="{Binding TrustText}"
+                                                            ToolTip.Tip="Trust Score"/>
+
+                                                        <shared:AppBadge Text="{Binding HealthText}"
+                                                            ToolTip.Tip="Health"/>
+
+                                                    </StackPanel>
+
+                                                </StackPanel>
+
+                                            </Grid>
+
+                                        </Border>
+
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+
+                            </ListBox>
+
+                        </Grid>
+
+                    </shared:MasterDetailPage.MasterContent>
+
+                    <shared:MasterDetailPage.DetailContent>
+
+                        <Panel>
+
+                            <shared:AppEmptyState
+                                IsVisible="{Binding IsNothingSelected}"
+                                Icon="🪪"
+                                Title="Select a software"
+                                Description="Choose an identity to view its living profile."/>
+
+                            <Grid
+                                IsVisible="{Binding !IsNothingSelected}"
+                                RowDefinitions="Auto,16,Auto,16,Auto"
+                                ClipToBounds="True">
+
+                                <Border
+                                    Grid.Row="0"
+                                    Classes="card"
+                                    Padding="24">
+
+                                    <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="16">
+
+                                        <StackPanel Spacing="6">
+
+                                            <TextBlock
+                                                FontSize="{DynamicResource FontPageTitle}"
+                                                FontWeight="Bold"
+                                                Text="{Binding SelectedIdentity.Name}"/>
+
+                                            <TextBlock
+                                                FontSize="{DynamicResource FontBody}"
+                                                Opacity="0.65"
+                                                Text="{Binding SelectedIdentity.Publisher}"/>
+
+                                            <TextBlock
+                                                FontSize="{DynamicResource FontCaption}"
+                                                Opacity="0.55"
+                                                Text="{Binding SelectedIdentity.Version}"/>
+
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" Spacing="8">
+
+                                            <TextBlock
+                                                FontSize="{DynamicResource FontCaption}"
+                                                Foreground="{DynamicResource AccentBrush}"
+                                                Text="{Binding SelectedIdentity.TrustText,
+                                                    StringFormat='Trust {0}'}"/>
+
+                                            <TextBlock
+                                                FontSize="{DynamicResource FontCaption}"
+                                                Foreground="{Binding SelectedIdentity.HealthBrush}"
+                                                Text="{Binding SelectedIdentity.HealthText,
+                                                    StringFormat='Health {0}'}"/>
+
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="2" Spacing="8">
+
+                                            <TextBlock
+                                                FontSize="{DynamicResource FontCaption}"
+                                                Opacity="0.65"
+                                                Text="{Binding SelectedIdentity.CommunityDisplay,
+                                                    StringFormat='Community {0}/5'}"/>
+
+                                            <TextBlock
+                                                FontSize="{DynamicResource FontCaption}"
+                                                Opacity="0.65"
+                                                Text="{Binding SelectedIdentity.Source}"/>
+
+                                        </StackPanel>
+
+                                    </Grid>
+
+                                </Border>
+
+                                <shared:PropertyGrid
+                                    Grid.Row="2"
+                                    ItemsSource="{Binding IdentityProperties}"/>
+
+                                <StackPanel Grid.Row="4" Orientation="Horizontal" Spacing="10">
+
+                                    <shared:AppButton
+                                        Content="Record Update"
+                                        Command="{Binding RecordUpdateCommand}"/>
+
+                                    <shared:AppButton
+                                        Content="Record Rollback"
+                                        Command="{Binding RecordRollbackCommand}"/>
+
+                                    <shared:AppButton
+                                        Content="Delete Identity"
+                                        Command="{Binding DeleteCommand}"/>
+
+                                </StackPanel>
+
+                            </Grid>
+
+                        </Panel>
+
+                    </shared:MasterDetailPage.DetailContent>
+
+                </shared:MasterDetailPage>
+
+            </Grid>
+
+        </Grid>
+
+    </Grid>
+
+</UserControl>

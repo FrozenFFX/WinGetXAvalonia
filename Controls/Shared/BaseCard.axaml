@@ -1,6 +1,8 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
+<!-- BaseCard: kart yüzeyi. Hareket dili Motion.axaml'daki Border.card'dan gelir. -->
+
 <ContentControl
     x:Class="WinGetXAvalonia.Controls.Shared.BaseCard"
     xmlns="https://github.com/avaloniaui"
@@ -10,21 +12,7 @@
         <ControlTemplate TargetType="ContentControl">
 
             <Border
-                Margin="5"
-                Padding="12"
-                Background="{DynamicResource CardBrush}"
-                BorderBrush="{DynamicResource BorderBrush}"
-                BorderThickness="1"
-                CornerRadius="{DynamicResource RadiusMedium}"
-                Classes="BaseCard">
-
-                <Border.Transitions>
-                    <Transitions>
-                        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.25"/>
-                        <BrushTransition Property="Background" Duration="0:0:0.2"/>
-                        <BrushTransition Property="BorderBrush" Duration="0:0:0.2"/>
-                    </Transitions>
-                </Border.Transitions>
+                Classes="card">
 
                 <ContentPresenter
                     Content="{TemplateBinding Content}"
@@ -34,20 +22,5 @@
 
         </ControlTemplate>
     </ContentControl.Template>
-
-    <ContentControl.Styles>
-        <Style Selector="Border.BaseCard">
-            <Setter Property="RenderTransform" Value="scale(1)"/>
-        </Style>
-
-        <Style Selector="Border.BaseCard:pointerover">
-            <Setter Property="RenderTransform" Value="scale(1.01)"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
-        </Style>
-
-        <Style Selector="Border.BaseCard:pressed">
-            <Setter Property="RenderTransform" Value="scale(0.985)"/>
-        </Style>
-    </ContentControl.Styles>
 
 </ContentControl>

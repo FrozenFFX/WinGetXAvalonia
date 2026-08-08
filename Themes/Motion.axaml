@@ -1,8 +1,177 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<ResourceDictionary
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<!-- ========================================================== -->
+<!-- MOTION SYSTEM — ortak animasyon dili.                      -->
+<!-- Tüm kart / panel / buton / liste aynı hareket dilini      -->
+<!-- konuşur. Süre ve easing yalnızca Animation.axaml'dan gelir.-->
+<!-- ========================================================== -->
 
-</ResourceDictionary>
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ========================================================== -->
+    <!-- CARD — etkileşimli kart                                    -->
+    <!-- Hover: hafif yukarı kayma + arka plan açılır + border      -->
+    <!--        parlar + shadow büyür. Scale YOK (layout sabit).    -->
+    <!-- ========================================================== -->
+    <Style Selector="Border.card">
+        <Setter Property="CornerRadius" Value="{DynamicResource RadiusMedium}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="{DynamicResource Space16}"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+        <Setter Property="BoxShadow" Value="{DynamicResource Elevation1}"/>
+        <Setter Property="RenderTransformOrigin" Value="50%,100%"/>
+        <Setter Property="RenderTransform" Value="translate(0,0) scale(1)"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform"
+                                               Duration="{DynamicResource MotionDurationNormal}"
+                                               Easing="{DynamicResource MotionEasingOut}"/>
+                <BrushTransition Property="Background"
+                                 Duration="{DynamicResource MotionDurationNormal}"
+                                 Easing="{DynamicResource MotionEasingOut}"/>
+                <BrushTransition Property="BorderBrush"
+                                 Duration="{DynamicResource MotionDurationNormal}"
+                                 Easing="{DynamicResource MotionEasingOut}"/>
+                <BoxShadowsTransition Property="BoxShadow"
+                                      Duration="{DynamicResource MotionDurationNormal}"
+                                      Easing="{DynamicResource MotionEasingOut}"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Border.card:pointerover">
+        <Setter Property="RenderTransform" Value="translate(0,-2px) scale(1)"/>
+        <Setter Property="Background" Value="{DynamicResource CardHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="BoxShadow" Value="{DynamicResource Elevation2}"/>
+    </Style>
+
+    <Style Selector="Border.card:pressed">
+        <Setter Property="RenderTransform" Value="translate(0,0) scale(1)"/>
+    </Style>
+
+    <!-- ========================================================== -->
+    <!-- PANEL — statik yüzey (kayma/ölçek yok)                     -->
+    <!-- Interaktif değilse hover VURGUSU YOK; yüzey sabit kalır.   -->
+    <!-- ========================================================== -->
+    <Style Selector="Border.panel">
+        <Setter Property="CornerRadius" Value="{DynamicResource RadiusMedium}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background"
+                                 Duration="{DynamicResource MotionDurationSlow}"
+                                 Easing="{DynamicResource MotionEasingOut}"/>
+                <BrushTransition Property="BorderBrush"
+                                 Duration="{DynamicResource MotionDurationSlow}"
+                                 Easing="{DynamicResource MotionEasingOut}"/>
+                <BoxShadowsTransition Property="BoxShadow"
+                                      Duration="{DynamicResource MotionDurationSlow}"
+                                      Easing="{DynamicResource MotionEasingOut}"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Border.panel:pointerover">
+        <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
+    </Style>
+
+    <!-- ========================================================== -->
+    <!-- PANEL + INTERACTIVE — tıklanabilir panel                    -->
+    <!-- Command bağlanmış InfoCard: hover'da tüm kart aydınlanır,   -->
+    <!-- accent border + shadow alır, imleç el olur. Scale yok.     -->
+    <!-- ========================================================== -->
+    <Style Selector="Border.panel.interactive">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="RenderTransformOrigin" Value="50%,100%"/>
+        <Setter Property="RenderTransform" Value="translate(0,0) scale(1)"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background"
+                                 Duration="{DynamicResource MotionDurationNormal}"
+                                 Easing="{DynamicResource MotionEasingOut}"/>
+                <BrushTransition Property="BorderBrush"
+                                 Duration="{DynamicResource MotionDurationNormal}"
+                                 Easing="{DynamicResource MotionEasingOut}"/>
+                <BoxShadowsTransition Property="BoxShadow"
+                                      Duration="{DynamicResource MotionDurationNormal}"
+                                      Easing="{DynamicResource MotionEasingOut}"/>
+                <TransformOperationsTransition Property="RenderTransform"
+                                               Duration="{DynamicResource MotionDurationNormal}"
+                                               Easing="{DynamicResource MotionEasingOut}"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Border.panel.interactive:pointerover">
+        <Setter Property="RenderTransform" Value="translate(0,-2px) scale(1)"/>
+        <Setter Property="Background" Value="{DynamicResource CardHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="BoxShadow" Value="{DynamicResource Elevation2}"/>
+    </Style>
+
+    <Style Selector="Border.panel.interactive:pressed">
+        <Setter Property="RenderTransform" Value="translate(0,0) scale(1)"/>
+    </Style>
+
+    <!-- ========================================================== -->
+    <!-- BUTTON — 100ms hover                                       -->
+    <!-- Arka plan, border ve opaklık yumuşak geçer.                -->
+    <!-- ========================================================== -->
+    <Style Selector="Button">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background"
+                                 Duration="{DynamicResource MotionDurationFast}"
+                                 Easing="{DynamicResource MotionEasingOut}"/>
+                <BrushTransition Property="BorderBrush"
+                                 Duration="{DynamicResource MotionDurationFast}"
+                                 Easing="{DynamicResource MotionEasingOut}"/>
+                <DoubleTransition Property="Opacity"
+                                  Duration="{DynamicResource MotionDurationFast}"
+                                  Easing="{DynamicResource MotionEasingOut}"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <!-- ========================================================== -->
+    <!-- TEXT BOX — 200ms fokus                                     -->
+    <!-- Odak outline'ı (mavi) yumuşak belirir, icon/dolgu geçer.   -->
+    <!-- ========================================================== -->
+    <Style Selector="TextBox">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="BorderBrush"
+                                 Duration="{DynamicResource MotionDurationSlow}"
+                                 Easing="{DynamicResource MotionEasingOut}"/>
+                <BrushTransition Property="Background"
+                                 Duration="{DynamicResource MotionDurationSlow}"
+                                 Easing="{DynamicResource MotionEasingOut}"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <!-- ========================================================== -->
+    <!-- LIST ITEM — 150ms seçim / hover                            -->
+    <!-- Liste ve sidebar öğeleri seçim/hover vurgusu yumuşak gelir.-->
+    <!-- ========================================================== -->
+    <Style Selector="ListBoxItem">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background"
+                                 Duration="{DynamicResource MotionDurationNormal}"
+                                 Easing="{DynamicResource MotionEasingOut}"/>
+                <BrushTransition Property="BorderBrush"
+                                 Duration="{DynamicResource MotionDurationNormal}"
+                                 Easing="{DynamicResource MotionEasingOut}"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+</Styles>

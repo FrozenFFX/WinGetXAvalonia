@@ -4,6 +4,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input.Platform;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.Generic;
@@ -68,18 +69,21 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
         Details = new PackageDetailsViewModel(provider, operations, clipboard, launcher);
 
         _subscription =
-            _eventBus.Subscribe<PackageChangedEvent>(e => _ = Refresh());
+            _eventBus.Subscribe<PackageChangedEvent>(e =>
+                Dispatcher.UIThread.Post(() => _ = Refresh()));
 
-        Updates.CollectionChanged += (_, _) => OnPropertyChanged(nameof(PackageCount));
+        Updates.CollectionChanged += (_, _) =>
+        {
+            OnPropertyChanged(nameof(PackageCount));
+        };
     }
 
     partial void OnSelectedPackageChanged(PackageModel? value)
     {
-        if (Details is not null)
-            _ = Details.Load(value);
+        _ = Details?.Load(value);
     }
 
-    public Task InitializeAsync()
+    public override Task InitializeAsync()
         => Refresh();
 
     partial void OnSearchTextChanged(string value)
@@ -90,7 +94,7 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
         _searchCts = new CancellationTokenSource();
 
         // her tuş basışında filtreyi çalıştırmayalım, 200ms bekleyelim
-        _ = DebounceSearch(_searchCts.Token);
+        DebounceSearch(_searchCts.Token).FireAndForget();
     }
 
     partial void OnSelectedSortChanged(PackageSortMode value)
@@ -121,12 +125,27 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
 
             ApplyFilter();
 
+            if (SelectedPackage is null && Updates.Count > 0)
+                SelectedPackage = Updates[0];
+
+            if (SelectedPackage is not null)
+            {
+                SelectedPackage = Updates.FirstOrDefault(x =>
+                    x.Id.Equals(
+                        SelectedPackage.Id,
+                        StringComparison.OrdinalIgnoreCase));
+            }
+
             State = _allPackages.Count == 0 ? LoadState.Empty : LoadState.Loaded;
 
             _cache.Clear();
         }
         catch (Exception)
         {
+            Details?.Clear();
+
+            SelectedPackage = null;
+
             State = LoadState.Error;
             ErrorMessage = "Failed to load updates.";
         }
@@ -154,6 +173,10 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
     {
         await _operations.UpgradeAllAsync();
         await Refresh();
+
+        Details?.Clear();
+
+        SelectedPackage = null;
     }
 
     [RelayCommand]
@@ -165,6 +188,8 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
         await _operations.UpdateAsync(package.Id);
 
         await Refresh();
+
+        await Details!.Load(package);
     }
 
     [RelayCommand]
@@ -173,7 +198,7 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
         if (package is null || string.IsNullOrWhiteSpace(package.Id))
             return;
 
-        _ = CurrentWindow?.Clipboard?.SetTextAsync(package.Id);
+        CurrentWindow?.Clipboard?.SetTextAsync(package.Id).FireAndForget();
     }
 
     [RelayCommand]
@@ -182,7 +207,7 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
         if (package is null || string.IsNullOrWhiteSpace(package.Name))
             return;
 
-        _ = CurrentWindow?.Clipboard?.SetTextAsync(package.Name);
+        CurrentWindow?.Clipboard?.SetTextAsync(package.Name).FireAndForget();
     }
 
     [RelayCommand]
@@ -200,9 +225,20 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
     private void ApplyFilter()
     {
         IEnumerable<PackageModel> filtered =
-            PackageFilter.Apply(_allPackages, SearchText, SelectedFilter);
+            PackageFilter.Apply(
+                _allPackages,
+                SearchText.Trim(),
+                SelectedFilter);
 
-        Updates.ReplaceAll(PackageSorter.Sort(filtered, SelectedSort));
+        Updates.ReplaceAll(
+            PackageSorter.Sort(filtered, SelectedSort));
+
+        if (SelectedPackage is not null &&
+            !Updates.Contains(SelectedPackage))
+        {
+            SelectedPackage = null;
+            Details?.Clear();
+        }
     }
 
     private static Avalonia.Controls.Window? CurrentWindow
@@ -224,7 +260,12 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
 
     public void Dispose()
     {
+        _searchCts?.Cancel();
+        _searchCts?.Dispose();
+
         _subscription?.Dispose();
-        _subscription = null;
+
+        Details?.Clear();
     }
 }
+

@@ -4,6 +4,7 @@
 <ContentControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     xmlns:local="using:WinGetXAvalonia.Controls.Shared"
     x:Class="WinGetXAvalonia.Controls.Shared.Chip">
 
@@ -22,7 +23,7 @@
                         ContentTemplate="{TemplateBinding ContentTemplate}"
                         VerticalAlignment="Center"/>
 
-                    <Button
+                    <shared:AppButton
                         Content="✕"
                         FontSize="10"
                         Width="16"

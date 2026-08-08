@@ -20,22 +20,22 @@
 
             <shared:SearchBox
                 MinWidth="240"
-                MaxWidth="600"
+                MaxWidth="560"
                 HorizontalAlignment="Stretch"
                 Watermark="Search workspaces..."
                 Text="{Binding SearchText, ElementName=Root}"/>
 
-            <Button
+            <shared:AppButton
                 Grid.Column="1"
                 Content="＋ New Workspace"
                 Command="{Binding CreateCommand, ElementName=Root}"/>
 
-            <Button
+            <shared:AppButton
                 Grid.Column="2"
                 Content="Import"
                 Command="{Binding ImportCommand, ElementName=Root}"/>
 
-            <Button
+            <shared:AppButton
                 Grid.Column="3"
                 Width="42"
                 Padding="0"

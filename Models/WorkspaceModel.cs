@@ -36,4 +36,9 @@ public partial class WorkspaceModel : ObservableObject
     private ObservableCollection<WorkspacePackage> packages = new();
 
     public int PackageCount => Packages.Count;
+
+    public WorkspaceModel()
+    {
+        Packages.CollectionChanged += (_, _) => OnPropertyChanged(nameof(PackageCount));
+    }
 }

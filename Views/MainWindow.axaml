@@ -1,97 +1,188 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="using:WinGetXAvalonia.ViewModels"
-        xmlns:controls="using:WinGetXAvalonia.Controls"
-        xmlns:operation="using:WinGetXAvalonia.Controls.Operation"
-        mc:Ignorable="d"
-        x:Class="WinGetXAvalonia.Views.MainWindow"
-        x:DataType="vm:MainViewModel"
-        Width="1400"
-        Height="850"
-        ShowInTaskbar="True"
-        CanResize="True"
-        WindowStartupLocation="CenterScreen"
-        Background="{DynamicResource WindowBackgroundBrush}"
-        Title="WinGetX Studio">
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:controls="using:WinGetXAvalonia.Controls"
+    xmlns:layout="using:WinGetXAvalonia.Controls.Layout"
+    xmlns:operation="using:WinGetXAvalonia.Controls.Operation"
+    mc:Ignorable="d"
+    x:Class="WinGetXAvalonia.Views.MainWindow"
+    x:DataType="vm:MainViewModel"
+    Width="1600"
+    MinWidth="1100"
+    MinHeight="800"
+    CanResize="True"
+    WindowState="Maximized"
+    WindowStartupLocation="CenterScreen"
+    Background="{DynamicResource Background}"
+    Title="WinGetX Studio">
+
+    <Window.KeyBindings>
+        <KeyBinding
+            Gesture="Ctrl+K"
+            Command="{Binding Palette.ToggleCommand}"/>
+    </Window.KeyBindings>
 
     <Grid
-        RowDefinitions="*,32"
-        ColumnDefinitions="260,*,12,340">
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        ClipToBounds="True"
+        MinWidth="0"
+        MinHeight="0"
+        ColumnSpacing="0"
+        RowSpacing="0">
 
-        <Border Grid.Column="0"
-                Background="{DynamicResource SidebarBackgroundBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="256"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="{ReflectionBinding IsVisible, ElementName=DetailHost, Converter={StaticResource DetailColumnWidthConverter}}"/>
+            <ColumnDefinition Width="{ReflectionBinding IsVisible, ElementName=OperationsHost, Converter={StaticResource OperationsColumnWidthConverter}}" MaxWidth="260"/>
+        </Grid.ColumnDefinitions>
 
-            <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="32"/>
+        </Grid.RowDefinitions>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <TextBlock
-                    FontSize="28"
-                    FontWeight="Bold"
-                    Text="WinGetX Studio"/>
-
-                <controls:Sidebar
-                    Grid.Row="2"
-                    DataContext="{Binding}"/>
-
-            </Grid>
-
-        </Border>
-
-        <ContentControl
-            Grid.Column="1"
-            Margin="25"
-            Content="{Binding Navigation.CurrentPage}"/>
-
-        <GridSplitter
-            Grid.Column="2"
-            Width="6"
-            ResizeDirection="Columns"
-            ResizeBehavior="PreviousAndNext"/>
-
-        <operation:OperationDrawer
-            Grid.Column="3"
-            DataContext="{Binding OperationDrawer}"/>
+        <!-- Title Bar -->
 
         <Border
-            Grid.Row="1"
+            Grid.Row="0"
             Grid.ColumnSpan="4"
-            Height="32"
             Background="{DynamicResource SurfaceBrush}"
             BorderBrush="{DynamicResource BorderBrush}"
-            BorderThickness="1,1,0,0">
+            BorderThickness="0,0,0,1">
 
             <Grid
-                Margin="12,0"
-                ColumnDefinitions="*,Auto,Auto"
-                ColumnSpacing="18">
+                Margin="20,0"
+                ColumnDefinitions="Auto,*,Auto">
 
-                <TextBlock
-                    VerticalAlignment="Center"
-                    Text="{Binding Footer}"/>
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="10"
+                    VerticalAlignment="Center">
+
+                    <TextBlock
+                        FontSize="15"
+                        FontWeight="SemiBold"
+                        Text="WinGetX Studio"/>
+
+                </StackPanel>
 
                 <TextBlock
                     Grid.Column="1"
+                    HorizontalAlignment="Center"
                     VerticalAlignment="Center"
+                    Opacity="0.55"
                     Text="{Binding StatusText}"/>
 
-                <TextBlock
+                <StackPanel
                     Grid.Column="2"
+                    Orientation="Horizontal"
                     VerticalAlignment="Center"
-                    Text="{Binding BuildDate}"/>
+                    Spacing="8">
+
+                    <Border
+                        Width="8"
+                        Height="8"
+                        CornerRadius="4"
+                        Background="{DynamicResource SuccessBrush}"/>
+
+                </StackPanel>
 
             </Grid>
 
         </Border>
+
+        <!-- Sidebar -->
+
+        <layout:LeftSidebar
+            Grid.Row="1"
+            Grid.Column="0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"/>
+
+        <!-- Main Content -->
+
+        <ScrollViewer
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="24"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            ClipToBounds="True"
+            HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollBarVisibility="Auto">
+
+            <TransitioningContentControl
+                x:Name="MainContentHost"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                ClipToBounds="False"
+                Content="{Binding Navigation.CurrentPage}">
+
+                <TransitioningContentControl.PageTransition>
+                    <CompositePageTransition>
+                        <CompositePageTransition.PageTransitions>
+                            <PageSlide
+                                Duration="0:0:0.15"
+                                Orientation="Horizontal"/>
+                            <CrossFade Duration="0:0:0.15"/>
+                        </CompositePageTransition.PageTransitions>
+                    </CompositePageTransition>
+                </TransitioningContentControl.PageTransition>
+
+            </TransitioningContentControl>
+
+        </ScrollViewer>
+
+        <!-- Detail Host -->
+
+        <layout:DetailHost
+            x:Name="DetailHost"
+            Grid.Row="1"
+            Grid.Column="2"
+            Margin="0,24,0,24"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Title="{Binding DetailTitle}"
+            Subtitle="{Binding DetailSubtitle}"
+            Content="{Binding DetailContent}"
+            IsVisible="{Binding IsDetailVisible}"/>
+
+        <!-- Operations -->
+
+        <layout:RightOperations
+            x:Name="OperationsHost"
+            Grid.Row="1"
+            Grid.Column="3"
+            Margin="0,24,24,24"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            DataContext="{Binding OperationDrawer}"/>
+
+        <!-- Status Bar -->
+
+        <layout:StatusBar
+            Grid.Row="2"
+            Grid.ColumnSpan="4"
+            Height="32"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"/>
+
+        <!-- Command Palette -->
+
+        <controls:CommandPalette
+            Grid.RowSpan="3"
+            Grid.ColumnSpan="4"
+            ZIndex="1000"
+            DataContext="{Binding Palette}"/>
 
     </Grid>
 

@@ -25,4 +25,48 @@
         <Setter Property="FontFamily" Value="Segoe UI Variable"/>
     </Style>
 
+    <Style Selector="Button.fluent">
+        <Setter Property="Height" Value="38"/>
+        <Setter Property="Padding" Value="18,0"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+    </Style>
+
+    <Style Selector="Button.fluent:pointerover">
+        <Setter Property="BorderBrush"
+                Value="{DynamicResource AccentBrush}"/>
+    </Style>
+
+    <Style Selector="Button.fluent:pressed">
+        <Setter Property="Opacity"
+                Value="0.90"/>
+    </Style>
+
+    <Style Selector="TextBox.fluent">
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="Padding" Value="12,0"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background"
+                Value="{DynamicResource SurfaceBrush}"/>
+        <Setter Property="BorderBrush"
+                Value="{DynamicResource BorderBrush}"/>
+    </Style>
+
+    <Style Selector="ScrollViewer.fluent">
+        <Setter Property="HorizontalScrollBarVisibility"
+                Value="Disabled"/>
+        <Setter Property="VerticalScrollBarVisibility"
+                Value="Auto"/>
+    </Style>
+
+    <Style Selector="ListBox.fluent">
+        <Setter Property="BorderThickness"
+                Value="0"/>
+        <Setter Property="Background"
+                Value="Transparent"/>
+    </Style>
+
 </Styles>

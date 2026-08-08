@@ -46,8 +46,9 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Radius.axaml"/>
                 <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Spacing.axaml"/>
-                <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Motion.axaml"/>
+                <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Animation.axaml"/>
                 <ResourceInclude Source="avares://WinGetXAvalonia/Themes/Elevation.axaml"/>
+                <ResourceInclude Source="avares://WinGetXAvalonia/Resources/Icons.axaml"/>
                 <ResourceInclude Source="avares://WinGetXAvalonia/Resources/Studio.axaml"/>
                 <ResourceInclude Source="avares://WinGetXAvalonia/Styles/Converters.axaml"/>
             </ResourceDictionary.MergedDictionaries>
@@ -79,8 +80,8 @@
         <StyleInclude Source="avares://WinGetXAvalonia/Themes/Colors.axaml"/>
         <StyleInclude Source="avares://WinGetXAvalonia/Themes/Typography.axaml"/>
         <StyleInclude Source="avares://WinGetXAvalonia/Themes/Controls.axaml"/>
-        <StyleInclude Source="avares://WinGetXAvalonia/Themes/Cards.axaml"/>
-        <StyleInclude Source="avares://WinGetXAvalonia/Themes/Animations.axaml"/>
+        <StyleInclude Source="avares://WinGetXAvalonia/Themes/Motion.axaml"/>
+        <StyleInclude Source="avares://WinGetXAvalonia/Styles/AppControls.axaml"/>
 
     </Application.Styles>
 

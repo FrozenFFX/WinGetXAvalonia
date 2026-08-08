@@ -9,6 +9,7 @@ namespace WinGetXAvalonia.Core.State;
 public abstract partial class AsyncViewModel : ViewModelBase
 {
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsInitial))]
     [NotifyPropertyChangedFor(nameof(IsLoading))]
     [NotifyPropertyChangedFor(nameof(IsEmpty))]
     [NotifyPropertyChangedFor(nameof(HasError))]
@@ -17,6 +18,8 @@ public abstract partial class AsyncViewModel : ViewModelBase
 
     [ObservableProperty]
     private string? errorMessage;
+
+    public bool IsInitial => State == LoadState.None;
 
     public bool IsLoading => State == LoadState.Loading;
 

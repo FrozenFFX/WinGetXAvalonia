@@ -3,25 +3,107 @@
 
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
              xmlns:vm="using:WinGetXAvalonia.ViewModels"
              xmlns:models="using:WinGetXAvalonia.Models.Operations"
              xmlns:operation="using:WinGetXAvalonia.Controls.Operation"
-             xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
              x:Class="WinGetXAvalonia.Controls.Operation.OperationDrawer"
              x:DataType="vm:OperationDrawerViewModel">
 
-    <Border Background="{DynamicResource SurfaceBrush}"
-            BorderBrush="{DynamicResource BorderBrush}"
-            BorderThickness="1,0,0,0">
+    <Border Background="{DynamicResource Surface}"
+            BorderBrush="{DynamicResource Border}"
+            BorderThickness="1,0,0,0"
+            MinWidth="320"
+            MaxWidth="420">
 
-        <Grid RowDefinitions="Auto,*,Auto">
+<Grid RowDefinitions="Auto,Auto,*,Auto">
 
-            <shared:SectionHeader
-                Margin="16,16,16,0"
-                Title="Operations"
-                Description="{Binding Summary}"/>
+            <StackPanel Margin="16,16,16,0"
+                        Spacing="8">
 
-            <ListBox Grid.Row="1"
+                <TextBlock
+                    FontSize="22"
+                    FontWeight="Bold"
+                    Text="Operations"/>
+
+                <Grid
+                    ColumnDefinitions="Auto,14,Auto,14,Auto,14,Auto">
+
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="6">
+
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource AccentBrush}"
+                            Text="{Binding RunningCount}"/>
+
+                        <TextBlock
+                            Opacity="0.7"
+                            Text="Running"/>
+
+                    </StackPanel>
+
+                    <StackPanel
+                        Grid.Column="2"
+                        Orientation="Horizontal"
+                        Spacing="6">
+
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource WarningBrush}"
+                            Text="{Binding PendingCount}"/>
+
+                        <TextBlock
+                            Opacity="0.7"
+                            Text="Pending"/>
+
+                    </StackPanel>
+
+                    <StackPanel
+                        Grid.Column="4"
+                        Orientation="Horizontal"
+                        Spacing="6">
+
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource SuccessBrush}"
+                            Text="{Binding CompletedCount}"/>
+
+                        <TextBlock
+                            Opacity="0.7"
+                            Text="Completed"/>
+
+                    </StackPanel>
+
+                    <StackPanel
+                        Grid.Column="6"
+                        Orientation="Horizontal"
+                        Spacing="6"
+                        IsVisible="{Binding FailedCount,
+                            Converter={StaticResource PositiveToBoolConverter}}">
+
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource DangerBrush}"
+                            Text="{Binding FailedCount}"/>
+
+                        <TextBlock
+                            Opacity="0.7"
+                            Text="Failed"/>
+
+                    </StackPanel>
+
+                </Grid>
+
+            </StackPanel>
+
+            <Border Grid.Row="1"
+                    Margin="16,12,16,0"
+                    Height="1"
+                    Background="{DynamicResource Border}"/>
+
+            <ListBox Grid.Row="2"
                      Margin="12,12,12,0"
                      BorderThickness="0"
                      Background="Transparent"
@@ -41,7 +123,7 @@
 
             </ListBox>
 
-            <Button Grid.Row="2"
+            <shared:AppButton Grid.Row="3"
                     Margin="12"
                     Content="Clear Completed"
                     Command="{Binding ClearCompletedCommand}"

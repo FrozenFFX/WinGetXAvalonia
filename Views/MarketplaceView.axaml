@@ -1,0 +1,301 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:models="using:WinGetXAvalonia.Models"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    x:Class="WinGetXAvalonia.Views.MarketplaceView"
+    x:DataType="vm:MarketplaceViewModel"
+    x:CompileBindings="False">
+
+    <UserControl.KeyBindings>
+        <KeyBinding
+            Gesture="F5"
+            Command="{Binding LoadCommand}"/>
+    </UserControl.KeyBindings>
+
+    <Grid
+        Margin="24"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        ClipToBounds="True">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <shared:SectionHeader
+            Grid.Row="0"
+            Title="Marketplace"
+            Description="{Binding ResultSummary}"/>
+
+        <!-- Sekmeler -->
+
+        <Grid
+            Grid.Row="1"
+            RowDefinitions="Auto,12">
+
+            <ListBox
+                Grid.Row="0"
+                ItemsSource="{Binding Tabs}"
+                SelectedItem="{Binding SelectedTab}"
+                Background="Transparent"
+                BorderThickness="0"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ScrollViewer.VerticalScrollBarVisibility="Disabled">
+
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" Spacing="8"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="models:MarketplaceTab">
+
+                        <Border
+                            Padding="16,10"
+                            CornerRadius="12"
+                            Background="{DynamicResource CardBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1">
+
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+
+                                <TextBlock
+                                    Text="{Binding Icon}"
+                                    FontSize="18"
+                                    VerticalAlignment="Center"/>
+
+                                <StackPanel Spacing="1">
+
+                                    <TextBlock
+                                        Text="{Binding Title}"
+                                        FontWeight="SemiBold"
+                                        FontSize="14"/>
+
+                                    <TextBlock
+                                        Text="{Binding Description}"
+                                        FontSize="11"
+                                        Opacity="0.6"/>
+
+                                </StackPanel>
+
+                            </StackPanel>
+
+                        </Border>
+
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+            </ListBox>
+
+        </Grid>
+
+        <!-- İçerik -->
+
+        <Grid
+            Grid.Row="3"
+            RowDefinitions="Auto,12,*">
+
+            <Grid
+                Grid.Row="0"
+                ColumnDefinitions="*,Auto"
+                ColumnSpacing="12">
+
+                <shared:SearchBox
+                    Grid.Column="0"
+                    Watermark="Search the marketplace..."
+                    Text="{Binding SearchText}"/>
+
+                <shared:AppButton
+                    Grid.Column="1"
+                    Width="44"
+                    Content="⟳"
+                    ToolTip.Tip="Refresh"
+                    Command="{Binding LoadCommand}"/>
+
+            </Grid>
+
+            <Grid Grid.Row="2">
+
+                <Grid.IsVisible>
+                    <MultiBinding>
+                        <Binding Path="!IsLoading"/>
+                        <Binding Path="!HasError"/>
+                    </MultiBinding>
+                </Grid.IsVisible>
+
+                <ListBox
+                    ItemsSource="{Binding Items}"
+                    SelectedItem="{Binding SelectedItem}"
+                    BorderThickness="0"
+                    Background="Transparent"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel ItemSpacing="12"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:MarketplaceItem">
+
+                            <Border
+                                Width="360"
+                                Padding="18"
+                                CornerRadius="16"
+                                Background="{DynamicResource CardBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1">
+
+                                <StackPanel Spacing="12">
+
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+
+                                        <Border
+                                            Grid.Column="0"
+                                            Width="48"
+                                            Height="48"
+                                            CornerRadius="12"
+                                            Background="{DynamicResource SurfaceBrush}">
+
+                                            <TextBlock
+                                                Text="{Binding Icon}"
+                                                FontSize="24"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"/>
+                                        </Border>
+
+                                        <StackPanel
+                                            Grid.Column="1"
+                                            VerticalAlignment="Center"
+                                            Spacing="1">
+
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+
+                                                <TextBlock
+                                                    Text="{Binding Name}"
+                                                    FontWeight="SemiBold"
+                                                    FontSize="15"
+                                                    TextTrimming="CharacterEllipsis"
+                                                    MaxLines="1"/>
+
+                                                <shared:Badge
+                                                    Background="{DynamicResource AccentBrush}"
+                                                    IsVisible="{Binding Verified}">
+                                                    <TextBlock
+                                                        Text="✓ Verified"
+                                                        FontSize="11"
+                                                        FontWeight="SemiBold"
+                                                        Foreground="{DynamicResource AccentForegroundBrush}"/>
+                                                </shared:Badge>
+
+                                            </StackPanel>
+
+                                            <TextBlock
+                                                Text="{Binding Author}"
+                                                FontSize="12"
+                                                Opacity="0.6"/>
+
+                                        </StackPanel>
+
+                                        <TextBlock
+                                            Grid.Column="2"
+                                            Text="{Binding Version}"
+                                            FontSize="12"
+                                            Opacity="0.6"
+                                            VerticalAlignment="Top"/>
+
+                                    </Grid>
+
+                                    <TextBlock
+                                        Text="{Binding Description}"
+                                        FontSize="13"
+                                        Opacity="0.75"
+                                        TextWrapping="Wrap"
+                                        MaxLines="3"
+                                        TextTrimming="CharacterEllipsis"/>
+
+                                    <StackPanel Orientation="Horizontal" Spacing="14">
+
+                                        <TextBlock
+                                            IsVisible="{Binding ShowRating}">
+                                            <Run Text="★ "
+                                                 Foreground="{DynamicResource AccentBrush}"/>
+                                            <Run Text="{Binding RatingDisplay, Mode=OneWay}"/>
+                                            <Run Text="{Binding RatingCountDisplay, Mode=OneWay}"
+                                                 Foreground="{DynamicResource SubtextBrush}"/>
+                                        </TextBlock>
+
+                                        <TextBlock
+                                            IsVisible="{Binding ShowDownloads}"
+                                            FontSize="12"
+                                            Opacity="0.6">
+                                            <Run Text="⬇ "/>
+                                            <Run Text="{Binding DownloadsDisplay, Mode=OneWay}"/>
+                                        </TextBlock>
+
+                                        <TextBlock
+                                            Text="{Binding Category}"
+                                            FontSize="12"
+                                            Opacity="0.6"/>
+
+                                    </StackPanel>
+
+                                    <shared:AppButton
+                                        Classes="Accent"
+                                        MinWidth="110"
+                                        HorizontalAlignment="Stretch"
+                                        Command="{Binding $parent[ListBox].DataContext.InstallCommand}"
+                                        CommandParameter="{Binding}"
+                                        IsEnabled="{Binding CanInstall}">
+
+                                        <TextBlock
+                                            Text="{Binding InstallText}"/>
+
+                                    </shared:AppButton>
+
+                                </StackPanel>
+
+                            </Border>
+
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                </ListBox>
+
+                <shared:AppEmptyState
+                    IsVisible="{Binding IsEmpty}"
+                    Icon="🛍️"
+                    Title="Nothing here yet"
+                    Description="No marketplace items match this search. Try a different keyword."/>
+
+            </Grid>
+
+            <shared:AppEmptyState
+                Grid.Row="2"
+                IsVisible="{Binding HasError}"
+                Icon="⚠️"
+                Title="Couldn't load the marketplace"
+                Description="{Binding ErrorMessage}"
+                ActionText="Retry"
+                ActionCommand="{Binding LoadCommand}"/>
+
+            <shared:LoadingOverlay
+                Grid.Row="2"
+                IsLoading="{Binding IsLoading}"
+                Message="Loading marketplace..."/>
+
+        </Grid>
+
+    </Grid>
+
+</UserControl>

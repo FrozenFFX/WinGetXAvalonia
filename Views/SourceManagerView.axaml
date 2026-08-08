@@ -10,7 +10,10 @@
     x:Class="WinGetXAvalonia.Views.SourceManagerView"
     x:DataType="vm:SourceManagerViewModel">
 
-    <Grid Margin="20">
+    <Grid Margin="24"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          ClipToBounds="True">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -26,11 +29,28 @@
             Grid.Row="2"
             ColumnDefinitions="*,12,340">
 
-            <Border Classes="card" Padding="10">
+            <shared:AppCard>
 
                 <ListBox
                     ItemsSource="{Binding Sources}"
                     SelectedItem="{Binding SelectedSource}">
+
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Padding" Value="12"/>
+                            <Setter Property="Margin" Value="0,2"/>
+                            <Setter Property="CornerRadius" Value="10"/>
+                        </Style>
+                        <Style Selector="ListBoxItem:pointerover">
+                            <Setter Property="Background" Value="{DynamicResource NavHoverBrush}"/>
+                        </Style>
+                        <Style Selector="ListBoxItem:selected">
+                            <Setter Property="Background" Value="{DynamicResource NavSelectedBrush}"/>
+                        </Style>
+                        <Style Selector="ListBoxItem:selected TextBlock">
+                            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+                        </Style>
+                    </ListBox.Styles>
 
                     <ListBox.ItemTemplate>
                         <DataTemplate x:DataType="models:WingetSource">
@@ -52,7 +72,7 @@
 
                 </ListBox>
 
-            </Border>
+            </shared:AppCard>
 
             <GridSplitter
                 Grid.Column="1"
@@ -64,15 +84,15 @@
                 Grid.Column="2"
                 Spacing="10">
 
-                <Button
+                <shared:AppButton
                     Content="Update"
                     Command="{Binding UpdateCommand}"/>
 
-                <Button
+                <shared:AppButton
                     Content="Reset"
                     Command="{Binding ResetCommand}"/>
 
-                <Button
+                <shared:AppButton
                     Classes="Danger"
                     Content="Remove"
                     Command="{Binding RemoveCommand}"/>
@@ -81,40 +101,14 @@
 
         </Grid>
 
-        <StackPanel
+        <shared:AppEmptyState
             Grid.Row="2"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Spacing="12"
-            IsVisible="{Binding HasError}">
-
-            <TextBlock
-                Text="⚠️"
-                FontSize="46"
-                Opacity="0.35"
-                HorizontalAlignment="Center"/>
-
-            <TextBlock
-                Text="Couldn't load sources"
-                FontSize="18"
-                FontWeight="SemiBold"
-                HorizontalAlignment="Center"/>
-
-            <TextBlock
-                Text="{Binding ErrorMessage}"
-                Opacity="0.65"
-                TextAlignment="Center"
-                TextWrapping="Wrap"
-                MaxWidth="480"
-                HorizontalAlignment="Center"/>
-
-            <Button
-                Margin="0,8,0,0"
-                MinWidth="140"
-                Content="Retry"
-                Command="{Binding RefreshCommand}"
-                HorizontalAlignment="Center"/>
-        </StackPanel>
+            IsVisible="{Binding HasError}"
+            Icon="⚠️"
+            Title="Couldn't load sources"
+            Description="{Binding ErrorMessage}"
+            ActionText="Retry"
+            ActionCommand="{Binding RefreshCommand}"/>
 
         <shared:LoadingOverlay
             Grid.RowSpan="3"

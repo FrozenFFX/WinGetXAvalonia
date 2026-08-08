@@ -10,7 +10,7 @@ using Avalonia.Threading;
 
 namespace WinGetXAvalonia.Services.Notifications;
 
-public sealed class NotificationService
+public sealed class NotificationService : INotificationService
 {
     private const int MaxNotifications = 100;
 
@@ -47,6 +47,18 @@ public sealed class NotificationService
 
         Add(item);
     }
+
+    public void ShowSuccess(string title, string message)
+        => Notify(NotificationType.Success, title, message);
+
+    public void ShowError(string title, string message)
+        => Notify(NotificationType.Error, title, message);
+
+    public void ShowWarning(string title, string message)
+        => Notify(NotificationType.Warning, title, message);
+
+    public void ShowInfo(string title, string message)
+        => Notify(NotificationType.Information, title, message);
 
     private void Add(NotificationModel item)
     {

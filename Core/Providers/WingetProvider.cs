@@ -18,13 +18,14 @@ public sealed class WingetProvider : IPackageProvider
         _winget = winget;
     }
 
-    private async Task<T> WithLoadLockAsync<T>(Func<Task<T>> action)
+    private async Task<T> WithLoadLockAsync<T>(
+        Func<Task<T>> action)
     {
-        await _loadLock.WaitAsync();
+        await _loadLock.WaitAsync().ConfigureAwait(false);
 
         try
         {
-            return await action();
+            return await action().ConfigureAwait(false);
         }
         finally
         {
@@ -40,6 +41,7 @@ public sealed class WingetProvider : IPackageProvider
         var results = WingetParser.ParseSearch(await _winget.Search(query));
 
         results = results
+            .Where(x => !string.IsNullOrWhiteSpace(x.Id))
             .DistinctBy(x => x.Id)
             .OrderBy(x => x.Name)
             .ToList();
@@ -64,6 +66,7 @@ public sealed class WingetProvider : IPackageProvider
         var packages = WingetParser.ParseInstalled(await _winget.GetInstalledApps());
 
         packages = packages
+            .Where(x => !string.IsNullOrWhiteSpace(x.Id))
             .OrderBy(x => x.Name)
             .ToList();
 
@@ -78,6 +81,7 @@ public sealed class WingetProvider : IPackageProvider
         var updates = WingetParser.ParseUpdates(await _winget.GetUpdates());
 
         updates = updates
+            .Where(x => !string.IsNullOrWhiteSpace(x.Id))
             .OrderBy(x => x.Name)
             .ToList();
 
@@ -88,11 +92,23 @@ public sealed class WingetProvider : IPackageProvider
         => WithLoadLockAsync(() => GetHomepageCoreAsync(id));
 
     private async Task<string?> GetHomepageCoreAsync(string id)
-        => WingetParser.ParseHomepage(await _winget.Show(id));
+    {
+        if (string.IsNullOrWhiteSpace(id))
+            return null;
+
+        return WingetParser.ParseHomepage(
+            await _winget.Show(id));
+    }
 
     public Task<PackageDetails> GetDetailsAsync(string id)
         => WithLoadLockAsync(() => GetDetailsCoreAsync(id));
 
     private async Task<PackageDetails> GetDetailsCoreAsync(string id)
-        => WingetParser.ParseDetails(await _winget.Show(id));
+    {
+        if (string.IsNullOrWhiteSpace(id))
+            return new PackageDetails();
+
+        return WingetParser.ParseDetails(
+            await _winget.Show(id));
+    }
 }

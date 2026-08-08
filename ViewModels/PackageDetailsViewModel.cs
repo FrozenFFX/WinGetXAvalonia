@@ -87,13 +87,23 @@ public partial class PackageDetailsViewModel : ObservableObject
         _operations = operations;
         _clipboard = clipboard;
         _launcher = launcher;
+
+        SelectedPackage = null;
+
+        Clear();
     }
 
     public async Task Load(PackageModel? package)
     {
+        if (SelectedPackage?.Id == package?.Id &&
+            !string.IsNullOrWhiteSpace(Name))
+            return;
+
         SelectedPackage = package;
 
-        _health = package is null ? PackageHealth.None : PackageHealthCalculator.Calculate(package);
+        _health = package is null
+            ? PackageHealth.None
+            : PackageHealthCalculator.Calculate(package);
 
         OnHealthChanged();
 
@@ -128,6 +138,21 @@ public partial class PackageDetailsViewModel : ObservableObject
         RefreshDisplay();
     }
 
+    public void Clear()
+    {
+        SelectedPackage = null;
+
+        _details = new();
+
+        _health = PackageHealth.None;
+
+        OnHealthChanged();
+
+        IsLoading = false;
+
+        RefreshDisplay();
+    }
+
     [RelayCommand]
     private async Task Install()
     {
@@ -135,6 +160,8 @@ public partial class PackageDetailsViewModel : ObservableObject
             return;
 
         await _operations.InstallAsync(SelectedPackage.Id);
+
+        await Load(SelectedPackage);
     }
 
     [RelayCommand]
@@ -144,6 +171,8 @@ public partial class PackageDetailsViewModel : ObservableObject
             return;
 
         await _operations.UpdateAsync(SelectedPackage.Id);
+
+        await Load(SelectedPackage);
     }
 
     [RelayCommand]
@@ -153,6 +182,8 @@ public partial class PackageDetailsViewModel : ObservableObject
             return;
 
         await _operations.RemoveAsync(SelectedPackage.Id);
+
+        Clear();
     }
 
     [RelayCommand]
@@ -162,6 +193,8 @@ public partial class PackageDetailsViewModel : ObservableObject
             return;
 
         await _clipboard.CopyTextAsync(SelectedPackage.Id);
+
+        return;
     }
 
     [RelayCommand]
@@ -171,13 +204,20 @@ public partial class PackageDetailsViewModel : ObservableObject
             return;
 
         await _clipboard.CopyTextAsync(SelectedPackage.Name);
+
+        return;
     }
 
     [RelayCommand]
     private async Task OpenHomepage()
     {
-        if (!HasHomepage)
+        if (!Uri.TryCreate(
+                HomepageDisplay,
+                UriKind.Absolute,
+                out _))
+        {
             return;
+        }
 
         await _launcher.OpenUrlAsync(HomepageDisplay);
     }
@@ -213,10 +253,27 @@ public partial class PackageDetailsViewModel : ObservableObject
         OnPropertyChanged(nameof(LicenseDisplay));
         OnPropertyChanged(nameof(ReleaseNotesDisplay));
         OnPropertyChanged(nameof(HasHomepage));
+
+        OnPropertyChanged(nameof(Name));
+        OnPropertyChanged(nameof(Publisher));
+        OnPropertyChanged(nameof(Description));
+        OnPropertyChanged(nameof(InstalledVersion));
+        OnPropertyChanged(nameof(LatestVersion));
+        OnPropertyChanged(nameof(Homepage));
+        OnPropertyChanged(nameof(License));
+        OnPropertyChanged(nameof(Source));
     }
 
     private static string Pick(params string?[] values)
-        => values.FirstOrDefault(v => !string.IsNullOrWhiteSpace(v)) ?? Fallback;
+    {
+        foreach (var value in values)
+        {
+            if (!string.IsNullOrWhiteSpace(value))
+                return value.Trim();
+        }
+
+        return Fallback;
+    }
 
     private void OnHealthChanged()
     {

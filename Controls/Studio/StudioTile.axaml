@@ -4,6 +4,7 @@
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     xmlns:studio="using:WinGetXAvalonia.Controls.Studio"
     x:Class="WinGetXAvalonia.Controls.Studio.StudioTile"
     x:Name="Root">
@@ -27,7 +28,7 @@
 
     </UserControl.Styles>
 
-    <Button
+    <shared:AppButton
         ClipToBounds="True"
         Classes="StudioTile"
         Command="{Binding Command, ElementName=Root}"
@@ -74,6 +75,6 @@
                 Text="{Binding Badge, ElementName=Root}"
                 Status="{Binding BadgeStatus, ElementName=Root}"/>
         </Grid>
-    </Button>
+    </shared:AppButton>
 
 </UserControl>

@@ -10,8 +10,8 @@
     x:Name="Root">
 
     <Border
-        Margin="0,0,0,16"
-        Padding="18"
+        Margin="0,0,0,12"
+        Padding="12"
         CornerRadius="{DynamicResource RadiusMedium}"
         Background="{DynamicResource CardBrush}"
         BorderBrush="{DynamicResource BorderBrush}"
@@ -25,7 +25,8 @@
 
             <shared:SearchBox
                 Grid.Column="0"
-                MinWidth="380"
+                MinWidth="260"
+                MaxWidth="560"
                 HorizontalAlignment="Stretch"
                 Watermark="Search packages..."
                 Text="{Binding SearchText, ElementName=Root}"/>
@@ -35,6 +36,8 @@
             <ComboBox
                 Grid.Column="1"
                 Width="170"
+                Height="42"
+                VerticalAlignment="Center"
                 SelectedItem="{Binding SelectedSort, ElementName=Root}"
                 ItemsSource="{Binding SortItems, ElementName=Root}"/>
 
@@ -43,16 +46,19 @@
             <ComboBox
                 Grid.Column="2"
                 Width="170"
+                Height="42"
+                VerticalAlignment="Center"
                 SelectedItem="{Binding SelectedFilter, ElementName=Root}"
                 ItemsSource="{Binding FilterItems, ElementName=Root}"/>
 
             <!-- Refresh -->
 
-            <Button
+            <shared:AppButton
                 Grid.Column="3"
                 Width="42"
                 Height="42"
                 Padding="0"
+                VerticalAlignment="Center"
                 ToolTip.Tip="Refresh (F5)"
                 Content="⟳"
                 Command="{Binding RefreshCommand, ElementName=Root}"/>
@@ -61,7 +67,7 @@
 
             <Border
                 Grid.Column="4"
-                Padding="12,6"
+                Padding="14,7"
                 CornerRadius="8"
                 Background="{DynamicResource SurfaceBrush}"
                 BorderBrush="{DynamicResource BorderBrush}"
@@ -73,10 +79,12 @@
                     Spacing="8">
 
                     <TextBlock
+                        FontSize="14"
                         Text="📦"
                         VerticalAlignment="Center"/>
 
                     <TextBlock
+                        FontSize="14"
                         FontWeight="SemiBold"
                         VerticalAlignment="Center">
 
@@ -91,9 +99,11 @@
 
             <!-- Action -->
 
-            <Button
+            <shared:AppButton
                 Grid.Column="5"
                 MinWidth="120"
+                Height="42"
+                VerticalAlignment="Center"
                 IsVisible="{Binding ActionCommand,
                 ElementName=Root,
                 Converter={x:Static conv:ObjectConverters.IsNotNull}}"

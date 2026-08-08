@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Avalonia.Threading;
 using WinGetXAvalonia.Interfaces;
 using WinGetXAvalonia.Services.Core;
 
@@ -73,12 +74,23 @@ public sealed class SystemMonitorService : ISystemMonitorService
         {
             while (await _timer.WaitForNextTickAsync(_cts.Token))
             {
-                UpdateMetrics();
+                try
+                {
+                    UpdateMetrics();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "System monitor tick failed");
+                }
             }
         }
         catch (OperationCanceledException)
         {
             // monitor stopped
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "System monitor loop failed");
         }
     }
 
@@ -92,8 +104,20 @@ public sealed class SystemMonitorService : ISystemMonitorService
 
     private double ReadCpuUsage()
     {
-        if (!GetSystemTimes(out var idle, out var kernel, out var user))
+        FILETIME idle;
+        FILETIME kernel;
+        FILETIME user;
+
+        try
+        {
+            if (!GetSystemTimes(out idle, out kernel, out user))
+                return _cpuUsage;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Failed to read CPU usage");
             return _cpuUsage;
+        }
 
         ulong idleTime = ToUInt64(idle);
         ulong totalTime = ToUInt64(kernel) + ToUInt64(user);
@@ -209,7 +233,12 @@ public sealed class SystemMonitorService : ISystemMonitorService
         [CallerMemberName] string? name = null)
     {
         field = Math.Round(value, 1);
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+        if (PropertyChanged is not { } handler)
+            return;
+
+        Dispatcher.UIThread.Post(() =>
+            handler(this, new PropertyChangedEventArgs(name)));
     }
 
     private static ulong ToUInt64(FILETIME ft)

@@ -1,0 +1,30 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<!-- ========================================================== -->
+<!-- MOTION TOKENS — tüm animasyon dili tek kaynaktan gelir.    -->
+<!-- Hiçbir View / bileşen bu değerlerin dışına çıkmaz.         -->
+<!-- ========================================================== -->
+
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+    xmlns:anm="using:Avalonia.Animation.Easings">
+
+    <!-- Süreler (TimeSpan) -->
+    <sys:TimeSpan x:Key="MotionDurationInstant">00:00:00.080</sys:TimeSpan>
+    <sys:TimeSpan x:Key="MotionDurationFast">00:00:00.100</sys:TimeSpan>
+    <sys:TimeSpan x:Key="MotionDurationNormal">00:00:00.150</sys:TimeSpan>
+    <sys:TimeSpan x:Key="MotionDurationSlow">00:00:00.200</sys:TimeSpan>
+    <sys:TimeSpan x:Key="MotionDurationEntrance">00:00:00.250</sys:TimeSpan>
+
+    <!-- Easing'ler -->
+    <anm:CubicEaseOut x:Key="MotionEasingOut"/>
+    <anm:CubicEaseInOut x:Key="MotionEasingInOut"/>
+
+    <!-- Ölçekler -->
+    <x:Double x:Key="MotionHoverScale">1.02</x:Double>
+    <x:Double x:Key="MotionPressScale">0.99</x:Double>
+
+</ResourceDictionary>

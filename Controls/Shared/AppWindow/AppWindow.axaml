@@ -1,0 +1,64 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<ContentControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    xmlns:local="using:WinGetXAvalonia.Controls.Shared"
+    x:Class="WinGetXAvalonia.Controls.Shared.AppWindow">
+
+    <ContentControl.Template>
+        <ControlTemplate TargetType="local:AppWindow">
+
+            <Grid RowDefinitions="Auto,*">
+
+                <Border
+                    Padding="16,10"
+                    Margin="0,0,0,8"
+                    Background="{DynamicResource CardBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="{DynamicResource RadiusMedium}">
+
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
+
+                        <TextBlock
+                            FontSize="{DynamicResource FontSection}"
+                            FontWeight="SemiBold"
+                            VerticalAlignment="Center"
+                            Text="{TemplateBinding Title}"/>
+
+                        <shared:AppButton
+                            Grid.Column="1"
+                            x:Name="PART_Minimize"
+                            Classes="ghost"
+                            Content="🗕"/>
+
+                        <shared:AppButton
+                            Grid.Column="2"
+                            x:Name="PART_Maximize"
+                            Classes="ghost"
+                            Content="🗖"/>
+
+                        <shared:AppButton
+                            Grid.Column="3"
+                            x:Name="PART_Close"
+                            Classes="ghost"
+                            Content="✕"/>
+
+                    </Grid>
+
+                </Border>
+
+                <ContentPresenter
+                    Grid.Row="1"
+                    Content="{TemplateBinding Content}"
+                    ContentTemplate="{TemplateBinding ContentTemplate}"/>
+
+            </Grid>
+
+        </ControlTemplate>
+    </ContentControl.Template>
+
+</ContentControl>

@@ -19,6 +19,7 @@ using WinGetXAvalonia.Views;
 
 namespace WinGetXAvalonia.Tests;
 
+[Collection("UiDispatcher")]
 public class ViewLocatorTests
 {
     private static async Task<object> BuildAsync(object? dataContext)
@@ -101,7 +102,13 @@ public class ViewLocatorTests
         public Task ImportAsync(string file, CancellationToken cancellationToken = default)
             => Task.CompletedTask;
 
+        public Task ImportJsonAsync(string json, CancellationToken cancellationToken = default)
+            => Task.CompletedTask;
+
         public Task ExportAsync(Guid id, string file, CancellationToken cancellationToken = default)
+            => Task.CompletedTask;
+
+        public Task EnsureExampleWorkspacesAsync(CancellationToken cancellationToken = default)
             => Task.CompletedTask;
     }
 

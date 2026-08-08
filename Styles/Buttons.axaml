@@ -5,13 +5,22 @@
 
     <Style Selector="Button">
 
-        <Setter Property="Height" Value="42"/>
-        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Height" Value="36"/>
+        <Setter Property="CornerRadius" Value="12"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Background" Value="{DynamicResource ButtonBackgroundBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="15,0"/>
+        <Setter Property="RenderTransform" Value="scale(1)"/>
+        <Setter Property="RenderTransformOrigin" Value="50%,50%"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition
+                    Property="RenderTransform"
+                    Duration="0:0:0.12"/>
+            </Transitions>
+        </Setter>
 
     </Style>
 
@@ -24,6 +33,7 @@
     <Style Selector="Button:pressed">
 
         <Setter Property="Background" Value="{DynamicResource ButtonPressedBrush}"/>
+        <Setter Property="RenderTransform" Value="scale(0.96)"/>
 
     </Style>
 

@@ -167,7 +167,7 @@ public class BrowseViewModelTests
 
         var vm = Create(provider, new FakeFeaturedCatalog());
 
-        Assert.Equal("No packages found", vm.ResultsSummary);
+        Assert.Equal("", vm.ResultsSummary);
 
         vm.SearchText = "git";
         await vm.SearchCommand.ExecuteAsync(null);
@@ -205,7 +205,7 @@ public class BrowseViewModelTests
         Assert.Equal("", vm.SearchText);
         Assert.False(vm.IsEmpty);
         Assert.False(vm.HasError);
-        Assert.Equal("No packages found", vm.ResultsSummary);
+        Assert.Equal("", vm.ResultsSummary);
     }
 
     [Fact]
@@ -335,12 +335,40 @@ public class BrowseViewModelTests
     }
 
     [Fact]
+    public async Task Search_NoResults_FeedbackShowsSearchedQuery()
+    {
+        var provider = new FakeProvider();
+        var vm = Create(provider, new FakeFeaturedCatalog());
+
+        vm.SearchText = "nothing";
+        await vm.SearchCommand.ExecuteAsync(null);
+
+        Assert.Equal("nothing", vm.LastQuery);
+        Assert.Equal("No results for \"nothing\"", vm.EmptySearchTitle);
+        Assert.False(vm.IsInitial);
+    }
+
+    [Fact]
+    public async Task ClearSearch_ResetsSearchFeedback()
+    {
+        var provider = new FakeProvider();
+        var vm = Create(provider, new FakeFeaturedCatalog());
+
+        vm.SearchText = "nothing";
+        await vm.SearchCommand.ExecuteAsync(null);
+
+        vm.ClearSearchCommand.Execute(null);
+
+        Assert.Null(vm.LastQuery);
+        Assert.True(vm.IsInitial);
+    }
+
+    [Fact]
     public async Task SelectCategory_SearchesUsingCategoryQuery()
     {
         var provider = new FakeProvider();
-        provider.SearchResults["git vscode docker"] = new()
+        provider.SearchResults["vscode"] = new()
         {
-            new() { Id = "Git.Git", Name = "Git" },
             new() { Id = "Microsoft.VisualStudioCode", Name = "Visual Studio Code" }
         };
 
@@ -349,7 +377,7 @@ public class BrowseViewModelTests
 
         await vm.SelectCategoryCommand.ExecuteAsync(category);
 
-        Assert.Equal(2, vm.Results.Count);
+        Assert.Single(vm.Results);
         Assert.Equal(category.Query, vm.SearchText);
     }
 

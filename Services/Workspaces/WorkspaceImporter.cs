@@ -21,4 +21,12 @@ public sealed class WorkspaceImporter
         var json = await File.ReadAllTextAsync(path, cancellationToken);
         return _serializer.Deserialize(json);
     }
+
+    public Task<WorkspaceModel> ImportJsonAsync(
+        string json,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        return Task.FromResult(_serializer.Deserialize(json));
+    }
 }

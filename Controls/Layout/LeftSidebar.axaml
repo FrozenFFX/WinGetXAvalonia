@@ -1,0 +1,127 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:cards="using:WinGetXAvalonia.Controls.Cards"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    xmlns:models="using:WinGetXAvalonia.Models"
+    xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
+    x:Class="WinGetXAvalonia.Controls.Layout.LeftSidebar"
+    x:DataType="vm:MainViewModel">
+
+    <Border
+        Padding="12"
+        Background="{DynamicResource SidebarBrush}"
+        BorderBrush="{DynamicResource BorderBrush}"
+        BorderThickness="0,0,1,0">
+
+        <Grid Margin="12">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                Grid.Row="0"
+                Margin="4,4,4,20"
+                VerticalAlignment="Center"
+                FontSize="18"
+                FontWeight="SemiBold"
+                Text="WinGetX Studio"/>
+
+            <ListBox
+                Grid.Row="2"
+                Classes="sidebar"
+                Padding="0,4,0,4"
+                BorderThickness="0"
+                Background="Transparent"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                ItemsSource="{Binding VisibleMenu}"
+                SelectedItem="{Binding SelectedMenuItem}">
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="models:NavigationItem">
+
+                            <Border
+                                Classes="sidebar-item"
+                                Classes.header="{Binding IsCategoryHeader, Converter={StaticResource BoolToClassConverter}}">
+
+                                <Grid
+                                    ColumnDefinitions="28,12,*,Auto"
+                                    VerticalAlignment="Center">
+
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        FontSize="15"
+                                        Text="{Binding Icon}"/>
+
+                                    <TextBlock
+                                        Grid.Column="2"
+                                        Margin="4,0,0,0"
+                                        VerticalAlignment="Center"
+                                        FontSize="13"
+                                        FontWeight="Medium"
+                                        Text="{Binding Title}"
+                                        TextTrimming="CharacterEllipsis"
+                                        TextWrapping="NoWrap"/>
+
+                                    <TextBlock
+                                        Grid.Column="3"
+                                        FontSize="10"
+                                        VerticalAlignment="Center"
+                                        IsVisible="{Binding IsCategoryHeader}"
+                                        Text="{Binding IsExpanded, Converter={StaticResource ExpanderGlyphConverter}}"/>
+
+                                    <Border
+                                        x:Name="Badge"
+                                        Grid.Column="3"
+                                        MinWidth="20"
+                                        Height="20"
+                                        Padding="6,2"
+                                        CornerRadius="10"
+                                        HorizontalAlignment="Right"
+                                        Background="{DynamicResource AccentBrush}"
+                                        IsVisible="{Binding BadgeCount, Converter={StaticResource PositiveToBoolConverter}}">
+
+                                        <TextBlock
+                                            FontSize="10"
+                                            FontWeight="Bold"
+                                            Foreground="White"
+                                            HorizontalAlignment="Center"
+                                            Text="{Binding BadgeCount}"/>
+
+                                    </Border>
+
+                                </Grid>
+
+                            </Border>
+
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+            </ListBox>
+
+            <shared:AppSidebarSection
+                Grid.Row="3"
+                Title="Version">
+
+                <TextBlock
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Text="{Binding Version}"/>
+
+            </shared:AppSidebarSection>
+
+        </Grid>
+
+    </Border>
+
+</UserControl>

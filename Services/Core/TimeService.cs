@@ -3,6 +3,7 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Avalonia.Threading;
 using WinGetXAvalonia.Interfaces;
 
 namespace WinGetXAvalonia.Services.Core;
@@ -11,12 +12,18 @@ public sealed class TimeService : ITimeService
 {
     private readonly PeriodicTimer _timer = new(TimeSpan.FromSeconds(1));
     private readonly CancellationTokenSource _cts = new();
+    private readonly LoggerService _logger;
 
     private Task? _loop;
 
     private string _greeting = GetGreeting(DateTime.Now.Hour);
     private string _currentTime = DateTime.Now.ToString("HH:mm");
     private string _currentDate = DateTime.Now.ToString("dd MMMM yyyy");
+
+    public TimeService(LoggerService logger)
+    {
+        _logger = logger;
+    }
 
     public string Greeting => _greeting;
 
@@ -61,6 +68,10 @@ public sealed class TimeService : ITimeService
         {
             // service stopped
         }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Time service loop failed");
+        }
     }
 
     private void SetValue(
@@ -69,7 +80,12 @@ public sealed class TimeService : ITimeService
         [CallerMemberName] string? name = null)
     {
         field = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+        if (PropertyChanged is not { } handler)
+            return;
+
+        Dispatcher.UIThread.Post(() =>
+            handler(this, new PropertyChangedEventArgs(name)));
     }
 
     private static string GetGreeting(int hour)

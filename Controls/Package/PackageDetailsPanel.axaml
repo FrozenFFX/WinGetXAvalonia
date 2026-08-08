@@ -15,7 +15,7 @@
     x:DataType="vm:PackageDetailsViewModel"
     x:CompileBindings="False">
 
-    <StackPanel Spacing="16">
+    <StackPanel Spacing="20">
 
         <!-- başlık: ikon + ad -->
         <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
@@ -43,21 +43,21 @@
         </Grid>
 
         <!-- aksiyonlar -->
-        <Button
+        <shared:AppButton
             Command="{Binding UpdateCommand}"
             Classes="Accent"
             HorizontalAlignment="Stretch">
             Update
-        </Button>
+        </shared:AppButton>
 
-        <Button
+        <shared:AppButton
             Command="{Binding RemoveCommand}"
             Classes="Danger"
             HorizontalAlignment="Stretch">
             Remove
-        </Button>
+        </shared:AppButton>
 
-        <Border Height="1" Background="{DynamicResource BorderBrush}"/>
+        <shared:AppSeparator/>
 
         <!-- açıklama -->
         <TextBlock
@@ -66,7 +66,7 @@
             Foreground="{DynamicResource SubtextBrush}"
             TextWrapping="Wrap"/>
 
-        <Border Height="1" Background="{DynamicResource BorderBrush}"/>
+        <shared:AppSeparator/>
 
         <!-- özellikler -->
         <shared:PropertyRow

@@ -1,0 +1,19 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="WinGetXAvalonia.Controls.Shared.AppGrid"
+    x:Name="Root">
+
+    <UniformGrid
+        Columns="2">
+
+        <ContentPresenter
+            Content="{Binding #Root.Content}"
+            ContentTemplate="{Binding #Root.ContentTemplate}"/>
+
+    </UniformGrid>
+
+</UserControl>

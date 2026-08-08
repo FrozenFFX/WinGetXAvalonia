@@ -3,12 +3,11 @@
 
 using Avalonia;
 using Avalonia.Media;
+using Avalonia.Threading;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Interfaces;
 
 namespace WinGetXAvalonia.Services.Theme;
-
-public sealed record AccentDefinition(string Name, string Hex);
 
 public sealed class ThemeManager
 {
@@ -31,8 +30,14 @@ public sealed class ThemeManager
         new("Black", "#000000")
     ];
 
+    private readonly List<AccentDefinition> _customAccents = new();
+
+    public IReadOnlyList<AccentDefinition> AllAccents
+        => Accents.Concat(_customAccents).ToList();
+
     public AccentDefinition CurrentAccent
-        => Accents.FirstOrDefault(a => a.Name == _settings.Settings.AccentColor)
+        => AllAccents.FirstOrDefault(a => a.Name == _settings.Settings.AccentColor)
+           ?? AllAccents.FirstOrDefault(a => a.Hex == _settings.Settings.AccentColor)
            ?? Accents[0];
 
     public ThemeManager(
@@ -42,6 +47,14 @@ public sealed class ThemeManager
         _settings = settings;
         _theme = theme;
         _settings.SettingsChanged += OnSettingsChanged;
+
+        var installed = _settings.Settings.InstalledAccents;
+
+        if (installed is not null)
+        {
+            foreach (var accent in installed)
+                RegisterAccent(accent);
+        }
     }
 
     public void ApplyCurrent()
@@ -50,25 +63,70 @@ public sealed class ThemeManager
         ApplyAccent();
     }
 
-    public void ApplyAccent(AccentDefinition accent)
+    public void RegisterAccent(AccentDefinition accent)
     {
-        if (Application.Current is not { } app)
+        if (string.IsNullOrWhiteSpace(accent.Name) || string.IsNullOrWhiteSpace(accent.Hex))
             return;
 
-        var color = Color.Parse(accent.Hex);
+        if (_customAccents.Any(a => a.Name == accent.Name))
+            return;
 
-        app.Resources["AccentBrush"] = new SolidColorBrush(color);
-        app.Resources["AccentColor"] = color;
-        app.Resources["SystemAccentColor"] = color;
+        _customAccents.Add(accent);
+    }
+
+    public async Task InstallAccent(AccentDefinition accent)
+    {
+        RegisterAccent(accent);
+
+        var installed = _settings.Settings.InstalledAccents;
+
+        if (installed is not null && installed.All(a => a.Name != accent.Name))
+        {
+            installed.Add(accent);
+            await _settings.SaveAsync();
+        }
+
+        ApplyAccent(accent);
+    }
+
+    public void ApplyAccent(AccentDefinition accent)
+    {
+        void Apply()
+        {
+            if (Application.Current is not { } app)
+                return;
+
+            var color = Color.Parse(accent.Hex);
+
+            app.Resources["AccentBrush"] = new SolidColorBrush(color);
+            app.Resources["AccentColor"] = color;
+            app.Resources["SystemAccentColor"] = color;
+        }
+
+        if (Application.Current is null)
+            return;
+
+        if (Dispatcher.UIThread.CheckAccess())
+            Apply();
+        else
+            Dispatcher.UIThread.Post(Apply);
     }
 
     private void OnSettingsChanged(object? sender, SettingsChangedEventArgs e)
     {
-        if (e.ChangedProperties.Contains(nameof(AppSettings.Theme)))
-            ApplyTheme();
+        void Apply()
+        {
+            if (e.ChangedProperties.Contains(nameof(AppSettings.Theme)))
+                ApplyTheme();
 
-        if (e.ChangedProperties.Contains(nameof(AppSettings.AccentColor)))
-            ApplyAccent();
+            if (e.ChangedProperties.Contains(nameof(AppSettings.AccentColor)))
+                ApplyAccent();
+        }
+
+        if (Dispatcher.UIThread.CheckAccess())
+            Apply();
+        else
+            Dispatcher.UIThread.Post(Apply);
     }
 
     private void ApplyTheme()

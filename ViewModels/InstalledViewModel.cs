@@ -4,6 +4,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input.Platform;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
@@ -22,7 +23,7 @@ using WinGetXAvalonia.Services.Operations;
 
 namespace WinGetXAvalonia.ViewModels;
 
-public partial class InstalledViewModel : AsyncViewModel
+public partial class InstalledViewModel : AsyncViewModel, IDisposable
 {
     private readonly IPackageProvider _provider;
     private readonly IOperationQueue _queue;
@@ -31,6 +32,7 @@ public partial class InstalledViewModel : AsyncViewModel
     private readonly PackageCacheService _cache;
 
     private readonly List<PackageModel> _allPackages = new();
+    private IDisposable? _subscription;
     private bool _refreshing;
     private CancellationTokenSource? _searchCts;
 
@@ -80,11 +82,24 @@ public partial class InstalledViewModel : AsyncViewModel
 
         Details = new PackageDetailsViewModel(provider, operations, clipboard, launcher);
 
-        _eventBus.Subscribe<PackageChangedEvent>(e => _ = Refresh());
+        _subscription =
+            _eventBus.Subscribe<PackageChangedEvent>(e =>
+                Dispatcher.UIThread.Post(() => _ = Refresh()));
+
+        Packages.CollectionChanged += (_, _) =>
+        {
+            OnPropertyChanged(nameof(PackageCount));
+            OnPropertyChanged(nameof(SelectedCount));
+        };
     }
 
-    public Task InitializeAsync()
-        => Refresh();
+    public override async Task InitializeAsync()
+    {
+        if (_refreshing)
+            return;
+
+        await Refresh();
+    }
 
     partial void OnSearchTextChanged(string value)
     {
@@ -94,7 +109,7 @@ public partial class InstalledViewModel : AsyncViewModel
         _searchCts = new CancellationTokenSource();
 
         // her tuş basışında filtreyi çalıştırmayalım, 200ms bekleyelim
-        _ = DebounceSearch(_searchCts.Token);
+        DebounceSearch(_searchCts.Token).FireAndForget();
     }
 
     partial void OnSelectedSortChanged(PackageSortMode value)
@@ -127,7 +142,19 @@ public partial class InstalledViewModel : AsyncViewModel
 
             ApplyFilter();
 
-            State = _allPackages.Count == 0 ? LoadState.Empty : LoadState.Loaded;
+            if (SelectedPackage is null && Packages.Count > 0)
+                SelectedPackage = Packages[0];
+
+            if (SelectedPackage is not null)
+            {
+                SelectedPackage = Packages.FirstOrDefault(x =>
+                    x.Id.Equals(SelectedPackage.Id,
+                        StringComparison.OrdinalIgnoreCase));
+            }
+
+            State = _allPackages.Count == 0
+                ? LoadState.Empty
+                : LoadState.Loaded;
 
             _cache.Clear();
         }
@@ -189,6 +216,12 @@ public partial class InstalledViewModel : AsyncViewModel
         if (package is null)
             return;
 
+        if (SelectedPackage == package)
+        {
+            SelectedPackage = null;
+            Details?.Clear();
+        }
+
         Packages.Remove(package);
         _allPackages.Remove(package);
         Unsubscribe(package);
@@ -209,7 +242,7 @@ public partial class InstalledViewModel : AsyncViewModel
         if (package is null)
             return;
 
-        _ = CurrentWindow?.Clipboard?.SetTextAsync(package.Id);
+        CurrentWindow?.Clipboard?.SetTextAsync(package.Id).FireAndForget();
     }
 
     [RelayCommand]
@@ -218,7 +251,7 @@ public partial class InstalledViewModel : AsyncViewModel
         if (package is null)
             return;
 
-        _ = CurrentWindow?.Clipboard?.SetTextAsync(package.Name);
+        CurrentWindow?.Clipboard?.SetTextAsync(package.Name).FireAndForget();
     }
 
     [RelayCommand]
@@ -249,6 +282,9 @@ public partial class InstalledViewModel : AsyncViewModel
     [RelayCommand]
     private async Task RemoveSelected()
     {
+        Details?.Clear();
+        SelectedPackage = null;
+
         var selected = Packages
             .Where(x => x.Selected)
             .ToList();
@@ -288,6 +324,7 @@ public partial class InstalledViewModel : AsyncViewModel
 
         await Refresh();
 
+        Details?.Clear();
         SelectedPackage = null;
     }
 
@@ -310,6 +347,13 @@ public partial class InstalledViewModel : AsyncViewModel
 
         OnPropertyChanged(nameof(PackageCount));
         OnPropertyChanged(nameof(SelectedCount));
+
+        if (SelectedPackage is not null &&
+            !Packages.Contains(SelectedPackage))
+        {
+            SelectedPackage = null;
+            Details?.Clear();
+        }
     }
 
     private void Subscribe(PackageModel package)
@@ -326,16 +370,16 @@ public partial class InstalledViewModel : AsyncViewModel
 
     private void OnPackagePropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        switch (e.PropertyName)
+        if (e.PropertyName == nameof(PackageModel.Selected))
         {
-            case nameof(PackageModel.Selected):
-                OnPropertyChanged(nameof(SelectedCount));
-                break;
+            OnPropertyChanged(nameof(SelectedCount));
+            return;
+        }
 
-            case nameof(PackageModel.Name):
-            case nameof(PackageModel.Version):
-                ApplyFilter();
-                break;
+        if (e.PropertyName == nameof(PackageModel.Name) ||
+            e.PropertyName == nameof(PackageModel.Version))
+        {
+            ApplyFilter();
         }
     }
 
@@ -365,4 +409,17 @@ public partial class InstalledViewModel : AsyncViewModel
 
         return model;
     }
+
+    public void Dispose()
+    {
+        _searchCts?.Cancel();
+        _searchCts?.Dispose();
+
+        _subscription?.Dispose();
+
+        UnsubscribeAll();
+
+        Details?.Clear();
+    }
 }
+

@@ -5,10 +5,16 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <CornerRadius x:Key="RadiusSmall">6</CornerRadius>
+    <CornerRadius x:Key="RadiusXS">6</CornerRadius>
 
-    <CornerRadius x:Key="RadiusMedium">10</CornerRadius>
+    <CornerRadius x:Key="RadiusSmall">8</CornerRadius>
 
-    <CornerRadius x:Key="RadiusLarge">16</CornerRadius>
+    <CornerRadius x:Key="RadiusMedium">12</CornerRadius>
+
+    <CornerRadius x:Key="RadiusCard">16</CornerRadius>
+
+    <CornerRadius x:Key="RadiusLarge">18</CornerRadius>
+
+    <CornerRadius x:Key="RadiusXL">24</CornerRadius>
 
 </ResourceDictionary>

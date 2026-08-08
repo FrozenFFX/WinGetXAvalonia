@@ -4,12 +4,13 @@
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
     xmlns:queue="using:WinGetXAvalonia.Services.Queue"
     x:Class="WinGetXAvalonia.Controls.QueuePanel"
     x:DataType="vm:QueuePanelViewModel">
 
-    <Border Classes="card" Padding="16">
+    <shared:AppCard>
 
         <StackPanel Spacing="12">
 
@@ -86,6 +87,6 @@
 
         </StackPanel>
 
-    </Border>
+    </shared:AppCard>
 
 </UserControl>

@@ -9,7 +9,10 @@
     x:Class="WinGetXAvalonia.Views.SecurityView"
     x:DataType="vm:SecurityViewModel">
 
-    <Grid Margin="20">
+    <Grid Margin="24"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          ClipToBounds="True">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -25,37 +28,37 @@
             Grid.Row="2"
             Columns="4">
 
-            <Border Classes="card" Padding="18">
+            <shared:AppCard>
                 <StackPanel>
                     <TextBlock FontSize="22" Text="🛡"/>
                     <TextBlock FontWeight="SemiBold" Text="Trusted"/>
                     <TextBlock Text="0"/>
                 </StackPanel>
-            </Border>
+            </shared:AppCard>
 
-            <Border Classes="card" Padding="18">
+            <shared:AppCard>
                 <StackPanel>
                     <TextBlock FontSize="22" Text="⚠"/>
                     <TextBlock FontWeight="SemiBold" Text="Warnings"/>
                     <TextBlock Text="0"/>
                 </StackPanel>
-            </Border>
+            </shared:AppCard>
 
-            <Border Classes="card" Padding="18">
+            <shared:AppCard>
                 <StackPanel>
                     <TextBlock FontSize="22" Text="❌"/>
                     <TextBlock FontWeight="SemiBold" Text="Blocked"/>
                     <TextBlock Text="0"/>
                 </StackPanel>
-            </Border>
+            </shared:AppCard>
 
-            <Border Classes="card" Padding="18">
+            <shared:AppCard>
                 <StackPanel>
                     <TextBlock FontSize="22" Text="✔"/>
                     <TextBlock FontWeight="SemiBold" Text="Verified"/>
                     <TextBlock Text="0"/>
                 </StackPanel>
-            </Border>
+            </shared:AppCard>
 
         </UniformGrid>
 

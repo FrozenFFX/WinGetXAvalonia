@@ -9,6 +9,8 @@ public class AppSettings
 
     public string AccentColor { get; set; } = "Blue";
 
+    public List<AccentDefinition> InstalledAccents { get; set; } = new();
+
     public string Language { get; set; } = "English";
 
     public bool StartWithWindows { get; set; }

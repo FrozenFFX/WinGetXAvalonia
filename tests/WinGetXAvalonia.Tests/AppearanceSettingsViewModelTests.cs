@@ -9,6 +9,7 @@ using WinGetXAvalonia.ViewModels.Settings;
 
 namespace WinGetXAvalonia.Tests;
 
+[Collection("UiDispatcher")]
 public class AppearanceSettingsViewModelTests
 {
     private static (string File, SettingsService Settings, AppearanceSettingsViewModel Vm) Create()

@@ -42,7 +42,7 @@
                 BorderThickness="0"
                 Background="Transparent"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
                 ItemsSource="{Binding VisibleMenu}"
                 SelectedItem="{Binding SelectedMenuItem}">
 
@@ -56,6 +56,11 @@
                                 <Grid
                                     ColumnDefinitions="28,12,*,Auto"
                                     VerticalAlignment="Center">
+
+                                    <Border
+                                        Classes="sidebar-item-accent"
+                                        Background="{DynamicResource AccentBrush}"
+                                        IsVisible="{Binding !IsCategoryHeader}"/>
 
                                     <TextBlock
                                         Grid.Column="0"

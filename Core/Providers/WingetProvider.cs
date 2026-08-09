@@ -33,12 +33,29 @@ public sealed class WingetProvider : IPackageProvider
         }
     }
 
+    private static List<string> GetLinesOrThrow(WingetResult result)
+    {
+        if (!result.Success)
+        {
+            throw new InvalidOperationException(
+                string.IsNullOrWhiteSpace(result.Error)
+                    ? $"winget exited with code {result.ExitCode}."
+                    : result.Error);
+        }
+
+        return result.Output
+            .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .ToList();
+    }
+
     public Task<IReadOnlyList<PackageModel>> SearchAsync(string query)
         => WithLoadLockAsync(() => SearchCoreAsync(query));
 
     private async Task<IReadOnlyList<PackageModel>> SearchCoreAsync(string query)
     {
-        var results = WingetParser.ParseSearch(await _winget.Search(query));
+        var result = await _winget.Search(query);
+        var lines = GetLinesOrThrow(result);
+        var results = WingetParser.ParseSearch(lines);
 
         results = results
             .Where(x => !string.IsNullOrWhiteSpace(x.Id))
@@ -63,7 +80,9 @@ public sealed class WingetProvider : IPackageProvider
 
     private async Task<IReadOnlyList<InstalledPackage>> GetInstalledCoreAsync()
     {
-        var packages = WingetParser.ParseInstalled(await _winget.GetInstalledApps());
+        var result = await _winget.GetInstalledApps();
+        var lines = GetLinesOrThrow(result);
+        var packages = WingetParser.ParseInstalled(lines);
 
         packages = packages
             .Where(x => !string.IsNullOrWhiteSpace(x.Id))
@@ -78,7 +97,9 @@ public sealed class WingetProvider : IPackageProvider
 
     private async Task<IReadOnlyList<UpdatePackage>> GetUpdatesCoreAsync()
     {
-        var updates = WingetParser.ParseUpdates(await _winget.GetUpdates());
+        var result = await _winget.GetUpdates();
+        var lines = GetLinesOrThrow(result);
+        var updates = WingetParser.ParseUpdates(lines);
 
         updates = updates
             .Where(x => !string.IsNullOrWhiteSpace(x.Id))
@@ -96,8 +117,9 @@ public sealed class WingetProvider : IPackageProvider
         if (string.IsNullOrWhiteSpace(id))
             return null;
 
-        return WingetParser.ParseHomepage(
-            await _winget.Show(id));
+        var result = await _winget.Show(id);
+        var lines = GetLinesOrThrow(result);
+        return WingetParser.ParseHomepage(lines);
     }
 
     public Task<PackageDetails> GetDetailsAsync(string id)
@@ -108,7 +130,8 @@ public sealed class WingetProvider : IPackageProvider
         if (string.IsNullOrWhiteSpace(id))
             return new PackageDetails();
 
-        return WingetParser.ParseDetails(
-            await _winget.Show(id));
+        var result = await _winget.Show(id);
+        var lines = GetLinesOrThrow(result);
+        return WingetParser.ParseDetails(lines);
     }
 }

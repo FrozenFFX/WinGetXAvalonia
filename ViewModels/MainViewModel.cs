@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using WinGetXAvalonia.Core.State;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
 
@@ -20,6 +21,10 @@ public partial class MainViewModel : ViewModelBase
 
     public CommandPaletteViewModel Palette { get; }
 
+    private readonly LoggerService _logger;
+
+    private readonly IErrorHandlingService _errorHandling;
+
     public string Version => "1.0.0";
 
     public string Footer =>
@@ -32,8 +37,8 @@ public partial class MainViewModel : ViewModelBase
 
     public string StatusText =>
         SelectedMenuItem is null
-            ? "Ready"
-            : $"Ready • {SelectedMenuItem.Title}";
+            ? Status.ToString()
+            : $"{Status} • {SelectedMenuItem.Title}";
 
     public ObservableCollection<NavigationItem> Menu { get; } = new();
 
@@ -65,6 +70,10 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private object? detailContent;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(StatusText))]
+    private AppStatus status = AppStatus.Ready;
+
     public ICommand CloseDetailCommand { get; }
 
     public MainViewModel(
@@ -87,11 +96,15 @@ public partial class MainViewModel : ViewModelBase
         SourceManagerViewModel sourceManager,
         StudioViewModel studio,
         DeveloperViewModel developer,
-        SettingsViewModel settings)
+        SettingsViewModel settings,
+        LoggerService logger,
+        IErrorHandlingService errorHandling)
     {
         Navigation = navigation;
         OperationDrawer = operationDrawer;
         Palette = commandPalette;
+        _logger = logger;
+        _errorHandling = errorHandling;
 
         CloseDetailCommand = new RelayCommand(() => IsDetailVisible = false);
 
@@ -122,7 +135,7 @@ public partial class MainViewModel : ViewModelBase
             Title = "Dashboard",
             Icon = "📊",
             Page = typeof(DashboardViewModel),
-            Category = "Dashboard"
+            Category = "Core"
         });
 
         Menu.Add(new()
@@ -130,7 +143,7 @@ public partial class MainViewModel : ViewModelBase
             Title = "Packages",
             Icon = "📦",
             Page = typeof(InstalledViewModel),
-            Category = "Management"
+            Category = "Package Management"
         });
 
         Menu.Add(new()
@@ -138,7 +151,7 @@ public partial class MainViewModel : ViewModelBase
             Title = "Updates",
             Icon = "🔄",
             Page = typeof(UpdatesViewModel),
-            Category = "Management"
+            Category = "Package Management"
         });
 
         Menu.Add(new()
@@ -146,7 +159,7 @@ public partial class MainViewModel : ViewModelBase
             Title = "History",
             Icon = "🕘",
             Page = typeof(HistoryViewModel),
-            Category = "Management"
+            Category = "Package Management"
         });
 
         Menu.Add(new()
@@ -154,7 +167,7 @@ public partial class MainViewModel : ViewModelBase
             Title = "Discover",
             Icon = "🔍",
             Page = typeof(BrowseViewModel),
-            Category = "Discover"
+            Category = "Package Management"
         });
 
         Menu.Add(new()
@@ -162,7 +175,7 @@ public partial class MainViewModel : ViewModelBase
             Title = "Marketplace",
             Icon = "🛍️",
             Page = typeof(MarketplaceViewModel),
-            Category = "Discover"
+            Category = "Package Management"
         });
 
         Menu.Add(new()
@@ -170,7 +183,7 @@ public partial class MainViewModel : ViewModelBase
             Title = "Workspaces",
             Icon = "🗂",
             Page = typeof(WorkspacesViewModel),
-            Category = "Workspaces"
+            Category = "Workflows"
         });
 
         Menu.Add(new()
@@ -178,7 +191,7 @@ public partial class MainViewModel : ViewModelBase
             Title = "Blueprints",
             Icon = "📐",
             Page = typeof(BlueprintsViewModel),
-            Category = "Workspaces"
+            Category = "Workflows"
         });
 
         Menu.Add(new()
@@ -186,7 +199,7 @@ public partial class MainViewModel : ViewModelBase
             Title = "Automation",
             Icon = "⚙",
             Page = typeof(AutomationViewModel),
-            Category = "Automation"
+            Category = "Workflows"
         });
 
         Menu.Add(new()
@@ -194,7 +207,7 @@ public partial class MainViewModel : ViewModelBase
             Title = "Sources",
             Icon = "🌐",
             Page = typeof(SourceManagerViewModel),
-            Category = "Configuration"
+            Category = "System"
         });
 
         Menu.Add(new()
@@ -202,7 +215,7 @@ public partial class MainViewModel : ViewModelBase
             Title = "Identity",
             Icon = "🪪",
             Page = typeof(SoftwareIdentityViewModel),
-            Category = "Security"
+            Category = "System"
         });
 
         Menu.Add(new()
@@ -210,7 +223,7 @@ public partial class MainViewModel : ViewModelBase
             Title = "Security",
             Icon = "🛡",
             Page = typeof(SecurityViewModel),
-            Category = "Security"
+            Category = "System"
         });
 
         Menu.Add(new()
@@ -218,7 +231,7 @@ public partial class MainViewModel : ViewModelBase
             Title = "Diagnostics",
             Icon = "🩺",
             Page = typeof(DiagnosticsViewModel),
-            Category = "Security"
+            Category = "System"
         });
 
         Menu.Add(new()
@@ -226,7 +239,7 @@ public partial class MainViewModel : ViewModelBase
             Title = "Enterprise",
             Icon = "🏢",
             Page = typeof(EnterpriseViewModel),
-            Category = "Security"
+            Category = "Enterprise"
         });
 
         Menu.Add(new()
@@ -234,7 +247,7 @@ public partial class MainViewModel : ViewModelBase
             Title = "Studio",
             Icon = "🎛",
             Page = typeof(StudioViewModel),
-            Category = "Tools"
+            Category = "Developer"
         });
 
         Menu.Add(new()
@@ -242,7 +255,7 @@ public partial class MainViewModel : ViewModelBase
             Title = "Developer",
             Icon = "🧑‍💻",
             Page = typeof(DeveloperViewModel),
-            Category = "Tools"
+            Category = "Developer"
         });
 
         Menu.Add(new()
@@ -250,7 +263,7 @@ public partial class MainViewModel : ViewModelBase
             Title = "Settings",
             Icon = "⚙",
             Page = typeof(SettingsViewModel),
-            Category = "Tools"
+            Category = "Developer"
         });
 
         BuildMenuGrouped();
@@ -336,37 +349,33 @@ public partial class MainViewModel : ViewModelBase
 
         OnPropertyChanged(nameof(StatusText));
 
-        // sayfaları ilk ziyaret edildiğinde yüklüyoruz, sonra hazır bekliyor
-        if (page is DashboardViewModel dashboard)
-            _ = dashboard.InitializeAsync();
-        else if (page is InstalledViewModel installed)
-            _ = installed.InitializeAsync();
-        else if (page is UpdatesViewModel updates)
-            _ = updates.InitializeAsync();
-        else if (page is BrowseViewModel browse)
-            _ = browse.InitializeAsync();
-        else if (page is HistoryViewModel history)
-            _ = history.InitializeAsync();
-        else if (page is WorkspacesViewModel workspaces)
-            _ = workspaces.InitializeAsync();
-        else if (page is StudioViewModel studio)
-            _ = studio.InitializeAsync();
-        else if (page is BlueprintsViewModel blueprints)
-            _ = blueprints.InitializeAsync();
-        else if (page is MarketplaceViewModel marketplace)
-            _ = marketplace.InitializeAsync();
-        else if (page is EnterpriseViewModel enterprise)
-            _ = enterprise.InitializeAsync();
-        else if (page is SoftwareIdentityViewModel softwareIdentity)
-            _ = softwareIdentity.InitializeAsync();
-        else if (page is AutomationViewModel automation)
-            _ = automation.InitializeAsync();
-        else if (page is SecurityViewModel security)
-            _ = security.InitializeAsync();
-        else if (page is DiagnosticsViewModel diagnostics)
-            _ = diagnostics.InitializeAsync();
-        else if (page is SourceManagerViewModel sourceManager)
-            _ = sourceManager.InitializeAsync();
+        // Sayfalar ilk ziyaret edildiğinde yüklenir. Hata asla uygulamayı
+        // çökertmez; log → history → notification → UI error state zincirinden
+        // geçer (ARTICLE VII).
+        _ = InitializePageSafelyAsync(page);
+    }
+
+    private async Task InitializePageSafelyAsync(ViewModelBase page)
+    {
+        Status = AppStatus.Loading;
+
+        try
+        {
+            await page.InitializeAsync();
+            Status = AppStatus.Ready;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, $"Page initialization failed: {page.GetType().Name}");
+            _errorHandling.HandlePackageOperationError(ex, $"initialize {page.GetType().Name}");
+            Status = AppStatus.Error;
+
+            if (page is AsyncViewModel asyncVm)
+            {
+                asyncVm.ErrorMessage = ex.Message;
+                asyncVm.State = LoadState.Error;
+            }
+        }
     }
 
     public void RefreshStatus()
@@ -393,14 +402,12 @@ public partial class MainViewModel : ViewModelBase
     {
         var categoryDefs = new (string Title, string Icon)[]
         {
-            ("Dashboard", "📊"),
-            ("Management", "📦"),
-            ("Discover", "🔍"),
-            ("Workspaces", "🗂"),
-            ("Automation", "⚙"),
-            ("Configuration", "🌐"),
-            ("Security", "🛡"),
-            ("Tools", "🔧")
+            ("Core", "🎯"),
+            ("Package Management", "📦"),
+            ("Workflows", "🧩"),
+            ("System", "🖥"),
+            ("Enterprise", "🏢"),
+            ("Developer", "🔧")
         };
 
         var grouped = new List<NavigationItem>();
@@ -421,7 +428,7 @@ public partial class MainViewModel : ViewModelBase
             {
                 header = new NavigationItem
                 {
-                    Title = catTitle,
+                    Title = catTitle.ToUpperInvariant(),
                     Icon = catIcon,
                     Category = catTitle,
                     IsCategoryHeader = true

@@ -24,43 +24,80 @@
             Title="Security"
             Description="Security status and package verification."/>
 
-        <UniformGrid
+        <ScrollViewer
             Grid.Row="2"
-            Columns="4">
+            VerticalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Disabled">
 
-            <shared:AppCard>
-                <StackPanel>
-                    <TextBlock FontSize="22" Text="🛡"/>
-                    <TextBlock FontWeight="SemiBold" Text="Trusted"/>
-                    <TextBlock Text="0"/>
-                </StackPanel>
-            </shared:AppCard>
+            <StackPanel Spacing="14">
 
-            <shared:AppCard>
-                <StackPanel>
-                    <TextBlock FontSize="22" Text="⚠"/>
-                    <TextBlock FontWeight="SemiBold" Text="Warnings"/>
-                    <TextBlock Text="0"/>
-                </StackPanel>
-            </shared:AppCard>
+                <UniformGrid Columns="4" Margin="0,0,0,4">
 
-            <shared:AppCard>
-                <StackPanel>
-                    <TextBlock FontSize="22" Text="❌"/>
-                    <TextBlock FontWeight="SemiBold" Text="Blocked"/>
-                    <TextBlock Text="0"/>
-                </StackPanel>
-            </shared:AppCard>
+                    <shared:AppCard>
+                        <StackPanel Spacing="4">
+                            <TextBlock FontSize="22" Text="🛡"/>
+                            <TextBlock FontWeight="SemiBold" Text="Trusted"/>
+                            <TextBlock FontSize="16" FontWeight="SemiBold" Text="{Binding Trusted}"/>
+                        </StackPanel>
+                    </shared:AppCard>
 
-            <shared:AppCard>
-                <StackPanel>
-                    <TextBlock FontSize="22" Text="✔"/>
-                    <TextBlock FontWeight="SemiBold" Text="Verified"/>
-                    <TextBlock Text="0"/>
-                </StackPanel>
-            </shared:AppCard>
+                    <shared:AppCard>
+                        <StackPanel Spacing="4">
+                            <TextBlock FontSize="22" Text="⚠"/>
+                            <TextBlock FontWeight="SemiBold" Text="Warnings"/>
+                            <TextBlock FontSize="16" FontWeight="SemiBold" Text="{Binding Warnings}"/>
+                        </StackPanel>
+                    </shared:AppCard>
 
-        </UniformGrid>
+                    <shared:AppCard>
+                        <StackPanel Spacing="4">
+                            <TextBlock FontSize="22" Text="❌"/>
+                            <TextBlock FontWeight="SemiBold" Text="Blocked"/>
+                            <TextBlock FontSize="16" FontWeight="SemiBold" Text="{Binding Blocked}"/>
+                        </StackPanel>
+                    </shared:AppCard>
+
+                    <shared:AppCard>
+                        <StackPanel Spacing="4">
+                            <TextBlock FontSize="22" Text="✔"/>
+                            <TextBlock FontWeight="SemiBold" Text="Verified"/>
+                            <TextBlock FontSize="16" FontWeight="SemiBold" Text="{Binding Verified}"/>
+                        </StackPanel>
+                    </shared:AppCard>
+
+                </UniformGrid>
+
+                <shared:AppCard>
+
+                    <StackPanel Spacing="10">
+
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock FontSize="22" Text="🔒"/>
+                            <StackPanel Spacing="2">
+                                <TextBlock FontSize="16" FontWeight="SemiBold" Text="{Binding StatusTitle}"/>
+                                <TextBlock
+                                    FontSize="12"
+                                    Opacity="0.6"
+                                    Text="WinGetX does not currently have a real package-signature/security scanner connected."
+                                    TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <shared:AppSeparator/>
+
+                        <TextBlock
+                            FontSize="13"
+                            Opacity="0.75"
+                            TextWrapping="Wrap"
+                            Text="A real security pipeline needs Publisher, Signature, Hash, Source and Verification steps. None of these are wired up yet, so showing fake Trust or Health percentages would be misleading."/>
+
+                    </StackPanel>
+
+                </shared:AppCard>
+
+            </StackPanel>
+
+        </ScrollViewer>
 
     </Grid>
 

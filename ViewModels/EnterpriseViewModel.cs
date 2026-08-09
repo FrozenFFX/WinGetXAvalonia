@@ -4,6 +4,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Core.State;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Backup;
@@ -13,6 +14,7 @@ using WinGetXAvalonia.Services.Enterprise;
 using WinGetXAvalonia.Services.History;
 using WinGetXAvalonia.Services.Interfaces;
 using WinGetXAvalonia.Services.Notifications;
+using WinGetXAvalonia.Services.Performance;
 
 namespace WinGetXAvalonia.ViewModels;
 
@@ -24,6 +26,8 @@ public partial class EnterpriseViewModel : AsyncViewModel
     private readonly IDialogService _dialogs;
     private readonly INotificationService _notifications;
     private readonly IHistoryService _history;
+    private readonly SystemInfoService _system;
+    private readonly IPackageProvider _provider;
     private readonly LoggerService _logger;
 
     private readonly List<CompanyComputer> _allComputers = new();
@@ -37,6 +41,8 @@ public partial class EnterpriseViewModel : AsyncViewModel
     public ObservableCollection<PolicyViolation> Violations { get; } = new();
 
     public ObservableCollection<CompanyComputer> FilteredComputers { get; } = new();
+
+    public ObservableCollection<HeroInfoItem> LocalInfo { get; } = new();
 
     public IReadOnlyList<string> PolicyActionOptions { get; } =
     [
@@ -92,6 +98,12 @@ public partial class EnterpriseViewModel : AsyncViewModel
     [ObservableProperty]
     private int failedInstallations;
 
+    [ObservableProperty]
+    private int pendingUpdateCount;
+
+    [ObservableProperty]
+    private int failedOperationsCount;
+
     public string FleetSummary => $"{Online} of {Total} online";
 
     public bool HasPendingActions => Commands.Any(c => c.Status == RemoteCommandStatus.Pending);
@@ -108,6 +120,29 @@ public partial class EnterpriseViewModel : AsyncViewModel
 
     public string EditorPolicyTitle => IsEditingPolicy ? "Edit Policy" : "New Policy";
 
+    public string LocalMachineName => _system.GetMachineName();
+
+    public string LocalCpuName => _system.GetCpuModel();
+
+    public string LocalCpuThreads => $"{_system.GetCpuThreads()} threads";
+
+    public string LocalRam
+    {
+        get
+        {
+            var (total, _, used) = _system.GetRamInfo();
+            return total > 0 ? $"{used:0.0} / {total:0.0} GB" : "N/A";
+        }
+    }
+
+    public string LocalGpu => _system.GetGpuInfo();
+
+    public string LocalOs => SystemInfoService.GetOsLabel();
+
+    public string LocalWindowsVersion => _system.GetWindowsVersion();
+
+    public string LocalArchitecture => System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString();
+
     public EnterpriseViewModel(
         IEnterpriseService enterprise,
         FleetReportWriter reportWriter,
@@ -115,6 +150,8 @@ public partial class EnterpriseViewModel : AsyncViewModel
         IDialogService dialogs,
         INotificationService notifications,
         IHistoryService history,
+        SystemInfoService system,
+        IPackageProvider provider,
         LoggerService logger)
     {
         _enterprise = enterprise;
@@ -123,13 +160,35 @@ public partial class EnterpriseViewModel : AsyncViewModel
         _dialogs = dialogs;
         _notifications = notifications;
         _history = history;
+        _system = system;
+        _provider = provider;
         _logger = logger;
 
         Commands.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasPendingActions));
+
+        BuildLocalInfo();
     }
 
     public override Task InitializeAsync()
         => LoadAsync();
+
+    private void BuildLocalInfo()
+    {
+        LocalInfo.Clear();
+
+        var (totalRam, _, usedRam) = _system.GetRamInfo();
+        var ramText = totalRam > 0 ? $"{usedRam:0.0} / {totalRam:0.0} GB" : "N/A";
+
+        LocalInfo.Add(new() { Icon = "💻", Label = "Machine", Value = _system.GetMachineName() });
+        LocalInfo.Add(new() { Icon = "🪟", Label = "OS", Value = SystemInfoService.GetOsLabel() });
+        LocalInfo.Add(new() { Icon = "🧩", Label = "Version", Value = _system.GetWindowsVersion() });
+        LocalInfo.Add(new() { Icon = "🧠", Label = "CPU", Value = _system.GetCpuModel() });
+        LocalInfo.Add(new() { Icon = "⚙️", Label = "Threads", Value = $"{_system.GetCpuThreads()} threads" });
+        LocalInfo.Add(new() { Icon = "💾", Label = "RAM", Value = ramText });
+        LocalInfo.Add(new() { Icon = "🎮", Label = "GPU", Value = _system.GetGpuInfo() });
+        LocalInfo.Add(new() { Icon = "🏗", Label = "Architecture", Value = LocalArchitecture });
+        LocalInfo.Add(new() { Icon = "👤", Label = "User", Value = Environment.UserName });
+    }
 
     partial void OnSearchTextChanged(string value) => ApplyFilter();
 
@@ -190,6 +249,8 @@ public partial class EnterpriseViewModel : AsyncViewModel
             foreach (var policy in policies)
                 Policies.Add(policy);
 
+            await LoadLocalStatsAsync();
+
             ApplyFilter();
 
             if (SelectedComputer is null && FilteredComputers.Count > 0)
@@ -202,6 +263,33 @@ public partial class EnterpriseViewModel : AsyncViewModel
             _logger.Error(ex, "Enterprise fleet load failed");
             State = LoadState.Error;
             ErrorMessage = ex.Message;
+        }
+    }
+
+    private async Task LoadLocalStatsAsync()
+    {
+        // Gerçek winget verisinden pending update sayısı
+        try
+        {
+            var updates = await _provider.GetUpdatesAsync();
+            PendingUpdateCount = updates.Count;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Failed to load real update count for Enterprise");
+            PendingUpdateCount = 0;
+        }
+
+        // History üzerinden gerçek başarısız işlem sayısı
+        try
+        {
+            var allHistory = await _history.GetAllAsync();
+            FailedOperationsCount = allHistory.Count(e => !e.Success);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Failed to load history for Enterprise");
+            FailedOperationsCount = 0;
         }
     }
 

@@ -2,6 +2,8 @@
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
 using Avalonia.Platform.Storage;
+using WinGetXAvalonia.Core.Operations;
+using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Backup;
 using WinGetXAvalonia.Services.Core;
@@ -16,6 +18,31 @@ namespace WinGetXAvalonia.Tests;
 
 public class EnterpriseViewModelTests
 {
+    private sealed class FakeProvider : IPackageProvider
+    {
+        public Task<IReadOnlyList<PackageModel>> SearchAsync(string query)
+            => Task.FromResult<IReadOnlyList<PackageModel>>(Array.Empty<PackageModel>());
+
+        public Task<IReadOnlyList<InstalledPackage>> GetInstalledAsync()
+            => Task.FromResult<IReadOnlyList<InstalledPackage>>(Array.Empty<InstalledPackage>());
+
+        public Task<IReadOnlyList<UpdatePackage>> GetUpdatesAsync()
+            => Task.FromResult<IReadOnlyList<UpdatePackage>>(Array.Empty<UpdatePackage>());
+
+        public Task InstallAsync(string id, IOperationProgress? progress = null) => Task.CompletedTask;
+
+        public Task UpgradeAsync(string id, IOperationProgress? progress = null) => Task.CompletedTask;
+
+        public Task UninstallAsync(string id, IOperationProgress? progress = null) => Task.CompletedTask;
+
+        public Task<string?> GetHomepageAsync(string id)
+            => Task.FromResult<string?>(null);
+
+        public Task<PackageDetails> GetDetailsAsync(string id)
+            => Task.FromResult(new PackageDetails());
+    }
+
+
     private sealed class FakeFilePickerService : IFilePickerService
     {
         public Task<IStorageFile?> PickOpenJsonAsync(string title, CancellationToken cancellationToken = default)
@@ -94,6 +121,8 @@ public class EnterpriseViewModelTests
             dialogs,
             notifications,
             history,
+            new WinGetXAvalonia.Services.Performance.SystemInfoService(),
+            new FakeProvider(),
             new LoggerService());
 
         return (vm, service, notifications, history, dialogs);
@@ -124,6 +153,8 @@ public class EnterpriseViewModelTests
             new FakeDialogService(),
             new FakeNotificationService(),
             new FakeHistoryService(),
+            new WinGetXAvalonia.Services.Performance.SystemInfoService(),
+            new FakeProvider(),
             new LoggerService());
 
         await vm.LoadAsync();

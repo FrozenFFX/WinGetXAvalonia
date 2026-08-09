@@ -59,6 +59,8 @@ public partial class SearchBox : UserControl
 
     private void Clear_Click(object? sender, RoutedEventArgs e)
     {
-        Text = string.Empty;
+        // Local value yerine SetCurrentValue kullanılır; aksi halde aktif
+        // TwoWay binding yerel değerle ezilir ve ViewModel'e ulaşmaz.
+        SetCurrentValue(TextProperty, string.Empty);
     }
 }

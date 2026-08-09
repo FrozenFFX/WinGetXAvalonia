@@ -13,9 +13,17 @@ public sealed class DiagnosticsReport
 
     public int ProcessorCount { get; init; }
 
+    public string CpuName { get; init; } = "";
+
     public string MachineName { get; init; } = "";
 
     public string UserName { get; init; } = "";
+
+    public string Ram { get; init; } = "";
+
+    public string Disk { get; init; } = "";
+
+    public string Architecture { get; init; } = "";
 
     public bool WingetInstalled { get; init; }
 }

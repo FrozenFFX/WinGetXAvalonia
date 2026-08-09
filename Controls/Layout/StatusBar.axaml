@@ -1,9 +1,10 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+    <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="using:WinGetXAvalonia.Converters"
     x:Class="WinGetXAvalonia.Controls.Layout.StatusBar"
     x:CompileBindings="False">
 
@@ -38,7 +39,7 @@
                     Height="6"
                     CornerRadius="3"
                     VerticalAlignment="Center"
-                    Background="{DynamicResource SuccessBrush}"/>
+                    Background="{Binding Status, Converter={StaticResource StatusToBrush}}"/>
 
                 <TextBlock
                     VerticalAlignment="Center"

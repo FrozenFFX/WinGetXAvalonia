@@ -1,16 +1,18 @@
 // Copyright (c) 2026 FrozenFFX. All rights reserved.
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
+using WinGetXAvalonia.Models;
+
 namespace WinGetXAvalonia.Interfaces;
 
 public interface IWingetService
 {
-    Task<List<string>> GetInstalledApps();
-    Task<List<string>> GetUpdates();
-    Task<List<string>> Search(string query);
-    Task Install(string id);
-    Task Uninstall(string id);
-    Task Upgrade(string id);
-    Task UpgradeAll();
-    Task<string> Version();
+    Task<WingetResult> GetInstalledApps();
+    Task<WingetResult> GetUpdates();
+    Task<WingetResult> Search(string query);
+    Task<WingetResult> Install(string id);
+    Task<WingetResult> Uninstall(string id);
+    Task<WingetResult> Upgrade(string id);
+    Task<WingetResult> UpgradeAll();
+    Task<WingetResult> Version();
 }

@@ -22,6 +22,8 @@
 
     <conv:NotificationTypeToIconConverter x:Key="NotificationTypeToIcon"/>
 
+    <conv:StatusToBrushConverter x:Key="StatusToBrush"/>
+
     <conv:PackageCardModeToBoolConverter x:Key="IsDefaultCardMode" Match="Default"/>
 
     <conv:PackageCardModeToBoolConverter x:Key="IsUpdatesCardMode" Match="Updates"/>

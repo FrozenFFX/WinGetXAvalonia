@@ -50,7 +50,7 @@ public class DiagnosticsProbeTests
 
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            var header = vm.Menu.FirstOrDefault(m => m.IsCategoryHeader && m.Title == "Management");
+            var header = vm.Menu.FirstOrDefault(m => m.IsCategoryHeader && m.Category == "Package Management");
             var packages = vm.Menu.FirstOrDefault(m => m.Page == typeof(InstalledViewModel));
             var updates = vm.Menu.FirstOrDefault(m => m.Page == typeof(UpdatesViewModel));
 

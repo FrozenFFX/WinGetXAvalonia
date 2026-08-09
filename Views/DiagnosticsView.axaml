@@ -22,86 +22,91 @@
 
         <shared:SectionHeader
             Title="Diagnostics"
-            Description="System and environment information."/>
+            Description="Real system and environment information."/>
 
-        <Grid
+        <ScrollViewer
             Grid.Row="2"
-            ColumnDefinitions="1*,16,1*">
+            VerticalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Disabled">
 
-            <shared:AppCard>
+            <StackPanel Spacing="14">
 
-                <StackPanel Spacing="14">
+                <shared:AppCard>
 
-                    <TextBlock
-                        FontSize="20"
-                        FontWeight="SemiBold"
-                        Text="System"/>
+                    <StackPanel Spacing="14">
 
-                    <Grid
-                        ColumnDefinitions="140,*"
-                        RowDefinitions="Auto,Auto,Auto,Auto">
+                        <TextBlock
+                            FontSize="20"
+                            FontWeight="SemiBold"
+                            Text="System"/>
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                        <Grid
+                            ColumnDefinitions="160,*"
+                            RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                            RowSpacing="8">
 
-                        <TextBlock Opacity="0.6" Text="Windows"/>
-                        <TextBlock Grid.Column="1" Text="{Binding Report.WindowsVersion}"/>
+                            <TextBlock Opacity="0.6" Text="Windows"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Report.WindowsVersion}" TextWrapping="Wrap"/>
 
-                        <TextBlock Grid.Row="1" Opacity="0.6" Text="Machine"/>
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Report.MachineName}"/>
+                            <TextBlock Grid.Row="1" Opacity="0.6" Text="Architecture"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Report.Architecture}"/>
 
-                        <TextBlock Grid.Row="2" Opacity="0.6" Text="User"/>
-                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Report.UserName}"/>
+                            <TextBlock Grid.Row="2" Opacity="0.6" Text="Machine"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Report.MachineName}"/>
 
-                        <TextBlock Grid.Row="3" Opacity="0.6" Text="Processors"/>
-                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Report.ProcessorCount}"/>
+                            <TextBlock Grid.Row="3" Opacity="0.6" Text="User"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Report.UserName}"/>
 
-                    </Grid>
+                            <TextBlock Grid.Row="4" Opacity="0.6" Text="CPU"/>
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Report.CpuName}" TextWrapping="Wrap"/>
 
-                </StackPanel>
+                            <TextBlock Grid.Row="5" Opacity="0.6" Text="Threads"/>
+                            <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding Report.ProcessorCount}"/>
 
-            </shared:AppCard>
+                            <TextBlock Grid.Row="6" Opacity="0.6" Text="RAM"/>
+                            <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding Report.Ram}"/>
 
-            <shared:AppCard
-                Grid.Column="2">
+                            <TextBlock Grid.Row="7" Opacity="0.6" Text="Disk (C:)"/>
+                            <TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding Report.Disk}"/>
 
-                <StackPanel Spacing="14">
+                        </Grid>
 
-                    <TextBlock
-                        FontSize="20"
-                        FontWeight="SemiBold"
-                        Text="Runtime"/>
+                    </StackPanel>
 
-                    <Grid
-                        ColumnDefinitions="140,*"
-                        RowDefinitions="Auto,Auto,Auto">
+                </shared:AppCard>
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                <shared:AppCard>
 
-                        <TextBlock Opacity="0.6" Text=".NET"/>
-                        <TextBlock Grid.Column="1" Text="{Binding Report.DotNetVersion}"/>
+                    <StackPanel Spacing="14">
 
-                        <TextBlock Grid.Row="1" Opacity="0.6" Text="Architecture"/>
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Report.Is64Bit}"/>
+                        <TextBlock
+                            FontSize="20"
+                            FontWeight="SemiBold"
+                            Text="Runtime"/>
 
-                        <TextBlock Grid.Row="2" Opacity="0.6" Text="Winget"/>
-                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Report.WingetInstalled}"/>
+                        <Grid
+                            ColumnDefinitions="160,*"
+                            RowDefinitions="Auto,Auto,Auto"
+                            RowSpacing="8">
 
-                    </Grid>
+                            <TextBlock Opacity="0.6" Text=".NET"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Report.DotNetVersion}"/>
 
-                </StackPanel>
+                            <TextBlock Grid.Row="1" Opacity="0.6" Text="64-bit OS"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Report.Is64Bit}"/>
 
-            </shared:AppCard>
+                            <TextBlock Grid.Row="2" Opacity="0.6" Text="Winget"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Report.WingetInstalled}"/>
 
-        </Grid>
+                        </Grid>
+
+                    </StackPanel>
+
+                </shared:AppCard>
+
+            </StackPanel>
+
+        </ScrollViewer>
 
         <shared:AppEmptyState
             Grid.Row="2"

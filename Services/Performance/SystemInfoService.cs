@@ -1,6 +1,7 @@
 // Copyright (c) 2026 FrozenFFX. All rights reserved.
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
+using System.Management;
 using System.Runtime.InteropServices;
 using WinGetXAvalonia.Models;
 
@@ -21,6 +22,20 @@ public class SystemInfoService
         return Math.Round(((total - free) / total) * 100, 1);
     }
 
+    public (double TotalGb, double AvailableGb, double UsedGb) GetRamInfo()
+    {
+        MEMORYSTATUSEX status = new();
+
+        if (!GlobalMemoryStatusEx(status))
+            return (0, 0, 0);
+
+        double total = status.ullTotalPhys / (1024.0 * 1024.0 * 1024.0);
+        double available = status.ullAvailPhys / (1024.0 * 1024.0 * 1024.0);
+        double used = total - available;
+
+        return (Math.Round(total, 1), Math.Round(available, 1), Math.Round(used, 1));
+    }
+
     public string GetWindowsVersion()
     {
         return Environment.OSVersion.VersionString;
@@ -36,8 +51,55 @@ public class SystemInfoService
         return Environment.ProcessorCount;
     }
 
+    public string GetCpuModel()
+    {
+        if (!OperatingSystem.IsWindows())
+            return "Unknown";
+
+        try
+        {
+            using var searcher = new ManagementObjectSearcher("SELECT Name FROM Win32_Processor");
+            foreach (var obj in searcher.Get())
+            {
+                return obj["Name"]?.ToString() ?? "Unknown";
+            }
+        }
+        catch
+        {
+            return "Unknown";
+        }
+
+        return "Unknown";
+    }
+
+    public string GetGpuInfo()
+    {
+        if (!OperatingSystem.IsWindows())
+            return "Unknown";
+
+        try
+        {
+            using var searcher = new ManagementObjectSearcher("SELECT Name FROM Win32_VideoController");
+            var gpus = new List<string>();
+            foreach (var obj in searcher.Get())
+            {
+                string? name = obj["Name"]?.ToString();
+                if (!string.IsNullOrWhiteSpace(name))
+                    gpus.Add(name);
+            }
+            return gpus.Count > 0 ? string.Join(" / ", gpus) : "Unknown";
+        }
+        catch
+        {
+            return "Unknown";
+        }
+    }
+
     public IReadOnlyList<HeroInfoItem> GetOsDetails()
     {
+        var (totalRam, availableRam, usedRam) = GetRamInfo();
+        var ramText = totalRam > 0 ? $"{usedRam:0.0} / {totalRam:0.0} GB" : $"{GetRamUsage():0.0} % used";
+
         var items = new List<HeroInfoItem>
         {
             new() { Icon = "🪟", Label = "OS", Value = GetOsLabel() },
@@ -46,8 +108,10 @@ public class SystemInfoService
             new() { Icon = "🏗", Label = "Architecture", Value = RuntimeInformation.OSArchitecture.ToString() },
             new() { Icon = "💻", Label = "Machine", Value = Environment.MachineName },
             new() { Icon = "👤", Label = "User", Value = Environment.UserName },
-            new() { Icon = "🧠", Label = "CPU", Value = $"{Environment.ProcessorCount} threads" },
-            new() { Icon = "💾", Label = "RAM", Value = $"{GetRamUsage():0.0} % used" },
+            new() { Icon = "🧠", Label = "CPU", Value = GetCpuModel() },
+            new() { Icon = "⚙️", Label = "CPU Threads", Value = $"{Environment.ProcessorCount} threads" },
+            new() { Icon = "💾", Label = "RAM", Value = ramText },
+            new() { Icon = "🎮", Label = "GPU", Value = GetGpuInfo() },
             new() { Icon = "📅", Label = "Installed", Value = GetInstallDateLabel() },
             new() { Icon = "🏷", Label = "Edition", Value = GetEditionLabel() }
         };

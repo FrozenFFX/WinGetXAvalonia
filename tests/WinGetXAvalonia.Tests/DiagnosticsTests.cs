@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using WinGetXAvalonia.Core.State;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Diagnostics;
+using WinGetXAvalonia.Services.Performance;
 using WinGetXAvalonia.ViewModels;
 
 namespace WinGetXAvalonia.Tests;
@@ -16,7 +17,7 @@ public class DiagnosticsTests
     [Fact]
     public async Task CreateReportAsync_PopulatesAllFields()
     {
-        var service = new DiagnosticsService();
+        var service = new DiagnosticsService(new SystemInfoService());
 
         var report = await service.CreateReportAsync();
 
@@ -26,12 +27,13 @@ public class DiagnosticsTests
         Assert.True(report.ProcessorCount > 0);
         Assert.False(string.IsNullOrWhiteSpace(report.MachineName));
         Assert.False(string.IsNullOrWhiteSpace(report.UserName));
+        Assert.False(string.IsNullOrWhiteSpace(report.Architecture));
     }
 
     [Fact]
     public async Task CreateReportAsync_WingetInstalledMatchesFileSystem()
     {
-        var service = new DiagnosticsService();
+        var service = new DiagnosticsService(new SystemInfoService());
 
         var report = await service.CreateReportAsync();
 

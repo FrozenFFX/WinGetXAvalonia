@@ -249,7 +249,8 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     {
         try
         {
-            WingetVersion = (await _winget.Version()).Trim();
+            var version = await _winget.Version();
+            WingetVersion = version.Success ? version.Output.Trim() : "N/A";
 
             if (_wingetChip is not null)
                 _wingetChip.Value = WingetVersion;
@@ -274,15 +275,19 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
 
             await Task.WhenAll(installedTask, updatesTask, sourcesTask, historyTask);
 
+            var installedLines = ToLines(installedTask.Result);
+            var updateLines = ToLines(updatesTask.Result);
+            var sourceLines = ToLines(sourcesTask.Result);
+
             var stats = DashboardStatisticsCalculator.Calculate(
-                installedLines: installedTask.Result,
-                updateLines: updatesTask.Result,
-                sourceLines: sourcesTask.Result,
+                installedLines: installedLines,
+                updateLines: updateLines,
+                sourceLines: sourceLines,
                 favoriteCount: _favorites.Favorites.Count);
 
             HealthSummary = PackageHealthSummaryCalculator.Calculate(
-                WingetParser.ParseInstalled(installedTask.Result),
-                WingetParser.ParseUpdates(updatesTask.Result),
+                WingetParser.ParseInstalled(installedLines),
+                WingetParser.ParseUpdates(updateLines),
                 historyTask.Result);
 
             BuildActivity(historyTask.Result);
@@ -306,6 +311,13 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
             HealthSummary = PackageHealthSummary.Empty;
         }
     }
+
+    private static List<string> ToLines(WinGetXAvalonia.Models.WingetResult result)
+        => result.Success
+            ? result.Output
+                .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToList()
+            : new List<string>();
 
     private void BuildHeroInfo()
     {

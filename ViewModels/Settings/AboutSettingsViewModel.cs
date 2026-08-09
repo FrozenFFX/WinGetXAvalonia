@@ -84,7 +84,7 @@ public partial class AboutSettingsViewModel : SettingsCategoryViewModel
     {
         try
         {
-            WingetVersion = (await _winget.Version()).Trim();
+            WingetVersion = (await _winget.Version()).Output.Trim();
         }
         catch (Exception ex)
         {

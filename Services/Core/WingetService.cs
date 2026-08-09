@@ -18,14 +18,14 @@ public class WingetService
         _logger = logger;
     }
 
-    private async Task<List<string>> Execute(string arguments)
+    private async Task<WingetResult> Execute(string arguments)
     {
         _logger.Log(arguments);
 
         ProcessStartInfo psi = new()
         {
             FileName = "winget",
-            Arguments = arguments,
+            Arguments = arguments + " --disable-interactivity",
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,
@@ -45,19 +45,18 @@ public class WingetService
 
         if (process.ExitCode != 0)
         {
-            throw new InvalidOperationException(
-                string.IsNullOrWhiteSpace(error) && string.IsNullOrWhiteSpace(output)
-                    ? $"winget exited with code {process.ExitCode}."
-                    : string.IsNullOrWhiteSpace(error) ? output.Trim() : error.Trim());
+            return WingetResult.Fail(
+                process.ExitCode,
+                string.IsNullOrWhiteSpace(error) ? output.Trim() : error.Trim(),
+                output);
         }
 
-        return output
-            .Split(Environment.NewLine)
-            .Where(x => !string.IsNullOrWhiteSpace(x))
-            .ToList();
+        return WingetResult.Ok(
+            process.ExitCode,
+            output);
     }
 
-    private async Task<List<string>> RunWithProgress(
+    private async Task<WingetResult> RunWithProgress(
         string arguments,
         IOperationProgress? progress,
         string launchingMessage)
@@ -67,7 +66,7 @@ public class WingetService
         ProcessStartInfo psi = new()
         {
             FileName = "winget",
-            Arguments = arguments,
+            Arguments = arguments + " --disable-interactivity",
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,
@@ -120,96 +119,138 @@ public class WingetService
 
             progress?.Report(activeProgress, error);
 
-            throw new InvalidOperationException(error);
+            return WingetResult.Fail(
+                process.ExitCode,
+                error,
+                string.Join(Environment.NewLine, lines));
         }
 
-        return lines;
+        return WingetResult.Ok(
+            process.ExitCode,
+            string.Join(Environment.NewLine, lines));
     }
 
-    public Task<List<string>> GetInstalledApps()
-        => Execute("list");
+    public async Task<WingetResult> GetInstalledApps()
+        => await Execute("list");
 
-    public Task<List<string>> GetUpdates()
-        => Execute("upgrade");
+    public async Task<WingetResult> GetUpdates()
+        => await Execute("upgrade");
 
-    public Task<List<string>> Search(string query)
-        => Execute($"search --query \"{query}\" --accept-source-agreements");
+    public async Task<WingetResult> Search(string query)
+        => await Execute($"search --query \"{query}\" --accept-source-agreements");
 
-    public Task<List<string>> GetSources()
-        => Execute("source list");
+    public async Task<WingetResult> GetSources()
+        => await Execute("source list");
 
-    public Task<List<string>> Show(string id)
-        => Execute($"show --id \"{id}\" --exact --accept-source-agreements");
+    public async Task<WingetResult> Show(string id)
+        => await Execute($"show --id \"{id}\" --exact --accept-source-agreements");
 
-    public async Task Install(string id, IOperationProgress? progress = null)
+    public async Task<WingetResult> Install(string id, IOperationProgress? progress = null)
     {
         if (string.IsNullOrWhiteSpace(id))
-            return;
+            return WingetResult.Fail(-1, "Empty package id");
 
         progress?.Report(0, "Preparing installation...");
 
-        await RunWithProgress(
+        var result = await RunWithProgress(
             $"install --id \"{id}\" --exact --accept-package-agreements --accept-source-agreements",
             progress,
             "Launching winget...");
 
-        progress?.Report(100, "Completed");
+        if (result.Success)
+            progress?.Report(100, "Completed");
+
+        return result;
     }
 
-    public async Task Uninstall(string id, IOperationProgress? progress = null)
+    public async Task<WingetResult> Uninstall(string id, IOperationProgress? progress = null)
     {
         if (string.IsNullOrWhiteSpace(id))
-            return;
+            return WingetResult.Fail(-1, "Empty package id");
 
         progress?.Report(0, "Preparing uninstall...");
 
-        await RunWithProgress(
+        var result = await RunWithProgress(
             $"uninstall --id \"{id}\" --exact",
             progress,
             "Launching winget...");
 
-        progress?.Report(100, "Package removed");
+        if (result.Success)
+            progress?.Report(100, "Package removed");
+
+        return result;
     }
 
-    public async Task Uninstall(PackageModel package)
+    public async Task<WingetResult> Uninstall(PackageModel package)
     {
         if (string.IsNullOrWhiteSpace(package.Id))
-            return;
+            return WingetResult.Fail(-1, "Empty package id");
 
-        await RunWithProgress(
+        return await RunWithProgress(
             $"uninstall --id \"{package.Id}\"",
             null,
             "Launching winget...");
     }
 
-    public async Task Upgrade(string id, IOperationProgress? progress = null)
+    public async Task<WingetResult> Upgrade(string id, IOperationProgress? progress = null)
     {
         if (string.IsNullOrWhiteSpace(id))
-            return;
+            return WingetResult.Fail(-1, "Empty package id");
 
         progress?.Report(0, "Preparing update...");
 
-        await RunWithProgress(
+        var result = await RunWithProgress(
             $"upgrade --id \"{id}\" --exact --accept-package-agreements --accept-source-agreements",
             progress,
             "Launching winget...");
 
-        progress?.Report(100, "Update complete");
+        if (result.Success)
+            progress?.Report(100, "Update complete");
+
+        return result;
     }
 
-    public Task UpgradeAll()
+    public async Task<WingetResult> UpgradeAll()
     {
-        Process.Start("winget", "upgrade --all");
-        return Task.CompletedTask;
+        ProcessStartInfo psi = new()
+        {
+            FileName = "winget",
+            Arguments = "upgrade --all --disable-interactivity",
+            UseShellExecute = true
+        };
+
+        try
+        {
+            Process.Start(psi);
+            return WingetResult.Ok(0, "Started");
+        }
+        catch (Exception ex)
+        {
+            return WingetResult.Fail(-1, ex.Message);
+        }
     }
 
-    public Task RefreshSources()
+    public async Task<WingetResult> RefreshSources()
     {
-        Process.Start("winget", "source update");
-        return Task.CompletedTask;
+        ProcessStartInfo psi = new()
+        {
+            FileName = "winget",
+            Arguments = "source update --disable-interactivity",
+            UseShellExecute = true
+        };
+
+        try
+        {
+            Process.Start(psi);
+            return WingetResult.Ok(0, "Started");
+        }
+        catch (Exception ex)
+        {
+            return WingetResult.Fail(-1, ex.Message);
+        }
     }
 
-    public async Task<string> Version()
+    public async Task<WingetResult> Version()
     {
         ProcessStartInfo psi = new()
         {
@@ -220,8 +261,16 @@ public class WingetService
             CreateNoWindow = true
         };
 
-        using Process p = Process.Start(psi)!;
-
-        return await p.StandardOutput.ReadToEndAsync();
+        try
+        {
+            using Process p = Process.Start(psi)!;
+            string output = await p.StandardOutput.ReadToEndAsync();
+            await p.WaitForExitAsync();
+            return WingetResult.Ok(p.ExitCode, output);
+        }
+        catch (Exception ex)
+        {
+            return WingetResult.Fail(-1, ex.Message);
+        }
     }
 }

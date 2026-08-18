@@ -69,7 +69,10 @@
                                     VerticalAlignment="Center"/>
                             </Border>
 
-                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <StackPanel
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Spacing="2">
 
                                 <TextBlock
                                     FontSize="18"
@@ -78,8 +81,7 @@
 
                                 <TextBlock
                                     FontSize="12"
-                                    Opacity="0.6"
-                                    Text="{Binding LocalOs, StringFormat='{}{0} • '}">
+                                    Opacity="0.6">
                                     <TextBlock.Inlines>
                                         <Run Text="{Binding LocalOs, Mode=OneWay}"/>
                                         <Run Text=" • "/>
@@ -528,10 +530,11 @@
 
                                                 <TextBlock FontSize="14" FontWeight="SemiBold" Text="Send PowerShell"/>
 
-                                                <shared:AppTextField
+                                                <TextBox
                                                     AcceptsReturn="True"
                                                     MinHeight="80"
                                                     TextWrapping="Wrap"
+                                                    VerticalContentAlignment="Top"
                                                     Text="{Binding PowerShellScript}"/>
 
                                                 <shared:AppButton
@@ -744,7 +747,7 @@
 
                                     <TextBlock FontSize="12" Opacity="0.7" Text="Name"/>
 
-                                    <shared:AppTextField
+                                    <TextBox
                                         PlaceholderText="e.g. No Steam"
                                         Text="{Binding PolicyName}"/>
 
@@ -765,7 +768,7 @@
 
                                     <TextBlock FontSize="12" Opacity="0.7" Text="Package"/>
 
-                                    <shared:AppTextField
+                                    <TextBox
                                         PlaceholderText="e.g. Steam"
                                         Text="{Binding PolicyPackage}"/>
 
@@ -775,10 +778,11 @@
 
                                     <TextBlock FontSize="12" Opacity="0.7" Text="Description"/>
 
-                                    <shared:AppTextField
+                                    <TextBox
                                         AcceptsReturn="True"
                                         MinHeight="70"
                                         TextWrapping="Wrap"
+                                        VerticalContentAlignment="Top"
                                         PlaceholderText="What does this policy do?"
                                         Text="{Binding PolicyDescription}"/>
 

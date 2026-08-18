@@ -21,6 +21,9 @@ public partial class WorkspacePackage : ObservableObject
     private string source = string.Empty;
 
     [ObservableProperty]
+    private string icon = "";
+
+    [ObservableProperty]
     [JsonIgnore]
     [NotifyPropertyChangedFor(nameof(StateText), nameof(IsBusy), nameof(CanInstall))]
     private PackageInstallState installState = PackageInstallState.NotInstalled;

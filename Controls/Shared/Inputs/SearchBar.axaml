@@ -25,13 +25,14 @@
                 Opacity="0.5"
                 VerticalAlignment="Center"/>
 
-            <shared:AppTextField
+            <TextBox
                 Grid.Column="1"
                 Margin="8,0"
                 Padding="0"
                 Background="Transparent"
                 BorderThickness="0"
                 VerticalAlignment="Center"
+                VerticalContentAlignment="Center"
                 PlaceholderText="{Binding Watermark, ElementName=Root}"
                 Text="{Binding Text, ElementName=Root, Mode=TwoWay}"/>
 

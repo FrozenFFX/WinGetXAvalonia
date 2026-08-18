@@ -11,7 +11,7 @@ namespace WinGetXAvalonia.Converters;
 public sealed class BooleanToSystemPanelWidthConverter : IValueConverter
 {
     private static readonly GridLength s_collapsed = new(0);
-    private static readonly GridLength s_expanded = new(340);
+    private static readonly GridLength s_expanded = new(320);
 
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         => value is true ? s_expanded : s_collapsed;

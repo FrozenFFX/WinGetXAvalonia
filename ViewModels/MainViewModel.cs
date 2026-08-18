@@ -40,6 +40,8 @@ public partial class MainViewModel : ViewModelBase
             ? Status.ToString()
             : $"{Status} • {SelectedMenuItem.Title}";
 
+    public string StatusLabel => Status.ToString();
+
     public ObservableCollection<NavigationItem> Menu { get; } = new();
 
     // Sidebar'ın bağlandığı görünür menü. Daraltılmış kategorilerin öğelerini
@@ -50,10 +52,6 @@ public partial class MainViewModel : ViewModelBase
     public ObservableCollection<NavigationCategory> MenuCategories { get; } = new();
 
     private readonly Dictionary<Type, ViewModelBase> _pages;
-
-    private NavigationItem? _lastPageItem;
-
-    private bool _restoringSelection;
 
     [ObservableProperty]
     private NavigationItem? selectedMenuItem;
@@ -72,6 +70,7 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(StatusText))]
+    [NotifyPropertyChangedFor(nameof(StatusLabel))]
     private AppStatus status = AppStatus.Ready;
 
     public ICommand CloseDetailCommand { get; }
@@ -97,6 +96,8 @@ public partial class MainViewModel : ViewModelBase
         StudioViewModel studio,
         DeveloperViewModel developer,
         SettingsViewModel settings,
+        FavoritesViewModel favorites,
+        GameModeViewModel gameMode,
         LoggerService logger,
         IErrorHandlingService errorHandling)
     {
@@ -127,7 +128,9 @@ public partial class MainViewModel : ViewModelBase
             [typeof(SourceManagerViewModel)] = sourceManager,
             [typeof(StudioViewModel)] = studio,
             [typeof(DeveloperViewModel)] = developer,
-            [typeof(SettingsViewModel)] = settings
+            [typeof(SettingsViewModel)] = settings,
+            [typeof(FavoritesViewModel)] = favorites,
+            [typeof(GameModeViewModel)] = gameMode
         };
 
         Menu.Add(new()
@@ -266,6 +269,14 @@ public partial class MainViewModel : ViewModelBase
             Category = "Developer"
         });
 
+        Menu.Add(new()
+        {
+            Title = "Game Mode",
+            Icon = "🎮",
+            Page = typeof(GameModeViewModel),
+            Category = "Gaming"
+        });
+
         BuildMenuGrouped();
         RebuildVisibleMenu();
 
@@ -314,31 +325,11 @@ public partial class MainViewModel : ViewModelBase
         Navigation.Navigate(_pages[typeof(DashboardViewModel)]);
     }
 
+    // Kategori başlığı tek başına sayfaya gitmez; ToggleGroupCommand grubu
+    // açar/kapar. Burada yalnızca gerçek sayfa öğeleri seçilir.
     partial void OnSelectedMenuItemChanged(NavigationItem? value)
     {
-        if (value is null)
-            return;
-
-        // Kategori başlığı (Management, Configuration, Tools vb.) tıklanınca
-        // sayfaya gitmez; grubu açıp kapatır ve seçimi son sayfada tutar.
-        if (value.IsCategoryHeader)
-        {
-            value.IsExpanded = !value.IsExpanded;
-            RebuildVisibleMenu();
-
-            if (_lastPageItem is not null)
-            {
-                _restoringSelection = true;
-                SelectedMenuItem = _lastPageItem;
-                _restoringSelection = false;
-            }
-
-            return;
-        }
-
-        _lastPageItem = value;
-
-        if (_restoringSelection)
+        if (value is null || value.IsCategoryHeader)
             return;
 
         if (!_pages.TryGetValue(value.Page, out var page))
@@ -353,6 +344,26 @@ public partial class MainViewModel : ViewModelBase
         // çökertmez; log → history → notification → UI error state zincirinden
         // geçer (ARTICLE VII).
         _ = InitializePageSafelyAsync(page);
+    }
+
+    // Accordion davranışı: tıklanan grup açık değilse açılır (diğer gruplar
+    // kapanır); zaten açıksa kapanır. Seçili sayfa hiç değişmez.
+    [RelayCommand]
+    private void ToggleGroup(NavigationItem? header)
+    {
+        if (header is null || !header.IsCategoryHeader)
+            return;
+
+        var expand = !header.IsExpanded;
+
+        foreach (var item in Menu)
+        {
+            if (item.IsCategoryHeader && item != header)
+                item.IsExpanded = false;
+        }
+
+        header.IsExpanded = expand;
+        RebuildVisibleMenu();
     }
 
     private async Task InitializePageSafelyAsync(ViewModelBase page)
@@ -405,6 +416,7 @@ public partial class MainViewModel : ViewModelBase
             ("Core", "🎯"),
             ("Package Management", "📦"),
             ("Workflows", "🧩"),
+            ("Gaming", "🎮"),
             ("System", "🖥"),
             ("Enterprise", "🏢"),
             ("Developer", "🔧")

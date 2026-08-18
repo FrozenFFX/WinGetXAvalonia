@@ -4,6 +4,7 @@
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
     x:Class="WinGetXAvalonia.Controls.Shared.PageHeader"
     x:Name="Root">
 
@@ -34,7 +35,8 @@
             Orientation="Horizontal"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
-            Spacing="10">
+            Spacing="10"
+            IsVisible="{Binding #Root.ActionCommand, Converter={x:Static conv:ObjectConverters.IsNotNull}}">
 
             <Button
                 MinWidth="130"

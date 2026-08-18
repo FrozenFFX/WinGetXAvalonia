@@ -27,13 +27,6 @@
 
     </Style>
 
-    <Style Selector="shared|AppTextField">
-
-        <Setter Property="Height" Value="38"/>
-        <Setter Property="CornerRadius" Value="{DynamicResource RadiusSmall}"/>
-
-    </Style>
-
     <Style Selector="shared|AppIcon">
 
         <Setter Property="AccentBrush" Value="{DynamicResource TextBrush}"/>

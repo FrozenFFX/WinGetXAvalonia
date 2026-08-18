@@ -204,6 +204,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<BrowseViewModel>();
         services.AddSingleton<HistoryViewModel>();
         services.AddSingleton<FavoritesViewModel>();
+        services.AddSingleton<GameModeViewModel>();
         services.AddSingleton<WorkspacesViewModel>();
         services.AddSingleton<BlueprintsViewModel>();
         services.AddSingleton<MarketplaceViewModel>();

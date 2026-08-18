@@ -156,26 +156,6 @@ public partial class WorkspacesViewModel : AsyncViewModel
         OnPropertyChanged(nameof(IsNothingSelected));
         OnPropertyChanged(nameof(HasPackages));
         OnPropertyChanged(nameof(InstallAllLabel));
-
-        if (value is null)
-        {
-            NewWorkspaceName = "";
-            NewWorkspaceDescription = "";
-            IsEditorOpen = false;
-            IsPackageEditorOpen = false;
-            return;
-        }
-
-        _editing = value;
-
-        NewWorkspaceName = value.Name;
-        NewWorkspaceDescription = value.Description;
-
-        IsEditorOpen = true;
-
-        OnPropertyChanged(nameof(IsEditing));
-        OnPropertyChanged(nameof(EditorTitle));
-        OnPropertyChanged(nameof(EditorAction));
     }
 
     [RelayCommand]
@@ -236,6 +216,17 @@ public partial class WorkspacesViewModel : AsyncViewModel
         NotifyEditorState();
 
         State = LoadState.Loaded;
+    }
+
+    [RelayCommand]
+    private void CancelWorkspaceEditor()
+    {
+        _editing = null;
+        IsEditorOpen = false;
+        NewWorkspaceName = "";
+        NewWorkspaceDescription = "";
+
+        NotifyEditorState();
     }
 
     [RelayCommand]

@@ -12,12 +12,12 @@
     x:DataType="vm:WorkspacesViewModel"
     x:CompileBindings="False">
 
-    <StackPanel Spacing="12">
+    <Grid RowDefinitions="Auto,Auto,*">
 
-        <StackPanel Spacing="2">
-
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Spacing="2">
             <TextBlock
-                FontSize="22"
+                FontSize="{DynamicResource FontTitle}"
                 FontWeight="SemiBold"
                 Text="{Binding SelectedWorkspace.Name, ElementName=Root}"/>
 
@@ -27,7 +27,12 @@
                 TextWrapping="Wrap"/>
         </StackPanel>
 
-        <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="8">
+        <!-- Toolbar -->
+        <Grid
+            Grid.Row="1"
+            Margin="0,12,0,0"
+            ColumnDefinitions="Auto,Auto,Auto,Auto,*"
+            ColumnSpacing="8">
 
             <Border
                 Padding="10,5"
@@ -38,17 +43,18 @@
                 VerticalAlignment="Center">
 
                 <TextBlock
+                    FontSize="{DynamicResource FontCaption}"
                     FontWeight="SemiBold"
                     Text="{Binding SelectedWorkspace.PackageCount, StringFormat='📦 {0} Packages', ElementName=Root}"/>
             </Border>
 
             <shared:AppButton
-                Grid.Column="2"
+                Grid.Column="1"
                 Content="＋ Add Package"
                 Command="{Binding OpenPackageEditorCommand, ElementName=Root}"/>
 
             <shared:AppButton
-                Grid.Column="3"
+                Grid.Column="2"
                 Width="42"
                 Padding="0"
                 Content="🔄"
@@ -56,61 +62,33 @@
                 Command="{Binding RefreshInstallStatesCommand, ElementName=Root}"/>
 
             <shared:AppButton
-                Grid.Column="4"
+                Grid.Column="3"
                 Classes="Accent"
                 Content="{Binding InstallAllLabel, ElementName=Root}"
                 Command="{Binding InstallAllCommand, ElementName=Root}"/>
+
         </Grid>
 
-        <Border
-            IsVisible="{Binding IsPackageEditorOpen, ElementName=Root}"
-            Padding="16"
-            CornerRadius="{DynamicResource RadiusMedium}"
-            Background="{DynamicResource SurfaceBrush}"
-            BorderBrush="{DynamicResource BorderBrush}"
-            BorderThickness="1">
-
-            <StackPanel Spacing="8">
-
-                <TextBlock FontWeight="SemiBold" Text="Add package"/>
-
-                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
-
-                    <shared:AppTextField
-                        PlaceholderText="Package ID / name..."
-                        Text="{Binding NewPackageId, ElementName=Root}">
-                        <TextBox.KeyBindings>
-                            <KeyBinding Gesture="Enter" Command="{Binding AddPackageCommand, ElementName=Root}"/>
-                        </TextBox.KeyBindings>
-                    </shared:AppTextField>
-
-                    <shared:AppButton
-                        Grid.Column="1"
-                        MinWidth="88"
-                        Content="Add"
-                        Command="{Binding AddPackageCommand, ElementName=Root}"/>
-
-                    <shared:AppButton
-                        Grid.Column="2"
-                        Width="42"
-                        Padding="0"
-                        Content="✕"
-                        ToolTip.Tip="Cancel"
-                        Command="{Binding CancelPackageEditorCommand, ElementName=Root}"/>
-                </Grid>
-            </StackPanel>
-        </Border>
-
+        <!-- Package list -->
         <ListBox
+            Grid.Row="2"
             ItemsSource="{Binding SelectedWorkspace.Packages, ElementName=Root}"
+            Margin="0,12,0,0"
             BorderThickness="0"
             Background="Transparent">
+
+            <ListBox.Styles>
+                <Style Selector="ListBoxItem">
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="Margin" Value="0,0,0,6"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                </Style>
+            </ListBox.Styles>
 
             <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="models:WorkspacePackage">
 
                     <Border
-                        Margin="0,0,0,8"
                         Padding="12,8"
                         CornerRadius="{DynamicResource RadiusMedium}"
                         Background="{DynamicResource SurfaceBrush}"
@@ -126,13 +104,12 @@
                                 Background="{DynamicResource CardBrush}">
 
                                 <TextBlock
-                                    FontSize="12"
+                                    FontSize="{DynamicResource FontSecondary}"
                                     FontWeight="SemiBold"
                                     Text="{Binding StateText}"/>
                             </Border>
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="1">
-
                                 <TextBlock
                                     FontWeight="SemiBold"
                                     Text="{Binding DisplayName}"
@@ -140,7 +117,7 @@
 
                                 <TextBlock
                                     Opacity="0.7"
-                                    FontSize="12"
+                                    FontSize="{DynamicResource FontCaption}"
                                     Text="{Binding Id}"
                                     TextTrimming="CharacterEllipsis"/>
                             </StackPanel>
@@ -148,6 +125,7 @@
                             <shared:AppButton
                                 Grid.Column="2"
                                 IsVisible="{Binding CanInstall}"
+                                MinWidth="72"
                                 Content="Install"
                                 Command="{Binding $parent[ListBox].DataContext.InstallPackageCommand}"
                                 CommandParameter="{Binding}"/>
@@ -155,23 +133,32 @@
                             <shared:AppButton
                                 Grid.Column="3"
                                 Classes="Danger"
-                                Width="42"
+                                Width="36"
+                                Height="36"
                                 Padding="0"
                                 Content="✕"
                                 ToolTip.Tip="Remove from workspace"
                                 Command="{Binding $parent[ListBox].DataContext.RemovePackageCommand}"
                                 CommandParameter="{Binding}"/>
+
                         </Grid>
+
                     </Border>
+
                 </DataTemplate>
             </ListBox.ItemTemplate>
+
         </ListBox>
 
+        <!-- Empty state -->
         <shared:AppEmptyState
+            Grid.Row="2"
             IsVisible="{Binding !HasPackages, ElementName=Root}"
+            HorizontalAlignment="Left"
             Icon="📦"
             Title="No packages yet"
             Description="Add packages to turn this workspace into a one-click setup."/>
-    </StackPanel>
+
+    </Grid>
 
 </UserControl>

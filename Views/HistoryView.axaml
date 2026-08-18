@@ -85,8 +85,8 @@
                 <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="10">
 
                     <shared:SearchBox
-                        MinWidth="320"
-                        MaxWidth="560"
+                        MinWidth="0"
+                        MaxWidth="1200"
                         HorizontalAlignment="Stretch"
                         Watermark="Search history..."
                         Text="{Binding SearchText}"/>

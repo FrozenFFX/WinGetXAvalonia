@@ -30,32 +30,20 @@
     </Style>
 
     <!-- ======================================================- -->
-    <!-- Border.sidebar-item — item yüzeyi.                      -->
-    <!-- Seçim değişiminde eski küçülür, yeni büyür (scale).     -->
+    <!-- Border.sidebar-item — item yüzeyi.                       -->
+    <!-- Scale yok; yalnızca arka plan + accent çubuğu.          -->
     <!-- ======================================================- -->
     <Style Selector="Border.sidebar-item">
         <Setter Property="MinHeight" Value="44"/>
         <Setter Property="Padding" Value="12,0"/>
         <Setter Property="CornerRadius" Value="10"/>
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="RenderTransformOrigin" Value="50%,50%"/>
-        <Setter Property="RenderTransform" Value="translate(0,0) scale(1)"/>
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Transitions">
             <Transitions>
                 <BrushTransition Property="Background"
                                  Duration="{DynamicResource MotionDurationNormal}"
                                  Easing="{DynamicResource MotionEasingOut}"/>
-                <BrushTransition Property="BorderBrush"
-                                 Duration="{DynamicResource MotionDurationNormal}"
-                                 Easing="{DynamicResource MotionEasingOut}"/>
-                <TransformOperationsTransition Property="RenderTransform"
-                                               Duration="{DynamicResource MotionDurationNormal}"
-                                               Easing="{DynamicResource MotionEasingOut}"/>
-                <BoxShadowsTransition Property="BoxShadow"
-                                      Duration="{DynamicResource MotionDurationNormal}"
-                                      Easing="{DynamicResource MotionEasingOut}"/>
             </Transitions>
         </Setter>
     </Style>
@@ -64,12 +52,14 @@
         <Setter Property="Background" Value="{DynamicResource NavHoverBrush}"/>
     </Style>
 
-    <!-- Seçili: arka plan + accent border + glow (madde 6). -->
+    <!-- Item metni — taban font. Başlıklar (header) aşağıda küçülür. -->
+    <Style Selector="Border.sidebar-item Grid TextBlock">
+        <Setter Property="FontSize" Value="13"/>
+    </Style>
+
+    <!-- Seçili: accent background + accent sol çubuğu (madde 6). -->
     <Style Selector="ListBox.sidebar ListBoxItem:selected Border.sidebar-item">
         <Setter Property="Background" Value="{DynamicResource NavSelectedBrush}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
-        <Setter Property="BoxShadow" Value="{DynamicResource AccentGlow}"/>
-        <Setter Property="RenderTransform" Value="translate(0,0) scale(1.02)"/>
     </Style>
 
     <!-- Seçili iken icon + title accent renge geçer. -->
@@ -79,16 +69,15 @@
 
     <!-- ======================================================- -->
     <!-- Kategori başlığı (Management, Configuration, Tools...).  -->
-    <!-- Alt başlık gibi görünür; tıklanınca grubun ilk sayfasına -->
-    <!-- gider, seçim aksanı almaz.                               -->
+    <!-- Sadece grubu açar/kapar; sayfaya geçmez. Chevron durumu -->
+    <!-- gösterir: ▸ = kapalı, ▾ = açık (madde 5).               -->
     <!-- ======================================================- -->
     <Style Selector="Border.sidebar-item.header">
         <Setter Property="MinHeight" Value="30"/>
         <Setter Property="Padding" Value="12,0"/>
         <Setter Property="Margin" Value="0,6,0,0"/>
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="BoxShadow" Value="{DynamicResource Elevation0}"/>
+        <Setter Property="BorderThickness" Value="0"/>
     </Style>
 
     <Style Selector="Border.sidebar-item.header Grid TextBlock">
@@ -97,15 +86,22 @@
         <Setter Property="Opacity" Value="0.55"/>
     </Style>
 
+    <Style Selector="Border.sidebar-item.header Grid TextBlock#Chevron">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{DynamicResource SubtextBrush}"/>
+        <Setter Property="Opacity" Value="0.55"/>
+    </Style>
+
     <Style Selector="ListBox.sidebar ListBoxItem:pointerover Border.sidebar-item.header">
         <Setter Property="Background" Value="{DynamicResource NavHoverBrush}"/>
     </Style>
 
+    <Style Selector="ListBox.sidebar ListBoxItem:pointerover Border.sidebar-item.header Grid TextBlock#Chevron">
+        <Setter Property="Opacity" Value="0.8"/>
+    </Style>
+
     <Style Selector="ListBox.sidebar ListBoxItem:selected Border.sidebar-item.header">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="BoxShadow" Value="{DynamicResource Elevation0}"/>
-        <Setter Property="RenderTransform" Value="translate(0,0) scale(1)"/>
     </Style>
 
     <Style Selector="ListBox.sidebar ListBoxItem:selected Border.sidebar-item.header Grid TextBlock">

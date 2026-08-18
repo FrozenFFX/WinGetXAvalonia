@@ -28,10 +28,29 @@
                 Title="Dashboard"
                 Description="Manage packages and monitor your system."/>
 
-            <controls:NotificationBell
+            <StackPanel
                 Grid.Column="1"
+                Orientation="Horizontal"
                 VerticalAlignment="Center"
-                DataContext="{Binding Notifications}"/>
+                Spacing="8">
+
+                <shared:AppButton
+                    Height="38"
+                    MinWidth="96"
+                    Classes="ghost"
+                    Content="↻ Refresh"
+                    Command="{Binding RefreshCommand}"/>
+
+                <ProgressBar
+                    Width="20"
+                    Height="20"
+                    IsIndeterminate="True"
+                    IsVisible="{Binding IsRefreshing}"/>
+
+                <controls:NotificationBell
+                    DataContext="{Binding Notifications}"/>
+
+            </StackPanel>
 
         </Grid>
 
@@ -42,7 +61,7 @@
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="16"/>
                 <ColumnDefinition Width="{Binding SystemPanelVisible, Converter={StaticResource SystemPanelWidthConverter}}"/>
             </Grid.ColumnDefinitions>
 
@@ -67,29 +86,29 @@
 
                         <cards:StatCard
                             Icon="📦"
-                            Secondary="{Binding Favorites, StringFormat='{}{0} favorites'}"
+                            Secondary="{Binding FavoritesDisplay, StringFormat='{}{0} favorites'}"
                             Subtitle="Installed"
-                            Value="{Binding Installed, StringFormat='{}{0:N0}'}"
+                            Value="{Binding InstalledDisplay}"
                             Command="{Binding OpenPackagesCommand}"/>
 
                         <cards:StatCard
                             Icon="⬆"
-                            Secondary="{Binding Updates, StringFormat='{}{0} pending'}"
+                            Secondary="{Binding UpdatesDisplay, StringFormat='{}{0} pending'}"
                             Subtitle="Updates"
-                            Value="{Binding Updates, StringFormat='{}{0:N0}'}"
+                            Value="{Binding UpdatesDisplay}"
                             Command="{Binding UpdateAllCommand}"/>
 
                         <cards:StatCard
                             Icon="📜"
                             Subtitle="History"
-                            Value="{Binding History, StringFormat='{}{0:N0}'}"
+                            Value="{Binding HistoryDisplay}"
                             Command="{Binding OpenHistoryCommand}"/>
 
                         <cards:StatCard
                             Icon="🌐"
-                            Secondary="{Binding Favorites, StringFormat='{}{0} pinned'}"
+                            Secondary="{Binding FavoritesDisplay, StringFormat='{}{0} pinned'}"
                             Subtitle="Sources"
-                            Value="{Binding Sources, StringFormat='{}{0:N0}'}"
+                            Value="{Binding SourcesDisplay}"
                             Command="{Binding RefreshSourcesCommand}"/>
 
                     </UniformGrid>
@@ -97,7 +116,8 @@
                     <!-- Recent Activity | Notifications -->
 
                     <Grid
-                        ColumnDefinitions="1.3*,18,1*">
+                        ColumnDefinitions="1.3*,18,1*"
+                        VerticalAlignment="Stretch">
 
                         <!-- Recent Activity -->
 
@@ -114,9 +134,12 @@
 
                                     <shared:AppButton
                                         Grid.Column="1"
-                                        Width="110"
-                                        Height="36"
-                                        Content="Refresh"
+                                        Classes="ghost"
+                                        Width="34"
+                                        Height="34"
+                                        Padding="0"
+                                        Content="↻"
+                                        ToolTip.Tip="Refresh"
                                         Command="{Binding RefreshCommand}"/>
 
                                 </Grid>
@@ -228,10 +251,22 @@
 
                             <StackPanel Spacing="14">
 
-                                <TextBlock
-                                    FontSize="20"
-                                    FontWeight="SemiBold"
-                                    Text="Notifications"/>
+                                <Grid ColumnDefinitions="*,Auto">
+
+                                    <TextBlock
+                                        FontSize="20"
+                                        FontWeight="SemiBold"
+                                        Text="Notifications"/>
+
+                                    <shared:AppButton
+                                        Grid.Column="1"
+                                        Classes="ghost"
+                                        Height="34"
+                                        Padding="12,0"
+                                        Content="View all →"
+                                        Command="{Binding ShowNotificationsDetailsCommand}"/>
+
+                                </Grid>
 
                                 <ItemsControl
                                     ItemsSource="{Binding Notifications.Items}"
@@ -624,7 +659,7 @@
                                     <ProgressBar
                                         Height="8"
                                         Maximum="100"
-                                        Value="{Binding HealthScore}"/>
+                                        Value="{Binding HealthProgressValue}"/>
 
                                     <Grid ColumnDefinitions="*,Auto">
 
@@ -635,7 +670,7 @@
                                         <TextBlock
                                             Grid.Column="1"
                                             FontWeight="SemiBold"
-                                            Text="{Binding HealthScore, StringFormat='{}{0}%'}"/>
+                                            Text="{Binding HealthScoreDisplay}"/>
 
                                     </Grid>
 

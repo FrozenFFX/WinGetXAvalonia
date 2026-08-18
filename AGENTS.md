@@ -301,6 +301,20 @@ Plan dondurulmuştur. Her oturum tek bir hedefe sahiptir:
 
 ==================================================
 
+## ARTICLE XVII
+### BUILD
+
+Build'den önce çalışan uygulama örneği kapatılır:
+
+```
+Get-Process -Name WinGetXAvalonia | Stop-Process -Force
+```
+
+Çalışan örnek exe'yi kilitleyip MSB3027/MSB3021 hatalarına yol açar.
+Kapatmadan build yapılmaz.
+
+==================================================
+
 ## ARTICLE XVI
 ### SAHİPLİK
 

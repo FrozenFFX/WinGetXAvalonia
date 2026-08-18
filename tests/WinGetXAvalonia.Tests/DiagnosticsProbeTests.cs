@@ -65,7 +65,7 @@ public class DiagnosticsProbeTests
             Assert.IsType<InstalledViewModel>(vm.Navigation.CurrentPage);
 
             // Başlık tıklanınca sayfa değişmemeli; sadece grup kapanmalı.
-            vm.SelectedMenuItem = header;
+            vm.ToggleGroupCommand.Execute(header);
 
             Assert.False(header.IsExpanded);
             Assert.Equal("Packages", vm.SelectedMenuItem?.Title);
@@ -75,7 +75,7 @@ public class DiagnosticsProbeTests
             Assert.Contains(header, vm.VisibleMenu);
 
             // Tekrar tıklanınca grup açılmalı.
-            vm.SelectedMenuItem = header;
+            vm.ToggleGroupCommand.Execute(header);
 
             Assert.True(header.IsExpanded);
             Assert.Equal("Packages", vm.SelectedMenuItem?.Title);

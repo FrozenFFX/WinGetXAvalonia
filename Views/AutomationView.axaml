@@ -175,7 +175,7 @@
 
                             <TextBlock FontSize="12" Opacity="0.7" Text="Name"/>
 
-                            <shared:AppTextField
+                            <TextBox
                                 PlaceholderText="Automation name"
                                 Text="{Binding Name}"/>
 
@@ -185,7 +185,7 @@
 
                             <TextBlock FontSize="12" Opacity="0.7" Text="Trigger"/>
 
-                            <shared:AppTextField
+                            <TextBox
                                 PlaceholderText="e.g. On update available, On startup"
                                 Text="{Binding Trigger}"/>
 
@@ -195,7 +195,7 @@
 
                             <TextBlock FontSize="12" Opacity="0.7" Text="Condition"/>
 
-                            <shared:AppTextField
+                            <TextBox
                                 PlaceholderText="When this condition is met"
                                 Text="{Binding Condition}"/>
 
@@ -205,7 +205,7 @@
 
                             <TextBlock FontSize="12" Opacity="0.7" Text="Action"/>
 
-                            <shared:AppTextField
+                            <TextBox
                                 PlaceholderText="What to run, e.g. upgrade all packages"
                                 Text="{Binding Action}"/>
 

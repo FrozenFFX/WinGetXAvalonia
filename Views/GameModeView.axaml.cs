@@ -3,11 +3,11 @@
 
 using Avalonia.Controls;
 
-namespace WinGetXAvalonia.Controls.Shared;
+namespace WinGetXAvalonia.Views;
 
-public partial class AppTextField : TextBox
+public partial class GameModeView : UserControl
 {
-    public AppTextField()
+    public GameModeView()
     {
         InitializeComponent();
     }

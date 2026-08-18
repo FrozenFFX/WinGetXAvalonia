@@ -175,7 +175,7 @@
 
                             <TextBlock FontSize="12" Opacity="0.7" Text="Name"/>
 
-                            <shared:AppTextField
+                            <TextBox
                                 PlaceholderText="Blueprint name"
                                 Text="{Binding Name}"/>
 
@@ -185,10 +185,11 @@
 
                             <TextBlock FontSize="12" Opacity="0.7" Text="Description"/>
 
-                            <shared:AppTextField
+                            <TextBox
                                 AcceptsReturn="True"
                                 MinHeight="90"
                                 TextWrapping="Wrap"
+                                VerticalContentAlignment="Top"
                                 PlaceholderText="What does this blueprint do?"
                                 Text="{Binding Description}"/>
 
@@ -198,10 +199,11 @@
 
                             <TextBlock FontSize="12" Opacity="0.7" Text="Steps"/>
 
-                            <shared:AppTextField
+                            <TextBox
                                 AcceptsReturn="True"
                                 MinHeight="140"
                                 TextWrapping="Wrap"
+                                VerticalContentAlignment="Top"
                                 PlaceholderText="One action per line — e.g. install 7zip.7zip"
                                 Text="{Binding Steps}"/>
 

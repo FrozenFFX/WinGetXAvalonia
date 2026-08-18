@@ -70,7 +70,7 @@
                     VerticalAlignment="Center">
 
                     <TextBlock
-                        FontSize="15"
+                        FontSize="16"
                         FontWeight="SemiBold"
                         Text="WinGetX Studio"/>
 
@@ -83,19 +83,35 @@
                     Opacity="0.55"
                     Text="{Binding StatusText}"/>
 
-                <StackPanel
+                <Border
                     Grid.Column="2"
-                    Orientation="Horizontal"
+                    Height="26"
+                    Padding="10,0"
+                    CornerRadius="13"
                     VerticalAlignment="Center"
-                    Spacing="8">
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1"
+                    Background="{DynamicResource CardBrush}">
 
-                    <Border
-                        Width="8"
-                        Height="8"
-                        CornerRadius="4"
-                        Background="{Binding Status, Converter={StaticResource StatusToBrush}}"/>
+                    <StackPanel
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Spacing="6">
 
-                </StackPanel>
+                        <Ellipse
+                            Width="8"
+                            Height="8"
+                            Fill="{Binding Status, Converter={StaticResource StatusToBrush}}"/>
+
+                        <TextBlock
+                            FontSize="12"
+                            FontWeight="SemiBold"
+                            Opacity="0.8"
+                            Text="{Binding StatusLabel}"/>
+
+                    </StackPanel>
+
+                </Border>
 
             </Grid>
 

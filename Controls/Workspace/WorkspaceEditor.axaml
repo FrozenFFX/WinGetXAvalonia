@@ -9,44 +9,41 @@
     x:Name="Root"
     x:CompileBindings="False">
 
-    <Border
-        Margin="0,0,0,8"
-        Padding="16"
-        CornerRadius="{DynamicResource RadiusMedium}"
-        Background="{DynamicResource CardBrush}"
-        BorderBrush="{DynamicResource BorderBrush}"
-        BorderThickness="1">
+    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
 
-        <StackPanel Spacing="12">
+        <StackPanel Spacing="8">
 
-            <TextBlock
-                FontWeight="SemiBold"
-                Text="{Binding Title, ElementName=Root}"/>
+            <TextBox
+                Text="{Binding Name, ElementName=Root}"
+                PlaceholderText="Workspace name">
+                <TextBox.KeyBindings>
+                    <KeyBinding Gesture="Enter" Command="{Binding SaveCommand, ElementName=Root}"/>
+                </TextBox.KeyBindings>
+            </TextBox>
 
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
-
-                <StackPanel Spacing="8">
-
-                    <shared:AppTextField
-                        Text="{Binding Name, ElementName=Root}"
-                        PlaceholderText="Workspace name">
-                        <TextBox.KeyBindings>
-                            <KeyBinding Gesture="Enter" Command="{Binding SaveCommand, ElementName=Root}"/>
-                        </TextBox.KeyBindings>
-                    </shared:AppTextField>
-
-                    <shared:AppTextField
-                        Text="{Binding Description, ElementName=Root}"
-                        PlaceholderText="Workspace description (optional)"/>
-                </StackPanel>
-
-                <shared:AppButton
-                    Grid.Column="1"
-                    VerticalAlignment="Top"
-                    Content="{Binding SaveButtonText, ElementName=Root}"
-                    Command="{Binding SaveCommand, ElementName=Root}"/>
-            </Grid>
+            <TextBox
+                Text="{Binding Description, ElementName=Root}"
+                PlaceholderText="Workspace description (optional)"/>
         </StackPanel>
-    </Border>
+
+        <StackPanel
+            Grid.Column="1"
+            Orientation="Horizontal"
+            Spacing="8"
+            VerticalAlignment="Center">
+
+            <shared:AppButton
+                Classes="ghost"
+                Content="Cancel"
+                Command="{Binding CancelCommand, ElementName=Root}"/>
+
+            <shared:AppButton
+                Classes="Accent"
+                Content="{Binding SaveButtonText, ElementName=Root}"
+                Command="{Binding SaveCommand, ElementName=Root}"/>
+
+        </StackPanel>
+
+    </Grid>
 
 </UserControl>

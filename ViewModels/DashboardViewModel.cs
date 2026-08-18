@@ -7,15 +7,15 @@ using System.Linq;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using WinGetXAvalonia.Core.Domain.Dashboard;
 using WinGetXAvalonia.Core.Domain.Package;
 using WinGetXAvalonia.Core.Events;
-using WinGetXAvalonia.Helpers;
+using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Interfaces;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.History;
 using WinGetXAvalonia.Services.Performance;
+using WinGetXAvalonia.Services.Sources;
 using WinGetXAvalonia.Services.Theme;
 using WinGetXAvalonia.ViewModels.Settings;
 
@@ -23,6 +23,8 @@ namespace WinGetXAvalonia.ViewModels;
 
 public partial class DashboardViewModel : ViewModelBase, IDisposable
 {
+    private readonly IPackageProvider _provider;
+    private readonly ISourceManagerService _sources;
     private readonly WingetService _winget;
     private readonly ISystemMonitorService _monitor;
     private readonly ITimeService _time;
@@ -41,33 +43,47 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     private readonly HistoryViewModel _historyPage;
 
     private IDisposable? _subscription;
+    private CancellationTokenSource? _loadCts;
 
     private SystemCardModel? _cpuCard;
     private SystemCardModel? _ramCard;
     private SystemCardModel? _diskCard;
     private SystemCardModel? _netCard;
+    private SystemCardModel? _dateCard;
     private SystemCardModel? _timeCard;
     private HeroInfoItem? _wingetChip;
+
     private bool _initialized;
+    private bool _wingetStatsLoaded;
+    private bool _historyStatsLoaded;
+
+    private IReadOnlyList<InstalledPackage> _installedPackages = Array.Empty<InstalledPackage>();
+    private IReadOnlyList<UpdatePackage> _updatePackages = Array.Empty<UpdatePackage>();
+    private IReadOnlyList<HistoryEntry> _historyEntries = Array.Empty<HistoryEntry>();
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(StatusText))]
     [NotifyPropertyChangedFor(nameof(TotalPackages))]
+    [NotifyPropertyChangedFor(nameof(InstalledDisplay))]
     private int installed;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(StatusText))]
     [NotifyPropertyChangedFor(nameof(TotalPackages))]
     [NotifyPropertyChangedFor(nameof(HasUpdates))]
+    [NotifyPropertyChangedFor(nameof(UpdatesDisplay))]
     private int updates;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FavoritesDisplay))]
     private int favorites;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SourcesDisplay))]
     private int sources;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HistoryDisplay))]
     private int history;
 
     [ObservableProperty]
@@ -75,12 +91,18 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     private bool isLoading;
 
     [ObservableProperty]
+    private bool isRefreshing;
+
+    [ObservableProperty]
     private string searchText = "";
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsHealthy))]
     [NotifyPropertyChangedFor(nameof(HealthScore))]
+    [NotifyPropertyChangedFor(nameof(HealthScoreDisplay))]
+    [NotifyPropertyChangedFor(nameof(HealthProgressValue))]
     [NotifyPropertyChangedFor(nameof(HealthStatusText))]
+    [NotifyPropertyChangedFor(nameof(IsHealthLoaded))]
     private PackageHealthSummary healthSummary = PackageHealthSummary.Empty;
 
     [ObservableProperty]
@@ -88,6 +110,12 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
 
     [ObservableProperty]
     private bool systemPanelVisible = true;
+
+    [ObservableProperty]
+    private string? wingetError;
+
+    [ObservableProperty]
+    private string? historyError;
 
     public event Action? SearchRequested;
 
@@ -97,7 +125,9 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         $"👋 {Time.Greeting}, {Environment.UserName}";
 
     public string StatusText =>
-        $"{Installed:N0} Installed • {Updates:N0} Updates";
+        !_wingetStatsLoaded
+            ? "Loading package statistics…"
+            : $"{Installed:N0} Installed • {Updates:N0} Updates";
 
     public string OsDisplayName =>
         SystemInfoService.GetOsLabel();
@@ -117,11 +147,29 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     public bool IsHealthy =>
         HealthSummary.Failed == 0;
 
+    public bool IsHealthLoaded =>
+        _wingetStatsLoaded && _historyStatsLoaded;
+
+    public string InstalledDisplay =>
+        _wingetStatsLoaded ? $"{Installed:N0}" : "…";
+
+    public string UpdatesDisplay =>
+        _wingetStatsLoaded ? $"{Updates:N0}" : "…";
+
+    public string HistoryDisplay =>
+        _historyStatsLoaded ? $"{History:N0}" : "…";
+
+    public string SourcesDisplay =>
+        _wingetStatsLoaded ? $"{Sources:N0}" : "…";
+
+    public string FavoritesDisplay =>
+        _wingetStatsLoaded ? $"{Favorites:N0}" : "…";
+
     public int HealthScore
     {
         get
         {
-            if (HealthSummary.Total == 0)
+            if (!IsHealthLoaded || HealthSummary.Total == 0)
                 return 0;
 
             int unhealthy = HealthSummary.Deprecated
@@ -133,12 +181,32 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         }
     }
 
-    public string HealthStatusText => HealthScore switch
+    public double HealthProgressValue =>
+        IsHealthLoaded && HealthSummary.Total > 0 ? HealthScore : 0;
+
+    public string HealthScoreDisplay =>
+        !IsHealthLoaded ? "…"
+        : HealthSummary.Total == 0 ? "N/A"
+        : $"{HealthScore}%";
+
+    public string HealthStatusText
     {
-        >= 70 => "Everything is working normally.",
-        >= 40 => "Some packages need attention.",
-        _ => "Your package setup needs attention."
-    };
+        get
+        {
+            if (!IsHealthLoaded)
+                return "Calculating health score…";
+
+            if (HealthSummary.Total == 0)
+                return "No installed packages to evaluate.";
+
+            return HealthScore switch
+            {
+                >= 70 => "Everything is working normally.",
+                >= 40 => "Some packages need attention.",
+                _ => "Your package setup needs attention."
+            };
+        }
+    }
 
     public ObservableCollection<SystemCardModel> SystemCards { get; } = new();
 
@@ -162,6 +230,8 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     public NotificationCenterViewModel Notifications { get; }
 
     public DashboardViewModel(
+        IPackageProvider provider,
+        ISourceManagerService sources,
         WingetService winget,
         ISystemMonitorService monitor,
         ITimeService time,
@@ -181,6 +251,8 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         BrowseViewModel browsePage,
         HistoryViewModel historyPage)
     {
+        _provider = provider;
+        _sources = sources;
         _winget = winget;
         _monitor = monitor;
         _time = time;
@@ -201,18 +273,15 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         Time = time;
         Queue = queue;
         Notifications = notifications;
-        _time.Start();
 
         _time.PropertyChanged += OnTimeChanged;
-
         _monitor.PropertyChanged += OnMonitorChanged;
-        _monitor.Start();
-
         _clock.Tick += OnClockTick;
+        _clock.DateChanged += OnDateChanged;
 
         _subscription =
-            _eventBus.Subscribe<PackageChangedEvent>(e =>
-                Dispatcher.UIThread.Post(() => _ = LoadCountsAsync()));
+            _eventBus.Subscribe<PackageChangedEvent>(pkg =>
+                Dispatcher.UIThread.Post(() => _ = Refresh()));
 
         BuildSystemCards();
         BuildHeroInfo();
@@ -221,103 +290,299 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         Activity.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasActivity));
         FavoriteSources.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasFavoriteSources));
         Notifications.Items.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasNotifications));
+
+        _time.Start();
+        _monitor.Start();
     }
 
     public override async Task InitializeAsync()
     {
-        // ana ekran her seferinde baştan yüklenmesin, bir kez yeter
         if (_initialized)
             return;
 
-        _initialized = true;
-        IsLoading = true;
-
-        await Task.Delay(200);
-        await LoadCountsAsync();
-        await LoadWingetVersionAsync();
-
-        IsLoading = false;
-
-#if DEBUG
-        System.IO.File.AppendAllText(
-            @"C:\Users\depgo\AppData\Local\Temp\opencode\statcard.log",
-            $"[{DateTime.Now:HH:mm:ss.fff}] INITIALIZE done: Installed={Installed} Updates={Updates} Sources={Sources} History={History} Favorites={Favorites} IsLoading={IsLoading}{Environment.NewLine}");
-#endif
+        await LoadDashboardAsync(isInitial: true);
     }
 
-    private async Task LoadWingetVersionAsync()
+    [RelayCommand(CanExecute = nameof(CanRefresh))]
+    private Task Refresh()
+        => LoadDashboardAsync(isInitial: false);
+
+    private bool CanRefresh() => !IsLoading && !IsRefreshing;
+
+    private async Task LoadDashboardAsync(bool isInitial)
+    {
+        if (isInitial)
+        {
+            if (_initialized)
+                return;
+        }
+        else if (IsLoading || IsRefreshing)
+        {
+            return;
+        }
+
+        _loadCts?.Cancel();
+        _loadCts?.Dispose();
+        _loadCts = new CancellationTokenSource();
+        var cancellationToken = _loadCts.Token;
+
+        if (isInitial)
+            IsLoading = true;
+        else
+            IsRefreshing = true;
+
+        RefreshCommand.NotifyCanExecuteChanged();
+
+        try
+        {
+            _logger.Log("Dashboard initialization started");
+
+            _logger.Log("Loading system information");
+            _logger.Log("Loading Winget information");
+            _logger.Log("Loading history");
+            _logger.Log("Loading notifications");
+
+            var loadTask = Task.WhenAll(
+                LoadWingetInformationAsync(cancellationToken),
+                LoadHistoryInformationAsync(cancellationToken),
+                LoadWingetVersionAsync(cancellationToken),
+                LoadNotificationsAsync(cancellationToken));
+
+            var timeout = Task.Delay(TimeSpan.FromSeconds(10), cancellationToken);
+            await Task.WhenAny(loadTask, timeout);
+
+            _initialized = true;
+
+            _logger.Log("Dashboard initialization completed");
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            _logger.Log("Dashboard load cancelled");
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Dashboard initialization failed");
+        }
+        finally
+        {
+            if (isInitial)
+                IsLoading = false;
+            else
+                IsRefreshing = false;
+
+            RefreshCommand.NotifyCanExecuteChanged();
+            NotifyStatDisplaysChanged();
+        }
+    }
+
+    private async Task LoadWingetInformationAsync(CancellationToken cancellationToken)
+    {
+        _logger.Log("Loading Winget information");
+
+        try
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var installed = await _provider.GetInstalledAsync().ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var updates = await _provider.GetUpdatesAsync().ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            IReadOnlyList<WingetSource> sourceList;
+            try
+            {
+                sourceList = await _sources.GetSourcesAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Loading Winget sources failed");
+                sourceList = Array.Empty<WingetSource>();
+                WingetError = "Sources unavailable";
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                _installedPackages = installed;
+                _updatePackages = updates;
+
+                Installed = installed.Count;
+                Updates = updates.Count;
+                Sources = sourceList.Count;
+                Favorites = _favorites.Favorites.Count;
+
+                _wingetStatsLoaded = true;
+                WingetError = installed.Count == 0 && updates.Count == 0
+                    ? "No packages found or Winget unavailable"
+                    : null;
+
+                BuildFavoriteSources();
+                UpdateHealthSummary();
+                NotifyStatDisplaysChanged();
+
+                _logger.Log(
+                    $"Winget information loaded: {Installed} installed, {Updates} updates, {Sources} sources");
+            });
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Loading Winget information failed");
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                WingetError = "Winget unavailable";
+
+                if (!_wingetStatsLoaded)
+                {
+                    Installed = 0;
+                    Updates = 0;
+                    Sources = 0;
+                    Favorites = _favorites.Favorites.Count;
+                    HealthSummary = PackageHealthSummary.Empty;
+                }
+
+                NotifyStatDisplaysChanged();
+            });
+        }
+    }
+
+    private async Task LoadHistoryInformationAsync(CancellationToken cancellationToken)
+    {
+        _logger.Log("Loading history");
+
+        try
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var entries = await _history.GetAllAsync().ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                _historyEntries = entries;
+                History = entries.Count;
+                HistoryError = null;
+                _historyStatsLoaded = true;
+
+                BuildActivity(entries);
+                UpdateHealthSummary();
+                NotifyStatDisplaysChanged();
+
+                _logger.Log($"History loaded: {History} entries");
+            });
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Loading history failed");
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                HistoryError = "History unavailable";
+
+                if (!_historyStatsLoaded)
+                {
+                    History = 0;
+                    Activity.Clear();
+                }
+
+                NotifyStatDisplaysChanged();
+            });
+        }
+    }
+
+    private async Task LoadWingetVersionAsync(CancellationToken cancellationToken)
     {
         try
         {
-            var version = await _winget.Version();
-            WingetVersion = version.Success ? version.Output.Trim() : "N/A";
+            cancellationToken.ThrowIfCancellationRequested();
 
-            if (_wingetChip is not null)
-                _wingetChip.Value = WingetVersion;
+            var version = await _winget.Version().ConfigureAwait(false);
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                WingetVersion = version.Success ? version.Output.Trim() : "N/A";
+
+                if (_wingetChip is not null)
+                    _wingetChip.Value = WingetVersion;
+            });
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception ex)
         {
             _logger.Error(ex, "Failed to load winget version");
-            WingetVersion = "N/A";
-            if (_wingetChip is not null)
-                _wingetChip.Value = "N/A";
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                WingetVersion = "N/A";
+
+                if (_wingetChip is not null)
+                    _wingetChip.Value = "N/A";
+            });
         }
     }
 
-    private async Task LoadCountsAsync()
+    private async Task LoadNotificationsAsync(CancellationToken cancellationToken)
     {
+        _logger.Log("Loading notifications");
+
         try
         {
-            var installedTask = _winget.GetInstalledApps();
-            var updatesTask = _winget.GetUpdates();
-            var sourcesTask = _winget.GetSources();
-            var historyTask = _history.GetAllAsync();
+            cancellationToken.ThrowIfCancellationRequested();
 
-            await Task.WhenAll(installedTask, updatesTask, sourcesTask, historyTask);
-
-            var installedLines = ToLines(installedTask.Result);
-            var updateLines = ToLines(updatesTask.Result);
-            var sourceLines = ToLines(sourcesTask.Result);
-
-            var stats = DashboardStatisticsCalculator.Calculate(
-                installedLines: installedLines,
-                updateLines: updateLines,
-                sourceLines: sourceLines,
-                favoriteCount: _favorites.Favorites.Count);
-
-            HealthSummary = PackageHealthSummaryCalculator.Calculate(
-                WingetParser.ParseInstalled(installedLines),
-                WingetParser.ParseUpdates(updateLines),
-                historyTask.Result);
-
-            BuildActivity(historyTask.Result);
-
-            Installed = stats.InstalledCount;
-            Updates = stats.UpdateCount;
-            Sources = stats.SourceCount;
-            History = historyTask.Result.Count;
-            Favorites = stats.FavoriteCount;
-
-            BuildFavoriteSources();
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                Notifications.Refresh();
+                OnPropertyChanged(nameof(HasNotifications));
+                OnPropertyChanged(nameof(HasNoNotifications));
+            });
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Failed to load dashboard counts");
-
-            Installed = 0;
-            Updates = 0;
-            Sources = 0;
-            Favorites = _favorites.Favorites.Count;
-            HealthSummary = PackageHealthSummary.Empty;
+            _logger.Error(ex, "Loading notifications failed");
         }
     }
 
-    private static List<string> ToLines(WinGetXAvalonia.Models.WingetResult result)
-        => result.Success
-            ? result.Output
-                .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .ToList()
-            : new List<string>();
+    private void UpdateHealthSummary()
+    {
+        if (!_wingetStatsLoaded || !_historyStatsLoaded)
+            return;
+
+        HealthSummary = PackageHealthSummaryCalculator.Calculate(
+            _installedPackages,
+            _updatePackages,
+            _historyEntries);
+    }
+
+    private void NotifyStatDisplaysChanged()
+    {
+        OnPropertyChanged(nameof(InstalledDisplay));
+        OnPropertyChanged(nameof(UpdatesDisplay));
+        OnPropertyChanged(nameof(HistoryDisplay));
+        OnPropertyChanged(nameof(SourcesDisplay));
+        OnPropertyChanged(nameof(FavoritesDisplay));
+        OnPropertyChanged(nameof(IsHealthLoaded));
+        OnPropertyChanged(nameof(HealthScoreDisplay));
+        OnPropertyChanged(nameof(HealthProgressValue));
+        OnPropertyChanged(nameof(HealthStatusText));
+        OnPropertyChanged(nameof(StatusText));
+    }
 
     private void BuildHeroInfo()
     {
@@ -381,12 +646,14 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         SystemCards.Add(_diskCard);
         SystemCards.Add(_netCard);
 
-        SystemCards.Add(new()
+        _dateCard = new SystemCardModel
         {
             Title = "Date",
             Value = _clock.CurrentDate,
             Icon = "📅"
-        });
+        };
+
+        SystemCards.Add(_dateCard);
 
         _timeCard = new SystemCardModel
         {
@@ -421,11 +688,11 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         }
     }
 
-    private void BuildActivity(IReadOnlyList<HistoryEntry> history)
+    private void BuildActivity(IReadOnlyList<HistoryEntry> historyEntries)
     {
         Activity.Clear();
 
-        foreach (var entry in history
+        foreach (var entry in historyEntries
                      .OrderByDescending(e => e.Timestamp)
                      .Take(8))
         {
@@ -492,6 +759,12 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
             _timeCard.Value = time;
     }
 
+    private void OnDateChanged(string date)
+    {
+        if (_dateCard is not null)
+            _dateCard.Value = date;
+    }
+
     private static string FormatNetwork(double bytesPerSecond)
     {
         if (bytesPerSecond >= 1024 * 1024)
@@ -527,10 +800,6 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     [RelayCommand]
     private void OpenSettings()
         => _navigation.Navigate(_settingsPage);
-
-    [RelayCommand]
-    private Task Refresh()
-        => InitializeAsync();
 
     [RelayCommand]
     private void CloseSystemPanel()
@@ -581,7 +850,7 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         void Add(string label, string value)
             => vm.Items.Add(new HeroInfoItem { Icon = "🩺", Label = label, Value = value });
 
-        Add("Score", $"{HealthScore}%");
+        Add("Score", HealthScoreDisplay);
         Add("Total", HealthSummary.Total.ToString());
         Add("Healthy", HealthSummary.Healthy.ToString());
         Add("Outdated", HealthSummary.Outdated.ToString());
@@ -590,7 +859,7 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         Add("Failed", HealthSummary.Failed.ToString());
         Add("Status", HealthStatusText);
 
-        DetailRequested?.Invoke(vm, "System Health", $"{HealthScore}% score");
+        DetailRequested?.Invoke(vm, "System Health", $"{HealthScoreDisplay} score");
     }
 
     [RelayCommand]
@@ -605,21 +874,25 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     private async Task UpdateAll()
     {
         await _winget.UpgradeAll();
-        await LoadCountsAsync();
+        await Refresh();
     }
 
     [RelayCommand]
     private async Task RefreshSources()
     {
         await _winget.RefreshSources();
-        await LoadCountsAsync();
+        await Refresh();
     }
 
     public void Dispose()
     {
+        _loadCts?.Cancel();
+        _loadCts?.Dispose();
+
         _time.PropertyChanged -= OnTimeChanged;
         _monitor.PropertyChanged -= OnMonitorChanged;
         _clock.Tick -= OnClockTick;
+        _clock.DateChanged -= OnDateChanged;
         _subscription?.Dispose();
     }
 }

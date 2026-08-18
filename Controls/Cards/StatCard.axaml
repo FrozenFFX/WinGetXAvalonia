@@ -10,7 +10,7 @@
     <Border
         x:Name="Card"
         Classes="card"
-        MinHeight="100"
+        MinHeight="84"
         Padding="0"
         Cursor="Hand">
 
@@ -37,27 +37,24 @@
                 </ControlTemplate>
             </Button.Template>
 
-            <Grid
+            <StackPanel
                 Margin="16"
-                RowDefinitions="Auto,4,Auto"
-                ColumnDefinitions="Auto,12,*">
+                Spacing="6">
 
                 <!-- Icon -->
 
                 <Border
-                    Grid.Row="0"
-                    Grid.RowSpan="3"
-                    Grid.Column="0"
-                    Width="48"
-                    Height="48"
-                    Padding="10"
-                    CornerRadius="12"
+                    Width="40"
+                    Height="40"
+                    Padding="9"
+                    HorizontalAlignment="Left"
+                    CornerRadius="{DynamicResource RadiusMedium}"
                     Background="{DynamicResource AccentBrush}">
 
                     <TextBlock
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        FontSize="24"
+                        FontSize="20"
                         Text="{Binding #Root.Icon}"/>
 
                 </Border>
@@ -65,22 +62,18 @@
                 <!-- Value -->
 
                 <TextBlock
-                    Grid.Row="0"
-                    Grid.Column="2"
-                    FontSize="32"
+                    FontSize="28"
                     FontWeight="Bold"
                     Text="{Binding #Root.Value}"/>
 
                 <!-- Subtitle + Secondary -->
 
-                <StackPanel
-                    Grid.Row="2"
-                    Grid.Column="2"
-                    Spacing="2">
+                <StackPanel Spacing="1">
 
                     <TextBlock
-                        FontSize="12"
-                        Opacity="0.65"
+                        FontSize="13"
+                        FontWeight="SemiBold"
+                        Opacity="0.75"
                         Text="{Binding #Root.Subtitle}"/>
 
                     <TextBlock
@@ -90,7 +83,7 @@
 
                 </StackPanel>
 
-            </Grid>
+            </StackPanel>
 
         </Button>
 

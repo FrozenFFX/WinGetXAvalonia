@@ -18,7 +18,7 @@
         BorderBrush="{DynamicResource BorderBrush}"
         BorderThickness="0,0,1,0">
 
-        <Grid Margin="12">
+        <Grid Margin="0,12,0,12">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -51,7 +51,8 @@
 
                             <Border
                                 Classes="sidebar-item"
-                                Classes.header="{Binding IsCategoryHeader, Converter={StaticResource BoolToClassConverter}}">
+                                Classes.header="{Binding IsCategoryHeader, Converter={StaticResource BoolToClassConverter}}"
+                                PointerPressed="OnHeaderPointerPressed">
 
                                 <Grid
                                     ColumnDefinitions="28,12,*,Auto"
@@ -72,18 +73,18 @@
                                         Grid.Column="2"
                                         Margin="4,0,0,0"
                                         VerticalAlignment="Center"
-                                        FontSize="13"
                                         FontWeight="Medium"
                                         Text="{Binding Title}"
                                         TextTrimming="CharacterEllipsis"
                                         TextWrapping="NoWrap"/>
 
-                                    <TextBlock
-                                        Grid.Column="3"
-                                        FontSize="10"
-                                        VerticalAlignment="Center"
-                                        IsVisible="{Binding IsCategoryHeader}"
-                                        Text="{Binding IsExpanded, Converter={StaticResource ExpanderGlyphConverter}}"/>
+                    <TextBlock
+                                         x:Name="Chevron"
+                                         Grid.Column="3"
+                                         FontSize="10"
+                                         VerticalAlignment="Center"
+                                         IsVisible="{Binding IsCategoryHeader}"
+                                         Text="{Binding IsExpanded, Converter={StaticResource ExpanderGlyphConverter}}"/>
 
                                     <Border
                                         x:Name="Badge"

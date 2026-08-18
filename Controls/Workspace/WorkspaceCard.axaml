@@ -12,35 +12,57 @@
 
     <Panel>
 
-        <shared:BaseCard>
+        <Border
+            Classes="card"
+            RenderTransformOrigin="50%,100%">
 
-            <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="12">
+            <Border.Transitions>
+                <Transitions>
+                    <TransformOperationsTransition
+                        Property="RenderTransform"
+                        Duration="{DynamicResource MotionDurationNormal}"
+                        Easing="{DynamicResource MotionEasingOut}"/>
+                    <BrushTransition
+                        Property="Background"
+                        Duration="{DynamicResource MotionDurationNormal}"
+                        Easing="{DynamicResource MotionEasingOut}"/>
+                    <BrushTransition
+                        Property="BorderBrush"
+                        Duration="{DynamicResource MotionDurationNormal}"
+                        Easing="{DynamicResource MotionEasingOut}"/>
+                </Transitions>
+            </Border.Transitions>
 
-                <Grid ColumnDefinitions="Auto,*">
+            <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8"
+                  Width="360">
+
+                <!-- Header: icon + name/description -->
+                <Grid Grid.Row="0" ColumnDefinitions="Auto,*">
 
                     <Border
-                        Width="44"
-                        Height="44"
+                        Width="40"
+                        Height="40"
                         CornerRadius="8"
                         Background="{DynamicResource SurfaceBrush}">
 
                         <TextBlock
-                            FontSize="22"
+                            FontSize="20"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Text="{Binding Icon}"/>
                     </Border>
 
-                    <StackPanel Grid.Column="1" Margin="12,0,0,0" Spacing="2">
+                    <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
 
                         <TextBlock
                             FontWeight="SemiBold"
-                            FontSize="{DynamicResource FontSubtitle}"
+                            FontSize="{DynamicResource FontCardTitle}"
                             Text="{Binding Name}"
                             TextTrimming="CharacterEllipsis"/>
 
                         <TextBlock
                             Opacity="0.7"
+                            FontSize="{DynamicResource FontCaption}"
                             Text="{Binding Description}"
                             TextWrapping="Wrap"
                             TextTrimming="CharacterEllipsis"
@@ -48,70 +70,114 @@
                     </StackPanel>
                 </Grid>
 
-                <WrapPanel Grid.Row="1" ItemSpacing="8">
+                <!-- Metadata: package count + date -->
+                <WrapPanel Grid.Row="1" ItemSpacing="6">
 
                     <Border
                         Padding="8,3"
-                        Background="{DynamicResource SurfaceBrush}"
-                        CornerRadius="20">
+                        CornerRadius="20"
+                        Background="{DynamicResource CardBackgroundBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="1">
 
-                        <TextBlock Text="{Binding PackageCount, StringFormat='📦 {0} Packages'}"/>
+                        <TextBlock
+                            FontSize="{DynamicResource FontSecondary}"
+                            FontWeight="SemiBold"
+                            Text="{Binding PackageCount, StringFormat='📦 {0} packages'}"/>
                     </Border>
 
                     <Border
                         Padding="8,3"
-                        Background="{DynamicResource SurfaceBrush}"
-                        CornerRadius="20">
+                        CornerRadius="20"
+                        Background="{DynamicResource CardBackgroundBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="1">
 
-                        <TextBlock Text="{Binding Modified, StringFormat='🕒 {0:g}'}"/>
+                        <TextBlock
+                            FontSize="{DynamicResource FontSecondary}"
+                            Text="{Binding Modified, StringFormat='🕒 {0:g}'}"/>
                     </Border>
                 </WrapPanel>
 
-                <UniformGrid Grid.Row="2" Columns="2" Rows="1" ColumnSpacing="8">
+                <!-- Actions: Open + more actions -->
+                <Grid Grid.Row="2" ColumnDefinitions="*,Auto" ColumnSpacing="8">
 
                     <shared:AppButton
+                        HorizontalAlignment="Left"
+                        MinWidth="64"
                         Content="Open"
-                        Command="{Binding $parent[ItemsControl].DataContext.OpenCommand}"
+                        Command="{Binding $parent[ListBox].DataContext.OpenCommand}"
                         CommandParameter="{Binding}"/>
 
                     <shared:AppButton
-                        Content="Edit"
-                        Command="{Binding $parent[ItemsControl].DataContext.EditCommand}"
-                        CommandParameter="{Binding}"/>
-                </UniformGrid>
+                        Grid.Column="1"
+                        Classes="ghost"
+                        Width="36"
+                        Height="36"
+                        Padding="4,0"
+                        HorizontalAlignment="Right"
+                        Content="⋮"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        ToolTip.Tip="More actions"
+                        Click="ShowContextMenu"/>
 
-                <UniformGrid Grid.Row="3" Columns="2" Rows="1" ColumnSpacing="8">
+                </Grid>
 
-                    <shared:AppButton
-                        Content="Export"
-                        Command="{Binding $parent[ItemsControl].DataContext.ExportCommand}"
-                        CommandParameter="{Binding}"/>
-
-                    <shared:AppButton
-                        Classes="Danger"
-                        Content="Delete"
-                        Command="{Binding $parent[ItemsControl].DataContext.DeleteWorkspaceCommand}"
-                        CommandParameter="{Binding}"/>
-                </UniformGrid>
             </Grid>
-        </shared:BaseCard>
 
+        </Border>
+
+        <!-- Selected-state overlay -->
         <Border
             IsHitTestVisible="False"
             IsVisible="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
             BorderBrush="{DynamicResource AccentBrush}"
             BorderThickness="2"
-            CornerRadius="18"
+            CornerRadius="16"
+            Margin="3"
             BoxShadow="{DynamicResource AccentGlow}">
             <Border.Transitions>
                 <Transitions>
-                    <BoxShadowsTransition Property="BoxShadow"
-                                          Duration="{DynamicResource MotionDurationNormal}"
-                                          Easing="{DynamicResource MotionEasingOut}"/>
+                    <BoxShadowsTransition
+                        Property="BoxShadow"
+                        Duration="{DynamicResource MotionDurationNormal}"
+                        Easing="{DynamicResource MotionEasingOut}"/>
                 </Transitions>
             </Border.Transitions>
         </Border>
 
     </Panel>
+
+    <UserControl.ContextMenu>
+        <ContextMenu>
+
+            <MenuItem
+                Header="Open"
+                Command="{Binding $parent[ListBox].DataContext.OpenCommand}"
+                CommandParameter="{Binding}"/>
+
+            <Separator/>
+
+            <MenuItem
+                Header="Edit"
+                Command="{Binding $parent[ListBox].DataContext.EditCommand}"
+                CommandParameter="{Binding}"/>
+
+            <MenuItem
+                Header="Export"
+                Command="{Binding $parent[ListBox].DataContext.ExportCommand}"
+                CommandParameter="{Binding}"/>
+
+            <Separator/>
+
+            <MenuItem
+                Classes="Danger"
+                Header="Delete"
+                Command="{Binding $parent[ListBox].DataContext.DeleteWorkspaceCommand}"
+                CommandParameter="{Binding}"/>
+
+        </ContextMenu>
+    </UserControl.ContextMenu>
 
 </UserControl>

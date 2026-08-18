@@ -38,33 +38,46 @@
                 </ControlTemplate>
             </Button.Template>
 
-            <StackPanel Margin="20" Spacing="14">
+            <Grid
+                Margin="16"
+                ColumnDefinitions="44,12,*"
+                VerticalAlignment="Center">
 
                 <Border
-                    Width="56"
-                    Height="56"
-                    CornerRadius="14"
+                    Width="44"
+                    Height="44"
+                    CornerRadius="12"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
                     Background="{DynamicResource AccentBrush}">
 
                     <TextBlock
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        FontSize="28"
+                        FontSize="20"
                         Text="{Binding #Root.Icon}"/>
 
                 </Border>
 
-                <TextBlock
-                    FontSize="18"
-                    FontWeight="SemiBold"
-                    Text="{Binding #Root.Title}"/>
+                <StackPanel
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    Spacing="2">
 
-                <TextBlock
-                    Opacity=".65"
-                    TextWrapping="Wrap"
-                    Text="{Binding #Root.Description}"/>
+                    <TextBlock
+                        FontSize="15"
+                        FontWeight="SemiBold"
+                        Text="{Binding #Root.Title}"/>
 
-            </StackPanel>
+                    <TextBlock
+                        FontSize="12"
+                        Opacity=".65"
+                        TextWrapping="Wrap"
+                        Text="{Binding #Root.Description}"/>
+
+                </StackPanel>
+
+            </Grid>
 
         </Button>
 

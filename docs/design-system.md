@@ -109,7 +109,7 @@ Hiçbir bileşen kendi animasyon değerini tanımlamaz.
 
 - `AppButton` — Button; primary/fluent varyantları
 - `AppCard` — kart yüzeyi
-- `AppTextField` — giriş alanı
+- `TextBox` — standart giriş alanı (global stil)
 - `AppBadge`, `AppIcon`, `AppSeparator`, `AppToolbar`
 - `AppDrawer`, `AppDialog`, `AppWindow`
 - `AppEmptyState` — Empty State bileşeni

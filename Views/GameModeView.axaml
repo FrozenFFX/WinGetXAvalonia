@@ -1,0 +1,136 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:WinGetXAvalonia.ViewModels"
+    xmlns:models="using:WinGetXAvalonia.Models"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+    x:Class="WinGetXAvalonia.Views.GameModeView"
+    x:DataType="vm:GameModeViewModel">
+
+    <Grid
+        Margin="24"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        ClipToBounds="True">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <shared:SectionHeader
+            Grid.Row="0"
+            Title="Game Mode"
+            Description="Gaming essentials for streaming and play."/>
+
+        <ScrollViewer
+            Grid.Row="2"
+            VerticalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Disabled">
+
+            <StackPanel Spacing="14">
+
+                <shared:AppButton
+                    Classes="Accent"
+                    HorizontalAlignment="Left"
+                    Content="Install All"
+                    Command="{Binding InstallAllCommand}"/>
+
+                <ItemsControl
+                    ItemsSource="{Binding Packages}">
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:WorkspacePackage">
+
+                            <Border
+                                Padding="12,10"
+                                CornerRadius="{DynamicResource RadiusMedium}"
+                                Background="{DynamicResource SurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1">
+
+                                <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10">
+
+                                    <Border
+                                        Width="36"
+                                        Height="36"
+                                        CornerRadius="10"
+                                        Background="{DynamicResource CardBrush}"
+                                        VerticalAlignment="Center">
+
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            FontSize="18"
+                                            Text="{Binding Icon}"/>
+
+                                    </Border>
+
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        Spacing="2"
+                                        VerticalAlignment="Center">
+
+                                        <TextBlock
+                                            FontWeight="SemiBold"
+                                            Text="{Binding DisplayName}"
+                                            TextTrimming="CharacterEllipsis"/>
+
+                                        <TextBlock
+                                            Opacity="0.6"
+                                            FontSize="{DynamicResource FontCaption}"
+                                            Text="{Binding StateText}"
+                                            TextTrimming="CharacterEllipsis"/>
+
+                                    </StackPanel>
+
+                                    <TextBlock
+                                        Grid.Column="2"
+                                        Opacity="0.6"
+                                        FontSize="{DynamicResource FontCaption}"
+                                        Text="{Binding Id}"
+                                        TextTrimming="CharacterEllipsis"/>
+
+                                    <shared:AppButton
+                                        Grid.Column="3"
+                                        IsEnabled="{Binding CanInstall}"
+                                        MinWidth="76"
+                                        Content="Install"
+                                        Command="{Binding $parent[ItemsControl].DataContext.InstallCommand}"
+                                        CommandParameter="{Binding}"/>
+
+                                </Grid>
+
+                            </Border>
+
+                        </DataTemplate>
+
+                    </ItemsControl.ItemTemplate>
+
+                </ItemsControl>
+
+            </StackPanel>
+
+        </ScrollViewer>
+
+        <shared:AppEmptyState
+            Grid.Row="2"
+            IsVisible="{Binding HasError}"
+            Icon="⚠️"
+            Title="Couldn't load game mode"
+            Description="{Binding ErrorMessage}"
+            ActionText="Retry"
+            ActionCommand="{Binding RefreshCommand}"/>
+
+        <shared:LoadingOverlay
+            Grid.RowSpan="3"
+            IsLoading="{Binding IsLoading}"
+            Message="Scanning gaming setup..."/>
+
+    </Grid>
+
+</UserControl>

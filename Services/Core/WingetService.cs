@@ -11,6 +11,8 @@ namespace WinGetXAvalonia.Services.Core;
 
 public class WingetService
 {
+    private static readonly TimeSpan CommandTimeout = TimeSpan.FromMinutes(2);
+
     private readonly LoggerService _logger;
 
     public WingetService(LoggerService logger)
@@ -20,12 +22,19 @@ public class WingetService
 
     private async Task<WingetResult> Execute(string arguments)
     {
+        using var gate = await WingetExecutionGate.AcquireAsync().ConfigureAwait(false);
+        return await ExecuteCoreAsync(arguments + " --disable-interactivity", CommandTimeout)
+            .ConfigureAwait(false);
+    }
+
+    private async Task<WingetResult> ExecuteCoreAsync(string arguments, TimeSpan timeout)
+    {
         _logger.Log(arguments);
 
         ProcessStartInfo psi = new()
         {
             FileName = "winget",
-            Arguments = arguments + " --disable-interactivity",
+            Arguments = arguments,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,
@@ -37,23 +46,44 @@ public class WingetService
         using Process process = Process.Start(psi)!;
         process.EnableRaisingEvents = true;
 
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
+        using var timeoutCts = new CancellationTokenSource(timeout);
 
-        await Task.Yield();
-        await process.WaitForExitAsync();
-
-        if (process.ExitCode != 0)
+        try
         {
-            return WingetResult.Fail(
-                process.ExitCode,
-                string.IsNullOrWhiteSpace(error) ? output.Trim() : error.Trim(),
-                output);
-        }
+            string output = await process.StandardOutput.ReadToEndAsync(timeoutCts.Token)
+                .ConfigureAwait(false);
+            string error = await process.StandardError.ReadToEndAsync(timeoutCts.Token)
+                .ConfigureAwait(false);
 
-        return WingetResult.Ok(
-            process.ExitCode,
-            output);
+            await process.WaitForExitAsync(timeoutCts.Token).ConfigureAwait(false);
+
+            if (process.ExitCode != 0)
+            {
+                return WingetResult.Fail(
+                    process.ExitCode,
+                    string.IsNullOrWhiteSpace(error) ? output.Trim() : error.Trim(),
+                    output);
+            }
+
+            return WingetResult.Ok(process.ExitCode, output);
+        }
+        catch (OperationCanceledException) when (timeoutCts.IsCancellationRequested)
+        {
+            try
+            {
+                if (!process.HasExited)
+                    process.Kill(entireProcessTree: true);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Failed to terminate timed-out winget process");
+            }
+
+            _logger.Error(new TimeoutException($"winget timed out after {timeout.TotalSeconds:0}s"),
+                $"Winget command timed out: {arguments}");
+
+            return WingetResult.Fail(-1, $"Winget command timed out after {timeout.TotalSeconds:0} seconds.");
+        }
     }
 
     private async Task<WingetResult> RunWithProgress(
@@ -61,6 +91,8 @@ public class WingetService
         IOperationProgress? progress,
         string launchingMessage)
     {
+        using var gate = await WingetExecutionGate.AcquireAsync().ConfigureAwait(false);
+
         _logger.Log(arguments);
 
         ProcessStartInfo psi = new()

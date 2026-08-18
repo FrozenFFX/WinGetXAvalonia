@@ -28,6 +28,9 @@ public partial class WorkspaceEditor : UserControl
     public static readonly StyledProperty<string?> SaveButtonTextProperty =
         AvaloniaProperty.Register<WorkspaceEditor, string?>(nameof(SaveButtonText));
 
+    public static readonly StyledProperty<ICommand?> CancelCommandProperty =
+        AvaloniaProperty.Register<WorkspaceEditor, ICommand?>(nameof(CancelCommand));
+
     public string? Title
     {
         get => GetValue(TitleProperty);
@@ -56,6 +59,12 @@ public partial class WorkspaceEditor : UserControl
     {
         get => GetValue(SaveButtonTextProperty);
         set => SetValue(SaveButtonTextProperty, value);
+    }
+
+    public ICommand? CancelCommand
+    {
+        get => GetValue(CancelCommandProperty);
+        set => SetValue(CancelCommandProperty, value);
     }
 
     public WorkspaceEditor()

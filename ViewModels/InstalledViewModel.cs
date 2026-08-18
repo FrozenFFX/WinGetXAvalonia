@@ -211,7 +211,7 @@ public partial class InstalledViewModel : AsyncViewModel, IDisposable
     }
 
     [RelayCommand]
-    private async Task Remove(PackageModel package)
+    private async Task Remove(PackageModel? package)
     {
         if (package is null)
             return;
@@ -237,7 +237,7 @@ public partial class InstalledViewModel : AsyncViewModel, IDisposable
     }
 
     [RelayCommand]
-    private void CopyId(PackageModel package)
+    private void CopyId(PackageModel? package)
     {
         if (package is null)
             return;
@@ -246,7 +246,7 @@ public partial class InstalledViewModel : AsyncViewModel, IDisposable
     }
 
     [RelayCommand]
-    private void CopyName(PackageModel package)
+    private void CopyName(PackageModel? package)
     {
         if (package is null)
             return;
@@ -264,7 +264,7 @@ public partial class InstalledViewModel : AsyncViewModel, IDisposable
     }
 
     [RelayCommand]
-    private async Task OpenHomepage(PackageModel package)
+    private async Task OpenHomepage(PackageModel? package)
     {
         if (package is null)
             return;

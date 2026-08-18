@@ -12,24 +12,24 @@
     <StackPanel
         HorizontalAlignment="Center"
         VerticalAlignment="Center"
-        Spacing="12"
+        Spacing="8"
         MaxWidth="300">
 
         <TextBlock
             Text="{Binding Icon, ElementName=Root}"
-            FontSize="44"
+            FontSize="38"
             Opacity="0.35"
             HorizontalAlignment="Center"/>
 
         <TextBlock
             Text="{Binding Title, ElementName=Root}"
-            FontSize="18"
+            FontSize="17"
             FontWeight="SemiBold"
             TextAlignment="Center"/>
 
         <TextBlock
             Text="{Binding Description, ElementName=Root}"
-            FontSize="{DynamicResource FontBody}"
+            FontSize="13"
             Foreground="{DynamicResource SubtextBrush}"
             TextAlignment="Center"
             TextWrapping="Wrap"/>

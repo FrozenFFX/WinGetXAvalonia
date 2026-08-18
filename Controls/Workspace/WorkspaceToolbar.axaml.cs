@@ -16,6 +16,9 @@ public partial class WorkspaceToolbar : UserControl
     public static readonly StyledProperty<int> CountProperty =
         AvaloniaProperty.Register<WorkspaceToolbar, int>(nameof(Count));
 
+    public static readonly StyledProperty<string?> SummaryProperty =
+        AvaloniaProperty.Register<WorkspaceToolbar, string?>(nameof(Summary));
+
     public static readonly StyledProperty<ICommand?> CreateCommandProperty =
         AvaloniaProperty.Register<WorkspaceToolbar, ICommand?>(nameof(CreateCommand));
 
@@ -35,6 +38,12 @@ public partial class WorkspaceToolbar : UserControl
     {
         get => GetValue(CountProperty);
         set => SetValue(CountProperty, value);
+    }
+
+    public string? Summary
+    {
+        get => GetValue(SummaryProperty);
+        set => SetValue(SummaryProperty, value);
     }
 
     public ICommand? CreateCommand

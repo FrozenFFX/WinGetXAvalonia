@@ -19,8 +19,8 @@
         <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" ColumnSpacing="10">
 
             <shared:SearchBox
-                MinWidth="240"
-                MaxWidth="560"
+                MinWidth="200"
+                MaxWidth="360"
                 HorizontalAlignment="Stretch"
                 Watermark="Search workspaces..."
                 Text="{Binding SearchText, ElementName=Root}"/>
@@ -43,21 +43,13 @@
                 ToolTip.Tip="Refresh workspaces (F5)"
                 Command="{Binding RefreshCommand, ElementName=Root}"/>
 
-            <Border
+            <shared:AppBadge
                 Grid.Column="4"
-                Padding="10,5"
-                CornerRadius="{DynamicResource RadiusSmall}"
-                Background="{DynamicResource SurfaceBrush}"
-                BorderBrush="{DynamicResource BorderBrush}"
-                BorderThickness="1"
-                VerticalAlignment="Center">
+                VerticalAlignment="Center"
+                Text="{Binding Summary, ElementName=Root}"/>
 
-                <TextBlock FontWeight="SemiBold" VerticalAlignment="Center">
-                    <Run Text="{Binding Count, ElementName=Root}" />
-                    <Run Text=" workspaces"/>
-                </TextBlock>
-            </Border>
         </Grid>
+
     </Border>
 
 </UserControl>

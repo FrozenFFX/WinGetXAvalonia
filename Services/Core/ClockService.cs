@@ -8,8 +8,10 @@ namespace WinGetXAvalonia.Services.Core;
 public class ClockService : IDisposable
 {
     private readonly DispatcherTimer _timer;
+    private string _lastDate;
 
     public event Action<string>? Tick;
+    public event Action<string>? DateChanged;
 
     public string CurrentTime => DateTime.Now.ToString("HH:mm");
 
@@ -17,6 +19,8 @@ public class ClockService : IDisposable
 
     public ClockService()
     {
+        _lastDate = CurrentDate;
+
         _timer = new DispatcherTimer
         {
             Interval = TimeSpan.FromSeconds(1)
@@ -29,6 +33,13 @@ public class ClockService : IDisposable
     private void OnTick(object? sender, EventArgs e)
     {
         Tick?.Invoke(CurrentTime);
+
+        var date = CurrentDate;
+        if (date == _lastDate)
+            return;
+
+        _lastDate = date;
+        DateChanged?.Invoke(date);
     }
 
     public void Dispose()

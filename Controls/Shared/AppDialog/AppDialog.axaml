@@ -41,8 +41,15 @@
                                 Grid.Column="1"
                                 x:Name="PART_Close"
                                 Classes="ghost"
-                                Content="✕"
-                                IsVisible="{TemplateBinding ShowCloseButton}"/>
+                                IsVisible="{TemplateBinding ShowCloseButton}">
+
+                                <Path
+                                    Width="12"
+                                    Height="12"
+                                    Data="{StaticResource IconClose}"
+                                    Fill="{DynamicResource SubtextBrush}"
+                                    Stretch="Uniform"/>
+                            </shared:AppButton>
 
                         </Grid>
 

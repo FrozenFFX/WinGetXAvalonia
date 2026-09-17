@@ -28,7 +28,7 @@ public partial class GeneralSettingsViewModel : SettingsCategoryViewModel
     public GeneralSettingsViewModel(
         ISettingsService settings,
         AutoSaveService autoSave)
-        : base("General", "⚙", settings, autoSave)
+        : base("General", "settings", settings, autoSave)
     {
         BeginInit();
 

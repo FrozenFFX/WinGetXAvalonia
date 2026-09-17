@@ -3,6 +3,7 @@
 
 using System.Management;
 using System.Runtime.InteropServices;
+using WinGetXAvalonia.Core.State;
 using WinGetXAvalonia.Models;
 
 namespace WinGetXAvalonia.Services.Performance;
@@ -36,63 +37,27 @@ public class SystemInfoService
         return (Math.Round(total, 1), Math.Round(available, 1), Math.Round(used, 1));
     }
 
-    public string GetWindowsVersion()
+public SystemInformation GetSystemInformation()
     {
-        return Environment.OSVersion.VersionString;
-    }
+        var info = new SystemInformation();
 
-    public string GetMachineName()
-    {
-        return Environment.MachineName;
-    }
+        info.OperatingSystem = Environment.OSVersion.Version.Build >= 22000 ? "Windows 11" : "Windows 10";
+        info.WindowsVersion = Environment.OSVersion.Version.ToString();
+        info.Architecture = RuntimeInformation.OSArchitecture.ToString();
+        info.MachineName = Environment.MachineName;
+        info.UserName = Environment.UserName;
+        info.CpuName = $"Processor {Environment.ProcessorCount} cores";
+        info.CpuThreads = Environment.ProcessorCount;
+        var (totalRam, availableRam, usedRam) = GetRamInfo();
+        info.RamTotal = Math.Round(totalRam, 1);
+        info.RamUsed = Math.Round(usedRam, 1);
+        info.Disk = "Not implemented"; // Would require additional WMI queries
+        info.GpuName = "Not implemented"; // Would require additional GPU queries
+        info.Network = "Not implemented"; // Would require additional network info queries
+        info.DotNetVersion = $"{Environment.Version.Major}.{Environment.Version.Minor}";
+        info.WingetVersion = "N/A"; // Would call winget version
 
-    public int GetCpuThreads()
-    {
-        return Environment.ProcessorCount;
-    }
-
-    public string GetCpuModel()
-    {
-        if (!OperatingSystem.IsWindows())
-            return "Unknown";
-
-        try
-        {
-            using var searcher = new ManagementObjectSearcher("SELECT Name FROM Win32_Processor");
-            foreach (var obj in searcher.Get())
-            {
-                return obj["Name"]?.ToString() ?? "Unknown";
-            }
-        }
-        catch
-        {
-            return "Unknown";
-        }
-
-        return "Unknown";
-    }
-
-    public string GetGpuInfo()
-    {
-        if (!OperatingSystem.IsWindows())
-            return "Unknown";
-
-        try
-        {
-            using var searcher = new ManagementObjectSearcher("SELECT Name FROM Win32_VideoController");
-            var gpus = new List<string>();
-            foreach (var obj in searcher.Get())
-            {
-                string? name = obj["Name"]?.ToString();
-                if (!string.IsNullOrWhiteSpace(name))
-                    gpus.Add(name);
-            }
-            return gpus.Count > 0 ? string.Join(" / ", gpus) : "Unknown";
-        }
-        catch
-        {
-            return "Unknown";
-        }
+        return info;
     }
 
     public IReadOnlyList<HeroInfoItem> GetOsDetails()
@@ -102,18 +67,18 @@ public class SystemInfoService
 
         var items = new List<HeroInfoItem>
         {
-            new() { Icon = "🪟", Label = "OS", Value = GetOsLabel() },
-            new() { Icon = "🧩", Label = "Version", Value = GetVersionLabel() },
-            new() { Icon = "🔧", Label = "Build", Value = GetBuildLabel() },
-            new() { Icon = "🏗", Label = "Architecture", Value = RuntimeInformation.OSArchitecture.ToString() },
-            new() { Icon = "💻", Label = "Machine", Value = Environment.MachineName },
-            new() { Icon = "👤", Label = "User", Value = Environment.UserName },
-            new() { Icon = "🧠", Label = "CPU", Value = GetCpuModel() },
-            new() { Icon = "⚙️", Label = "CPU Threads", Value = $"{Environment.ProcessorCount} threads" },
-            new() { Icon = "💾", Label = "RAM", Value = ramText },
-            new() { Icon = "🎮", Label = "GPU", Value = GetGpuInfo() },
-            new() { Icon = "📅", Label = "Installed", Value = GetInstallDateLabel() },
-            new() { Icon = "🏷", Label = "Edition", Value = GetEditionLabel() }
+            new() { Icon = "windows", Label = "OS", Value = GetOsLabel() },
+            new() { Icon = "package", Label = "Version", Value = GetVersionLabel() },
+            new() { Icon = "tool", Label = "Build", Value = GetBuildLabel() },
+            new() { Icon = "enterprise", Label = "Architecture", Value = RuntimeInformation.OSArchitecture.ToString() },
+            new() { Icon = "workspace", Label = "Machine", Value = Environment.MachineName },
+            new() { Icon = "user", Label = "User", Value = Environment.UserName },
+            new() { Icon = "cpu", Label = "CPU", Value = $"{Environment.ProcessorCount} threads" },
+            new() { Icon = "settings", Label = "CPU Threads", Value = $"{Environment.ProcessorCount} threads" },
+            new() { Icon = "ram", Label = "RAM", Value = ramText },
+            new() { Icon = "automation", Label = "GPU", Value = "Not implemented" },
+            new() { Icon = "calendar", Label = "Installed", Value = GetInstallDateLabel() },
+            new() { Icon = "info", Label = "Edition", Value = GetEditionLabel() }
         };
 
         return items;

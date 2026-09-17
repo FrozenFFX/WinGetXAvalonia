@@ -14,7 +14,7 @@ public sealed class HistoryItemViewModel
         Entry = entry;
     }
 
-    public string Icon => Entry.Success ? "✓" : "✕";
+    public string Icon => Entry.Success ? "success" : "error";
 
     public string Title => Entry.Success
         ? SuccessTitle(Entry.Operation)

@@ -10,7 +10,7 @@ namespace WinGetXAvalonia.Controls.Shared;
 public partial class EmptyState : UserControl
 {
     public static readonly StyledProperty<string?> IconProperty =
-        AvaloniaProperty.Register<EmptyState, string?>(nameof(Icon), "📦");
+        AvaloniaProperty.Register<EmptyState, string?>(nameof(Icon), "package");
 
     public static readonly StyledProperty<string?> TitleProperty =
         AvaloniaProperty.Register<EmptyState, string?>(nameof(Title), "Nothing here yet");

@@ -26,7 +26,7 @@ public partial class EnterpriseViewModel : AsyncViewModel
     private readonly IDialogService _dialogs;
     private readonly INotificationService _notifications;
     private readonly IHistoryService _history;
-    private readonly SystemInfoService _system;
+    private readonly SystemInformation _system;
     private readonly IPackageProvider _provider;
     private readonly LoggerService _logger;
 
@@ -120,26 +120,29 @@ public partial class EnterpriseViewModel : AsyncViewModel
 
     public string EditorPolicyTitle => IsEditingPolicy ? "Edit Policy" : "New Policy";
 
-    public string LocalMachineName => _system.GetMachineName();
+    public string LocalMachineName => _system.MachineName ?? "Unknown";
 
-    public string LocalCpuName => _system.GetCpuModel();
+    public string LocalCpuName => _system.CpuName ?? "Unknown";
 
-    public string LocalCpuThreads => $"{_system.GetCpuThreads()} threads";
+    public string LocalCpuThreads => $"{_system.CpuThreads} threads";
 
     public string LocalRam
     {
         get
         {
-            var (total, _, used) = _system.GetRamInfo();
+            double total = _system.RamTotal.HasValue && _system.RamTotal.Value > 0
+                ? _system.RamTotal.Value
+                : 0;
+            double used = _system.RamUsed.HasValue ? _system.RamUsed.Value : 0;
             return total > 0 ? $"{used:0.0} / {total:0.0} GB" : "N/A";
         }
     }
 
-    public string LocalGpu => _system.GetGpuInfo();
+    public string LocalGpu => _system.GpuName ?? "Not implemented";
 
-    public string LocalOs => SystemInfoService.GetOsLabel();
+    public string LocalOs => _system.OperatingSystem ?? "Unknown";
 
-    public string LocalWindowsVersion => _system.GetWindowsVersion();
+    public string LocalWindowsVersion => _system.WindowsVersion ?? "Unknown";
 
     public string LocalArchitecture => System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString();
 
@@ -150,7 +153,7 @@ public partial class EnterpriseViewModel : AsyncViewModel
         IDialogService dialogs,
         INotificationService notifications,
         IHistoryService history,
-        SystemInfoService system,
+        SystemInformation system,
         IPackageProvider provider,
         LoggerService logger)
     {
@@ -176,18 +179,19 @@ public partial class EnterpriseViewModel : AsyncViewModel
     {
         LocalInfo.Clear();
 
-        var (totalRam, _, usedRam) = _system.GetRamInfo();
-        var ramText = totalRam > 0 ? $"{usedRam:0.0} / {totalRam:0.0} GB" : "N/A";
+        var ramText = _system.RamTotal.HasValue && _system.RamTotal.Value > 0 && _system.RamUsed.HasValue
+            ? $"{_system.RamUsed.Value:0.0} / {_system.RamTotal.Value:0.0} GB"
+            : "N/A";
 
-        LocalInfo.Add(new() { Icon = "💻", Label = "Machine", Value = _system.GetMachineName() });
-        LocalInfo.Add(new() { Icon = "🪟", Label = "OS", Value = SystemInfoService.GetOsLabel() });
-        LocalInfo.Add(new() { Icon = "🧩", Label = "Version", Value = _system.GetWindowsVersion() });
-        LocalInfo.Add(new() { Icon = "🧠", Label = "CPU", Value = _system.GetCpuModel() });
-        LocalInfo.Add(new() { Icon = "⚙️", Label = "Threads", Value = $"{_system.GetCpuThreads()} threads" });
-        LocalInfo.Add(new() { Icon = "💾", Label = "RAM", Value = ramText });
-        LocalInfo.Add(new() { Icon = "🎮", Label = "GPU", Value = _system.GetGpuInfo() });
-        LocalInfo.Add(new() { Icon = "🏗", Label = "Architecture", Value = LocalArchitecture });
-        LocalInfo.Add(new() { Icon = "👤", Label = "User", Value = Environment.UserName });
+        LocalInfo.Add(new() { Icon = "workspace", Label = "Machine", Value = _system.MachineName ?? "Unknown" });
+        LocalInfo.Add(new() { Icon = "windows", Label = "OS", Value = _system.OperatingSystem ?? "Unknown" });
+        LocalInfo.Add(new() { Icon = "package", Label = "Version", Value = _system.WindowsVersion ?? "Unknown" });
+        LocalInfo.Add(new() { Icon = "cpu", Label = "CPU", Value = _system.CpuName ?? "Unknown" });
+        LocalInfo.Add(new() { Icon = "settings", Label = "Threads", Value = $"{_system.CpuThreads} threads" });
+        LocalInfo.Add(new() { Icon = "ram", Label = "RAM", Value = ramText });
+        LocalInfo.Add(new() { Icon = "automation", Label = "GPU", Value = _system.GpuName ?? "Not implemented" });
+        LocalInfo.Add(new() { Icon = "enterprise", Label = "Architecture", Value = LocalArchitecture });
+        LocalInfo.Add(new() { Icon = "user", Label = "User", Value = Environment.UserName });
     }
 
     partial void OnSearchTextChanged(string value) => ApplyFilter();

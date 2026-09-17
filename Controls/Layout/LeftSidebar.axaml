@@ -5,40 +5,24 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
-    xmlns:cards="using:WinGetXAvalonia.Controls.Cards"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     xmlns:models="using:WinGetXAvalonia.Models"
-    xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
     x:Class="WinGetXAvalonia.Controls.Layout.LeftSidebar"
     x:DataType="vm:MainViewModel">
 
     <Border
-        Padding="12"
+        Padding="10,0"
         Background="{DynamicResource SidebarBrush}"
         BorderBrush="{DynamicResource BorderBrush}"
         BorderThickness="0,0,1,0">
 
-        <Grid Margin="0,12,0,12">
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="20"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-
-            <TextBlock
-                Grid.Row="0"
-                Margin="4,4,4,20"
-                VerticalAlignment="Center"
-                FontSize="18"
-                FontWeight="SemiBold"
-                Text="WinGetX Studio"/>
+        <Grid RowDefinitions="*,Auto">
 
             <ListBox
-                Grid.Row="2"
+                Grid.Row="0"
                 Classes="sidebar"
-                Padding="0,4,0,4"
+                Margin="0,10,0,4"
+                Padding="0,2,2,2"
                 BorderThickness="0"
                 Background="Transparent"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -49,82 +33,127 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="models:NavigationItem">
 
-                            <Border
-                                Classes="sidebar-item"
-                                Classes.header="{Binding IsCategoryHeader, Converter={StaticResource BoolToClassConverter}}"
-                                PointerPressed="OnHeaderPointerPressed">
+                        <Border
+                            Classes="sidebar-item"
+                            Classes.header="{Binding IsCategoryHeader, Converter={StaticResource BoolToClassConverter}, ConverterParameter=header}"
+                            PointerPressed="OnHeaderPointerPressed">
 
-                                <Grid
-                                    ColumnDefinitions="28,12,*,Auto"
+                            <Grid>
+
+                            <!-- Sayfa öğesi: ikon + etiket + rozet -->
+                            <Grid
+                                IsVisible="{Binding !IsCategoryHeader}"
+                                ColumnDefinitions="32,2,*,Auto"
+                                VerticalAlignment="Center">
+
+                                <Path
+                                    Grid.Column="0"
+                                    Width="18"
+                                    Height="18"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Data="{Binding Icon, Converter={StaticResource IconGeometry}}"
+                                    Fill="{DynamicResource SubtextBrush}"
+                                    Stretch="Uniform"/>
+
+                                <TextBlock
+                                    Grid.Column="2"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Title}"
+                                    TextTrimming="CharacterEllipsis"
+                                    TextWrapping="NoWrap"/>
+
+                                <Border
+                                    Grid.Column="3"
+                                    MinWidth="20"
+                                    Height="20"
+                                    Padding="6,2"
+                                    CornerRadius="10"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Background="{DynamicResource AccentBrush}"
+                                    IsVisible="{Binding BadgeCount, Converter={StaticResource PositiveToBoolConverter}}">
+
+                                    <TextBlock
+                                        FontSize="{DynamicResource FontTiny}"
+                                        FontWeight="Bold"
+                                        Foreground="White"
+                                        HorizontalAlignment="Center"
+                                        Text="{Binding BadgeCount}"/>
+
+                                </Border>
+
+                            </Grid>
+
+                            <!-- Kategori başlığı: etiket + chevron -->
+                            <Grid
+                                IsVisible="{Binding IsCategoryHeader}"
+                                ColumnDefinitions="*,Auto"
+                                VerticalAlignment="Center">
+
+                                <TextBlock
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Title}"
+                                    TextTrimming="CharacterEllipsis"
+                                    TextWrapping="NoWrap"/>
+
+                                <StackPanel
+                                    Grid.Column="1"
+                                    Margin="6,0,0,0"
+                                    Orientation="Horizontal"
+                                    Spacing="4"
                                     VerticalAlignment="Center">
 
-                                    <Border
-                                        Classes="sidebar-item-accent"
-                                        Background="{DynamicResource AccentBrush}"
-                                        IsVisible="{Binding !IsCategoryHeader}"/>
-
-                                    <TextBlock
-                                        Grid.Column="0"
+                                    <Path
+                                        Width="12"
+                                        Height="12"
                                         VerticalAlignment="Center"
-                                        FontSize="15"
-                                        Text="{Binding Icon}"/>
+                                        IsVisible="{Binding !IsExpanded}"
+                                        Data="{StaticResource IconChevronRight}"
+                                        Fill="{DynamicResource MutedTextBrush}"
+                                        Stretch="Uniform"/>
 
-                                    <TextBlock
-                                        Grid.Column="2"
-                                        Margin="4,0,0,0"
+                                    <Path
+                                        Width="12"
+                                        Height="12"
                                         VerticalAlignment="Center"
-                                        FontWeight="Medium"
-                                        Text="{Binding Title}"
-                                        TextTrimming="CharacterEllipsis"
-                                        TextWrapping="NoWrap"/>
+                                        IsVisible="{Binding IsExpanded}"
+                                        Data="{StaticResource IconChevronDown}"
+                                        Fill="{DynamicResource MutedTextBrush}"
+                                        Stretch="Uniform"/>
 
-                    <TextBlock
-                                         x:Name="Chevron"
-                                         Grid.Column="3"
-                                         FontSize="10"
-                                         VerticalAlignment="Center"
-                                         IsVisible="{Binding IsCategoryHeader}"
-                                         Text="{Binding IsExpanded, Converter={StaticResource ExpanderGlyphConverter}}"/>
+                                </StackPanel>
 
-                                    <Border
-                                        x:Name="Badge"
-                                        Grid.Column="3"
-                                        MinWidth="20"
-                                        Height="20"
-                                        Padding="6,2"
-                                        CornerRadius="10"
-                                        HorizontalAlignment="Right"
-                                        Background="{DynamicResource AccentBrush}"
-                                        IsVisible="{Binding BadgeCount, Converter={StaticResource PositiveToBoolConverter}}">
+                            </Grid>
 
-                                        <TextBlock
-                                            FontSize="10"
-                                            FontWeight="Bold"
-                                            Foreground="White"
-                                            HorizontalAlignment="Center"
-                                            Text="{Binding BadgeCount}"/>
+                            </Grid>
 
-                                    </Border>
-
-                                </Grid>
-
-                            </Border>
+                        </Border>
 
                     </DataTemplate>
                 </ListBox.ItemTemplate>
 
             </ListBox>
 
-            <shared:AppSidebarSection
-                Grid.Row="3"
-                Title="Version">
+            <!-- Footer -->
+            <Border
+                Grid.Row="1"
+                Margin="4,0,4,6"
+                Padding="0,10,0,0"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="0,1,0,0">
 
-                <TextBlock
-                    FontSize="14"
-                    FontWeight="SemiBold"
-                    Text="{Binding Version}"/>
+                <shared:AppSidebarSection Title="Version">
 
-            </shared:AppSidebarSection>
+                    <TextBlock
+                        FontSize="{DynamicResource FontButton}"
+                        FontWeight="SemiBold"
+                        Text="{Binding Version}"/>
+
+                </shared:AppSidebarSection>
+
+            </Border>
 
         </Grid>
 

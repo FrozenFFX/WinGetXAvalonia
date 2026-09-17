@@ -27,11 +27,14 @@
                     Background="{DynamicResource StudioAccentSoftBrush}"
                     VerticalAlignment="Center">
 
-                    <TextBlock
-                        Text="{Binding HeaderIcon, ElementName=Root}"
-                        FontSize="20"
+                    <Path
+                        Width="22"
+                        Height="22"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center"/>
+                        VerticalAlignment="Center"
+                        Data="{Binding HeaderIcon, ElementName=Root, Converter={StaticResource IconGeometry}}"
+                        Fill="{DynamicResource StudioAccentBrush}"
+                        Stretch="Uniform"/>
                 </Border>
 
                 <StackPanel
@@ -41,7 +44,7 @@
 
                     <TextBlock
                         Text="{Binding Title, ElementName=Root}"
-                        FontSize="18"
+                        FontSize="{DynamicResource FontSubtitle}"
                         FontWeight="SemiBold"/>
 
                     <TextBlock

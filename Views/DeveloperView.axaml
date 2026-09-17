@@ -115,6 +115,20 @@
 
         </ScrollViewer>
 
+        <shared:AppEmptyState
+            IsVisible="{Binding IsEmpty}"
+            Icon="developer"
+            Title="No developer tools"
+            Description="Developer tools will appear here."/>
+
+        <shared:AppEmptyState
+            IsVisible="{Binding HasError}"
+            Icon="warning"
+            Title="Something went wrong"
+            Description="{Binding ErrorMessage}"
+            ActionText="Retry"
+            ActionCommand="{Binding RefreshCommand}"/>
+
         <shared:LoadingOverlay
             IsLoading="{Binding IsLoading}"
             Message="Loading developer tools..."/>

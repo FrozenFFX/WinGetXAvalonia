@@ -19,10 +19,13 @@
 
         <Grid ColumnDefinitions="Auto,*,Auto">
 
-            <TextBlock
-                Text="🔍"
-                FontSize="13"
+            <Path
+                Width="16"
+                Height="16"
+                Data="{StaticResource IconSearch}"
+                Fill="{DynamicResource SubtextBrush}"
                 Opacity="0.5"
+                Stretch="Uniform"
                 VerticalAlignment="Center"/>
 
             <TextBox
@@ -38,8 +41,6 @@
 
             <shared:AppButton
                 Grid.Column="2"
-                Content="✕"
-                FontSize="12"
                 Width="24"
                 Height="24"
                 Padding="0"
@@ -48,7 +49,15 @@
                 VerticalAlignment="Center"
                 IsVisible="{Binding Text, ElementName=Root,
                 Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"
-                Click="OnClearClick"/>
+                Click="OnClearClick">
+
+                <Path
+                    Width="12"
+                    Height="12"
+                    Data="{StaticResource IconClose}"
+                    Fill="{DynamicResource SubtextBrush}"
+                    Stretch="Uniform"/>
+            </shared:AppButton>
 
         </Grid>
 

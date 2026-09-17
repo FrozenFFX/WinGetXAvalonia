@@ -42,7 +42,7 @@
                     <Grid ColumnDefinitions="Auto,*">
 
                         <TextBlock Text="{Binding Prefix}"
-                                   FontSize="16"
+                                   FontSize="{DynamicResource FontCardTitle}"
                                    Opacity="0.7"
                                    VerticalAlignment="Center"/>
 
@@ -52,7 +52,7 @@
                                  Padding="0"
                                  Background="Transparent"
                                  BorderThickness="0"
-                                 FontSize="18"
+                                                   FontSize="{DynamicResource FontSubtitle}"
                                  CaretBrush="{DynamicResource PrimaryBrush}"
                                  SelectionBrush="{DynamicResource PrimaryBrush}"
                                  VerticalContentAlignment="Center"
@@ -111,10 +111,12 @@
                                     <Grid ColumnDefinitions="Auto,*,Auto"
                                           ColumnSpacing="12">
 
-                                        <TextBlock Text="{Binding Icon}"
-                                                   FontSize="18"
-                                                   Width="26"
-                                                   VerticalAlignment="Center"/>
+                                        <Path Width="22"
+                                                   Height="22"
+                                                   VerticalAlignment="Center"
+                                                   Stretch="Uniform"
+                                                   Data="{Binding Icon, Converter={StaticResource IconGeometry}}"
+                                                   Fill="{DynamicResource SubtextBrush}"/>
 
                                         <StackPanel Grid.Column="1"
                                                     VerticalAlignment="Center"
@@ -134,7 +136,7 @@
                                         </StackPanel>
 
                                         <TextBlock Grid.Column="2"
-                                                   Text="↵"
+                                                   Text="Enter"
                                                    VerticalAlignment="Center"
                                                    Foreground="{DynamicResource SubtextBrush}"
                                                    Opacity="0.5"/>
@@ -155,11 +157,11 @@
                             Orientation="Horizontal"
                             Spacing="18">
 
-                    <TextBlock Text="↑↓ Navigate"
+                    <TextBlock Text="Up/Down Navigate"
                                FontSize="{DynamicResource FontSecondary}"
                                Foreground="{DynamicResource SubtextBrush}"/>
 
-                    <TextBlock Text="↵ Execute"
+                    <TextBlock Text="Enter Execute"
                                FontSize="{DynamicResource FontSecondary}"
                                Foreground="{DynamicResource SubtextBrush}"/>
 

@@ -243,44 +243,10 @@ public class WingetService
     }
 
     public async Task<WingetResult> UpgradeAll()
-    {
-        ProcessStartInfo psi = new()
-        {
-            FileName = "winget",
-            Arguments = "upgrade --all --disable-interactivity",
-            UseShellExecute = true
-        };
-
-        try
-        {
-            Process.Start(psi);
-            return WingetResult.Ok(0, "Started");
-        }
-        catch (Exception ex)
-        {
-            return WingetResult.Fail(-1, ex.Message);
-        }
-    }
+        => await Execute("upgrade --all");
 
     public async Task<WingetResult> RefreshSources()
-    {
-        ProcessStartInfo psi = new()
-        {
-            FileName = "winget",
-            Arguments = "source update --disable-interactivity",
-            UseShellExecute = true
-        };
-
-        try
-        {
-            Process.Start(psi);
-            return WingetResult.Ok(0, "Started");
-        }
-        catch (Exception ex)
-        {
-            return WingetResult.Fail(-1, ex.Message);
-        }
-    }
+        => await Execute("source update");
 
     public async Task<WingetResult> Version()
     {

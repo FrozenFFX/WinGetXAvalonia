@@ -29,7 +29,7 @@
                         VerticalAlignment="Center">
 
                         <TextBlock
-                            FontSize="20"
+                            FontSize="{DynamicResource FontSectionLarge}"
                             FontWeight="SemiBold"
                             Text="{TemplateBinding Title}"/>
 

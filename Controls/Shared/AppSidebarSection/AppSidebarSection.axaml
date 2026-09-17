@@ -16,7 +16,7 @@
 
                 <TextBlock
                     Margin="14,0"
-                    FontSize="11"
+                    FontSize="{DynamicResource FontMicro}"
                     FontWeight="SemiBold"
                     Opacity=".50"
                     Text="{TemplateBinding Title}"/>

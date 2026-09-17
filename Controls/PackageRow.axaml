@@ -24,9 +24,13 @@
                 <ColumnDefinition Width="120"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock
-                Text="{Binding Icon}"
-                FontSize="24"/>
+            <Path
+                Width="28"
+                Height="28"
+                VerticalAlignment="Center"
+                Data="{Binding Icon, Converter={StaticResource IconGeometry}}"
+                Fill="{DynamicResource AccentBrush}"
+                Stretch="Uniform"/>
 
             <TextBlock
                 Grid.Column="1"

@@ -7,80 +7,75 @@
     x:Class="WinGetXAvalonia.Controls.Cards.ActionCard"
     x:Name="Root">
 
-    <Border
-        Classes="card"
-        Margin="6"
-        Padding="0"
-        CornerRadius="16"
-        BorderBrush="{DynamicResource BorderBrush}"
-        BorderThickness="1"
-        Background="{DynamicResource CardBrush}">
+    <Button
+        MinWidth="160"
+        MaxWidth="200"
+        MinHeight="100"
+        Padding="16"
+        Background="Transparent"
+        BorderThickness="0"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        HorizontalContentAlignment="Stretch"
+        VerticalContentAlignment="Stretch"
+        Command="{Binding #Root.Command}"
+        Focusable="False">
 
-        <Button
-            Height="NaN"
-            Background="Transparent"
-            BorderThickness="0"
-            Padding="0"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            Command="{Binding #Root.Command}"
-            Focusable="False">
+        <Button.Template>
+            <ControlTemplate TargetType="Button">
+                <Border
+                    Classes="card"
+                    Padding="16"
+                    Background="{DynamicResource CardBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="{DynamicResource RadiusMedium}">
 
-            <Button.Template>
-                <ControlTemplate TargetType="Button">
                     <ContentPresenter
                         Content="{TemplateBinding Content}"
                         ContentTemplate="{TemplateBinding ContentTemplate}"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"/>
-                </ControlTemplate>
-            </Button.Template>
-
-            <Grid
-                Margin="16"
-                ColumnDefinitions="44,12,*"
-                VerticalAlignment="Center">
-
-                <Border
-                    Width="44"
-                    Height="44"
-                    CornerRadius="12"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Background="{DynamicResource AccentBrush}">
-
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontSize="20"
-                        Text="{Binding #Root.Icon}"/>
-
                 </Border>
+            </ControlTemplate>
+        </Button.Template>
 
-                <StackPanel
-                    Grid.Column="2"
-                    VerticalAlignment="Center"
-                    Spacing="2">
+        <StackPanel Spacing="8">
 
-                    <TextBlock
-                        FontSize="15"
-                        FontWeight="SemiBold"
-                        Text="{Binding #Root.Title}"/>
+            <Border
+                Width="40"
+                Height="40"
+                CornerRadius="{DynamicResource RadiusSmall}"
+                Background="{DynamicResource AccentBrush}"
+                HorizontalAlignment="Left">
 
-                    <TextBlock
-                        FontSize="12"
-                        Opacity=".65"
-                        TextWrapping="Wrap"
-                        Text="{Binding #Root.Description}"/>
+                <Path
+                    Width="22"
+                    Height="22"
+                    Margin="9"
+                    Data="{Binding #Root.Icon, Converter={StaticResource IconGeometry}}"
+                    Fill="White"
+                    Stretch="Uniform"/>
 
-                </StackPanel>
+            </Border>
 
-            </Grid>
+            <StackPanel Spacing="2">
 
-        </Button>
+                <TextBlock
+                    FontSize="{DynamicResource FontCardTitle}"
+                    FontWeight="SemiBold"
+                    Text="{Binding #Root.Title}"/>
 
-    </Border>
+                <TextBlock
+                    FontSize="{DynamicResource FontCaption}"
+                    Opacity="0.6"
+                    Text="{Binding #Root.Description}"
+                    TextWrapping="Wrap"/>
+
+            </StackPanel>
+
+        </StackPanel>
+
+    </Button>
 
 </UserControl>

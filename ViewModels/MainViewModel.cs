@@ -4,12 +4,15 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Input;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using WinGetXAvalonia.Core.State;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
+using WinGetXAvalonia.Services.Updates;
 
 namespace WinGetXAvalonia.ViewModels;
 
@@ -25,7 +28,13 @@ public partial class MainViewModel : ViewModelBase
 
     private readonly IErrorHandlingService _errorHandling;
 
-    public string Version => "1.0.0";
+    private readonly IUpdateService _updateService;
+
+    public string Version =>
+        Assembly.GetExecutingAssembly()
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+            .InformationalVersion.Split('+')[0]
+            ?? "1.0.0";
 
     public string Footer =>
         $"WinGetX {Version} • {BuildDate}";
@@ -44,12 +53,9 @@ public partial class MainViewModel : ViewModelBase
 
     public ObservableCollection<NavigationItem> Menu { get; } = new();
 
-    // Sidebar'ın bağlandığı görünür menü. Daraltılmış kategorilerin öğelerini
-    // içermez — ListBox sanallaştırması görünmez öğelerle bozulmasın diye
-    // IsVisible yerine koleksiyondan filtreleriz.
+    // Görünür menü; daraltılmış kategorilerin öğelerini içermez
+    // (ListBox sanallaştırması görünmez öğelerle bozulmamasın diye).
     public ObservableCollection<NavigationItem> VisibleMenu { get; } = new();
-
-    public ObservableCollection<NavigationCategory> MenuCategories { get; } = new();
 
     private readonly Dictionary<Type, ViewModelBase> _pages;
 
@@ -98,6 +104,7 @@ public partial class MainViewModel : ViewModelBase
         SettingsViewModel settings,
         FavoritesViewModel favorites,
         GameModeViewModel gameMode,
+        IUpdateService updateService,
         LoggerService logger,
         IErrorHandlingService errorHandling)
     {
@@ -106,6 +113,7 @@ public partial class MainViewModel : ViewModelBase
         Palette = commandPalette;
         _logger = logger;
         _errorHandling = errorHandling;
+        _updateService = updateService;
 
         CloseDetailCommand = new RelayCommand(() => IsDetailVisible = false);
 
@@ -136,145 +144,153 @@ public partial class MainViewModel : ViewModelBase
         Menu.Add(new()
         {
             Title = "Dashboard",
-            Icon = "📊",
+            Icon = "home",
             Page = typeof(DashboardViewModel),
-            Category = "Core"
+            Category = "Home"
         });
 
         Menu.Add(new()
         {
-            Title = "Packages",
-            Icon = "📦",
+            Title = "Installed",
+            Icon = "package",
             Page = typeof(InstalledViewModel),
-            Category = "Package Management"
+            Category = "Packages"
         });
 
         Menu.Add(new()
         {
             Title = "Updates",
-            Icon = "🔄",
+            Icon = "update",
             Page = typeof(UpdatesViewModel),
-            Category = "Package Management"
+            Category = "Packages"
+        });
+
+        Menu.Add(new()
+        {
+            Title = "Browse",
+            Icon = "search",
+            Page = typeof(BrowseViewModel),
+            Category = "Packages"
+        });
+
+        Menu.Add(new()
+        {
+            Title = "Sources",
+            Icon = "source",
+            Page = typeof(SourceManagerViewModel),
+            Category = "Packages"
         });
 
         Menu.Add(new()
         {
             Title = "History",
-            Icon = "🕘",
+            Icon = "history",
             Page = typeof(HistoryViewModel),
-            Category = "Package Management"
+            Category = "Packages"
         });
 
         Menu.Add(new()
         {
-            Title = "Discover",
-            Icon = "🔍",
-            Page = typeof(BrowseViewModel),
-            Category = "Package Management"
+            Title = "Favorites",
+            Icon = "favorite",
+            Page = typeof(FavoritesViewModel),
+            Category = "Packages"
         });
 
         Menu.Add(new()
         {
-            Title = "Marketplace",
-            Icon = "🛍️",
-            Page = typeof(MarketplaceViewModel),
-            Category = "Package Management"
-        });
-
-        Menu.Add(new()
-        {
-            Title = "Workspaces",
-            Icon = "🗂",
+            Title = "Queue",
+            Icon = "queue",
             Page = typeof(WorkspacesViewModel),
             Category = "Workflows"
         });
 
         Menu.Add(new()
         {
-            Title = "Blueprints",
-            Icon = "📐",
-            Page = typeof(BlueprintsViewModel),
-            Category = "Workflows"
-        });
-
-        Menu.Add(new()
-        {
             Title = "Automation",
-            Icon = "⚙",
+            Icon = "automation",
             Page = typeof(AutomationViewModel),
             Category = "Workflows"
         });
 
         Menu.Add(new()
         {
-            Title = "Sources",
-            Icon = "🌐",
-            Page = typeof(SourceManagerViewModel),
-            Category = "System"
-        });
-
-        Menu.Add(new()
-        {
-            Title = "Identity",
-            Icon = "🪪",
-            Page = typeof(SoftwareIdentityViewModel),
-            Category = "System"
-        });
-
-        Menu.Add(new()
-        {
-            Title = "Security",
-            Icon = "🛡",
-            Page = typeof(SecurityViewModel),
-            Category = "System"
+            Title = "Blueprints",
+            Icon = "collection",
+            Page = typeof(BlueprintsViewModel),
+            Category = "Workflows"
         });
 
         Menu.Add(new()
         {
             Title = "Diagnostics",
-            Icon = "🩺",
+            Icon = "diagnostics",
             Page = typeof(DiagnosticsViewModel),
             Category = "System"
         });
 
         Menu.Add(new()
         {
-            Title = "Enterprise",
-            Icon = "🏢",
-            Page = typeof(EnterpriseViewModel),
-            Category = "Enterprise"
+            Title = "Security",
+            Icon = "security",
+            Page = typeof(SecurityViewModel),
+            Category = "System"
         });
 
         Menu.Add(new()
         {
             Title = "Studio",
-            Icon = "🎛",
+            Icon = "studio",
             Page = typeof(StudioViewModel),
-            Category = "Developer"
+            Category = "Tools"
         });
 
         Menu.Add(new()
         {
             Title = "Developer",
-            Icon = "🧑‍💻",
+            Icon = "developer",
             Page = typeof(DeveloperViewModel),
-            Category = "Developer"
+            Category = "Tools"
+        });
+
+        Menu.Add(new()
+        {
+            Title = "Enterprise",
+            Icon = "enterprise",
+            Page = typeof(EnterpriseViewModel),
+            Category = "Tools"
         });
 
         Menu.Add(new()
         {
             Title = "Settings",
-            Icon = "⚙",
+            Icon = "settings",
             Page = typeof(SettingsViewModel),
-            Category = "Developer"
+            Category = "Settings"
+        });
+
+        Menu.Add(new()
+        {
+            Title = "Marketplace",
+            Icon = "marketplace",
+            Page = typeof(MarketplaceViewModel),
+            Category = "Packages"
         });
 
         Menu.Add(new()
         {
             Title = "Game Mode",
-            Icon = "🎮",
+            Icon = "game",
             Page = typeof(GameModeViewModel),
-            Category = "Gaming"
+            Category = "Tools"
+        });
+
+        Menu.Add(new()
+        {
+            Title = "Identity",
+            Icon = "identity",
+            Page = typeof(SoftwareIdentityViewModel),
+            Category = "System"
         });
 
         BuildMenuGrouped();
@@ -282,7 +298,6 @@ public partial class MainViewModel : ViewModelBase
 
         SelectedMenuItem = Menu.FirstOrDefault(m => !m.IsCategoryHeader);
 
-        // Command palette, sidebar seçimini senkron tutsun
         Palette.NavigateToPage = pageType =>
         {
             var item = Menu.FirstOrDefault(m => m.Page == pageType);
@@ -306,7 +321,7 @@ public partial class MainViewModel : ViewModelBase
             browse.SearchCommand.Execute(null);
         };
 
-        // Installed ekranında liste boşken "Browse" denince Discover'a zıplatalım
+        // Installed listesi boşken Discover'a geç.
         installed.BrowseRequested += (_, _) =>
         {
             var discover = Menu.FirstOrDefault(m => m.Page == typeof(BrowseViewModel));
@@ -318,19 +333,30 @@ public partial class MainViewModel : ViewModelBase
         // Dashboard quick action "Search" → komut paletini aç
         dashboard.SearchRequested += () => Palette.Open();
 
-        // Dashboard detay kartları → sağ paneli aç
+        // Detay kartları → sağ panel.
         dashboard.DetailRequested += (content, title, subtitle) =>
             ShowDetail(content, title, subtitle);
 
         Navigation.Navigate(_pages[typeof(DashboardViewModel)]);
+
+        _updateService.AvailableCountChanged += () =>
+            Dispatcher.UIThread.Post(UpdateBadgeCounts);
+
+        UpdateBadgeCounts();
     }
 
-    // Kategori başlığı tek başına sayfaya gitmez; ToggleGroupCommand grubu
-    // açar/kapar. Burada yalnızca gerçek sayfa öğeleri seçilir.
+    // Kategori başlığı sayfaya gitmez, yalnızca gerçek sayfa öğeleri seçilir.
     partial void OnSelectedMenuItemChanged(NavigationItem? value)
     {
         if (value is null || value.IsCategoryHeader)
             return;
+
+        // Seçili sayfanın kategorisi kapalıysa aç — seçili öğe menüde gizli kalmasın.
+        if (value.ParentCategory is { } header && !header.IsExpanded)
+        {
+            header.IsExpanded = true;
+            RebuildVisibleMenu();
+        }
 
         if (!_pages.TryGetValue(value.Page, out var page))
             return;
@@ -340,29 +366,27 @@ public partial class MainViewModel : ViewModelBase
 
         OnPropertyChanged(nameof(StatusText));
 
-        // Sayfalar ilk ziyaret edildiğinde yüklenir. Hata asla uygulamayı
-        // çökertmez; log → history → notification → UI error state zincirinden
-        // geçer (ARTICLE VII).
+        // Sayfa ilk ziyarette yüklenir; hata zincire aktarılır (ARTICLE VII).
         _ = InitializePageSafelyAsync(page);
     }
 
-    // Accordion davranışı: tıklanan grup açık değilse açılır (diğer gruplar
-    // kapanır); zaten açıksa kapanır. Seçili sayfa hiç değişmez.
+    // Grup tıklanırsa yalnızca o grup açılır/kapanır. Diğer gruplara
+    // dokunulmaz — gezinme/başlık tıklaması kullanıcının açık bıraktığı
+    // bölümleri asla kapatmaz (çoklu açık grup desteklenir).
     [RelayCommand]
     private void ToggleGroup(NavigationItem? header)
     {
         if (header is null || !header.IsCategoryHeader)
             return;
 
-        var expand = !header.IsExpanded;
-
-        foreach (var item in Menu)
+        // Aktif sayfanın bölümü kapatılamaz — seçili sayfa her zaman görünür kalır.
+        if (SelectedMenuItem is { IsCategoryHeader: false } selected &&
+            selected.ParentCategory == header)
         {
-            if (item.IsCategoryHeader && item != header)
-                item.IsExpanded = false;
+            return;
         }
 
-        header.IsExpanded = expand;
+        header.IsExpanded = !header.IsExpanded;
         RebuildVisibleMenu();
     }
 
@@ -389,37 +413,23 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    public void RefreshStatus()
-    {
-        OnPropertyChanged(nameof(StatusText));
-        OnPropertyChanged(nameof(Footer));
-
-        foreach (var cat in MenuCategories)
-            cat.IsExpanded = true;
-
-        UpdateBadgeCounts();
-    }
-
     private void UpdateBadgeCounts()
     {
         var updatesItem = Menu.FirstOrDefault(m => m.Page == typeof(UpdatesViewModel));
         if (updatesItem is not null)
-            updatesItem.BadgeCount = _pages.Values
-                .OfType<UpdatesViewModel>()
-                .FirstOrDefault()?.PackageCount ?? 0;
+            updatesItem.BadgeCount = _updateService.AvailableCount;
     }
 
     private void BuildMenuGrouped()
     {
         var categoryDefs = new (string Title, string Icon)[]
         {
-            ("Core", "🎯"),
-            ("Package Management", "📦"),
-            ("Workflows", "🧩"),
-            ("Gaming", "🎮"),
-            ("System", "🖥"),
-            ("Enterprise", "🏢"),
-            ("Developer", "🔧")
+            ("Home", "home"),
+            ("Packages", "package"),
+            ("Workflows", "automation"),
+            ("System", "security"),
+            ("Tools", "studio"),
+            ("Settings", "settings")
         };
 
         var grouped = new List<NavigationItem>();

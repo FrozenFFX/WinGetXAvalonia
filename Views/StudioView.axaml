@@ -88,9 +88,16 @@
                     Grid.Column="1"
                     Width="42"
                     Padding="0"
-                    Content="🔄"
                     ToolTip.Tip="Refresh studio tools (F5)"
-                    Command="{Binding RefreshCommand}"/>
+                    Command="{Binding RefreshCommand}">
+
+                    <Path
+                        Width="18"
+                        Height="18"
+                        Data="{StaticResource IconRefresh}"
+                        Fill="{DynamicResource TextBrush}"
+                        Stretch="Uniform"/>
+                </shared:AppButton>
 
                 <Border
                     Grid.Column="2"
@@ -138,7 +145,7 @@
         <!-- Tools -->
         <Grid
             Grid.Row="4"
-            ColumnDefinitions="*,12,360">
+            ColumnDefinitions="*,12,0.5*">
 
             <ScrollViewer
                 Grid.Column="0"
@@ -160,6 +167,7 @@
                                 Icon="{Binding Icon}"
                                 Title="{Binding Title}"
                                 Description="{Binding Description}"
+                                Category="{Binding Category}"
                                 Badge="{Binding Badge}"
                                 BadgeStatus="{Binding BadgeStatus}"
                                 Command="{Binding $parent[ItemsControl].DataContext.SelectToolCommand}"
@@ -185,19 +193,112 @@
 
                 <Grid>
 
-                    <StackPanel
-                        Spacing="16"
-                        IsVisible="{Binding IsToolSelected}">
+                    <ScrollViewer
+                        IsVisible="{Binding IsToolSelected}"
+                        HorizontalScrollBarVisibility="Disabled"
+                        VerticalScrollBarVisibility="Auto">
 
-                        <TextBlock
-                            FontSize="22"
-                            FontWeight="SemiBold"
-                            Text="Tool Details"/>
+                        <StackPanel
+                            Spacing="16">
 
-                        <ContentControl
-                            Content="{Binding SelectedTool}"/>
+                            <TextBlock
+                                FontSize="{DynamicResource FontSection}"
+                                FontWeight="SemiBold"
+                                Text="Tool Details"/>
 
-                    </StackPanel>
+                            <ContentControl
+                                Content="{Binding SelectedTool}">
+
+                                <ContentControl.ContentTemplate>
+                                    <DataTemplate x:DataType="vm:StudioToolViewModel">
+                                        <StackPanel Spacing="16">
+
+                                            <StackPanel
+                                                Orientation="Horizontal"
+                                                Spacing="12">
+
+                                                <Border
+                                                    Width="44"
+                                                    Height="44"
+                                                    CornerRadius="{DynamicResource RadiusMedium}"
+                                                    Background="{DynamicResource StudioAccentSoftBrush}"
+                                                    VerticalAlignment="Top">
+
+                                                    <Path
+                                                        Width="24"
+                                                        Height="24"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Data="{Binding Icon, Converter={StaticResource IconGeometry}}"
+                                                        Fill="{DynamicResource StudioAccentBrush}"
+                                                        Stretch="Uniform"/>
+                                                </Border>
+
+                                                <StackPanel
+                                                    VerticalAlignment="Center"
+                                                    Spacing="6">
+
+                                                    <TextBlock
+                                                        Text="{Binding Title}"
+                                                        FontSize="{DynamicResource FontSubtitle}"
+                                                        FontWeight="SemiBold"
+                                                        TextWrapping="Wrap"/>
+
+                                                    <studio:StudioBadge
+                                                        HorizontalAlignment="Left"
+                                                        Text="{Binding Badge}"
+                                                        Status="{Binding BadgeStatus}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+
+                                            <TextBlock
+                                                Text="{Binding Description}"
+                                                FontSize="{DynamicResource FontBody}"
+                                                Foreground="{DynamicResource SubtextBrush}"
+                                                TextWrapping="Wrap"/>
+
+                                            <Border
+                                                Height="1"
+                                                Background="{DynamicResource BorderBrush}"/>
+
+                                            <Grid
+                                                ColumnDefinitions="*,Auto"
+                                                RowDefinitions="Auto,Auto"
+                                                RowSpacing="12">
+
+                                                <TextBlock
+                                                    FontSize="{DynamicResource FontBody}"
+                                                    Foreground="{DynamicResource SubtextBrush}"
+                                                    Text="Category"/>
+
+                                                <TextBlock
+                                                    Grid.Column="1"
+                                                    FontSize="{DynamicResource FontBody}"
+                                                    FontWeight="SemiBold"
+                                                    Text="{Binding Category}"/>
+
+                                                <TextBlock
+                                                    Grid.Row="1"
+                                                    FontSize="{DynamicResource FontBody}"
+                                                    Foreground="{DynamicResource SubtextBrush}"
+                                                    Text="Status"/>
+
+                                                <TextBlock
+                                                    Grid.Row="1"
+                                                    Grid.Column="1"
+                                                    FontSize="{DynamicResource FontBody}"
+                                                    FontWeight="SemiBold"
+                                                    Text="{Binding Badge}"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ContentControl.ContentTemplate>
+
+                            </ContentControl>
+
+                        </StackPanel>
+
+                    </ScrollViewer>
 
                     <ScrollViewer
                         IsVisible="{Binding !IsToolSelected}"
@@ -210,7 +311,7 @@
                             <StackPanel Spacing="8">
 
                                 <TextBlock
-                                    FontSize="22"
+                                    FontSize="{DynamicResource FontSection}"
                                     FontWeight="SemiBold"
                                     Text="Studio"/>
                                 <TextBlock
@@ -227,10 +328,10 @@
                             <StackPanel Spacing="8">
 
                                 <TextBlock
-                                    FontSize="13"
+                                    FontSize="{DynamicResource FontCaption}"
                                     FontWeight="SemiBold"
                                     Foreground="{DynamicResource AccentBrush}"
-                                    Text="⚡ Keyboard Shortcuts"/>
+                                    Text="Keyboard Shortcuts"/>
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                                     <TextBlock
@@ -245,7 +346,7 @@
                                         BorderBrush="{DynamicResource BorderBrush}"
                                         BorderThickness="1">
                                         <TextBlock
-                                            FontSize="12"
+                                            FontSize="{DynamicResource FontSecondary}"
                                             FontWeight="SemiBold"
                                             Text="Ctrl + K"/>
                                     </Border>
@@ -264,7 +365,7 @@
                                         BorderBrush="{DynamicResource BorderBrush}"
                                         BorderThickness="1">
                                         <TextBlock
-                                            FontSize="12"
+                                            FontSize="{DynamicResource FontSecondary}"
                                             FontWeight="SemiBold"
                                             Text="F5"/>
                                     </Border>
@@ -279,10 +380,10 @@
                             <StackPanel Spacing="8">
 
                                 <TextBlock
-                                    FontSize="13"
+                                    FontSize="{DynamicResource FontCaption}"
                                     FontWeight="SemiBold"
                                     Foreground="{DynamicResource AccentBrush}"
-                                    Text="💡 Tips"/>
+                                    Text="Tips"/>
 
                                 <TextBlock
                                     Opacity="0.7"
@@ -303,17 +404,25 @@
 
             </Border>
 
+            <!-- Filtered empty state (search/filter ile eşleşme yok) -->
+            <shared:AppEmptyState
+                Grid.Column="0"
+                IsVisible="{Binding IsFilteredEmpty}"
+                Icon="search"
+                Title="No tools match"
+                Description="Try a different search term or filter."/>
+
             <!-- Empty state -->
             <shared:AppEmptyState
                 IsVisible="{Binding IsEmpty}"
-                Icon="🎛"
+                Icon="studio"
                 Title="No studio tools found"
                 Description="Try a different search or filter."/>
 
             <!-- Error state -->
             <shared:AppEmptyState
                 IsVisible="{Binding HasError}"
-                Icon="⚠️"
+                Icon="warning"
                 Title="Couldn't load studio tools"
                 Description="{Binding ErrorMessage}"
                 ActionText="Retry"

@@ -3,21 +3,28 @@
 
 using System.Globalization;
 using Avalonia.Data.Converters;
+using Avalonia.Media;
 using WinGetXAvalonia.Services.Notifications;
 
 namespace WinGetXAvalonia.Converters;
 
 public sealed class NotificationTypeToIconConverter : IValueConverter
 {
+    private static readonly IconGeometryConverter GeometryConverter = new();
+
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-        => value switch
+    {
+        var key = value switch
         {
-            NotificationType.Success => "✔",
-            NotificationType.Information => "ℹ️",
-            NotificationType.Warning => "⚠️",
-            NotificationType.Error => "❌",
-            _ => "•"
+            NotificationType.Success => "success",
+            NotificationType.Information => "info",
+            NotificationType.Warning => "warning",
+            NotificationType.Error => "error",
+            _ => "info"
         };
+
+        return GeometryConverter.Convert(key, typeof(Geometry), null, culture);
+    }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();

@@ -53,6 +53,12 @@ public class SidebarNavigationTests
             window.Show();
             Dispatcher.UIThread.RunJobs();
 
+            // Bölümler kapalı başlar; kullanıcının PACKAGES'ı açtığını simüle edelim.
+            var packages = vm.Menu.First(m => m.Page == typeof(InstalledViewModel));
+            vm.ToggleGroupCommand.Execute(packages.ParentCategory);
+
+            Dispatcher.UIThread.RunJobs();
+
             var listBox = FindListBox(window);
 
             Assert.NotNull(listBox);

@@ -7,6 +7,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:models="using:WinGetXAvalonia.Models"
              xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+             xmlns:Controls="using:WinGetXAvalonia.Controls"
              xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
              mc:Ignorable="d"
              d:DesignWidth="480"
@@ -19,27 +20,39 @@
 
         <shared:BaseCard>
 
-            <Grid ColumnDefinitions="44,*,auto"
+            <Grid ColumnDefinitions="Auto,44,*,auto"
                   ColumnSpacing="12">
+
+                <!-- seçim kutusu (sadece Updates modunda) -->
+                <CheckBox
+                    Grid.Column="0"
+                    IsChecked="{Binding Selected, Mode=TwoWay}"
+                    IsVisible="{Binding Mode,
+                    RelativeSource={RelativeSource AncestorType=Controls:PackageCard},
+                    Converter={StaticResource IsUpdatesCardMode}}"
+                    VerticalAlignment="Center"/>
 
                 <!-- ikon -->
                 <Border
-                    Grid.Column="0"
+                    Grid.Column="1"
                     Width="44"
                     Height="44"
                     CornerRadius="12"
                     Background="{DynamicResource SurfaceBrush}"
                     CacheMode="BitmapCache">
 
-                    <TextBlock Text="{Binding Icon}"
-                               FontSize="20"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
+                    <Path Width="24"
+                          Height="24"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Data="{Binding Icon, Converter={StaticResource IconGeometry}}"
+                          Fill="{DynamicResource AccentBrush}"
+                          Stretch="Uniform"/>
                 </Border>
 
                 <!-- bilgi -->
                 <StackPanel
-                    Grid.Column="1"
+                    Grid.Column="2"
                     Spacing="4"
                     VerticalAlignment="Center">
 
@@ -82,21 +95,21 @@
                         </Border>
 
                         <!-- güncelleme var -->
-                        <Border Background="#3327AE60"
+                        <Border Background="{DynamicResource SuccessSubtleBrush}"
                                 CornerRadius="20"
                                 Padding="8,2"
                                 IsVisible="{Binding Available,
                                 Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}">
 
                             <TextBlock Text="{Binding Available,
-                                       StringFormat=▲ {0}}"
+                                       StringFormat=Update {0}}"
                                        FontSize="{DynamicResource FontCaption}"
                                        FontWeight="SemiBold"
                                        Foreground="{DynamicResource SuccessBrush}"/>
                         </Border>
 
                         <!-- seçili -->
-                        <Border Background="#224CAF50"
+                        <Border Background="{DynamicResource AccentSubtle}"
                                 CornerRadius="20"
                                 Padding="8,3"
                                 IsVisible="{Binding Selected}">
@@ -110,7 +123,7 @@
 
                 <!-- aksiyonlar -->
                 <Grid
-                    Grid.Column="2"
+                    Grid.Column="3"
                     ColumnDefinitions="Auto,Auto,Auto"
                     ColumnSpacing="6"
                     VerticalAlignment="Center">
@@ -124,9 +137,11 @@
                         IsVisible="{Binding Available,
                         Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}">
 
-                        <TextBlock Text="▲"
-                                   FontSize="16"
-                                   FontWeight="Bold"/>
+                        <Path Width="18"
+                              Height="18"
+                              Data="{StaticResource IconUpdate}"
+                              Fill="{DynamicResource AccentForegroundBrush}"
+                              Stretch="Uniform"/>
                     </shared:AppButton>
 
                     <shared:AppButton
@@ -134,11 +149,17 @@
                         Width="40"
                         Height="40"
                         Classes="Danger"
+                        IsVisible="{Binding Mode,
+                        RelativeSource={RelativeSource AncestorType=Controls:PackageCard},
+                        Converter={StaticResource IsDefaultCardMode}}"
                         Command="{Binding $parent[ItemsControl].DataContext.RemoveCommand}"
                         CommandParameter="{Binding}">
 
-                        <TextBlock Text="🗑"
-                                   FontSize="16"/>
+                        <Path Width="18"
+                              Height="18"
+                              Data="{StaticResource IconUninstall}"
+                              Fill="{DynamicResource DangerBrush}"
+                              Stretch="Uniform"/>
                     </shared:AppButton>
 
                     <shared:AppButton
@@ -147,9 +168,11 @@
                         Height="40"
                         Click="ShowContextMenu">
 
-                        <TextBlock Text="⋯"
-                                   FontSize="16"
-                                   FontWeight="Bold"/>
+                        <Path Width="18"
+                              Height="18"
+                              Data="{StaticResource IconMoreHoriz}"
+                              Fill="{DynamicResource TextBrush}"
+                              Stretch="Uniform"/>
                     </shared:AppButton>
                 </Grid>
 

@@ -22,7 +22,7 @@ public class PackageFormatterTests
     {
         Assert.Equal("Installed 2.51.0", PackageFormatter.InstalledVersion("2.51.0"));
         Assert.Equal("Available 2.52.0", PackageFormatter.AvailableVersion("2.52.0"));
-        Assert.Equal("▲ 2.52.0", PackageFormatter.UpdateMarker("2.52.0"));
+        Assert.Equal("Update 2.52.0", PackageFormatter.UpdateMarker("2.52.0"));
         Assert.Equal("Version 2.52.0", PackageFormatter.Version("2.52.0"));
         Assert.Equal("Not Installed", PackageFormatter.NotInstalledText);
     }

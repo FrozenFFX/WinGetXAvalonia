@@ -51,15 +51,38 @@ public sealed class OperationService : IOperationService
     {
         var updates = await _provider.GetUpdatesAsync();
 
+        var successCount = 0;
+        var failureCount = 0;
+        var cancelledCount = 0;
+
         foreach (var update in updates
-                     .Where(x => !string.IsNullOrWhiteSpace(x.Id)))
+                     .Where(x => !string.IsNullOrWhiteSpace(x.Id))
+                     .OrderBy(x => x.Name))
         {
-            await RunAsync(
-                "Update",
-                update.Id,
-                PackageOperation.Updated,
-                progress => _provider.UpgradeAsync(update.Id, progress));
+            try
+            {
+                await RunAsync(
+                    "Update",
+                    update.Id,
+                    PackageOperation.Updated,
+                    progress => _provider.UpgradeAsync(update.Id, progress));
+
+                successCount++;
+            }
+            catch (Exception)
+            {
+                failureCount++;
+            }
         }
+
+        // Refresh state after all operations
+        await RefreshPackageStates();
+
+        // Notify user of results
+_notifications.Notify(
+                NotificationType.Information,
+                "Update All Complete",
+                $"Updated: {successCount}, Failed: {failureCount}, Cancelled: {cancelledCount}");
     }
 
     private async Task RunAsync(
@@ -150,11 +173,18 @@ public sealed class OperationService : IOperationService
             _ => "Removed"
         };
 
-    private static string PastTenseLower(PackageOperation operation)
-        => operation switch
-        {
-            PackageOperation.Installed => "installed",
-            PackageOperation.Updated => "updated",
-            _ => "removed"
-        };
+private static string PastTenseLower(PackageOperation operation)
+    => operation switch
+    {
+        PackageOperation.Installed => "installed",
+        PackageOperation.Updated => "updated",
+        _ => "removed"
+    };
+
+    private async Task RefreshPackageStates()
+    {
+        // Refresh installed package cache and update states
+        await _provider.GetInstalledAsync();
+        await _provider.GetUpdatesAsync();
+    }
 }

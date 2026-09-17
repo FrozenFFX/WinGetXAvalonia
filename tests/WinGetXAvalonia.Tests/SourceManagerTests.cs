@@ -8,6 +8,7 @@ using WinGetXAvalonia.Core.State;
 using WinGetXAvalonia.Helpers;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
+using WinGetXAvalonia.Services.Dialogs;
 using WinGetXAvalonia.Services.Sources;
 using WinGetXAvalonia.ViewModels;
 
@@ -105,7 +106,7 @@ public class SourceManagerTests
     public async Task InitializeAsync_LoadsSourcesAndReachesLoadedState()
     {
         var service = new StubSourceManagerService();
-        var viewModel = new SourceManagerViewModel(service);
+        var viewModel = new SourceManagerViewModel(service, new FakeDialogService());
 
         await viewModel.InitializeAsync();
 
@@ -118,7 +119,7 @@ public class SourceManagerTests
     public async Task Refresh_WhenServiceFails_ReachesErrorState()
     {
         var service = new FailingSourceManagerService();
-        var viewModel = new SourceManagerViewModel(service);
+        var viewModel = new SourceManagerViewModel(service, new FakeDialogService());
 
         await viewModel.Refresh();
 
@@ -179,5 +180,16 @@ public class SourceManagerTests
         public Task UpdateAsync() => Task.CompletedTask;
 
         public Task ResetAsync() => Task.CompletedTask;
+    }
+private sealed class FakeDialogService : IDialogService
+    {
+        public Task<bool> ConfirmAsync(string title, string message, string? confirmText = null, string? cancelText = null)
+        {
+            return Task.FromResult(true);
+        }
+
+        public Task ProgressAsync(string title, Func<IProgress<double>, Task> operation) => Task.CompletedTask;
+
+        public Task ShowErrorAsync(string title, string message) => Task.CompletedTask;
     }
 }

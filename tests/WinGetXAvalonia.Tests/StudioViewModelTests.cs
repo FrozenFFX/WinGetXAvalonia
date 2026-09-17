@@ -74,11 +74,12 @@ public class StudioViewModelTests
         var vm = Create(service);
         await vm.InitializeAsync();
 
-        vm.SearchText = "diag";
+vm.SearchText = "diag";
 
         Assert.Single(vm.Tools);
         Assert.Equal("Diagnostics", vm.Tools[0].Title);
-        Assert.Equal(2, vm.ToolCount);
+        Assert.Equal(1, vm.ToolCount);
+        Assert.Equal("1 tool", vm.ToolsSummary);
     }
 
     [Fact]
@@ -112,10 +113,12 @@ public class StudioViewModelTests
         var vm = Create(service);
         await vm.InitializeAsync();
 
-        vm.SearchText = "zzz";
+vm.SearchText = "zzz";
 
         Assert.Empty(vm.Tools);
         Assert.True(vm.IsLoaded);
+        Assert.True(vm.IsFilteredEmpty);
+        Assert.Equal("No tools", vm.ToolsSummary);
     }
 
     [Fact]

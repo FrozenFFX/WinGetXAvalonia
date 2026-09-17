@@ -4,8 +4,14 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:WinGetXAvalonia.ViewModels"
+             xmlns:controls="using:WinGetXAvalonia.Controls"
+             xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
              x:Class="WinGetXAvalonia.Views.FavoritesView"
              x:DataType="vm:FavoritesViewModel">
+
+    <UserControl.KeyBindings>
+        <KeyBinding Gesture="F5" Command="{Binding RefreshCommand}"/>
+    </UserControl.KeyBindings>
 
     <Grid Margin="24"
           HorizontalAlignment="Stretch"
@@ -14,18 +20,59 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="15"/>
+            <RowDefinition Height="12"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock
-            FontSize="34"
-            FontWeight="Bold"
-            Text="Favorites"/>
+        <shared:SectionHeader
+            Grid.Row="0"
+            Title="Favorites"
+            Description="{Binding FavoriteCount,
+            StringFormat={}{0} favorite packages}"/>
 
-        <ListBox
-            Grid.Row="2"
-            ItemsSource="{Binding Favorites}"/>
+        <Grid Grid.Row="2">
+
+            <ListBox
+                ItemsSource="{Binding FavoritePackages}"
+                BorderThickness="0"
+                Background="Transparent"
+                ScrollViewer.IsDeferredScrollingEnabled="True">
+
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel CacheLength="0.5"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <controls:PackageCard Mode="Default"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+            </ListBox>
+
+            <shared:AppEmptyState
+                Grid.Row="2"
+                IsVisible="{Binding IsEmpty}"
+                Icon="heart"
+                Title="No favorites yet"
+                Description="Add packages to your favorites to see them here."/>
+
+            <shared:AppEmptyState
+                Grid.Row="2"
+                IsVisible="{Binding HasError}"
+                Icon="warning"
+                Title="Couldn't load favorites"
+                Description="{Binding ErrorMessage}"
+                ActionText="Retry"
+                ActionCommand="{Binding RefreshCommand}"/>
+
+            <shared:LoadingOverlay
+                IsLoading="{Binding IsLoading}"
+                Message="Loading favorites..."/>
+
+        </Grid>
 
     </Grid>
 

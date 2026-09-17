@@ -25,7 +25,7 @@
 
             <shared:PageHeader
                 Grid.Column="0"
-                Title="Dashboard"
+                Title="{Binding GreetingText}"
                 Description="Manage packages and monitor your system."/>
 
             <StackPanel
@@ -38,7 +38,7 @@
                     Height="38"
                     MinWidth="96"
                     Classes="ghost"
-                    Content="↻ Refresh"
+                    Content="Refresh"
                     Command="{Binding RefreshCommand}"/>
 
                 <ProgressBar
@@ -77,7 +77,7 @@
                     Spacing="20"
                     Margin="0,0,0,16">
 
-                    <!-- Stats (4 cards in a row) -->
+                    <!-- Stats (responsive grid with minimum widths) -->
 
                     <UniformGrid
                         Columns="4"
@@ -85,27 +85,27 @@
                         HorizontalAlignment="Stretch">
 
                         <cards:StatCard
-                            Icon="📦"
+                            Icon="package"
                             Secondary="{Binding FavoritesDisplay, StringFormat='{}{0} favorites'}"
                             Subtitle="Installed"
                             Value="{Binding InstalledDisplay}"
                             Command="{Binding OpenPackagesCommand}"/>
 
                         <cards:StatCard
-                            Icon="⬆"
+                            Icon="update"
                             Secondary="{Binding UpdatesDisplay, StringFormat='{}{0} pending'}"
                             Subtitle="Updates"
                             Value="{Binding UpdatesDisplay}"
                             Command="{Binding UpdateAllCommand}"/>
 
                         <cards:StatCard
-                            Icon="📜"
+                            Icon="history"
                             Subtitle="History"
                             Value="{Binding HistoryDisplay}"
                             Command="{Binding OpenHistoryCommand}"/>
 
                         <cards:StatCard
-                            Icon="🌐"
+                            Icon="source"
                             Secondary="{Binding FavoritesDisplay, StringFormat='{}{0} pinned'}"
                             Subtitle="Sources"
                             Value="{Binding SourcesDisplay}"
@@ -128,7 +128,7 @@
                                 <Grid ColumnDefinitions="*,Auto">
 
                                     <TextBlock
-                                        FontSize="20"
+                                        FontSize="{DynamicResource FontSectionLarge}"
                                         FontWeight="SemiBold"
                                         Text="Recent Activity"/>
 
@@ -138,9 +138,16 @@
                                         Width="34"
                                         Height="34"
                                         Padding="0"
-                                        Content="↻"
                                         ToolTip.Tip="Refresh"
-                                        Command="{Binding RefreshCommand}"/>
+                                        Command="{Binding RefreshCommand}">
+
+                                        <Path
+                                            Width="16"
+                                            Height="16"
+                                            Data="{StaticResource IconRefresh}"
+                                            Fill="{DynamicResource TextBrush}"
+                                            Stretch="Uniform"/>
+                                    </shared:AppButton>
 
                                 </Grid>
 
@@ -175,11 +182,12 @@
                                                         VerticalAlignment="Center"
                                                         Background="{DynamicResource AccentBrush}">
 
-                                                        <TextBlock
-                                                            FontSize="20"
-                                                            HorizontalAlignment="Center"
-                                                            VerticalAlignment="Center"
-                                                            Text="{Binding Icon}"/>
+                                                        <Path
+                                                                Width="22"
+                                                                Height="22"
+                                                                Data="{Binding Icon, Converter={StaticResource IconGeometry}}"
+                                                                Fill="White"
+                                                                Stretch="Uniform"/>
 
                                                     </Border>
 
@@ -189,13 +197,13 @@
                                                         Spacing="2">
 
                                                         <TextBlock
-                                                            FontSize="14"
+                                                            FontSize="{DynamicResource FontButton}"
                                                             FontWeight="SemiBold"
                                                             TextTrimming="CharacterEllipsis"
                                                             Text="{Binding Title}"/>
 
                                                         <TextBlock
-                                                            FontSize="12"
+                                                            FontSize="{DynamicResource FontSecondary}"
                                                             Opacity="0.55"
                                                             Text="{Binding Timestamp, StringFormat='{}{0:dd.MM HH:mm}'}"/>
 
@@ -206,10 +214,10 @@
                                                         Padding="10,4"
                                                         CornerRadius="20"
                                                         VerticalAlignment="Center"
-                                                        Background="#173B82F6">
+                                                        Background="{DynamicResource AccentSubtle}">
 
                                                         <TextBlock
-                                                            FontSize="11"
+                                                            FontSize="{DynamicResource FontMicro}"
                                                             FontWeight="SemiBold"
                                                             Foreground="White"
                                                             Text="{Binding Type}"/>
@@ -228,7 +236,7 @@
                                 <shared:EmptyState
                                     IsVisible="{Binding HasNoActivity}"
                                     HorizontalAlignment="Center"
-                                    Icon="📦"
+                                    Icon="package"
                                     Title="No recent activity"
                                     Description="Install a package to begin."/>
 
@@ -254,7 +262,7 @@
                                 <Grid ColumnDefinitions="*,Auto">
 
                                     <TextBlock
-                                        FontSize="20"
+                                        FontSize="{DynamicResource FontSectionLarge}"
                                         FontWeight="SemiBold"
                                         Text="Notifications"/>
 
@@ -288,12 +296,12 @@
                                                     <StackPanel Spacing="2">
 
                                                         <TextBlock
-                                                            FontSize="13"
+                                                            FontSize="{DynamicResource FontCaption}"
                                                             FontWeight="SemiBold"
                                                             Text="{Binding Title}"/>
 
                                                         <TextBlock
-                                                            FontSize="12"
+                                                            FontSize="{DynamicResource FontSecondary}"
                                                             Opacity="0.6"
                                                             Text="{Binding Message}"
                                                             TextWrapping="Wrap"/>
@@ -302,7 +310,7 @@
 
                                                     <TextBlock
                                                         Grid.Column="1"
-                                                        FontSize="11"
+                                                        FontSize="{DynamicResource FontMicro}"
                                                         Opacity="0.5"
                                                         VerticalAlignment="Center"
                                                         Text="{Binding Timestamp, StringFormat='{}{0:HH:mm}'}"/>
@@ -319,7 +327,7 @@
                                 <shared:EmptyState
                                     IsVisible="{Binding HasNoNotifications}"
                                     HorizontalAlignment="Center"
-                                    Icon="🔔"
+                                    Icon="notification"
                                     Title="No notifications"
                                     Description="Everything is working normally."/>
 
@@ -341,42 +349,37 @@
                             <StackPanel Spacing="16">
 
                                 <TextBlock
-                                    FontSize="20"
+                                    FontSize="{DynamicResource FontSectionLarge}"
                                     FontWeight="SemiBold"
                                     Text="Quick Actions"/>
 
-                                <UniformGrid
-                                    Columns="2"
-                                    Rows="2"
-                                    ColumnSpacing="10"
-                                    HorizontalAlignment="Stretch"
-                                    RowSpacing="10">
+                                <WrapPanel Orientation="Horizontal" ItemSpacing="10">
 
                                     <cards:ActionCard
-                                        Icon="📦"
+                                        Icon="package"
                                         Title="Installed"
                                         Description="Manage packages"
                                         Command="{Binding OpenPackagesCommand}"/>
 
                                     <cards:ActionCard
-                                        Icon="⬆"
+                                        Icon="update"
                                         Title="Update All"
                                         Description="Upgrade packages"
                                         Command="{Binding UpdateAllCommand}"/>
 
                                     <cards:ActionCard
-                                        Icon="🔍"
+                                        Icon="search"
                                         Title="Browse"
                                         Description="Search packages"
                                         Command="{Binding BrowseCommand}"/>
 
                                     <cards:ActionCard
-                                        Icon="📜"
+                                        Icon="history"
                                         Title="History"
                                         Description="Recent operations"
                                         Command="{Binding OpenHistoryCommand}"/>
 
-                                </UniformGrid>
+                                </WrapPanel>
 
                             </StackPanel>
 
@@ -396,7 +399,7 @@
                             <StackPanel Spacing="14">
 
                                 <TextBlock
-                                    FontSize="20"
+                                    FontSize="{DynamicResource FontSectionLarge}"
                                     FontWeight="SemiBold"
                                     Text="Favorite Sources"/>
 
@@ -437,7 +440,7 @@
 
                                                         <TextBlock
                                                             Grid.Column="1"
-                                                            FontSize="11"
+                                                            FontSize="{DynamicResource FontMicro}"
                                                             Opacity="0.6"
                                                             Text="Online"/>
 
@@ -455,7 +458,7 @@
                                 <shared:EmptyState
                                     IsVisible="{Binding HasNoFavoriteSources}"
                                     HorizontalAlignment="Center"
-                                    Icon="📌"
+                                    Icon="favorite"
                                     Title="No pinned sources"
                                     Description="Pin frequently used sources here."/>
 
@@ -503,12 +506,12 @@
                             Spacing="2">
 
                             <TextBlock
-                                FontSize="20"
+                                FontSize="{DynamicResource FontSectionLarge}"
                                 FontWeight="SemiBold"
                                 Text="System"/>
 
                             <TextBlock
-                                FontSize="12"
+                                FontSize="{DynamicResource FontSecondary}"
                                 Opacity="0.6"
                                 Text="{Binding OsSubtitle}"/>
 
@@ -524,10 +527,16 @@
                             VerticalContentAlignment="Center"
                             Background="Transparent"
                             BorderThickness="0"
-                            FontSize="15"
-                            Content="✕"
                             Command="{Binding CloseSystemPanelCommand}"
-                            ToolTip.Tip="Close"/>
+                            ToolTip.Tip="Close">
+
+                            <Path
+                                Width="14"
+                                Height="14"
+                                Data="{StaticResource IconClose}"
+                                Fill="{DynamicResource SubtextBrush}"
+                                Stretch="Uniform"/>
+                        </Button>
 
                     </Grid>
 
@@ -561,25 +570,27 @@
                                         Height="52"
                                         CornerRadius="26"
                                         HorizontalAlignment="Left"
-                                        Background="#263B82F6">
+                                         Background="{DynamicResource AccentSubtle}">
 
-                                        <TextBlock
-                                            FontSize="26"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Text="🪟"/>
+                                        <Path
+                                            Width="28"
+                                            Height="28"
+                                            Margin="12"
+                                            Data="{StaticResource IconWindows}"
+                                            Fill="{DynamicResource AccentBrush}"
+                                            Stretch="Uniform"/>
 
                                     </Border>
 
                                     <StackPanel Spacing="2">
 
                                         <TextBlock
-                                            FontSize="24"
+                                            FontSize="{DynamicResource FontPageTitle}"
                                             FontWeight="SemiBold"
                                             Text="{Binding OsDisplayName}"/>
 
                                         <TextBlock
-                                            FontSize="12"
+                                            FontSize="{DynamicResource FontSecondary}"
                                             Opacity="0.6"
                                             Text="{Binding OsSubtitle}"/>
 
@@ -588,6 +599,58 @@
                                 </StackPanel>
 
                             </cards:InfoCard>
+
+                            <!-- Hero Info Chips -->
+
+                            <ItemsControl ItemsSource="{Binding HeroInfo}">
+
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel HorizontalAlignment="Left"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="models:HeroInfoItem">
+
+                                        <Border
+                                            Margin="0,0,8,8"
+                                            Padding="10,6"
+                                            CornerRadius="8"
+                                            Background="{DynamicResource SurfaceBrush}">
+
+                                            <StackPanel
+                                                Orientation="Horizontal"
+                                                Spacing="6">
+
+                                                <Path
+                                                    Width="14"
+                                                    Height="14"
+                                                    VerticalAlignment="Center"
+                                                    Data="{Binding Icon, Converter={StaticResource IconGeometry}}"
+                                                    Fill="{DynamicResource AccentBrush}"
+                                                    Stretch="Uniform"/>
+
+                                                <TextBlock
+                                                    FontSize="{DynamicResource FontMicro}"
+                                                    Opacity="0.6"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding Label}"/>
+
+                                                <TextBlock
+                                                    FontSize="{DynamicResource FontMicro}"
+                                                    FontWeight="SemiBold"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding Value}"/>
+
+                                            </StackPanel>
+
+                                        </Border>
+
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+
+                            </ItemsControl>
 
                             <!-- Live system cards -->
 
@@ -612,22 +675,25 @@
                                                 ColumnDefinitions="Auto,*"
                                                 ColumnSpacing="10">
 
-                                                <TextBlock
-                                                    FontSize="16"
+                                                <Path
+                                                    Width="18"
+                                                    Height="18"
                                                     VerticalAlignment="Center"
-                                                    Text="{Binding Icon}"/>
+                                                    Data="{Binding Icon, Converter={StaticResource IconGeometry}}"
+                                                    Fill="{DynamicResource SubtextBrush}"
+                                                    Stretch="Uniform"/>
 
                                                 <StackPanel
                                                     Grid.Column="1"
                                                     Spacing="2">
 
                                                     <TextBlock
-                                                        FontSize="11"
+                                                        FontSize="{DynamicResource FontMicro}"
                                                         Opacity="0.6"
                                                         Text="{Binding Title}"/>
 
                                                     <TextBlock
-                                                        FontSize="14"
+                                                        FontSize="{DynamicResource FontButton}"
                                                         FontWeight="SemiBold"
                                                         TextTrimming="CharacterEllipsis"
                                                         ToolTip.Tip="{Binding Value}"
@@ -652,7 +718,7 @@
                                 <StackPanel Spacing="14">
 
                                     <TextBlock
-                                        FontSize="20"
+                                        FontSize="{DynamicResource FontSectionLarge}"
                                         FontWeight="SemiBold"
                                         Text="System Health"/>
 
@@ -675,7 +741,7 @@
                                     </Grid>
 
                                     <TextBlock
-                                        FontSize="13"
+                                        FontSize="{DynamicResource FontCaption}"
                                         Opacity="0.6"
                                         Text="{Binding HealthStatusText}"
                                         TextWrapping="Wrap"/>
@@ -693,6 +759,14 @@
             </Border>
 
         </Grid>
+
+        <shared:AppEmptyState
+            IsVisible="{Binding HasError}"
+            Icon="warning"
+            Title="Something went wrong"
+            Description="{Binding ErrorMessage}"
+            ActionText="Retry"
+            ActionCommand="{Binding RefreshCommand}"/>
 
         <shared:LoadingOverlay
             IsLoading="{Binding IsLoading}"

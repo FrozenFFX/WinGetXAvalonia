@@ -15,15 +15,18 @@
         Spacing="12"
         MaxWidth="300">
 
-        <TextBlock
-            Text="{Binding Icon, ElementName=Root}"
-            FontSize="44"
+        <Path
+            Width="40"
+            Height="40"
+            HorizontalAlignment="Center"
+            Data="{Binding Icon, ElementName=Root, Converter={StaticResource IconGeometry}}"
+            Fill="{DynamicResource DangerBrush}"
             Opacity="0.6"
-            HorizontalAlignment="Center"/>
+            Stretch="Uniform"/>
 
         <TextBlock
             Text="{Binding Title, ElementName=Root}"
-            FontSize="18"
+            FontSize="{DynamicResource FontSubtitle}"
             FontWeight="SemiBold"
             Foreground="{DynamicResource DangerBrush}"
             TextAlignment="Center"/>

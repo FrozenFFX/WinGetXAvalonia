@@ -68,21 +68,24 @@
 
                             <StackPanel Orientation="Horizontal" Spacing="10">
 
-                                <TextBlock
-                                    Text="{Binding Icon}"
-                                    FontSize="18"
-                                    VerticalAlignment="Center"/>
+                                <Path
+                                    Width="22"
+                                    Height="22"
+                                    VerticalAlignment="Center"
+                                    Data="{Binding Icon, Converter={StaticResource IconGeometry}}"
+                                    Fill="{DynamicResource AccentBrush}"
+                                    Stretch="Uniform"/>
 
                                 <StackPanel Spacing="1">
 
                                     <TextBlock
                                         Text="{Binding Title}"
                                         FontWeight="SemiBold"
-                                        FontSize="14"/>
+                                        FontSize="{DynamicResource FontButton}"/>
 
                                     <TextBlock
                                         Text="{Binding Description}"
-                                        FontSize="11"
+                                        FontSize="{DynamicResource FontMicro}"
                                         Opacity="0.6"/>
 
                                 </StackPanel>
@@ -117,9 +120,16 @@
                 <shared:AppButton
                     Grid.Column="1"
                     Width="44"
-                    Content="⟳"
                     ToolTip.Tip="Refresh"
-                    Command="{Binding LoadCommand}"/>
+                    Command="{Binding LoadCommand}">
+
+                    <Path
+                        Width="18"
+                        Height="18"
+                        Data="{StaticResource IconRefresh}"
+                        Fill="{DynamicResource TextBrush}"
+                        Stretch="Uniform"/>
+                </shared:AppButton>
 
             </Grid>
 
@@ -167,11 +177,14 @@
                                             CornerRadius="12"
                                             Background="{DynamicResource SurfaceBrush}">
 
-                                            <TextBlock
-                                                Text="{Binding Icon}"
-                                                FontSize="24"
+                                            <Path
+                                                Width="28"
+                                                Height="28"
                                                 HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"/>
+                                                VerticalAlignment="Center"
+                                                Data="{Binding Icon, Converter={StaticResource IconGeometry}}"
+                                                Fill="{DynamicResource AccentBrush}"
+                                                Stretch="Uniform"/>
                                         </Border>
 
                                         <StackPanel
@@ -184,16 +197,16 @@
                                                 <TextBlock
                                                     Text="{Binding Name}"
                                                     FontWeight="SemiBold"
-                                                    FontSize="15"
+                                                    FontSize="{DynamicResource FontBody}"
                                                     TextTrimming="CharacterEllipsis"
                                                     MaxLines="1"/>
 
-                                                <shared:Badge
+<shared:Badge
                                                     Background="{DynamicResource AccentBrush}"
                                                     IsVisible="{Binding Verified}">
                                                     <TextBlock
-                                                        Text="✓ Verified"
-                                                        FontSize="11"
+                                                        Text="Verified"
+                                        FontSize="{DynamicResource FontMicro}"
                                                         FontWeight="SemiBold"
                                                         Foreground="{DynamicResource AccentForegroundBrush}"/>
                                                 </shared:Badge>
@@ -202,7 +215,7 @@
 
                                             <TextBlock
                                                 Text="{Binding Author}"
-                                                FontSize="12"
+                                                FontSize="{DynamicResource FontSecondary}"
                                                 Opacity="0.6"/>
 
                                         </StackPanel>
@@ -210,7 +223,7 @@
                                         <TextBlock
                                             Grid.Column="2"
                                             Text="{Binding Version}"
-                                            FontSize="12"
+                                            FontSize="{DynamicResource FontSecondary}"
                                             Opacity="0.6"
                                             VerticalAlignment="Top"/>
 
@@ -218,7 +231,7 @@
 
                                     <TextBlock
                                         Text="{Binding Description}"
-                                        FontSize="13"
+                                        FontSize="{DynamicResource FontCaption}"
                                         Opacity="0.75"
                                         TextWrapping="Wrap"
                                         MaxLines="3"
@@ -226,26 +239,50 @@
 
                                     <StackPanel Orientation="Horizontal" Spacing="14">
 
-                                        <TextBlock
-                                            IsVisible="{Binding ShowRating}">
-                                            <Run Text="★ "
-                                                 Foreground="{DynamicResource AccentBrush}"/>
+<StackPanel
+                                        IsVisible="{Binding ShowRating}"
+                                        Orientation="Horizontal"
+                                        Spacing="4"
+                                        VerticalAlignment="Center">
+
+                                        <Path
+                                            Width="14"
+                                            Height="14"
+                                            VerticalAlignment="Center"
+                                            Data="{StaticResource IconFavorite}"
+                                            Fill="{DynamicResource AccentBrush}"
+                                            Stretch="Uniform"/>
+
+                                        <TextBlock FontSize="{DynamicResource FontSecondary}">
                                             <Run Text="{Binding RatingDisplay, Mode=OneWay}"/>
                                             <Run Text="{Binding RatingCountDisplay, Mode=OneWay}"
                                                  Foreground="{DynamicResource SubtextBrush}"/>
                                         </TextBlock>
+                                    </StackPanel>
+
+                                    <StackPanel
+                                        IsVisible="{Binding ShowDownloads}"
+                                        Orientation="Horizontal"
+                                        Spacing="4"
+                                        VerticalAlignment="Center"
+                                        Opacity="0.6">
+
+                                        <Path
+                                            Width="14"
+                                            Height="14"
+                                            VerticalAlignment="Center"
+                                            Data="{StaticResource IconDownload}"
+                                            Fill="{DynamicResource TextBrush}"
+                                            Stretch="Uniform"/>
 
                                         <TextBlock
-                                            IsVisible="{Binding ShowDownloads}"
-                                            FontSize="12"
-                                            Opacity="0.6">
-                                            <Run Text="⬇ "/>
-                                            <Run Text="{Binding DownloadsDisplay, Mode=OneWay}"/>
-                                        </TextBlock>
+                                            FontSize="{DynamicResource FontSecondary}"
+                                            Text="{Binding DownloadsDisplay, Mode=OneWay}"/>
+                                    </StackPanel>
 
                                         <TextBlock
                                             Text="{Binding Category}"
-                                            FontSize="12"
+                                            FontSize="{DynamicResource FontSecondary}"
                                             Opacity="0.6"/>
 
                                     </StackPanel>
@@ -274,7 +311,7 @@
 
                 <shared:AppEmptyState
                     IsVisible="{Binding IsEmpty}"
-                    Icon="🛍️"
+                    Icon="marketplace"
                     Title="Nothing here yet"
                     Description="No marketplace items match this search. Try a different keyword."/>
 
@@ -283,7 +320,7 @@
             <shared:AppEmptyState
                 Grid.Row="2"
                 IsVisible="{Binding HasError}"
-                Icon="⚠️"
+                Icon="warning"
                 Title="Couldn't load the marketplace"
                 Description="{Binding ErrorMessage}"
                 ActionText="Retry"

@@ -149,7 +149,7 @@
                     <!-- Empty state -->
                     <shared:AppEmptyState
                         IsVisible="{Binding IsEmpty}"
-                        Icon="📦"
+                        Icon="package"
                         Title="No installed packages"
                         Description="Applications installed with WinGet will appear here."
                         ActionText="Browse Packages"
@@ -158,7 +158,7 @@
                     <!-- Error state -->
                     <shared:AppEmptyState
                         IsVisible="{Binding HasError}"
-                        Icon="⚠️"
+                        Icon="warning"
                         Title="Couldn't load installed packages"
                         Description="{Binding ErrorMessage}"
                         ActionText="Retry"

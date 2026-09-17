@@ -14,16 +14,17 @@
 
     <Grid ColumnDefinitions="*,Auto">
 
-        <StackPanel Spacing="4">
+        <StackPanel Spacing="2">
 
             <TextBlock
-                FontSize="24"
+                FontSize="{DynamicResource FontSectionLarge}"
                 FontWeight="SemiBold"
                 Text="{Binding Title,
                 RelativeSource={RelativeSource AncestorType=UserControl}}" />
 
             <TextBlock
                 Opacity="0.7"
+                FontSize="{DynamicResource FontPageSubtitle}"
                 Text="{Binding Description,
                 RelativeSource={RelativeSource AncestorType=UserControl}}" />
 

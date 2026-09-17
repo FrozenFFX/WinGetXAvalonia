@@ -73,7 +73,7 @@ public sealed class MarketplaceService
                     Description = "Core version control and editor setup.",
                     Author = "FrozenFFX",
                     Category = "Developer",
-                    Icon = "🔧",
+                    Icon = "tool",
                     Rating = 4.5,
                     RatingCount = 12,
                     Verified = true,

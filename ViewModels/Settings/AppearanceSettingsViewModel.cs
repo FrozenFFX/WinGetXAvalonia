@@ -35,12 +35,15 @@ public partial class AppearanceSettingsViewModel : SettingsCategoryViewModel
     [ObservableProperty]
     private bool roundedCorners = true;
 
+    [ObservableProperty]
+    private bool showFounderSignature = true;
+
     public AppearanceSettingsViewModel(
         ISettingsService settings,
         AutoSaveService autoSave,
         ThemeManager themeManager,
         IThemeService theme)
-        : base("Appearance", "🎨", settings, autoSave)
+        : base("Appearance", "settings", settings, autoSave)
     {
         _themeManager = themeManager;
         _theme = theme;

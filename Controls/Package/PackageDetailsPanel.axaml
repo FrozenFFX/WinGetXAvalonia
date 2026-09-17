@@ -15,10 +15,10 @@
     x:DataType="vm:PackageDetailsViewModel"
     x:CompileBindings="False">
 
-    <StackPanel Spacing="20">
+    <StackPanel Spacing="16">
 
-        <!-- başlık: ikon + ad -->
-        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+        <!-- Header: icon + name + id + source -->
+        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
 
             <Border
                 Width="56"
@@ -26,72 +26,257 @@
                 CornerRadius="12"
                 Background="{DynamicResource SurfaceBrush}">
 
-                <TextBlock
-                    Text="{Binding SelectedPackage.Icon}"
-                    FontSize="28"
+                <Path
+                    Width="32"
+                    Height="32"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Center"/>
+                    VerticalAlignment="Center"
+                    Data="{Binding SelectedPackage.Icon, Converter={StaticResource IconGeometry}}"
+                    Fill="{DynamicResource AccentBrush}"
+                    Stretch="Uniform"/>
             </Border>
+
+            <StackPanel
+                Grid.Column="1"
+                Spacing="2"
+                VerticalAlignment="Center">
+
+                <TextBlock
+                    FontSize="{DynamicResource FontSubtitle}"
+                    FontWeight="SemiBold"
+                    Text="{Binding Name}"
+                    TextWrapping="Wrap"/>
+
+                <TextBlock
+                    FontSize="{DynamicResource FontCaption}"
+                    Foreground="{DynamicResource MutedTextBrush}"
+                    Text="{Binding SelectedPackage.Id}"
+                    TextWrapping="Wrap"/>
+
+                <TextBlock
+                    FontSize="{DynamicResource FontMicro}"
+                    Foreground="{DynamicResource MutedTextBrush}"
+                    Opacity="0.7"
+                    Text="{Binding SelectedPackage.Source}"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Action buttons -->
+        <StackPanel Spacing="8">
+
+            <shared:AppButton
+                Command="{Binding UpdateCommand}"
+                Classes="Accent"
+                IsVisible="{Binding CanUpdate}"
+                HorizontalAlignment="Stretch"/>
+
+            <shared:AppButton
+                Command="{Binding RemoveCommand}"
+                Classes="Danger"
+                IsVisible="{Binding CanRemove}"
+                HorizontalAlignment="Stretch"/>
+
+            <shared:AppButton
+                Command="{Binding InstallCommand}"
+                Classes="Accent"
+                IsVisible="{Binding CanInstall}"
+                Content="{Binding InstallButtonText}"
+                HorizontalAlignment="Stretch"/>
+        </StackPanel>
+
+        <ProgressBar
+            IsIndeterminate="True"
+            IsVisible="{Binding SelectedPackage.IsBusy}"/>
+
+        <shared:AppSeparator/>
+
+        <!-- Version grid -->
+        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*">
+
+            <TextBlock
+                FontSize="{DynamicResource FontMicro}"
+                Foreground="{DynamicResource MutedTextBrush}"
+                Text="Installed"/>
 
             <TextBlock
                 Grid.Column="1"
-                Text="{Binding Name}"
-                FontSize="18"
+                FontSize="{DynamicResource FontMicro}"
+                Foreground="{DynamicResource MutedTextBrush}"
+                Text="Available"/>
+
+            <TextBlock
+                Grid.Row="1"
                 FontWeight="SemiBold"
-                VerticalAlignment="Center"
-                TextWrapping="Wrap"/>
+                Text="{Binding InstalledVersion}"/>
+
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="1"
+                FontWeight="SemiBold"
+                Foreground="{DynamicResource AccentBrush}"
+                Text="{Binding LatestVersion}"/>
         </Grid>
 
-        <!-- aksiyonlar -->
-        <shared:AppButton
-            Command="{Binding UpdateCommand}"
-            Classes="Accent"
-            HorizontalAlignment="Stretch">
-            Update
-        </shared:AppButton>
+        <shared:AppSeparator/>
 
-        <shared:AppButton
-            Command="{Binding RemoveCommand}"
-            Classes="Danger"
-            HorizontalAlignment="Stretch">
-            Remove
-        </shared:AppButton>
+        <!-- Health Score -->
+        <StackPanel Spacing="8">
+
+            <Grid ColumnDefinitions="Auto,12,*,Auto" ColumnSpacing="8">
+
+                <TextBlock
+                    FontSize="{DynamicResource FontMicro}"
+                    Foreground="{DynamicResource MutedTextBrush}"
+                    Text="Health Score"
+                    VerticalAlignment="Center"/>
+
+                <ProgressBar
+                    Grid.Column="2"
+                    Minimum="0"
+                    Maximum="100"
+                    Height="6"
+                    Value="{Binding HealthScore}"
+                    VerticalAlignment="Center"/>
+
+                <TextBlock
+                    Grid.Column="3"
+                    FontWeight="SemiBold"
+                    Text="{Binding HealthScoreLabel}"
+                    VerticalAlignment="Center"/>
+            </Grid>
+
+            <Grid
+                RowDefinitions="Auto,Auto,Auto,Auto"
+                ColumnDefinitions="*,*">
+
+                <TextBlock
+                    FontSize="{DynamicResource FontMicro}"
+                    Foreground="{DynamicResource MutedTextBrush}"
+                    Text="Source Trust"/>
+
+                <TextBlock
+                    Grid.Column="1"
+                    FontSize="{DynamicResource FontMicro}"
+                    Foreground="{DynamicResource MutedTextBrush}"
+                    Text="Update Frequency"/>
+
+                <TextBlock
+                    Grid.Row="1"
+                    FontWeight="SemiBold"
+                    Text="{Binding SourceTrustLabel}"/>
+
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    FontWeight="SemiBold"
+                    Text="{Binding UpdateFrequencyLabel}"/>
+
+                <TextBlock
+                    Grid.Row="2"
+                    FontSize="{DynamicResource FontMicro}"
+                    Foreground="{DynamicResource MutedTextBrush}"
+                    Text="Latest Version"/>
+
+                <TextBlock
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    FontSize="{DynamicResource FontMicro}"
+                    Foreground="{DynamicResource MutedTextBrush}"
+                    Text="Publisher"/>
+
+                <TextBlock
+                    Grid.Row="3"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource AccentBrush}"
+                    Text="{Binding LatestVersion}"/>
+
+                <TextBlock
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource AccentBrush}"
+                    Text="{Binding Publisher}"/>
+            </Grid>
+        </StackPanel>
 
         <shared:AppSeparator/>
 
-        <!-- açıklama -->
-        <TextBlock
-            Text="{Binding Description}"
-            FontSize="13"
-            Foreground="{DynamicResource SubtextBrush}"
-            TextWrapping="Wrap"/>
+        <!-- Description -->
+        <StackPanel Spacing="4">
 
-        <shared:AppSeparator/>
+            <TextBlock
+                FontSize="{DynamicResource FontMicro}"
+                Foreground="{DynamicResource MutedTextBrush}"
+                Text="Description"/>
 
-        <!-- özellikler -->
-        <shared:PropertyRow
-            Label="Installed"
-            Value="{Binding InstalledVersion}"/>
+            <TextBlock
+                FontSize="{DynamicResource FontBody}"
+                Foreground="{DynamicResource SubtextBrush}"
+                Text="{Binding DescriptionDisplay}"
+                TextWrapping="Wrap"/>
+        </StackPanel>
 
-        <shared:PropertyRow
-            Label="Latest"
-            Value="{Binding LatestVersion}"/>
+        <!-- Publisher -->
+        <StackPanel Spacing="4" IsVisible="{Binding HasPublisher}">
 
-        <shared:PropertyRow
-            Label="Publisher"
-            Value="{Binding Publisher}"/>
+            <TextBlock
+                FontSize="{DynamicResource FontMicro}"
+                Foreground="{DynamicResource MutedTextBrush}"
+                Text="Publisher"/>
 
-        <shared:PropertyRow
-            Label="License"
-            Value="{Binding License}"/>
+            <TextBlock
+                FontSize="{DynamicResource FontBody}"
+                Foreground="{DynamicResource SubtextBrush}"
+                Text="{Binding PublisherDisplay}"
+                TextWrapping="Wrap"/>
+        </StackPanel>
 
-        <shared:PropertyRow
-            Label="Source"
-            Value="{Binding Source}"/>
+        <!-- Homepage + Copy ID -->
+        <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
 
-        <shared:PropertyRow
-            Label="Homepage"
-            Value="{Binding Homepage}"/>
+            <shared:AppButton
+                Content="Open Homepage"
+                Height="36"
+                Command="{Binding OpenHomepageCommand}"
+                IsVisible="{Binding HasHomepage}"/>
+
+            <shared:AppButton
+                Grid.Column="1"
+                Height="36"
+                Content="Copy ID"
+                Command="{Binding CopyIdCommand}"
+                CommandParameter="{Binding SelectedPackage}"/>
+        </Grid>
+
+        <!-- License -->
+        <StackPanel Spacing="4" IsVisible="{Binding HasLicense}">
+
+            <TextBlock
+                FontSize="{DynamicResource FontMicro}"
+                Foreground="{DynamicResource MutedTextBrush}"
+                Text="License"/>
+
+            <TextBlock
+                FontSize="{DynamicResource FontBody}"
+                Foreground="{DynamicResource SubtextBrush}"
+                Text="{Binding LicenseDisplay}"
+                TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <!-- Release Notes -->
+        <StackPanel Spacing="4" IsVisible="{Binding HasReleaseNotes}">
+
+            <TextBlock
+                FontSize="{DynamicResource FontMicro}"
+                Foreground="{DynamicResource MutedTextBrush}"
+                Text="Release Notes"/>
+
+            <TextBlock
+                FontSize="{DynamicResource FontBody}"
+                Foreground="{DynamicResource SubtextBrush}"
+                Text="{Binding ReleaseNotesDisplay}"
+                TextWrapping="Wrap"/>
+        </StackPanel>
 
     </StackPanel>
 

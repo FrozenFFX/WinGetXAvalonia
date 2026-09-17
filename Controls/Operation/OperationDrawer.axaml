@@ -22,7 +22,7 @@
                         Spacing="8">
 
                 <TextBlock
-                    FontSize="22"
+                    FontSize="{DynamicResource FontSection}"
                     FontWeight="Bold"
                     Text="Operations"/>
 

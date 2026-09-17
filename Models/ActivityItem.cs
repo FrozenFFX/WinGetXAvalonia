@@ -13,11 +13,11 @@ public sealed class ActivityItem
 
     public string Icon => Type switch
     {
-        ActivityType.Install => "📥",
-        ActivityType.Update => "🔄",
-        ActivityType.Upgrade => "🔄",
-        ActivityType.Uninstall => "🗑",
-        ActivityType.Error => "⚠️",
-        _ => "ℹ️"
+        ActivityType.Install => "install",
+        ActivityType.Update => "update",
+        ActivityType.Upgrade => "update",
+        ActivityType.Uninstall => "uninstall",
+        ActivityType.Error => "warning",
+        _ => "info"
     };
 }

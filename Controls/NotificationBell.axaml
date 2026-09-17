@@ -48,7 +48,7 @@
                     VerticalAlignment="Center"
                     Opacity="0.75"
                     CurrentColor="{DynamicResource TextColor}"
-                    Path="/Assets/Icons/Fluent/info.svg"/>
+                    Path="avares://WinGetXAvalonia/Assets/Icons/Fluent/info.svg"/>
 
                 <Border
                     Width="9"
@@ -79,7 +79,7 @@
                     <Grid ColumnDefinitions="*,Auto">
 
                         <TextBlock
-                            FontSize="16"
+                            FontSize="{DynamicResource FontCardTitle}"
                             FontWeight="SemiBold"
                             Text="Notifications"/>
 
@@ -117,10 +117,13 @@
                                             ColumnDefinitions="26,*"
                                             Margin="0,6">
 
-                                            <TextBlock
-                                                FontSize="15"
+                                            <Path
+                                                Width="18"
+                                                Height="18"
                                                 VerticalAlignment="Top"
-                                                Text="{Binding Type, Converter={StaticResource NotificationTypeToIcon}}"/>
+                                                Stretch="Uniform"
+                                                Data="{Binding Type, Converter={StaticResource NotificationTypeToIcon}}"
+                                                Fill="{DynamicResource SubtextBrush}"/>
 
                                             <StackPanel Grid.Column="1" Spacing="2">
 
@@ -130,13 +133,13 @@
 
                                                 <TextBlock
                                                     Opacity="0.6"
-                                                    FontSize="12"
+                                                    FontSize="{DynamicResource FontSecondary}"
                                                     TextWrapping="Wrap"
                                                     Text="{Binding Message}"/>
 
                                                 <TextBlock
                                                     Opacity="0.45"
-                                                    FontSize="11"
+                                                    FontSize="{DynamicResource FontMicro}"
                                                     Text="{Binding Timestamp, StringFormat='HH:mm'}"/>
 
                                             </StackPanel>

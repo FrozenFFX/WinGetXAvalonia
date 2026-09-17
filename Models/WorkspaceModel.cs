@@ -18,7 +18,7 @@ public partial class WorkspaceModel : ObservableObject
     private string description = string.Empty;
 
     [ObservableProperty]
-    private string icon = "💻";
+    private string icon = "workspace";
 
     [ObservableProperty]
     private DateTime created = DateTime.Now;

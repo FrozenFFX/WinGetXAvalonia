@@ -40,7 +40,7 @@ public sealed record PackageHealth(
 
     public string ScoreLabel => $"{Score}%";
 
-    public string PublisherLabel => IsPublisherVerified ? "✔ Verified" : "Not verified";
+    public string PublisherLabel => IsPublisherVerified ? "Verified" : "Not verified";
 }
 
 public static class PackageHealthCalculator
@@ -152,7 +152,7 @@ public static class PackageHealthCalculator
     private static string LatestVersionLabel(UpdateStatus status, string available)
         => status switch
         {
-            UpdateStatus.UpToDate => "✔ Latest",
+            UpdateStatus.UpToDate => "Latest",
             UpdateStatus.UpdateAvailable => $"Update available ({available})",
             _ => "Not installed"
         };

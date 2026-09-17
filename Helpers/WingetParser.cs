@@ -154,6 +154,27 @@ public static class WingetParser
                 case "ReleaseNotes":
                     details = details with { ReleaseNotes = value };
                     break;
+                case "Architecture":
+                    details = details with { Architecture = value };
+                    break;
+                case "Scope":
+                    details = details with { Scope = value };
+                    break;
+                case "InstallerType":
+                    details = details with { InstallerType = value };
+                    break;
+                case "InstallerUrl":
+                    details = details with { InstallerUrl = value };
+                    break;
+                case "InstallerSha256":
+                    details = details with { InstallerSha256 = value };
+                    break;
+                case "Dependencies":
+                    details = details with { Dependencies = value.Split(new[] { ",", ";" }, StringSplitOptions.RemoveEmptyEntries).ToList() };
+                    break;
+                case "Tags":
+                    details = details with { Tags = value.Split(new[] { ",", ";" }, StringSplitOptions.RemoveEmptyEntries).ToList() };
+                    break;
             }
         }
 

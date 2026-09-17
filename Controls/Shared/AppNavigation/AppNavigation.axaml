@@ -33,10 +33,13 @@
 
             <Grid ColumnDefinitions="28,*,Auto" ColumnSpacing="10">
 
-                <TextBlock
-                    FontSize="16"
+                <Path
+                    Width="20"
+                    Height="20"
                     VerticalAlignment="Center"
-                    Text="{Binding Icon}"/>
+                    Data="{Binding Icon, Converter={StaticResource IconGeometry}}"
+                    Fill="{DynamicResource AccentBrush}"
+                    Stretch="Uniform"/>
 
                 <StackPanel
                     Grid.Column="1"
@@ -48,7 +51,7 @@
                         Text="{Binding Title}"/>
 
                     <TextBlock
-                        FontSize="11"
+                        FontSize="{DynamicResource FontMicro}"
                         Opacity="0.6"
                         Text="{Binding Description}"/>
 

@@ -12,4 +12,13 @@ public sealed class WingetSource
     public string Type { get; init; } = "";
 
     public bool Enabled { get; init; }
+
+    public bool IsDefault { get; init; }
+
+    public string StatusString
+        => Enabled
+            ? "Active"
+            : "Inactive";
+
+    public string? LastUpdated { get; set; }
 }

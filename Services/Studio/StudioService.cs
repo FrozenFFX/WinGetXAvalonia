@@ -15,7 +15,7 @@ public class StudioService : IStudioService
         new()
         {
             Id = "diagnostics",
-            Icon = "🩺",
+            Icon = "diagnostics",
             Title = "Diagnostics",
             Description = "System health and environment report",
             Category = "System",
@@ -24,7 +24,7 @@ public class StudioService : IStudioService
         new()
         {
             Id = "logs",
-            Icon = "📜",
+            Icon = "history",
             Title = "Log Viewer",
             Description = "App and operation logs",
             Category = "System",
@@ -33,7 +33,7 @@ public class StudioService : IStudioService
         new()
         {
             Id = "reports",
-            Icon = "📊",
+            Icon = "diagnostics",
             Title = "Reports",
             Description = "Package and usage reports",
             Category = "System",
@@ -42,7 +42,7 @@ public class StudioService : IStudioService
         new()
         {
             Id = "queue",
-            Icon = "📥",
+            Icon = "download",
             Title = "Queue Scheduler",
             Description = "Schedule and prioritize operations",
             Category = "System",
@@ -51,7 +51,7 @@ public class StudioService : IStudioService
         new()
         {
             Id = "security",
-            Icon = "🛡",
+            Icon = "security",
             Title = "Security",
             Description = "Package and system security checks",
             Category = "System",
@@ -60,7 +60,7 @@ public class StudioService : IStudioService
         new()
         {
             Id = "collections",
-            Icon = "🗂",
+            Icon = "workspace",
             Title = "Collections",
             Description = "Group apps into reusable sets",
             Category = "Workflow",
@@ -69,7 +69,7 @@ public class StudioService : IStudioService
         new()
         {
             Id = "automation",
-            Icon = "⚙",
+            Icon = "settings",
             Title = "Automation",
             Description = "Rules and event triggers",
             Category = "Workflow",
@@ -78,7 +78,7 @@ public class StudioService : IStudioService
         new()
         {
             Id = "themes",
-            Icon = "🎨",
+            Icon = "studio",
             Title = "Themes",
             Description = "Customize colors and appearance",
             Category = "Customization",
@@ -87,7 +87,7 @@ public class StudioService : IStudioService
         new()
         {
             Id = "plugins",
-            Icon = "🧩",
+            Icon = "package",
             Title = "Plugins",
             Description = "Extend WinGetX with add-ons",
             Category = "Customization",
@@ -96,7 +96,7 @@ public class StudioService : IStudioService
         new()
         {
             Id = "founder",
-            Icon = "👑",
+            Icon = "favorite",
             Title = "Founder Center",
             Description = "Exclusive Founder Edition tools",
             Category = "Founder",

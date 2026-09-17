@@ -87,7 +87,7 @@ public partial class MarketplaceViewModel : AsyncViewModel
         {
             Kind = MarketplaceKind.Blueprint,
             Title = "Blueprints",
-            Icon = "🧩",
+            Icon = "package",
             Description = "Reusable installation templates"
         });
 
@@ -95,7 +95,7 @@ public partial class MarketplaceViewModel : AsyncViewModel
         {
             Kind = MarketplaceKind.Workspace,
             Title = "Workspaces",
-            Icon = "🗂",
+            Icon = "workspace",
             Description = "Curated package collections"
         });
 
@@ -103,7 +103,7 @@ public partial class MarketplaceViewModel : AsyncViewModel
         {
             Kind = MarketplaceKind.Theme,
             Title = "Themes",
-            Icon = "🎨",
+            Icon = "studio",
             Description = "Accent color and theme presets"
         });
 

@@ -40,7 +40,7 @@ public partial class PerformanceSettingsViewModel : SettingsCategoryViewModel
     public PerformanceSettingsViewModel(
         ISettingsService settings,
         AutoSaveService autoSave)
-        : base("Performance", "🚀", settings, autoSave)
+        : base("Performance", "update", settings, autoSave)
     {
         BeginInit();
 

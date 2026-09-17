@@ -25,7 +25,7 @@ public partial class BrowseViewModel : AsyncViewModel
     private readonly ILauncherService _launcher;
     private readonly LoggerService? _logger;
 
-    private bool _initialized;
+    private Task? _initializationTask;
     private CancellationTokenSource? _searchCts;
     private CancellationTokenSource? _suggestCts;
     private PackageModel? _lastSelected;
@@ -107,7 +107,6 @@ public partial class BrowseViewModel : AsyncViewModel
             OnPropertyChanged(nameof(ResultsSummary));
         };
 
-        // State değişince "Results" başlığının özeti de güncellenmeli.
         PropertyChanged += (_, e) =>
         {
             switch (e.PropertyName)
@@ -123,14 +122,28 @@ public partial class BrowseViewModel : AsyncViewModel
         };
     }
 
-    public override async Task InitializeAsync()
+    public override Task InitializeAsync() =>
+        _initializationTask ??= InitializeCoreAsync();
+
+    private async Task InitializeCoreAsync()
     {
-        if (_initialized)
-            return;
+        State = LoadState.Loading;
 
-        _initialized = true;
+        try
+        {
+            await LoadFeaturedAsync();
 
-        await LoadFeaturedAsync();
+            if (State != LoadState.Loaded && State != LoadState.Empty && State != LoadState.Error)
+            {
+                State = Results.Count > 0 ? LoadState.Loaded : LoadState.Empty;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error(ex, "Browse initialization failed");
+            State = LoadState.Error;
+            ErrorMessage = "Failed to load featured packages.";
+        }
     }
 
     partial void OnSearchTextChanged(string value)
@@ -231,13 +244,7 @@ public partial class BrowseViewModel : AsyncViewModel
 
     private async Task SearchInternal()
     {
-        if (SearchText == SearchText.Trim())
-        {
-        }
-        else
-        {
-            SearchText = SearchText.Trim();
-        }
+        SearchText = SearchText.Trim();
 
         if (string.IsNullOrWhiteSpace(SearchText))
             return;
@@ -377,11 +384,13 @@ public partial class BrowseViewModel : AsyncViewModel
 
         try
         {
-            items = await _featured.GetAsync();
+            items = await _featured.GetAsync() ?? Array.Empty<FeaturedItem>();
         }
         catch (Exception ex)
         {
             _logger?.Error(ex, "Failed to load featured catalog");
+            State = LoadState.Error;
+            ErrorMessage = "Failed to load featured packages.";
             return;
         }
 
@@ -409,6 +418,12 @@ public partial class BrowseViewModel : AsyncViewModel
                 Featured.Add(package);
             }
         }
+
+        // After featured items are loaded, determine terminal state
+        if (State == LoadState.Loading)
+        {
+            State = Featured.Count > 0 ? LoadState.Loaded : LoadState.Empty;
+        }
     }
 
     private async Task<PackageModel?> LoadFeaturedItemAsync(FeaturedItem item)
@@ -435,7 +450,6 @@ public partial class BrowseViewModel : AsyncViewModel
         }
         catch (Exception ex)
         {
-            // tek bir paket çökmüşse listeyi komple bozmayalım
             _logger?.Error(ex, $"Failed to load featured item '{item.Id}'");
             return null;
         }
@@ -482,7 +496,6 @@ public partial class BrowseViewModel : AsyncViewModel
         }
         catch (OperationCanceledException)
         {
-            // iptal edilen aramanın yerine yeni bir arama başladı, durumu o yönetir
         }
         catch (Exception ex)
         {
@@ -498,7 +511,6 @@ public partial class BrowseViewModel : AsyncViewModel
 
     private async Task<IReadOnlyList<PackageModel>> GetOrSearchAsync(string query)
     {
-        // aynı sorguyu tekrar tekrar winget'e sormayalım
         if (_cache.TryGet(query, out var cached))
             return cached!;
 
@@ -568,7 +580,6 @@ public partial class BrowseViewModel : AsyncViewModel
 
     private async Task EnsureEnrichmentAsync()
     {
-        // kurulu sürüm ve güncelleme bilgisi bir kez çekilir, sonra kartlara işlenir
         if (_index is not null)
             return;
 
@@ -597,11 +608,11 @@ public partial class BrowseViewModel : AsyncViewModel
 
     private void SeedCategories()
     {
-        Categories.Add(new() { Name = "Development", Query = "vscode", Icon = "💻" });
-        Categories.Add(new() { Name = "Browsers", Query = "chrome", Icon = "🌐" });
-        Categories.Add(new() { Name = "Media", Query = "vlc", Icon = "🎬" });
-        Categories.Add(new() { Name = "Utilities", Query = "powertoys", Icon = "🛠" });
-        Categories.Add(new() { Name = "Gaming", Query = "steam", Icon = "🎮" });
-        Categories.Add(new() { Name = "Design", Query = "figma", Icon = "🎨" });
+        Categories.Add(new() { Name = "Development", Query = "vscode", Icon = "developer" });
+        Categories.Add(new() { Name = "Browsers", Query = "chrome", Icon = "source" });
+        Categories.Add(new() { Name = "Media", Query = "vlc", Icon = "studio" });
+        Categories.Add(new() { Name = "Utilities", Query = "powertoys", Icon = "tool" });
+        Categories.Add(new() { Name = "Gaming", Query = "steam", Icon = "automation" });
+        Categories.Add(new() { Name = "Design", Query = "figma", Icon = "studio" });
     }
 }

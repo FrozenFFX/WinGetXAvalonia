@@ -1,81 +1,68 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<!-- ========================================================== -->
-<!-- SIDEBAR STANDARD — tek sidebar dili.                        -->
-<!-- Item yüksekliği, padding, icon boyutu, gap ve radius       -->
-<!-- yalnızca buradan gelir. Hiçbir ekran değiştiremez.         -->
-<!-- ========================================================== -->
-
 <Styles xmlns="https://github.com/avaloniaui">
 
-    <!-- ======================================================- -->
-    <!-- ListBox yüzeyi                                          -->
-    <!-- ======================================================- -->
     <Style Selector="ListBox.sidebar">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
-        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
     </Style>
 
-    <!-- ======================================================- -->
-    <!-- Item kabuğu — sabit yükseklik ve düzen.                 -->
-    <!-- Height 44 / Padding 12 / Radius 10 / Margin 2.          -->
-    <!-- ======================================================- -->
     <Style Selector="ListBox.sidebar ListBoxItem">
         <Setter Property="Padding" Value="0"/>
-        <Setter Property="Margin" Value="0,2"/>
-        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Margin" Value="2,1"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RadiusSmall}"/>
     </Style>
 
-    <!-- ======================================================- -->
-    <!-- Border.sidebar-item — item yüzeyi.                       -->
-    <!-- Scale yok; yalnızca arka plan + accent çubuğu.          -->
-    <!-- ======================================================- -->
     <Style Selector="Border.sidebar-item">
-        <Setter Property="MinHeight" Value="44"/>
-        <Setter Property="Padding" Value="12,0"/>
-        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="MinHeight" Value="40"/>
+        <Setter Property="Padding" Value="8,0,6,0"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RadiusSmall}"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Transitions">
             <Transitions>
                 <BrushTransition Property="Background"
-                                 Duration="{DynamicResource MotionDurationNormal}"
+                                 Duration="{DynamicResource MotionDurationFast}"
                                  Easing="{DynamicResource MotionEasingOut}"/>
             </Transitions>
         </Setter>
     </Style>
 
-    <Style Selector="ListBox.sidebar ListBoxItem:pointerover Border.sidebar-item">
-        <Setter Property="Background" Value="{DynamicResource NavHoverBrush}"/>
-    </Style>
-
-    <!-- Item metni — taban font. Başlıklar (header) aşağıda küçülür. -->
     <Style Selector="Border.sidebar-item Grid TextBlock">
-        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontSize" Value="13.5"/>
+        <Setter Property="TextWrapping" Value="NoWrap"/>
+        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
     </Style>
 
-    <!-- Seçili: accent background + accent sol çubuğu (madde 6). -->
+    <Style Selector="ListBox.sidebar ListBoxItem:pointerover Border.sidebar-item">
+        <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+    </Style>
+
     <Style Selector="ListBox.sidebar ListBoxItem:selected Border.sidebar-item">
-        <Setter Property="Background" Value="{DynamicResource NavSelectedBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource AccentSubtle}"/>
     </Style>
 
-    <!-- Seçili iken icon + title accent renge geçer. -->
     <Style Selector="ListBox.sidebar ListBoxItem:selected Border.sidebar-item Grid TextBlock">
         <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
     </Style>
 
-    <!-- ======================================================- -->
-    <!-- Kategori başlığı (Management, Configuration, Tools...).  -->
-    <!-- Sadece grubu açar/kapar; sayfaya geçmez. Chevron durumu -->
-    <!-- gösterir: ▸ = kapalı, ▾ = açık (madde 5).               -->
-    <!-- ======================================================- -->
+    <Style Selector="ListBox.sidebar ListBoxItem:selected Border.sidebar-item Grid Path">
+        <Setter Property="Fill" Value="{DynamicResource AccentBrush}"/>
+    </Style>
+
+    <Style Selector="ListBox.sidebar ListBoxItem:focus-visible Border.sidebar-item">
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBorder}"/>
+    </Style>
+
+    <!-- Kategori başlıkları: sayfa öğesinden açıkça ayrılır -->
     <Style Selector="Border.sidebar-item.header">
-        <Setter Property="MinHeight" Value="30"/>
-        <Setter Property="Padding" Value="12,0"/>
-        <Setter Property="Margin" Value="0,6,0,0"/>
+        <Setter Property="MinHeight" Value="26"/>
+        <Setter Property="Padding" Value="2,0,6,0"/>
+        <Setter Property="Margin" Value="0,10,0,2"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
     </Style>
@@ -84,55 +71,19 @@
         <Setter Property="FontSize" Value="11"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Opacity" Value="0.55"/>
+        <Setter Property="LetterSpacing" Value="0.4"/>
     </Style>
 
-    <Style Selector="Border.sidebar-item.header Grid TextBlock#Chevron">
-        <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Foreground" Value="{DynamicResource SubtextBrush}"/>
-        <Setter Property="Opacity" Value="0.55"/>
+    <Style Selector="Border.sidebar-item.header Grid Path">
+        <Setter Property="Opacity" Value="0.5"/>
     </Style>
 
     <Style Selector="ListBox.sidebar ListBoxItem:pointerover Border.sidebar-item.header">
-        <Setter Property="Background" Value="{DynamicResource NavHoverBrush}"/>
-    </Style>
-
-    <Style Selector="ListBox.sidebar ListBoxItem:pointerover Border.sidebar-item.header Grid TextBlock#Chevron">
-        <Setter Property="Opacity" Value="0.8"/>
-    </Style>
-
-    <Style Selector="ListBox.sidebar ListBoxItem:selected Border.sidebar-item.header">
         <Setter Property="Background" Value="Transparent"/>
     </Style>
 
     <Style Selector="ListBox.sidebar ListBoxItem:selected Border.sidebar-item.header Grid TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
-    </Style>
-
-    <!-- ======================================================- -->
-    <!-- Accent bar — seçimde 0 → 4px büyür (madde 9).           -->
-    <!-- ======================================================- -->
-    <Style Selector="Border.sidebar-item-accent">
-        <Setter Property="Width" Value="0"/>
-        <Setter Property="Opacity" Value="0"/>
-        <Setter Property="CornerRadius" Value="2"/>
-        <Setter Property="HorizontalAlignment" Value="Left"/>
-        <Setter Property="VerticalAlignment" Value="Stretch"/>
-        <Setter Property="Margin" Value="0,10"/>
-        <Setter Property="Transitions">
-            <Transitions>
-                <DoubleTransition Property="Width"
-                                  Duration="{DynamicResource MotionDurationNormal}"
-                                  Easing="{DynamicResource MotionEasingOut}"/>
-                <DoubleTransition Property="Opacity"
-                                  Duration="{DynamicResource MotionDurationNormal}"
-                                  Easing="{DynamicResource MotionEasingOut}"/>
-            </Transitions>
-        </Setter>
-    </Style>
-
-    <Style Selector="ListBox.sidebar ListBoxItem:selected Border.sidebar-item-accent">
-        <Setter Property="Width" Value="4"/>
-        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}"/>
     </Style>
 
 </Styles>

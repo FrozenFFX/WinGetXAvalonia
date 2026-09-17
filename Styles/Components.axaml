@@ -10,19 +10,19 @@
     </Style>
 
     <Style Selector="shared|Badge.Accent">
-        <Setter Property="Background" Value="#334F8CFF"/>
+        <Setter Property="Background" Value="{DynamicResource AccentSubtle}"/>
     </Style>
 
     <Style Selector="shared|Badge.Success">
-        <Setter Property="Background" Value="#3327AE60"/>
+        <Setter Property="Background" Value="{DynamicResource SuccessSubtleBrush}"/>
     </Style>
 
     <Style Selector="shared|Badge.Warning">
-        <Setter Property="Background" Value="#33F39C12"/>
+        <Setter Property="Background" Value="{DynamicResource WarningSubtleBrush}"/>
     </Style>
 
     <Style Selector="shared|Badge.Danger">
-        <Setter Property="Background" Value="#33E74C3C"/>
+        <Setter Property="Background" Value="{DynamicResource DangerSubtleBrush}"/>
     </Style>
 
     <Style Selector="shared|Chip">
@@ -30,26 +30,25 @@
     </Style>
 
     <Style Selector="shared|Chip.Accent">
-        <Setter Property="Background" Value="#334F8CFF"/>
+        <Setter Property="Background" Value="{DynamicResource AccentSubtle}"/>
     </Style>
 
     <Style Selector="shared|Chip.Success">
-        <Setter Property="Background" Value="#3327AE60"/>
+        <Setter Property="Background" Value="{DynamicResource SuccessSubtleBrush}"/>
     </Style>
 
     <Style Selector="shared|Chip.Warning">
-        <Setter Property="Background" Value="#33F39C12"/>
+        <Setter Property="Background" Value="{DynamicResource WarningSubtleBrush}"/>
     </Style>
 
     <Style Selector="shared|Chip.Danger">
-        <Setter Property="Background" Value="#33E74C3C"/>
+        <Setter Property="Background" Value="{DynamicResource DangerSubtleBrush}"/>
     </Style>
 
     <Style Selector="TextBox">
-
         <Setter Property="Height" Value="38"/>
         <Setter Property="CornerRadius" Value="{DynamicResource RadiusSmall}"/>
-        <Setter Property="FontFamily" Value="Segoe UI Variable"/>
+        <Setter Property="FontFamily" Value="{DynamicResource FontPrimary}"/>
         <Setter Property="Padding" Value="12,0"/>
         <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
@@ -57,33 +56,29 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="CaretBrush" Value="{DynamicResource AccentBrush}"/>
         <Setter Property="SelectionBrush" Value="{DynamicResource AccentBrush}"/>
-
     </Style>
 
     <Style Selector="TextBox:pointerover">
-
         <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
-
     </Style>
 
     <Style Selector="TextBox:focus">
-
         <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+    </Style>
 
+    <Style Selector="TextBox:focus-visible">
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="BorderThickness" Value="2"/>
     </Style>
 
     <Style Selector="TextBox:disabled">
-
         <Setter Property="Opacity" Value="0.55"/>
-
     </Style>
 
     <Style Selector="ComboBox">
-
         <Setter Property="Height" Value="38"/>
-        <Setter Property="CornerRadius" Value="12"/>
-        <Setter Property="FontFamily" Value="Segoe UI Variable"/>
-
+        <Setter Property="CornerRadius" Value="{DynamicResource RadiusSmall}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource FontPrimary}"/>
     </Style>
 
 </Styles>

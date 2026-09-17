@@ -36,7 +36,7 @@
                     <StackPanel Spacing="14">
 
                         <TextBlock
-                            FontSize="20"
+                            FontSize="{DynamicResource FontSectionLarge}"
                             FontWeight="SemiBold"
                             Text="System"/>
 
@@ -80,7 +80,7 @@
                     <StackPanel Spacing="14">
 
                         <TextBlock
-                            FontSize="20"
+                            FontSize="{DynamicResource FontSectionLarge}"
                             FontWeight="SemiBold"
                             Text="Runtime"/>
 
@@ -110,8 +110,15 @@
 
         <shared:AppEmptyState
             Grid.Row="2"
+            IsVisible="{Binding IsEmpty}"
+            Icon="diagnostics"
+            Title="No diagnostics available"
+            Description="Run a diagnostic scan to see results."/>
+
+        <shared:AppEmptyState
+            Grid.Row="2"
             IsVisible="{Binding HasError}"
-            Icon="⚠️"
+            Icon="warning"
             Title="Couldn't load diagnostics"
             Description="{Binding ErrorMessage}"
             ActionText="Retry"

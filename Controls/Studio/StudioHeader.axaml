@@ -20,11 +20,14 @@
             IsVisible="{Binding Icon, ElementName=Root, Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"
             VerticalAlignment="Top">
 
-            <TextBlock
-                Text="{Binding Icon, ElementName=Root}"
-                FontSize="24"
+            <Path
+                Width="26"
+                Height="26"
                 HorizontalAlignment="Center"
-                VerticalAlignment="Center"/>
+                VerticalAlignment="Center"
+                Data="{Binding Icon, ElementName=Root, Converter={StaticResource IconGeometry}}"
+                Fill="White"
+                Stretch="Uniform"/>
         </Border>
 
         <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">

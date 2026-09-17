@@ -25,11 +25,12 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center">
 
-                <TextBlock
-                    Text="{Binding Icon}"
-                    Foreground="White"
-                    FontSize="16"
-                    FontWeight="SemiBold"
+<Path
+                    Width="18"
+                    Height="18"
+                    Data="{Binding Icon, Converter={StaticResource IconGeometry}}"
+                    Fill="White"
+                    Stretch="Uniform"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"/>
             </Border>

@@ -30,10 +30,19 @@ public partial class StudioTile : UserControl
     public static readonly StyledProperty<string?> DescriptionProperty =
         AvaloniaProperty.Register<StudioTile, string?>(nameof(Description));
 
-    public string? Description
+public string? Description
     {
         get => GetValue(DescriptionProperty);
         set => SetValue(DescriptionProperty, value);
+    }
+
+    public static readonly StyledProperty<string?> CategoryProperty =
+        AvaloniaProperty.Register<StudioTile, string?>(nameof(Category));
+
+    public string? Category
+    {
+        get => GetValue(CategoryProperty);
+        set => SetValue(CategoryProperty, value);
     }
 
     public static readonly StyledProperty<string?> BadgeProperty =

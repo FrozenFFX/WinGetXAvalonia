@@ -35,28 +35,28 @@
 
     <Style Selector="shared|AppInfoBar.info Border">
 
-        <Setter Property="Background" Value="#1A3B82F6"/>
+        <Setter Property="Background" Value="{DynamicResource InfoSubtleBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource InfoBrush}"/>
 
     </Style>
 
     <Style Selector="shared|AppInfoBar.success Border">
 
-        <Setter Property="Background" Value="#1A4CAF50"/>
+        <Setter Property="Background" Value="{DynamicResource SuccessSubtleBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource SuccessBrush}"/>
 
     </Style>
 
     <Style Selector="shared|AppInfoBar.warning Border">
 
-        <Setter Property="Background" Value="#1AFFB300"/>
+        <Setter Property="Background" Value="{DynamicResource WarningSubtleBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource WarningBrush}"/>
 
     </Style>
 
     <Style Selector="shared|AppInfoBar.error Border">
 
-        <Setter Property="Background" Value="#1AF44336"/>
+        <Setter Property="Background" Value="{DynamicResource DangerSubtleBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource DangerBrush}"/>
 
     </Style>

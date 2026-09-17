@@ -9,7 +9,7 @@ namespace WinGetXAvalonia.Models;
 public partial class PackageModel : ObservableObject
 {
     [ObservableProperty]
-    private string icon = "📦";
+    private string icon = "package";
 
     [ObservableProperty]
     private string name = "";

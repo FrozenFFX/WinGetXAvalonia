@@ -4,7 +4,8 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:conv="using:WinGetXAvalonia.Converters">
+    xmlns:conv="using:WinGetXAvalonia.Converters"
+    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
 
     <conv:ZeroToBoolConverter x:Key="ZeroToBoolConverter"/>
 
@@ -37,5 +38,10 @@
     <conv:BooleanToOperationsWidthConverter x:Key="OperationsColumnWidthConverter"/>
 
     <conv:BooleanToSystemPanelWidthConverter x:Key="SystemPanelWidthConverter"/>
+
+    <sys:String x:Key="DisplaySecurity">Security</sys:String>
+    <sys:String x:Key="DisplayWarning">Warnings</sys:String>
+    <sys:String x:Key="DisplayError">Blocked</sys:String>
+    <sys:String x:Key="DisplaySuccess">Verified</sys:String>
 
     </ResourceDictionary>

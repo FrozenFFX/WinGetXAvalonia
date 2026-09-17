@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using WinGetXAvalonia.Core.State;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Diagnostics;
-using WinGetXAvalonia.Services.Performance;
 using WinGetXAvalonia.ViewModels;
 
 namespace WinGetXAvalonia.Tests;
@@ -17,7 +16,7 @@ public class DiagnosticsTests
     [Fact]
     public async Task CreateReportAsync_PopulatesAllFields()
     {
-        var service = new DiagnosticsService(new SystemInfoService());
+        var service = new DiagnosticsService(new SystemInformation());
 
         var report = await service.CreateReportAsync();
 
@@ -33,7 +32,7 @@ public class DiagnosticsTests
     [Fact]
     public async Task CreateReportAsync_WingetInstalledMatchesFileSystem()
     {
-        var service = new DiagnosticsService(new SystemInfoService());
+        var service = new DiagnosticsService(new SystemInformation());
 
         var report = await service.CreateReportAsync();
 
@@ -50,7 +49,7 @@ public class DiagnosticsTests
     public async Task InitializeAsync_LoadsReportAndReachesLoadedState()
     {
         var service = new StubDiagnosticsService();
-        var viewModel = new DiagnosticsViewModel(service);
+        var viewModel = new DiagnosticsViewModel(service, new SystemInformation());
 
         await viewModel.InitializeAsync();
 
@@ -64,7 +63,7 @@ public class DiagnosticsTests
     public async Task Refresh_WhenServiceFails_ReachesErrorState()
     {
         var service = new FailingDiagnosticsService();
-        var viewModel = new DiagnosticsViewModel(service);
+        var viewModel = new DiagnosticsViewModel(service, new SystemInformation());
 
         await viewModel.Refresh();
 

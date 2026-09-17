@@ -31,13 +31,13 @@
                     Spacing="6">
 
                     <TextBlock
-                        FontSize="20"
+                        FontSize="{DynamicResource FontSectionLarge}"
                         FontWeight="SemiBold"
                         Text="Operations"/>
 
                     <TextBlock
                         Margin="0,2,0,0"
-                        FontSize="13"
+                        FontSize="{DynamicResource FontCaption}"
                         Opacity="0.60"
                         Text="{Binding Summary}"/>
 

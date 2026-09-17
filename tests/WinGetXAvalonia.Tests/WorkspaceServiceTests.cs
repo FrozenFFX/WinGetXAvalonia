@@ -19,7 +19,7 @@ public class WorkspaceServiceTests
     public async Task SaveThenGetAll_Roundtrips()
     {
         var service = CreateService(out _);
-        var workspace = new WorkspaceModel { Name = "Dev", Description = "Tools", Icon = "💻" };
+        var workspace = new WorkspaceModel { Name = "Dev", Description = "Tools", Icon = "workspace" };
         workspace.Packages.Add(new WorkspacePackage { Id = "Git.Git", Name = "Git" });
         workspace.Packages.Add(new WorkspacePackage { Id = "Microsoft.VisualStudioCode", Name = "Visual Studio Code" });
 
@@ -31,7 +31,7 @@ public class WorkspaceServiceTests
         Assert.Equal(workspace.Id, loaded.Id);
         Assert.Equal("Dev", loaded.Name);
         Assert.Equal("Tools", loaded.Description);
-        Assert.Equal("💻", loaded.Icon);
+        Assert.Equal("workspace", loaded.Icon);
         Assert.Equal(2, loaded.PackageCount);
         Assert.Equal(2, loaded.Packages.Count);
     }

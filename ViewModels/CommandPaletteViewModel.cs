@@ -55,7 +55,7 @@ public partial class CommandPaletteViewModel : ViewModelBase
 
     public bool IsCommandMode => PaletteQueryParser.IsCommandMode(SearchText);
 
-    public string Prefix => IsCommandMode ? ">" : "🔍";
+    public string Prefix => IsCommandMode ? ">" : "search";
 
     public string PlaceholderText =>
         IsCommandMode
@@ -496,7 +496,7 @@ public partial class CommandPaletteViewModel : ViewModelBase
                         ? e.PackageId
                         : e.PackageName,
                     Subtitle = $"Install {e.PackageId}",
-                    Icon = "🕘",
+                    Icon = "history",
                     Action = CommandPaletteAction.InstallPackage,
                     Parameter = e.PackageId
                 })
@@ -557,41 +557,41 @@ public partial class CommandPaletteViewModel : ViewModelBase
         {
             case CommandPaletteAction.InstallPackage:
                 return argument.Length > 0
-                    ? Item($"Install {argument}", $"Search and install '{argument}'", "⬇", definition.Action, parameter: argument)
-                    : Item("Install", "Type a package name to install", "⬇", definition.Action);
+                    ? Item($"Install {argument}", $"Search and install '{argument}'", "download", definition.Action, parameter: argument)
+                    : Item("Install", "Type a package name to install", "download", definition.Action);
 
             case CommandPaletteAction.UpdatePackage:
                 return argument.Length > 0
-                    ? Item($"Update {argument}", $"Search and update '{argument}'", "🔄", definition.Action, parameter: argument)
-                    : Item("Update", "Type a package name to update", "🔄", definition.Action);
+                    ? Item($"Update {argument}", $"Search and update '{argument}'", "refresh", definition.Action, parameter: argument)
+                    : Item("Update", "Type a package name to update", "refresh", definition.Action);
 
             case CommandPaletteAction.UninstallPackage:
                 return argument.Length > 0
-                    ? Item($"Uninstall {argument}", $"Search and uninstall '{argument}'", "🗑", definition.Action, parameter: argument)
-                    : Item("Uninstall", "Type a package name to uninstall", "🗑", definition.Action);
+                    ? Item($"Uninstall {argument}", $"Search and uninstall '{argument}'", "uninstall", definition.Action, parameter: argument)
+                    : Item("Uninstall", "Type a package name to uninstall", "uninstall", definition.Action);
 
             case CommandPaletteAction.SearchPackages:
                 return argument.Length > 0
-                    ? Item($"Search for {argument}", $"Find '{argument}' in Discover", "🔍", definition.Action, parameter: argument)
-                    : Item("Search", "Search packages in Discover", "🔍", definition.Action);
+                    ? Item($"Search for {argument}", $"Find '{argument}' in Discover", "search", definition.Action, parameter: argument)
+                    : Item("Search", "Search packages in Discover", "search", definition.Action);
 
             case CommandPaletteAction.OpenPage:
                 return BuildOpenPageItem(definition.PageType, argument);
 
             case CommandPaletteAction.RefreshCurrent:
-                return Item("Refresh", "Refresh the current page", "🔄", definition.Action);
+                return Item("Refresh", "Refresh the current page", "refresh", definition.Action);
 
             case CommandPaletteAction.UpgradeAll:
-                return Item("Upgrade all packages", "Install every available update", "⬆", definition.Action);
+                return Item("Upgrade all packages", "Install every available update", "update", definition.Action);
 
             case CommandPaletteAction.ClearHistory:
-                return Item("Clear history", "Remove all operation history", "🧹", definition.Action);
+                return Item("Clear history", "Remove all operation history", "refresh", definition.Action);
 
             case CommandPaletteAction.NewWorkspace:
-                return Item("New workspace", "Create a new workspace", "📄", definition.Action);
+                return Item("New workspace", "Create a new workspace", "workspace", definition.Action);
 
             case CommandPaletteAction.ExportHistory:
-                return Item("Export history", "Export operation history", "📤", definition.Action);
+                return Item("Export history", "Export operation history", "upload", definition.Action);
 
             default:
                 return null;
@@ -617,23 +617,23 @@ public partial class CommandPaletteViewModel : ViewModelBase
             return Item(
                 "Open a page",
                 "Dashboard, packages, updates, history, workspaces, studio, settings...",
-                "🧭",
+                "home",
                 CommandPaletteAction.OpenPage);
         }
 
         return Item(
             $"Open \"{argument}\"",
             "Unknown page",
-            "🧭",
+            "home",
             CommandPaletteAction.OpenPage,
             parameter: argument);
     }
 
     private IEnumerable<CommandPaletteItem> ActionCommands()
     {
-        yield return Item("Install", "Install a package by name", "⬇", CommandPaletteAction.StartInstall);
-        yield return Item("Update", "Update a package by name", "🔄", CommandPaletteAction.StartUpdate);
-        yield return Item("Uninstall", "Remove a package by name", "🗑", CommandPaletteAction.StartUninstall);
+        yield return Item("Install", "Install a package by name", "download", CommandPaletteAction.StartInstall);
+        yield return Item("Update", "Update a package by name", "refresh", CommandPaletteAction.StartUpdate);
+        yield return Item("Uninstall", "Remove a package by name", "uninstall", CommandPaletteAction.StartUninstall);
     }
 
     private IEnumerable<CommandPaletteItem> OpenPageActions()
@@ -661,10 +661,10 @@ public partial class CommandPaletteViewModel : ViewModelBase
 
     private IEnumerable<CommandPaletteItem> QuickCommands(string query)
     {
-        yield return Item($"Install {query}", $"Search and install '{query}'", "⬇", CommandPaletteAction.InstallPackage, parameter: query);
-        yield return Item($"Update {query}", $"Search and update '{query}'", "🔄", CommandPaletteAction.UpdatePackage, parameter: query);
-        yield return Item($"Uninstall {query}", $"Search and uninstall '{query}'", "🗑", CommandPaletteAction.UninstallPackage, parameter: query);
-        yield return Item($"Search for {query}", $"Find '{query}' in Discover", "🔍", CommandPaletteAction.SearchPackages, parameter: query);
+        yield return Item($"Install {query}", $"Search and install '{query}'", "download", CommandPaletteAction.InstallPackage, parameter: query);
+        yield return Item($"Update {query}", $"Search and update '{query}'", "refresh", CommandPaletteAction.UpdatePackage, parameter: query);
+        yield return Item($"Uninstall {query}", $"Search and uninstall '{query}'", "uninstall", CommandPaletteAction.UninstallPackage, parameter: query);
+        yield return Item($"Search for {query}", $"Find '{query}' in Discover", "search", CommandPaletteAction.SearchPackages, parameter: query);
     }
 
     private int FirstSelectableIndex()
@@ -709,23 +709,23 @@ public partial class CommandPaletteViewModel : ViewModelBase
 
     private static readonly (Type Page, string Name, string Icon)[] PageEntries =
     {
-        (typeof(DashboardViewModel), "Dashboard", "📊"),
-        (typeof(InstalledViewModel), "Packages", "📦"),
-        (typeof(UpdatesViewModel), "Updates", "🔄"),
-        (typeof(BrowseViewModel), "Discover", "🔍"),
-        (typeof(HistoryViewModel), "History", "🕘"),
-        (typeof(WorkspacesViewModel), "Workspaces", "🗂"),
-        (typeof(BlueprintsViewModel), "Blueprints", "📐"),
-        (typeof(MarketplaceViewModel), "Marketplace", "🛍️"),
-        (typeof(EnterpriseViewModel), "Enterprise", "🏢"),
-        (typeof(SoftwareIdentityViewModel), "Identity", "🪪"),
-        (typeof(AutomationViewModel), "Automation", "⚙"),
-        (typeof(SecurityViewModel), "Security", "🛡"),
-        (typeof(DiagnosticsViewModel), "Diagnostics", "🩺"),
-        (typeof(SourceManagerViewModel), "Sources", "🌐"),
-        (typeof(StudioViewModel), "Studio", "🎛"),
-        (typeof(DeveloperViewModel), "Developer", "🧑‍💻"),
-        (typeof(SettingsViewModel), "Settings", "⚙")
+        (typeof(DashboardViewModel), "Dashboard", "diagnostics"),
+        (typeof(InstalledViewModel), "Packages", "package"),
+        (typeof(UpdatesViewModel), "Updates", "refresh"),
+        (typeof(BrowseViewModel), "Discover", "search"),
+        (typeof(HistoryViewModel), "History", "history"),
+        (typeof(WorkspacesViewModel), "Workspaces", "workspace"),
+        (typeof(BlueprintsViewModel), "Blueprints", "collection"),
+        (typeof(MarketplaceViewModel), "Marketplace", "marketplace"),
+        (typeof(EnterpriseViewModel), "Enterprise", "enterprise"),
+        (typeof(SoftwareIdentityViewModel), "Identity", "user"),
+        (typeof(AutomationViewModel), "Automation", "automation"),
+        (typeof(SecurityViewModel), "Security", "security"),
+        (typeof(DiagnosticsViewModel), "Diagnostics", "diagnostics"),
+        (typeof(SourceManagerViewModel), "Sources", "source"),
+        (typeof(StudioViewModel), "Studio", "studio"),
+        (typeof(DeveloperViewModel), "Developer", "developer"),
+        (typeof(SettingsViewModel), "Settings", "settings")
     };
 
     private static IReadOnlyList<CommandDefinition> CommandDefinitions { get; }
@@ -735,20 +735,20 @@ public partial class CommandPaletteViewModel : ViewModelBase
     {
         var list = new List<CommandDefinition>
         {
-            new("install", CommandPaletteAction.InstallPackage, "⬇", true),
-            new("update", CommandPaletteAction.UpdatePackage, "🔄", true),
-            new("upgrade", CommandPaletteAction.UpdatePackage, "🔄", true),
-            new("uninstall", CommandPaletteAction.UninstallPackage, "🗑", true),
-            new("remove", CommandPaletteAction.UninstallPackage, "🗑", true),
-            new("search", CommandPaletteAction.SearchPackages, "🔍", true),
-            new("find", CommandPaletteAction.SearchPackages, "🔍", true),
-            new("open", CommandPaletteAction.OpenPage, "🧭", true),
-            new("refresh", CommandPaletteAction.RefreshCurrent, "🔄", false),
-            new("reload", CommandPaletteAction.RefreshCurrent, "🔄", false),
-            new("upgrade all", CommandPaletteAction.UpgradeAll, "⬆", false),
-            new("clear history", CommandPaletteAction.ClearHistory, "🧹", false),
-            new("new workspace", CommandPaletteAction.NewWorkspace, "📄", false),
-            new("export history", CommandPaletteAction.ExportHistory, "📤", false)
+            new("install", CommandPaletteAction.InstallPackage, "download", true),
+            new("update", CommandPaletteAction.UpdatePackage, "refresh", true),
+            new("upgrade", CommandPaletteAction.UpdatePackage, "refresh", true),
+            new("uninstall", CommandPaletteAction.UninstallPackage, "uninstall", true),
+            new("remove", CommandPaletteAction.UninstallPackage, "uninstall", true),
+            new("search", CommandPaletteAction.SearchPackages, "search", true),
+            new("find", CommandPaletteAction.SearchPackages, "search", true),
+            new("open", CommandPaletteAction.OpenPage, "home", true),
+            new("refresh", CommandPaletteAction.RefreshCurrent, "refresh", false),
+            new("reload", CommandPaletteAction.RefreshCurrent, "refresh", false),
+            new("upgrade all", CommandPaletteAction.UpgradeAll, "update", false),
+            new("clear history", CommandPaletteAction.ClearHistory, "refresh", false),
+            new("new workspace", CommandPaletteAction.NewWorkspace, "workspace", false),
+            new("export history", CommandPaletteAction.ExportHistory, "upload", false)
         };
 
         foreach (var (page, name, icon) in PageEntries)
@@ -762,11 +762,11 @@ public partial class CommandPaletteViewModel : ViewModelBase
         }
 
         list.Add(new CommandDefinition(
-            "home", CommandPaletteAction.OpenPage, "🏠", false, typeof(DashboardViewModel)));
+            "home", CommandPaletteAction.OpenPage, "home", false, typeof(DashboardViewModel)));
         list.Add(new CommandDefinition(
-            "installed", CommandPaletteAction.OpenPage, "📦", false, typeof(InstalledViewModel)));
+            "installed", CommandPaletteAction.OpenPage, "package", false, typeof(InstalledViewModel)));
         list.Add(new CommandDefinition(
-            "browse", CommandPaletteAction.OpenPage, "🔍", false, typeof(BrowseViewModel)));
+            "browse", CommandPaletteAction.OpenPage, "search", false, typeof(BrowseViewModel)));
 
         return list;
     }

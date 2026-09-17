@@ -17,10 +17,12 @@
 
         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
 
-            <TextBlock
+            <Path
                 x:Name="PART_Icon"
-                FontSize="16"
-                VerticalAlignment="Center"/>
+                Width="20"
+                Height="20"
+                VerticalAlignment="Center"
+                Stretch="Uniform"/>
 
             <StackPanel
                 Grid.Column="1"
@@ -42,8 +44,15 @@
                 Grid.Column="2"
                 x:Name="PART_Close"
                 Classes="ghost"
-                Content="✕"
-                VerticalAlignment="Center"/>
+                VerticalAlignment="Center">
+
+                <Path
+                    Width="12"
+                    Height="12"
+                    Data="{StaticResource IconClose}"
+                    Fill="{DynamicResource SubtextBrush}"
+                    Stretch="Uniform"/>
+            </shared:AppButton>
 
         </Grid>
 

@@ -24,8 +24,6 @@
                         VerticalAlignment="Center"/>
 
                     <shared:AppButton
-                        Content="✕"
-                        FontSize="10"
                         Width="16"
                         Height="16"
                         Padding="0"
@@ -33,7 +31,15 @@
                         Foreground="{DynamicResource SubtextBrush}"
                         VerticalAlignment="Center"
                         Command="{TemplateBinding CloseCommand}"
-                        IsVisible="{TemplateBinding ShowClose}"/>
+                        IsVisible="{TemplateBinding ShowClose}">
+
+                        <Path
+                            Width="10"
+                            Height="10"
+                            Data="{StaticResource IconClose}"
+                            Fill="{DynamicResource SubtextBrush}"
+                            Stretch="Uniform"/>
+                    </shared:AppButton>
 
                 </StackPanel>
 

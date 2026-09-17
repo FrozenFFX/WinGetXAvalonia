@@ -32,12 +32,12 @@
                         CornerRadius="8"
                         Background="{DynamicResource SurfaceBrush}">
 
-                    <TextBlock Text="{Binding Icon}"
-                               FontSize="{Binding IsFeatured,
-                               Converter={StaticResource BoolToSizeConverter},
-                               ConverterParameter='24;16'}"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
+                    <Path Width="24" Height="24"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Data="{Binding Icon, Converter={StaticResource IconGeometry}}"
+                          Fill="{DynamicResource AccentBrush}"
+                          Stretch="Uniform"/>
                 </Border>
 
                 <!-- paket adı ve bilgileri -->
@@ -53,17 +53,28 @@
                                    FontWeight="SemiBold"
                                    TextTrimming="CharacterEllipsis"/>
 
-                        <Border Background="#334F8CFF"
+                        <Border Background="{DynamicResource AccentSubtle}"
                                 CornerRadius="10"
                                 Padding="8,2"
                                 VerticalAlignment="Center"
                                 IsVisible="{Binding IsFeatured}">
 
-                            <TextBlock Text="✦ Recommended"
-                                       FontSize="11"
-                                       FontWeight="SemiBold"
-                                       Foreground="{DynamicResource AccentBrush}"/>
-                        </Border>
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+
+                                    <Path
+                                        Width="10"
+                                        Height="10"
+                                        VerticalAlignment="Center"
+                                        Data="{StaticResource IconStar}"
+                                        Fill="{DynamicResource AccentBrush}"
+                                        Stretch="Uniform"/>
+
+                                    <TextBlock Text="Recommended"
+                                               FontSize="{DynamicResource FontMicro}"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource AccentBrush}"/>
+                                </StackPanel>
+                            </Border>
                     </StackPanel>
 
                     <TextBlock Text="{Binding Id}"
@@ -105,14 +116,14 @@
                         </Border>
 
                         <!-- güncelleme var -->
-                        <Border Background="#3327AE60"
+                        <Border Background="{DynamicResource SuccessSubtleBrush}"
                                 CornerRadius="20"
                                 Padding="8,3"
                                 IsVisible="{Binding Available,
                                 Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}">
 
                             <TextBlock Text="{Binding Available,
-                                       StringFormat=▲ {0}}"
+                                   StringFormat=Update {0}}"
                                        FontSize="{DynamicResource FontCaption}"
                                        FontWeight="SemiBold"
                                        Foreground="{DynamicResource SuccessBrush}"/>

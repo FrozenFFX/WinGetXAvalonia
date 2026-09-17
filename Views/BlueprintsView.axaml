@@ -98,7 +98,7 @@
 
                                             <TextBlock
                                                 Text="{Binding Description}"
-                                                FontSize="12"
+                                                FontSize="{DynamicResource FontSecondary}"
                                                 Opacity="0.6"
                                                 TextTrimming="CharacterEllipsis"
                                                 MaxLines="1"
@@ -161,7 +161,7 @@
                         <StackPanel Spacing="4">
 
                             <TextBlock
-                                FontSize="22"
+                                FontSize="{DynamicResource FontSection}"
                                 FontWeight="SemiBold"
                                 Text="{Binding EditorTitle}"/>
 
@@ -173,7 +173,7 @@
 
                         <StackPanel Spacing="6">
 
-                            <TextBlock FontSize="12" Opacity="0.7" Text="Name"/>
+                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="Name"/>
 
                             <TextBox
                                 PlaceholderText="Blueprint name"
@@ -183,7 +183,7 @@
 
                         <StackPanel Spacing="6">
 
-                            <TextBlock FontSize="12" Opacity="0.7" Text="Description"/>
+                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="Description"/>
 
                             <TextBox
                                 AcceptsReturn="True"
@@ -197,7 +197,7 @@
 
                         <StackPanel Spacing="6">
 
-                            <TextBlock FontSize="12" Opacity="0.7" Text="Steps"/>
+                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="Steps"/>
 
                             <TextBox
                                 AcceptsReturn="True"

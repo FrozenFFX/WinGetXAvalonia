@@ -27,12 +27,12 @@
                         Spacing="4">
 
                         <TextBlock
-                            FontSize="20"
+                            FontSize="{DynamicResource FontSectionLarge}"
                             FontWeight="SemiBold"
                             Text="{TemplateBinding Title}"/>
 
                         <TextBlock
-                            FontSize="13"
+                            FontSize="{DynamicResource FontCaption}"
                             Opacity="0.60"
                             Text="{TemplateBinding Subtitle}"/>
 

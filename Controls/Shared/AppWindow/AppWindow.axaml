@@ -33,19 +33,49 @@
                             Grid.Column="1"
                             x:Name="PART_Minimize"
                             Classes="ghost"
-                            Content="🗕"/>
+                            MinWidth="34"
+                            Height="30"
+                            Padding="0,0,0,2">
+
+                            <Path
+                                Width="14"
+                                Height="14"
+                                Data="{StaticResource IconMinimize}"
+                                Fill="{DynamicResource TextBrush}"
+                                Stretch="Uniform"/>
+                        </shared:AppButton>
 
                         <shared:AppButton
                             Grid.Column="2"
                             x:Name="PART_Maximize"
                             Classes="ghost"
-                            Content="🗖"/>
+                            MinWidth="34"
+                            Height="30"
+                            Padding="0">
+
+                            <Path
+                                Width="14"
+                                Height="14"
+                                Data="{StaticResource IconMaximize}"
+                                Fill="{DynamicResource TextBrush}"
+                                Stretch="Uniform"/>
+                        </shared:AppButton>
 
                         <shared:AppButton
                             Grid.Column="3"
                             x:Name="PART_Close"
                             Classes="ghost"
-                            Content="✕"/>
+                            MinWidth="34"
+                            Height="30"
+                            Padding="0">
+
+                            <Path
+                                Width="14"
+                                Height="14"
+                                Data="{StaticResource IconClose}"
+                                Fill="{DynamicResource TextBrush}"
+                                Stretch="Uniform"/>
+                        </shared:AppButton>
 
                     </Grid>
 

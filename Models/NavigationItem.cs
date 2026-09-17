@@ -9,7 +9,8 @@ namespace WinGetXAvalonia.Models;
 
 public class NavigationItem : INotifyPropertyChanged
 {
-    private bool _isExpanded = true;
+    // Varsayılan kapalı; yalnızca aktif sayfanın kategorisi açılır.
+    private bool _isExpanded = false;
 
     private NavigationItem? _parentCategory;
 

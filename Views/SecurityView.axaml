@@ -35,33 +35,33 @@
 
                     <shared:AppCard>
                         <StackPanel Spacing="4">
-                            <TextBlock FontSize="22" Text="🛡"/>
+                            <TextBlock FontSize="{DynamicResource FontSection}" Text="{DynamicResource DisplaySecurity}"/>
                             <TextBlock FontWeight="SemiBold" Text="Trusted"/>
-                            <TextBlock FontSize="16" FontWeight="SemiBold" Text="{Binding Trusted}"/>
+                            <TextBlock FontSize="{DynamicResource FontCardTitle}" FontWeight="SemiBold" Text="{Binding Trusted}"/>
                         </StackPanel>
                     </shared:AppCard>
 
                     <shared:AppCard>
                         <StackPanel Spacing="4">
-                            <TextBlock FontSize="22" Text="⚠"/>
+                            <TextBlock FontSize="{DynamicResource FontSection}" Text="{DynamicResource DisplayWarning}"/>
                             <TextBlock FontWeight="SemiBold" Text="Warnings"/>
-                            <TextBlock FontSize="16" FontWeight="SemiBold" Text="{Binding Warnings}"/>
+                            <TextBlock FontSize="{DynamicResource FontCardTitle}" FontWeight="SemiBold" Text="{Binding Warnings}"/>
                         </StackPanel>
                     </shared:AppCard>
 
                     <shared:AppCard>
                         <StackPanel Spacing="4">
-                            <TextBlock FontSize="22" Text="❌"/>
+                            <TextBlock FontSize="{DynamicResource FontSection}" Text="{DynamicResource DisplayError}"/>
                             <TextBlock FontWeight="SemiBold" Text="Blocked"/>
-                            <TextBlock FontSize="16" FontWeight="SemiBold" Text="{Binding Blocked}"/>
+                            <TextBlock FontSize="{DynamicResource FontCardTitle}" FontWeight="SemiBold" Text="{Binding Blocked}"/>
                         </StackPanel>
                     </shared:AppCard>
 
                     <shared:AppCard>
                         <StackPanel Spacing="4">
-                            <TextBlock FontSize="22" Text="✔"/>
+                            <TextBlock FontSize="{DynamicResource FontSection}" Text="{DynamicResource DisplaySuccess}"/>
                             <TextBlock FontWeight="SemiBold" Text="Verified"/>
-                            <TextBlock FontSize="16" FontWeight="SemiBold" Text="{Binding Verified}"/>
+                            <TextBlock FontSize="{DynamicResource FontCardTitle}" FontWeight="SemiBold" Text="{Binding Verified}"/>
                         </StackPanel>
                     </shared:AppCard>
 
@@ -72,11 +72,11 @@
                     <StackPanel Spacing="10">
 
                         <StackPanel Orientation="Horizontal" Spacing="8">
-                            <TextBlock FontSize="22" Text="🔒"/>
+                            <TextBlock FontSize="{DynamicResource FontSection}" Text="security"/>
                             <StackPanel Spacing="2">
-                                <TextBlock FontSize="16" FontWeight="SemiBold" Text="{Binding StatusTitle}"/>
+                                <TextBlock FontSize="{DynamicResource FontCardTitle}" FontWeight="SemiBold" Text="{Binding StatusTitle}"/>
                                 <TextBlock
-                                    FontSize="12"
+                                    FontSize="{DynamicResource FontSecondary}"
                                     Opacity="0.6"
                                     Text="WinGetX does not currently have a real package-signature/security scanner connected."
                                     TextWrapping="Wrap"/>
@@ -86,7 +86,7 @@
                         <shared:AppSeparator/>
 
                         <TextBlock
-                            FontSize="13"
+                            FontSize="{DynamicResource FontCaption}"
                             Opacity="0.75"
                             TextWrapping="Wrap"
                             Text="A real security pipeline needs Publisher, Signature, Hash, Source and Verification steps. None of these are wired up yet, so showing fake Trust or Health percentages would be misleading."/>

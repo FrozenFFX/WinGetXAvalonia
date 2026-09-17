@@ -19,7 +19,7 @@ public partial class DeveloperSettingsViewModel : SettingsCategoryViewModel
     public DeveloperSettingsViewModel(
         ISettingsService settings,
         AutoSaveService autoSave)
-        : base("Developer", "🛠", settings, autoSave)
+        : base("Developer", "developer", settings, autoSave)
     {
         BeginInit();
 

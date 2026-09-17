@@ -8,14 +8,15 @@
     xmlns:controls="using:WinGetXAvalonia.Controls"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     xmlns:package="using:WinGetXAvalonia.Controls.Package"
+    xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
     x:Class="WinGetXAvalonia.Views.UpdatesView"
     x:Name="Root"
     x:DataType="vm:UpdatesViewModel">
 
     <UserControl.KeyBindings>
-        <KeyBinding
-            Gesture="F5"
-            Command="{Binding RefreshCommand}"/>
+        <KeyBinding Gesture="F5" Command="{Binding RefreshCommand}"/>
+        <KeyBinding Gesture="Ctrl+A" Command="{Binding SelectAllCommand}"/>
+        <KeyBinding Gesture="Ctrl+U" Command="{Binding UpgradeAllCommand}"/>
     </UserControl.KeyBindings>
 
     <Grid
@@ -39,16 +40,61 @@
             ActionText="Refresh"
             ActionCommand="{Binding RefreshCommand}"/>
 
-        <!-- Toolbar -->
-        <package:PackageToolbar
+        <!-- Toolbar + Bulk Actions -->
+        <Grid
             Grid.Row="1"
-            SearchText="{Binding SearchText}"
-            PackageCount="{Binding PackageCount}"
-            RefreshCommand="{Binding RefreshCommand}"
-            SelectedSort="{Binding SelectedSort}"
-            SelectedFilter="{Binding SelectedFilter}"
-            ActionText="⬆️ Upgrade All"
-            ActionCommand="{Binding UpgradeAllCommand}"/>
+            HorizontalAlignment="Stretch"
+            RowDefinitions="Auto,Auto">
+
+            <package:PackageToolbar
+                Grid.Row="0"
+                SearchText="{Binding SearchText}"
+                PackageCount="{Binding PackageCount}"
+                RefreshCommand="{Binding RefreshCommand}"
+                SelectedSort="{Binding SelectedSort}"
+                SelectedFilter="{Binding SelectedFilter}"
+                CountLabel="Updates"
+                ActionText="Update All"
+                ActionCommand="{Binding UpgradeAllCommand}"/>
+
+            <Border
+                Grid.Row="1"
+                Margin="0,12,0,0"
+                Padding="12,8"
+                Background="{DynamicResource CardBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="{DynamicResource RadiusMedium}"
+                IsVisible="{Binding SelectedCount,
+                Converter={StaticResource PositiveToBoolConverter}}">
+
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
+
+                    <TextBlock
+                        FontWeight="SemiBold"
+                        VerticalAlignment="Center"
+                        Text="{Binding SelectedCount,
+                        StringFormat={}{0} selected}"/>
+
+                    <shared:AppButton
+                        Grid.Column="2"
+                        Classes="ghost"
+                        MinWidth="110"
+                        Content="Deselect All"
+                        Command="{Binding DeselectAllCommand}"/>
+
+                    <shared:AppButton
+                        Grid.Column="3"
+                        Classes="Accent"
+                        MinWidth="150"
+                        Content="{Binding SelectedCount,
+                        StringFormat=Update Selected ({0})}"
+                        Command="{Binding UpdateSelectedCommand}"/>
+                </Grid>
+
+            </Border>
+
+        </Grid>
 
         <!-- Master-Detail -->
         <shared:MasterDetailPage
@@ -86,14 +132,14 @@
                     <!-- Empty state -->
                     <shared:AppEmptyState
                         IsVisible="{Binding IsEmpty}"
-                        Icon="⬆️"
+                        Icon="update"
                         Title="No updates available"
                         Description="All packages are up to date."/>
 
                     <!-- Error state -->
                     <shared:AppEmptyState
                         IsVisible="{Binding HasError}"
-                        Icon="⚠️"
+                        Icon="warning"
                         Title="Couldn't load updates"
                         Description="{Binding ErrorMessage}"
                         ActionText="Retry"

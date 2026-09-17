@@ -16,8 +16,8 @@ public partial class LeftSidebar : UserControl
     }
 
     // Kategori başlığı tıklaması ListBox seçimine karışmaz. Seçim yalnızca
-    // gerçek sayfa öğelerinde değişir; başlık yalnızca grubu açar/kapar
-    // (accordion). e.Handled, başlığın seçilmesini engeller.
+    // gerçek sayfa öğelerinde değişir; başlık yalnızca kendi grubunu açar/kapar.
+    // e.Handled, başlığın seçilmesini ve diğer bölümlerin durumunu engeller.
     private void OnHeaderPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         if (sender is not Control { DataContext: NavigationItem { IsCategoryHeader: true } header })

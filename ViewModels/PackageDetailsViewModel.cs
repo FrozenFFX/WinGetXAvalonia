@@ -65,6 +65,27 @@ public partial class PackageDetailsViewModel : ObservableObject
 
     public bool HasHomepage { get; private set; }
 
+    public bool HasPublisher => !string.IsNullOrWhiteSpace(PublisherDisplay)
+        && PublisherDisplay != Fallback;
+
+    public bool HasLicense => !string.IsNullOrWhiteSpace(LicenseDisplay)
+        && LicenseDisplay != Fallback;
+
+    public bool HasReleaseNotes => !string.IsNullOrWhiteSpace(ReleaseNotesDisplay)
+        && ReleaseNotesDisplay != Fallback;
+
+    public bool CanUpdate =>
+        SelectedPackage?.HasUpdate == true;
+
+    public bool CanRemove =>
+        SelectedPackage?.InstallState == Models.PackageInstallState.Installed;
+
+    public bool CanInstall =>
+        SelectedPackage?.CanInstall == true && !CanUpdate;
+
+    public string InstallButtonText =>
+        SelectedPackage?.InstallButtonText ?? "Install";
+
     public int HealthScore => _health.Score;
 
     public string HealthScoreLabel => _health.ScoreLabel;
@@ -193,8 +214,6 @@ public partial class PackageDetailsViewModel : ObservableObject
             return;
 
         await _clipboard.CopyTextAsync(SelectedPackage.Id);
-
-        return;
     }
 
     [RelayCommand]
@@ -204,8 +223,6 @@ public partial class PackageDetailsViewModel : ObservableObject
             return;
 
         await _clipboard.CopyTextAsync(SelectedPackage.Name);
-
-        return;
     }
 
     [RelayCommand]

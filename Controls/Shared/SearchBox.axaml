@@ -38,12 +38,14 @@
                 Content="{Binding LeftIcon, ElementName=Root}">
 
                 <ContentPresenter.Content>
-                    <TextBlock
-                        Text="🔍"
-                        FontSize="16"
-                        Margin="0,2,0,0"
-                        VerticalAlignment="Center"
-                        Opacity="0.60"/>
+                    <Path
+                        Data="{StaticResource IconSearch}"
+                        Width="16"
+                        Height="16"
+                        Fill="{DynamicResource SubtextBrush}"
+                        Opacity="0.6"
+                        Stretch="Uniform"
+                        VerticalAlignment="Center"/>
                 </ContentPresenter.Content>
 
             </ContentPresenter>
@@ -63,9 +65,16 @@
                 Height="28"
                 Padding="0"
                 CornerRadius="8"
-                Content="✕"
                 IsVisible="{Binding ShowClearButton, ElementName=Root}"
-                Click="Clear_Click"/>
+                Click="Clear_Click">
+
+                <Path
+                    Width="14"
+                    Height="14"
+                    Data="{StaticResource IconClose}"
+                    Fill="{DynamicResource SubtextBrush}"
+                    Stretch="Uniform"/>
+            </shared:AppButton>
 
         </Grid>
 

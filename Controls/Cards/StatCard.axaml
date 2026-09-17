@@ -38,46 +38,42 @@
             </Button.Template>
 
             <StackPanel
-                Margin="16"
-                Spacing="6">
-
-                <!-- Icon -->
+                Margin="20"
+                Spacing="4">
 
                 <Border
                     Width="40"
                     Height="40"
-                    Padding="9"
+                    Padding="0"
                     HorizontalAlignment="Left"
-                    CornerRadius="{DynamicResource RadiusMedium}"
+                    CornerRadius="{DynamicResource RadiusSmall}"
                     Background="{DynamicResource AccentBrush}">
 
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontSize="20"
-                        Text="{Binding #Root.Icon}"/>
+                    <Path
+                        Width="22"
+                        Height="22"
+                        Margin="9"
+                        Data="{Binding #Root.Icon, Converter={StaticResource IconGeometry}}"
+                        Fill="White"
+                        Stretch="Uniform"/>
 
                 </Border>
 
-                <!-- Value -->
-
                 <TextBlock
-                    FontSize="28"
+                    FontSize="{DynamicResource FontMetric}"
                     FontWeight="Bold"
                     Text="{Binding #Root.Value}"/>
-
-                <!-- Subtitle + Secondary -->
 
                 <StackPanel Spacing="1">
 
                     <TextBlock
-                        FontSize="13"
+                        FontSize="{DynamicResource FontCaption}"
                         FontWeight="SemiBold"
                         Opacity="0.75"
                         Text="{Binding #Root.Subtitle}"/>
 
                     <TextBlock
-                        FontSize="11"
+                        FontSize="{DynamicResource FontMicro}"
                         Opacity="0.45"
                         Text="{Binding #Root.Secondary}"/>
 

@@ -11,32 +11,32 @@
     <Border
         Classes="panel"
         Padding="16"
-        Background="{DynamicResource Card}"
-        BorderBrush="{DynamicResource Border}"
+        Background="{DynamicResource CardBrush}"
+        BorderBrush="{DynamicResource BorderBrush}"
         BorderThickness="1"
         CornerRadius="{DynamicResource RadiusMedium}">
 
 
-        <StackPanel Spacing="6">
+        <StackPanel Spacing="4">
 
             <TextBlock
                 Text="{Binding Title, ElementName=Root}"
                 FontSize="{DynamicResource FontCaption}"
                 Foreground="{DynamicResource SubtextBrush}"/>
 
-            <StackPanel Orientation="Horizontal" Spacing="6">
+            <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Bottom">
 
                 <TextBlock
                     Text="{Binding Value, ElementName=Root}"
-                    FontSize="{DynamicResource FontDisplay}"
+                    FontSize="{DynamicResource FontMetric}"
                     FontWeight="SemiBold"/>
 
                 <TextBlock
                     Text="{Binding Unit, ElementName=Root}"
                     FontSize="{DynamicResource FontCaption}"
                     Foreground="{DynamicResource SubtextBrush}"
-                    VerticalAlignment="Bottom"
                     Margin="0,0,0,4"/>
+
             </StackPanel>
 
             <TextBlock

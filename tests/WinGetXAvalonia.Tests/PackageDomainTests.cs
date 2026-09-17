@@ -79,7 +79,7 @@ public class PackageDomainTests
         var publisher = new PackagePublisher("Microsoft", true);
 
         Assert.Equal("Microsoft", publisher.DisplayName);
-        Assert.Equal("✔ Verified", publisher.TrustLabel);
+        Assert.Equal("Verified", publisher.TrustLabel);
     }
 
     [Fact]

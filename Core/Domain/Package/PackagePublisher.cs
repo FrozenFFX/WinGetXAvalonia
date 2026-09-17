@@ -11,5 +11,5 @@ public sealed record PackagePublisher(string Name, bool IsVerified)
 
     public string DisplayName => IsEmpty ? "Unknown" : Name;
 
-    public string TrustLabel => IsVerified ? "✔ Verified" : "Not verified";
+    public string TrustLabel => IsVerified ? "Verified" : "Not verified";
 }

@@ -8,6 +8,8 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using WinGetXAvalonia.Collections;
 using WinGetXAvalonia.Core.Domain.Packages;
 using WinGetXAvalonia.Core.Events;
@@ -17,6 +19,7 @@ using WinGetXAvalonia.Helpers;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Operations;
+using WinGetXAvalonia.Services.Updates;
 
 namespace WinGetXAvalonia.ViewModels;
 
@@ -24,13 +27,16 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
 {
     private readonly IPackageProvider _provider;
     private readonly IOperationService _operations;
+    private readonly IUpdateService _updates;
     private readonly IEventBus _eventBus;
     private readonly ILauncherService _launcher;
     private readonly PackageCacheService _cache;
 
     private readonly List<PackageModel> _allPackages = new();
+    private readonly HashSet<string> _selectedIds = new(StringComparer.OrdinalIgnoreCase);
     private IDisposable? _subscription;
     private bool _refreshing;
+    private bool _bulkUpdating;
     private CancellationTokenSource? _searchCts;
 
     [ObservableProperty]
@@ -48,6 +54,10 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
     [ObservableProperty]
     private PackageDetailsViewModel? details;
 
+    public int SelectedCount => Updates.Count(p => p.Selected);
+
+    public bool HasSelection => SelectedCount > 0;
+
     public ObservableRangeCollection<PackageModel> Updates { get; } = new();
 
     public int PackageCount => Updates.Count;
@@ -55,6 +65,7 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
     public UpdatesViewModel(
         IPackageProvider provider,
         IOperationService operations,
+        IUpdateService updates,
         IEventBus eventBus,
         ILauncherService launcher,
         IClipboardService clipboard,
@@ -62,6 +73,7 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
     {
         _provider = provider;
         _operations = operations;
+        _updates = updates;
         _eventBus = eventBus;
         _launcher = launcher;
         _cache = cache;
@@ -79,9 +91,74 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
     }
 
     partial void OnSelectedPackageChanged(PackageModel? value)
+        => _ = Details?.Load(value);
+
+    [RelayCommand]
+    private void SelectAll()
     {
-        _ = Details?.Load(value);
+        foreach (var item in Updates)
+            item.Selected = true;
+
+        SyncSelectionIds();
     }
+
+    [RelayCommand]
+    private void DeselectAll()
+    {
+        foreach (var item in Updates)
+            item.Selected = false;
+
+        _selectedIds.Clear();
+        RaiseSelectionChanged();
+    }
+
+    [RelayCommand(CanExecute = nameof(CanUpdateSelected))]
+    private async Task UpdateSelected()
+    {
+        if (!HasSelection)
+            return;
+
+        _bulkUpdating = true;
+        UpdateSelectedCommand.NotifyCanExecuteChanged();
+
+        try
+        {
+            var ids = Updates
+                .Where(p => p.Selected && !string.IsNullOrWhiteSpace(p.Id))
+                .Select(p => p.Id)
+                .ToList();
+
+            foreach (var id in ids)
+            {
+                var live = Updates.FirstOrDefault(p =>
+                    p.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
+
+                if (live is not null)
+                    live.InstallState = PackageInstallState.Updating;
+
+                await _operations.UpdateAsync(id);
+            }
+
+            foreach (var item in Updates)
+                item.Selected = false;
+
+            _selectedIds.Clear();
+        }
+        finally
+        {
+            _updates.Invalidate();
+            _bulkUpdating = false;
+            UpdateSelectedCommand.NotifyCanExecuteChanged();
+            RaiseSelectionChanged();
+        }
+
+        await Refresh();
+
+        Details?.Clear();
+    }
+
+    private bool CanUpdateSelected()
+        => HasSelection && !_bulkUpdating;
 
     public override Task InitializeAsync()
         => Refresh();
@@ -116,14 +193,19 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
             State = LoadState.Loading;
             ErrorMessage = null;
 
-            var updates = await _provider.GetUpdatesAsync();
+            var updates = await _updates.GetUpdatesAsync();
 
             _allPackages.Clear();
 
             foreach (var update in updates)
                 _allPackages.Add(ToModel(update));
 
+            foreach (var model in _allPackages)
+                model.Selected = _selectedIds.Contains(model.Id);
+
             ApplyFilter();
+
+            SyncSelectionIds();
 
             if (SelectedPackage is null && Updates.Count > 0)
                 SelectedPackage = Updates[0];
@@ -168,10 +250,25 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanUpgradeAll))]
     private async Task UpgradeAll()
     {
-        await _operations.UpgradeAllAsync();
+        _bulkUpdating = true;
+        UpgradeAllCommand.NotifyCanExecuteChanged();
+
+        try
+        {
+            await _operations.UpgradeAllAsync();
+
+            _updates.Invalidate();
+        }
+        finally
+        {
+            _bulkUpdating = false;
+            UpgradeAllCommand.NotifyCanExecuteChanged();
+            RaiseSelectionChanged();
+        }
+
         await Refresh();
 
         Details?.Clear();
@@ -179,17 +276,27 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
         SelectedPackage = null;
     }
 
+    private bool CanUpgradeAll()
+        => !_bulkUpdating;
+
     [RelayCommand]
     private async Task Update(PackageModel? package)
     {
         if (package is null || string.IsNullOrWhiteSpace(package.Id))
             return;
 
+        package.InstallState = PackageInstallState.Updating;
+
         await _operations.UpdateAsync(package.Id);
+
+        _updates.Invalidate();
 
         await Refresh();
 
-        await Details!.Load(package);
+        var current = Updates.FirstOrDefault(x =>
+            x.Id.Equals(package.Id, StringComparison.OrdinalIgnoreCase));
+
+        await Details!.Load(current ?? package);
     }
 
     [RelayCommand]
@@ -239,6 +346,44 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
             SelectedPackage = null;
             Details?.Clear();
         }
+
+        RaiseSelectionChanged();
+    }
+
+    private void SyncSelectionIds()
+    {
+        var retained = new List<string>();
+
+        foreach (var item in _allPackages)
+        {
+            if (item.Selected)
+                retained.Add(item.Id);
+        }
+
+        foreach (var id in _selectedIds)
+        {
+            if (string.IsNullOrWhiteSpace(id)) continue;
+
+            if (!retained.Contains(id, StringComparer.OrdinalIgnoreCase)
+                && _allPackages.Any(p => p.Id.Equals(id, StringComparison.OrdinalIgnoreCase)))
+            {
+                retained.Add(id);
+            }
+        }
+
+        _selectedIds.Clear();
+
+        foreach (var id in retained)
+            _selectedIds.Add(id);
+
+        RaiseSelectionChanged();
+    }
+
+    private void RaiseSelectionChanged()
+    {
+        OnPropertyChanged(nameof(SelectedCount));
+        OnPropertyChanged(nameof(HasSelection));
+        UpdateSelectedCommand.NotifyCanExecuteChanged();
     }
 
     private static Avalonia.Controls.Window? CurrentWindow

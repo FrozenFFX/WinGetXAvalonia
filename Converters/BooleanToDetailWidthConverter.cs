@@ -11,7 +11,7 @@ namespace WinGetXAvalonia.Converters;
 public sealed class BooleanToDetailWidthConverter : IValueConverter
 {
     private static readonly GridLength s_collapsed = new(0);
-    private static readonly GridLength s_expanded = new(0.8, GridUnitType.Star);
+    private static readonly GridLength s_expanded = new(0.5, GridUnitType.Star);
 
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {

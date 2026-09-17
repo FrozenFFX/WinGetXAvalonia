@@ -25,10 +25,13 @@
                     ColumnDefinitions="Auto,*,Auto"
                     ColumnSpacing="12">
 
-                    <TextBlock
-                        FontSize="16"
+                    <Path
+                        Width="18"
+                        Height="18"
                         VerticalAlignment="Center"
-                        Text="{Binding Icon}"/>
+                        Data="{Binding Icon, Converter={StaticResource IconGeometry}}"
+                        Fill="{DynamicResource SubtextBrush}"
+                        Stretch="Uniform"/>
 
                     <TextBlock
                         Grid.Column="1"

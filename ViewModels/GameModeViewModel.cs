@@ -120,7 +120,7 @@ public partial class GameModeViewModel : AsyncViewModel
             Name = "Steam",
             Version = "latest",
             Source = "winget",
-            Icon = "🎮"
+            Icon = "automation"
         });
 
         Packages.Add(new WorkspacePackage
@@ -129,7 +129,7 @@ public partial class GameModeViewModel : AsyncViewModel
             Name = "Epic Games Launcher",
             Version = "latest",
             Source = "winget",
-            Icon = "🎮"
+            Icon = "automation"
         });
 
         Packages.Add(new WorkspacePackage
@@ -138,7 +138,7 @@ public partial class GameModeViewModel : AsyncViewModel
             Name = "Discord",
             Version = "latest",
             Source = "winget",
-            Icon = "💬"
+            Icon = "notification"
         });
 
         Packages.Add(new WorkspacePackage
@@ -147,7 +147,7 @@ public partial class GameModeViewModel : AsyncViewModel
             Name = "OBS Studio",
             Version = "latest",
             Source = "winget",
-            Icon = "📺"
+            Icon = "workspace"
         });
     }
 

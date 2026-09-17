@@ -7,6 +7,7 @@ using System.Linq;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using WinGetXAvalonia.Core.State;
 using WinGetXAvalonia.Core.Domain.Package;
 using WinGetXAvalonia.Core.Events;
 using WinGetXAvalonia.Core.Providers;
@@ -14,9 +15,11 @@ using WinGetXAvalonia.Interfaces;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.History;
+using WinGetXAvalonia.Services.Operations;
 using WinGetXAvalonia.Services.Performance;
 using WinGetXAvalonia.Services.Sources;
 using WinGetXAvalonia.Services.Theme;
+using WinGetXAvalonia.Services.Updates;
 using WinGetXAvalonia.ViewModels.Settings;
 
 namespace WinGetXAvalonia.ViewModels;
@@ -26,10 +29,28 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     private readonly IPackageProvider _provider;
     private readonly ISourceManagerService _sources;
     private readonly WingetService _winget;
+    private readonly IOperationService _operations;
+    private readonly IUpdateService _updates;
     private readonly ISystemMonitorService _monitor;
     private readonly ITimeService _time;
     private readonly FavoritesService _favorites;
-    private readonly SystemInfoService _system;
+    private SystemInformation _systemInfo = SystemInformation.Empty;
+
+    public SystemInformation SystemInfo
+    {
+        get => _systemInfo;
+        set
+        {
+            if (_systemInfo != value)
+            {
+                _systemInfo = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(OsDisplayName));
+                OnPropertyChanged(nameof(OsSubtitle));
+                OnPropertyChanged(nameof(Usage));
+            }
+        }
+    }
     private readonly IThemeService _theme;
     private readonly ClockService _clock;
     private readonly NavigationService _navigation;
@@ -112,6 +133,12 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     private bool systemPanelVisible = true;
 
     [ObservableProperty]
+    private bool hasError;
+
+    [ObservableProperty]
+    private string? errorMessage;
+
+    [ObservableProperty]
     private string? wingetError;
 
     [ObservableProperty]
@@ -122,7 +149,7 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     public event Action<object, string, string?>? DetailRequested;
 
     public string GreetingText =>
-        $"👋 {Time.Greeting}, {Environment.UserName}";
+        $"{Time.Greeting}, {Environment.UserName}";
 
     public string StatusText =>
         !_wingetStatsLoaded
@@ -133,13 +160,13 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         SystemInfoService.GetOsLabel();
 
     public string OsSubtitle =>
-        $"{_system.GetMachineName()}";
+        $"{SystemInfo.MachineName}";
 
     public int TotalPackages =>
         Installed + Updates;
 
-    public double Usage =>
-        _system.GetRamUsage();
+    public double? Usage =>
+        SystemInfo?.RamUsage;
 
     public bool HasUpdates =>
         Updates > 0;
@@ -172,12 +199,11 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
             if (!IsHealthLoaded || HealthSummary.Total == 0)
                 return 0;
 
-            int unhealthy = HealthSummary.Deprecated
-                + HealthSummary.UnknownSource
-                + HealthSummary.Failed;
+            int healthyCount = HealthSummary.Healthy;
+            int total = HealthSummary.Total;
 
             return (int)Math.Round(
-                100.0 * (HealthSummary.Total - unhealthy) / HealthSummary.Total);
+                100.0 * healthyCount / total);
         }
     }
 
@@ -233,10 +259,12 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         IPackageProvider provider,
         ISourceManagerService sources,
         WingetService winget,
+        IOperationService operations,
+        IUpdateService updates,
         ISystemMonitorService monitor,
         ITimeService time,
         FavoritesService favorites,
-        SystemInfoService system,
+        SystemInformation system,
         IThemeService theme,
         ClockService clock,
         NavigationService navigation,
@@ -254,10 +282,12 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         _provider = provider;
         _sources = sources;
         _winget = winget;
+        _operations = operations;
+        _updates = updates;
         _monitor = monitor;
         _time = time;
         _favorites = favorites;
-        _system = system;
+        _systemInfo = system;
         _theme = theme;
         _clock = clock;
         _navigation = navigation;
@@ -336,6 +366,8 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         try
         {
             _logger.Log("Dashboard initialization started");
+            HasError = false;
+            ErrorMessage = null;
 
             _logger.Log("Loading system information");
             _logger.Log("Loading Winget information");
@@ -362,6 +394,8 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         catch (Exception ex)
         {
             _logger.Error(ex, "Dashboard initialization failed");
+            HasError = true;
+            ErrorMessage = ex.Message;
         }
         finally
         {
@@ -386,7 +420,7 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
             var installed = await _provider.GetInstalledAsync().ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
 
-            var updates = await _provider.GetUpdatesAsync().ConfigureAwait(false);
+            var updates = await _updates.GetUpdatesAsync(cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
 
             IReadOnlyList<WingetSource> sourceList;
@@ -588,21 +622,21 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     {
         HeroInfo.Add(new()
         {
-            Icon = "🖥️",
+            Icon = "windows",
             Label = "OS",
             Value = GetOsLabel()
         });
 
         HeroInfo.Add(new()
         {
-            Icon = "⚙️",
+            Icon = "developer",
             Label = ".NET",
             Value = $"{Environment.Version.Major}.{Environment.Version.Minor}"
         });
 
         _wingetChip = new HeroInfoItem
         {
-            Icon = "🧰",
+            Icon = "package",
             Label = "Winget",
             Value = "…"
         };
@@ -611,7 +645,7 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
 
         HeroInfo.Add(new()
         {
-            Icon = "🎨",
+            Icon = "settings",
             Label = "Theme",
             Value = _theme.CurrentTheme.ToString()
         });
@@ -625,21 +659,21 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         SystemCards.Add(new()
         {
             Title = "OS",
-            Value = _system.GetWindowsVersion(),
-            Icon = "🪟"
+            Value = SystemInfo?.WindowsVersion ?? "N/A",
+            Icon = "windows"
         });
 
         SystemCards.Add(new()
         {
             Title = "User",
             Value = Environment.UserName,
-            Icon = "👤"
+            Icon = "user"
         });
 
-        _cpuCard = new SystemCardModel { Title = "CPU", Value = "...", Icon = "🧠" };
-        _ramCard = new SystemCardModel { Title = "RAM", Value = "...", Icon = "💾" };
-        _diskCard = new SystemCardModel { Title = "Disk", Value = "...", Icon = "💿" };
-        _netCard = new SystemCardModel { Title = "Network", Value = "...", Icon = "🌐" };
+        _cpuCard = new SystemCardModel { Title = "CPU", Value = "...", Icon = "cpu" };
+        _ramCard = new SystemCardModel { Title = "RAM", Value = "...", Icon = "ram" };
+        _diskCard = new SystemCardModel { Title = "Disk", Value = "...", Icon = "disk" };
+        _netCard = new SystemCardModel { Title = "Network", Value = "...", Icon = "network" };
 
         SystemCards.Add(_cpuCard);
         SystemCards.Add(_ramCard);
@@ -650,7 +684,7 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         {
             Title = "Date",
             Value = _clock.CurrentDate,
-            Icon = "📅"
+            Icon = "calendar"
         };
 
         SystemCards.Add(_dateCard);
@@ -659,7 +693,7 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         {
             Title = "Time",
             Value = _clock.CurrentTime,
-            Icon = "🕒"
+            Icon = "clock"
         };
 
         SystemCards.Add(_timeCard);
@@ -813,10 +847,22 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     {
         var vm = new DetailListViewModel();
 
-        foreach (var item in _system.GetOsDetails())
-            vm.Items.Add(item);
+        void Add(string label, string value)
+            => vm.Items.Add(new HeroInfoItem { Icon = "diagnostics", Label = label, Value = value });
 
-        DetailRequested?.Invoke(vm, "System", _system.GetMachineName());
+        Add("OS", SystemInfo?.WindowsVersion ?? "N/A");
+        Add("Architecture", SystemInfo?.Architecture ?? "N/A");
+        Add("MachineName", SystemInfo?.MachineName ?? "N/A");
+        Add("User", SystemInfo?.UserName ?? "N/A");
+        Add("CPU", SystemInfo?.CpuName ?? "N/A");
+        Add("Threads", SystemInfo?.CpuThreads?.ToString() ?? "N/A");
+        Add("RAM", $"{SystemInfo?.RamUsed:0.0} / {SystemInfo?.RamTotal:0.0} GB");
+        Add("GPU", SystemInfo?.GpuName ?? "N/A");
+        Add("Network", SystemInfo?.Network ?? "N/A");
+        Add(".NET", SystemInfo?.DotNetVersion ?? "N/A");
+        Add("Winget", SystemInfo?.WingetVersion ?? "N/A");
+
+        DetailRequested?.Invoke(vm, "System", $"{SystemInfo?.OperatingSystem} {SystemInfo?.WindowsVersion ?? ""}".Trim());
     }
 
     [RelayCommand]
@@ -828,7 +874,7 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         {
             vm.Items.Add(new HeroInfoItem
             {
-                Icon = item.IsRead ? "🔕" : "🔔",
+                Icon = item.IsRead ? "notification" : "notification",
                 Label = item.Title,
                 Value = $"{item.Timestamp:HH:mm} • {item.Message}"
             });
@@ -848,15 +894,13 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         var vm = new DetailListViewModel();
 
         void Add(string label, string value)
-            => vm.Items.Add(new HeroInfoItem { Icon = "🩺", Label = label, Value = value });
+            => vm.Items.Add(new HeroInfoItem { Icon = "diagnostics", Label = label, Value = value });
 
         Add("Score", HealthScoreDisplay);
         Add("Total", HealthSummary.Total.ToString());
         Add("Healthy", HealthSummary.Healthy.ToString());
         Add("Outdated", HealthSummary.Outdated.ToString());
         Add("Deprecated", HealthSummary.Deprecated.ToString());
-        Add("Unknown Source", HealthSummary.UnknownSource.ToString());
-        Add("Failed", HealthSummary.Failed.ToString());
         Add("Status", HealthStatusText);
 
         DetailRequested?.Invoke(vm, "System Health", $"{HealthScoreDisplay} score");
@@ -873,7 +917,8 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     [RelayCommand]
     private async Task UpdateAll()
     {
-        await _winget.UpgradeAll();
+        await _operations.UpgradeAllAsync();
+        _updates.Invalidate();
         await Refresh();
     }
 
@@ -881,6 +926,7 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     private async Task RefreshSources()
     {
         await _winget.RefreshSources();
+        _updates.Invalidate();
         await Refresh();
     }
 

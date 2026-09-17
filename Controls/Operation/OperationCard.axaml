@@ -23,13 +23,13 @@
                            Text="{Binding Title}" />
 
                 <TextBlock Grid.Column="1"
-                           FontSize="11"
+                           FontSize="{DynamicResource FontMicro}"
                            Opacity="0.6"
                            Text="{Binding Duration, StringFormat={}{0:c}}" />
 
             </Grid>
 
-            <TextBlock FontSize="12"
+            <TextBlock FontSize="{DynamicResource FontSecondary}"
                        Opacity="0.7"
                        Text="{Binding Subtitle}" />
 
@@ -43,13 +43,13 @@
                              Value="{Binding Progress}" />
 
                 <TextBlock Grid.Column="1"
-                           FontSize="12"
+                           FontSize="{DynamicResource FontSecondary}"
                            FontWeight="SemiBold"
                            Text="{Binding Progress, StringFormat={}{0:0}%}" />
 
             </Grid>
 
-            <TextBlock FontSize="12"
+            <TextBlock FontSize="{DynamicResource FontSecondary}"
                        Opacity="0.75"
                        Text="{Binding StatusMessage}" />
 

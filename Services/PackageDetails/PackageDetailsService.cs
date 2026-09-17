@@ -46,6 +46,8 @@ public class PackageDetailsService : IPackageDetailsService
             InstalledVersion = details.Version,
             LatestVersion = details.LatestVersion,
             Source = details.Source,
-            Description = details.Description
+            Description = details.Description,
+            Dependencies = details.Dependencies,
+            Tags = details.Tags
         };
 }

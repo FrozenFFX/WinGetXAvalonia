@@ -64,4 +64,6 @@ public class AppSettings
     public int Opacity { get; set; } = 100;
 
     public int WindowOpacity { get; set; } = 100;
+
+    public bool ShowFounderSignature { get; set; } = true;
 }

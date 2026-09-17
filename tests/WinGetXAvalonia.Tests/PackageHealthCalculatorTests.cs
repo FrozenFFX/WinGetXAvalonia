@@ -29,9 +29,9 @@ public class PackageHealthCalculatorTests
         Assert.Equal(UpdateStatus.UpToDate, health.UpdateStatus);
         Assert.True(health.IsPublisherVerified);
         Assert.Equal("High", health.SourceTrustLabel);
-        Assert.Equal("✔ Latest", health.LatestVersionLabel);
+Assert.Equal("Latest", health.LatestVersionLabel);
         Assert.Equal("Good", health.UpdateFrequencyLabel);
-        Assert.Equal("✔ Verified", health.PublisherLabel);
+        Assert.Equal("Verified", health.PublisherLabel);
     }
 
     [Fact]

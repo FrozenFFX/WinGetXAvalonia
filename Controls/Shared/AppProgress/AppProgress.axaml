@@ -17,7 +17,7 @@
 
             <TextBlock
                 Grid.Column="1"
-                FontSize="12"
+                FontSize="{DynamicResource FontSecondary}"
                 Opacity="0.7"
                 Text="{Binding #Root.Value, StringFormat='{}{0:0}%'}"
                 IsVisible="{Binding #Root.ShowValue}"/>

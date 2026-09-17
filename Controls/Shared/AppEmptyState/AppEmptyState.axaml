@@ -41,18 +41,21 @@
             BorderBrush="{DynamicResource BorderBrush}"
             BorderThickness="1">
 
-            <TextBlock
+            <Path
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                FontSize="32"
-                Text="{Binding #Root.Icon}"/>
+                Width="34"
+                Height="34"
+                Data="{Binding #Root.Icon, Converter={StaticResource IconGeometry}}"
+                Fill="{DynamicResource MutedTextBrush}"
+                Stretch="Uniform"/>
 
         </Border>
 
         <TextBlock
             HorizontalAlignment="Center"
             TextAlignment="Center"
-            FontSize="20"
+            FontSize="{DynamicResource FontSectionLarge}"
             FontWeight="SemiBold"
             Text="{Binding #Root.Title}"/>
 
@@ -88,13 +91,14 @@
                             BorderBrush="{DynamicResource BorderBrush}"
                             BorderThickness="1">
 
-                            <TextBlock
+                            <Path
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                FontSize="11"
-                                FontWeight="Bold"
-                                Foreground="{DynamicResource SuccessBrush}"
-                                Text="✓"/>
+                                Width="12"
+                                Height="12"
+                                Data="{StaticResource IconSuccess}"
+                                Fill="{DynamicResource SuccessBrush}"
+                                Stretch="Uniform"/>
 
                         </Border>
 

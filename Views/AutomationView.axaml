@@ -98,7 +98,7 @@
 
                                             <TextBlock
                                                 Text="{Binding Trigger}"
-                                                FontSize="12"
+                                                FontSize="{DynamicResource FontSecondary}"
                                                 Opacity="0.6"
                                                 TextTrimming="CharacterEllipsis"
                                                 MaxLines="1"
@@ -117,7 +117,7 @@
 
                         <shared:AppEmptyState
                             IsVisible="{Binding HasNoItems}"
-                            Icon="⚙"
+                            Icon="automation"
                             Title="No automations"
                             Description="Create your first automation to get started."
                             ActionText="New Automation"
@@ -161,7 +161,7 @@
                         <StackPanel Spacing="4">
 
                             <TextBlock
-                                FontSize="22"
+                                FontSize="{DynamicResource FontSection}"
                                 FontWeight="SemiBold"
                                 Text="{Binding EditorTitle}"/>
 
@@ -173,7 +173,7 @@
 
                         <StackPanel Spacing="6">
 
-                            <TextBlock FontSize="12" Opacity="0.7" Text="Name"/>
+                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="Name"/>
 
                             <TextBox
                                 PlaceholderText="Automation name"
@@ -183,7 +183,7 @@
 
                         <StackPanel Spacing="6">
 
-                            <TextBlock FontSize="12" Opacity="0.7" Text="Trigger"/>
+                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="Trigger"/>
 
                             <TextBox
                                 PlaceholderText="e.g. On update available, On startup"
@@ -193,7 +193,7 @@
 
                         <StackPanel Spacing="6">
 
-                            <TextBlock FontSize="12" Opacity="0.7" Text="Condition"/>
+                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="Condition"/>
 
                             <TextBox
                                 PlaceholderText="When this condition is met"
@@ -203,7 +203,7 @@
 
                         <StackPanel Spacing="6">
 
-                            <TextBlock FontSize="12" Opacity="0.7" Text="Action"/>
+                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="Action"/>
 
                             <TextBox
                                 PlaceholderText="What to run, e.g. upgrade all packages"
@@ -238,6 +238,20 @@
             </Border>
 
         </Grid>
+
+        <shared:AppEmptyState
+            Grid.Row="2"
+            IsVisible="{Binding HasError}"
+            Icon="warning"
+            Title="Couldn't load automations"
+            Description="{Binding ErrorMessage}"
+            ActionText="Retry"
+            ActionCommand="{Binding RefreshCommand}"/>
+
+        <shared:LoadingOverlay
+            Grid.RowSpan="3"
+            IsLoading="{Binding IsLoading}"
+            Message="Loading automations..."/>
 
     </Grid>
 

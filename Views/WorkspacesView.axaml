@@ -50,7 +50,7 @@
             Grid.Row="3"
             IsLoading="{Binding IsLoading}"
             LoadingMessage="Loading workspaces..."
-            DetailWidth="0.8*">
+            DetailWidth="0.5*">
 
             <shared:MasterDetailPage.MasterContent>
 
@@ -84,7 +84,7 @@
                     <!-- Empty state -->
                     <shared:AppEmptyState
                         IsVisible="{Binding IsEmpty}"
-                        Icon="💻"
+                        Icon="workspace"
                         Title="No workspaces"
                         Description="Create your first workspace to group package installs.">
 
@@ -99,7 +99,7 @@
                     <!-- Error state -->
                     <shared:AppEmptyState
                         IsVisible="{Binding HasError}"
-                        Icon="⚠️"
+                        Icon="warning"
                         Title="Couldn't load workspaces"
                         Description="{Binding ErrorMessage}"
                         ActionText="Retry"
@@ -125,7 +125,7 @@
 
                         <shared:AppEmptyState
                             IsVisible="{Binding IsNothingSelected}"
-                            Icon="📁"
+                            Icon="workspace"
                             Title="Select a workspace"
                             Description="Choose a workspace from the list to view its packages and details."/>
 

@@ -32,8 +32,18 @@ public partial class PackageToolbar : UserControl
     public static readonly StyledProperty<string?> ActionTextProperty =
         AvaloniaProperty.Register<PackageToolbar, string?>(nameof(ActionText));
 
+    public static readonly StyledProperty<string?> CountLabelProperty =
+        AvaloniaProperty.Register<PackageToolbar, string?>(nameof(CountLabel),
+            "Installed");
+
     public static readonly StyledProperty<ICommand?> ActionCommandProperty =
         AvaloniaProperty.Register<PackageToolbar, ICommand?>(nameof(ActionCommand));
+
+    public string? CountLabel
+    {
+        get => GetValue(CountLabelProperty);
+        set => SetValue(CountLabelProperty, value);
+    }
 
     public string? SearchText
     {

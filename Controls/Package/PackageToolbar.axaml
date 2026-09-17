@@ -11,7 +11,7 @@
 
     <Border
         Margin="0,0,0,12"
-        Padding="12"
+        Padding="16"
         CornerRadius="{DynamicResource RadiusMedium}"
         Background="{DynamicResource CardBrush}"
         BorderBrush="{DynamicResource BorderBrush}"
@@ -19,7 +19,7 @@
 
         <Grid
             ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto"
-            ColumnSpacing="12">
+            ColumnSpacing="10">
 
             <!-- Search -->
 
@@ -55,45 +55,42 @@
 
             <shared:AppButton
                 Grid.Column="3"
-                Width="42"
-                Height="42"
+                Width="38"
+                Height="38"
                 Padding="0"
+                CornerRadius="8"
                 VerticalAlignment="Center"
                 ToolTip.Tip="Refresh (F5)"
-                Content="⟳"
-                Command="{Binding RefreshCommand, ElementName=Root}"/>
+                Command="{Binding RefreshCommand, ElementName=Root}">
+
+                <Path
+                    Width="18"
+                    Height="18"
+                    Data="{StaticResource IconRefresh}"
+                    Fill="{DynamicResource TextBrush}"
+                    Stretch="Uniform"/>
+            </shared:AppButton>
 
             <!-- Count -->
 
             <Border
                 Grid.Column="4"
-                Padding="14,7"
+                Padding="12,6"
                 CornerRadius="8"
                 Background="{DynamicResource SurfaceBrush}"
                 BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="1"
                 VerticalAlignment="Center">
 
-                <StackPanel
-                    Orientation="Horizontal"
-                    Spacing="8">
+                <TextBlock
+                    FontSize="{DynamicResource FontCaption}"
+                    FontWeight="SemiBold"
+                    VerticalAlignment="Center">
+                    <Run Text="{Binding PackageCount, ElementName=Root}"/>
+                    <Run Text=" "/>
+                    <Run Text="{Binding CountLabel, ElementName=Root}"/>
 
-                    <TextBlock
-                        FontSize="14"
-                        Text="📦"
-                        VerticalAlignment="Center"/>
-
-                    <TextBlock
-                        FontSize="14"
-                        FontWeight="SemiBold"
-                        VerticalAlignment="Center">
-
-                        <Run Text="{Binding PackageCount, ElementName=Root}"/>
-                        <Run Text=" Installed"/>
-
-                    </TextBlock>
-
-                </StackPanel>
+                </TextBlock>
 
             </Border>
 
@@ -101,12 +98,16 @@
 
             <shared:AppButton
                 Grid.Column="5"
+                Classes="Accent"
                 MinWidth="120"
-                Height="42"
+                Height="38"
                 VerticalAlignment="Center"
                 IsVisible="{Binding ActionCommand,
                 ElementName=Root,
                 Converter={x:Static conv:ObjectConverters.IsNotNull}}"
+                IsEnabled="{Binding PackageCount,
+                ElementName=Root,
+                Converter={StaticResource PositiveToBoolConverter}}"
                 Content="{Binding ActionText, ElementName=Root}"
                 Command="{Binding ActionCommand, ElementName=Root}"/>
 

@@ -34,7 +34,7 @@
                 <TextBlock
                     Text="{Binding Message, ElementName=Root}"
                     FontWeight="SemiBold"
-                    FontSize="16"
+                    FontSize="{DynamicResource FontCardTitle}"
                     HorizontalAlignment="Center"/>
 
                 <TextBlock

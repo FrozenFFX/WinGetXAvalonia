@@ -27,7 +27,7 @@
 
             <shared:AppButton
                 Grid.Column="1"
-                Content="＋ New Workspace"
+                Content="+ New Workspace"
                 Command="{Binding CreateCommand, ElementName=Root}"/>
 
             <shared:AppButton
@@ -39,9 +39,16 @@
                 Grid.Column="3"
                 Width="42"
                 Padding="0"
-                Content="🔄"
                 ToolTip.Tip="Refresh workspaces (F5)"
-                Command="{Binding RefreshCommand, ElementName=Root}"/>
+                Command="{Binding RefreshCommand, ElementName=Root}">
+
+                <Path
+                    Width="18"
+                    Height="18"
+                    Data="{StaticResource IconRefresh}"
+                    Fill="{DynamicResource TextBrush}"
+                    Stretch="Uniform"/>
+            </shared:AppButton>
 
             <shared:AppBadge
                 Grid.Column="4"

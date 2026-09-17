@@ -45,11 +45,14 @@
                         CornerRadius="8"
                         Background="{DynamicResource SurfaceBrush}">
 
-                        <TextBlock
-                            FontSize="20"
+                        <Path
+                            Width="24"
+                            Height="24"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Text="{Binding Icon}"/>
+                            Data="{Binding Icon, Converter={StaticResource IconGeometry}}"
+                            Fill="{DynamicResource AccentBrush}"
+                            Stretch="Uniform"/>
                     </Border>
 
                     <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
@@ -80,10 +83,10 @@
                         BorderBrush="{DynamicResource BorderBrush}"
                         BorderThickness="1">
 
-                        <TextBlock
-                            FontSize="{DynamicResource FontSecondary}"
-                            FontWeight="SemiBold"
-                            Text="{Binding PackageCount, StringFormat='📦 {0} packages'}"/>
+<TextBlock
+                                FontSize="{DynamicResource FontSecondary}"
+                                FontWeight="SemiBold"
+                                Text="{Binding PackageCount, StringFormat='{}{0} packages'}"/>
                     </Border>
 
                     <Border
@@ -93,9 +96,9 @@
                         BorderBrush="{DynamicResource BorderBrush}"
                         BorderThickness="1">
 
-                        <TextBlock
-                            FontSize="{DynamicResource FontSecondary}"
-                            Text="{Binding Modified, StringFormat='🕒 {0:g}'}"/>
+<TextBlock
+                                FontSize="{DynamicResource FontSecondary}"
+                                Text="{Binding Modified, StringFormat='Modified {0:g}'}"/>
                     </Border>
                 </WrapPanel>
 
@@ -116,11 +119,16 @@
                         Height="36"
                         Padding="4,0"
                         HorizontalAlignment="Right"
-                        Content="⋮"
-                        FontSize="16"
-                        FontWeight="Bold"
                         ToolTip.Tip="More actions"
-                        Click="ShowContextMenu"/>
+                        Click="ShowContextMenu">
+
+                        <Path
+                            Width="16"
+                            Height="16"
+                            Data="{StaticResource IconMoreVert}"
+                            Fill="{DynamicResource SubtextBrush}"
+                            Stretch="Uniform"/>
+                    </shared:AppButton>
 
                 </Grid>
 

@@ -26,13 +26,17 @@
                     <StackPanel Orientation="Horizontal"
                                 Spacing="10">
 
-                        <TextBlock
-                            FontSize="18"
-                            Text="{Binding Icon}"/>
+                        <Path
+                            Width="20"
+                            Height="20"
+                            VerticalAlignment="Center"
+                            Data="{Binding Icon, Converter={StaticResource IconGeometry}}"
+                            Fill="{DynamicResource AccentBrush}"
+                            Stretch="Uniform"/>
 
                         <TextBlock
                             VerticalAlignment="Center"
-                            FontSize="15"
+                            FontSize="{DynamicResource FontBody}"
                             Text="{Binding Title}"/>
 
                     </StackPanel>

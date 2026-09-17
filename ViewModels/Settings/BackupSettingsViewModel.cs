@@ -24,7 +24,7 @@ public partial class BackupSettingsViewModel : SettingsCategoryViewModel
     public BackupSettingsViewModel(
         ISettingsService settings,
         AutoSaveService autoSave)
-        : base("Backup", "💾", settings, autoSave)
+        : base("Backup", "settings", settings, autoSave)
     {
         BeginInit();
 

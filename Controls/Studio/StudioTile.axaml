@@ -34,44 +34,56 @@
         Command="{Binding Command, ElementName=Root}"
         CommandParameter="{Binding CommandParameter, ElementName=Root}">
 
-        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" Margin="14">
+        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14" Margin="16">
 
             <Border
-                Width="44"
-                Height="44"
+                Width="48"
+                Height="48"
                 CornerRadius="{DynamicResource RadiusMedium}"
                 Background="{DynamicResource StudioAccentSoftBrush}"
-                VerticalAlignment="Center">
+                VerticalAlignment="Top">
 
-                <TextBlock
-                    Text="{Binding Icon, ElementName=Root}"
-                    FontSize="22"
+                <Path
+                    Width="26"
+                    Height="26"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Center"/>
+                    VerticalAlignment="Center"
+                    Data="{Binding Icon, ElementName=Root, Converter={StaticResource IconGeometry}}"
+                    Fill="{DynamicResource StudioAccentBrush}"
+                    Stretch="Uniform"/>
             </Border>
 
             <StackPanel
                 Grid.Column="1"
-                Spacing="4"
-                VerticalAlignment="Center">
+                Spacing="5"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Stretch">
 
                 <TextBlock
                     Text="{Binding Title, ElementName=Root}"
+                    FontSize="{DynamicResource FontCardTitle}"
                     FontWeight="SemiBold"
                     TextTrimming="CharacterEllipsis"/>
 
                 <TextBlock
                     Text="{Binding Description, ElementName=Root}"
-                    FontSize="{DynamicResource FontCaption}"
+                    FontSize="{DynamicResource FontBody}"
                     Foreground="{DynamicResource SubtextBrush}"
                     TextWrapping="Wrap"
                     TextTrimming="CharacterEllipsis"
                     MaxLines="2"/>
+
+                <TextBlock
+                    Text="{Binding Category, ElementName=Root}"
+                    FontSize="{DynamicResource FontMicro}"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource StudioAccentBrush}"
+                    TextTrimming="CharacterEllipsis"/>
             </StackPanel>
 
             <studio:StudioBadge
                 Grid.Column="2"
-                VerticalAlignment="Center"
+                VerticalAlignment="Top"
                 Text="{Binding Badge, ElementName=Root}"
                 Status="{Binding BadgeStatus, ElementName=Root}"/>
         </Grid>

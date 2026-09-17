@@ -13,7 +13,12 @@
         <ControlTemplate TargetType="local:AppCard">
 
             <Border
-                Classes="card">
+                Classes="card"
+                Padding="{TemplateBinding Padding}"
+                Background="{DynamicResource CardBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="{DynamicResource RadiusMedium}">
 
                 <ContentPresenter
                     Content="{TemplateBinding Content}"

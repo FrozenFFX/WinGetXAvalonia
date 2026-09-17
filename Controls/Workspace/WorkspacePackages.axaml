@@ -42,24 +42,37 @@
                 BorderThickness="1"
                 VerticalAlignment="Center">
 
-                <TextBlock
-                    FontSize="{DynamicResource FontCaption}"
-                    FontWeight="SemiBold"
-                    Text="{Binding SelectedWorkspace.PackageCount, StringFormat='📦 {0} Packages', ElementName=Root}"/>
+                <StackPanel Orientation="Horizontal" Spacing="0" VerticalAlignment="Center">
+                    <TextBlock
+                        FontSize="{DynamicResource FontCaption}"
+                        FontWeight="SemiBold"
+                        Text="{Binding SelectedWorkspace.PackageCount, ElementName=Root}"/>
+                    <TextBlock
+                        FontSize="{DynamicResource FontCaption}"
+                        FontWeight="SemiBold"
+                        Text=" Packages"/>
+                </StackPanel>
             </Border>
 
             <shared:AppButton
                 Grid.Column="1"
-                Content="＋ Add Package"
+                Content="+ Add Package"
                 Command="{Binding OpenPackageEditorCommand, ElementName=Root}"/>
 
             <shared:AppButton
                 Grid.Column="2"
                 Width="42"
                 Padding="0"
-                Content="🔄"
                 ToolTip.Tip="Check installed packages"
-                Command="{Binding RefreshInstallStatesCommand, ElementName=Root}"/>
+                Command="{Binding RefreshInstallStatesCommand, ElementName=Root}">
+
+                <Path
+                    Width="18"
+                    Height="18"
+                    Data="{StaticResource IconRefresh}"
+                    Fill="{DynamicResource TextBrush}"
+                    Stretch="Uniform"/>
+            </shared:AppButton>
 
             <shared:AppButton
                 Grid.Column="3"
@@ -136,10 +149,17 @@
                                 Width="36"
                                 Height="36"
                                 Padding="0"
-                                Content="✕"
                                 ToolTip.Tip="Remove from workspace"
                                 Command="{Binding $parent[ListBox].DataContext.RemovePackageCommand}"
-                                CommandParameter="{Binding}"/>
+                                CommandParameter="{Binding}">
+
+                                <Path
+                                    Width="14"
+                                    Height="14"
+                                    Data="{StaticResource IconClose}"
+                                    Fill="{DynamicResource DangerBrush}"
+                                    Stretch="Uniform"/>
+                            </shared:AppButton>
 
                         </Grid>
 
@@ -155,7 +175,7 @@
             Grid.Row="2"
             IsVisible="{Binding !HasPackages, ElementName=Root}"
             HorizontalAlignment="Left"
-            Icon="📦"
+            Icon="workspace"
             Title="No packages yet"
             Description="Add packages to turn this workspace into a one-click setup."/>
 

@@ -4,6 +4,9 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Media;
+using System.Globalization;
+using WinGetXAvalonia.Converters;
 
 namespace WinGetXAvalonia.Controls.Shared;
 
@@ -63,6 +66,8 @@ public partial class AppInfoBar : UserControl
     private void OnCloseClicked(object? sender, RoutedEventArgs e)
         => IsOpen = false;
 
+    private static readonly IconGeometryConverter IconConverter = new();
+
     private void UpdateSeverity()
     {
         Classes.Set("info", string.Equals(Severity, "Info", System.StringComparison.OrdinalIgnoreCase));
@@ -70,12 +75,15 @@ public partial class AppInfoBar : UserControl
         Classes.Set("warning", string.Equals(Severity, "Warning", System.StringComparison.OrdinalIgnoreCase));
         Classes.Set("error", string.Equals(Severity, "Error", System.StringComparison.OrdinalIgnoreCase));
 
-        PART_Icon.Text = Severity switch
+        var (key, brush) = Severity switch
         {
-            "Success" => "✓",
-            "Warning" => "⚠️",
-            "Error" => "✕",
-            _ => "ℹ️"
+            "Success" => ("success", Avalonia.Application.Current?.Resources["SuccessBrush"] as IBrush),
+            "Warning" => ("warning", Avalonia.Application.Current?.Resources["WarningBrush"] as IBrush),
+            "Error" => ("error", Avalonia.Application.Current?.Resources["DangerBrush"] as IBrush),
+            _ => ("info", Avalonia.Application.Current?.Resources["InfoBrush"] as IBrush)
         };
+
+        PART_Icon.Data = IconConverter.Convert(key, typeof(Geometry), null, CultureInfo.InvariantCulture) as Geometry;
+        PART_Icon.Fill = brush;
     }
 }

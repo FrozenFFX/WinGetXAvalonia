@@ -4,26 +4,31 @@
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
     x:Class="WinGetXAvalonia.Controls.Shared.PageHeader"
     x:Name="Root">
 
     <Grid
+        RowDefinitions="Auto,Auto"
+        RowSpacing="12"
         ColumnDefinitions="*,Auto"
         ColumnSpacing="20">
 
         <StackPanel
+            Grid.Row="0"
+            Grid.Column="0"
             VerticalAlignment="Center"
-            Spacing="6">
+            Spacing="4">
 
             <TextBlock
-                FontSize="30"
-                FontWeight="Bold"
+                FontSize="{DynamicResource FontPageTitle}"
+                FontWeight="SemiBold"
                 Text="{Binding #Root.Title}"/>
 
             <TextBlock
                 MaxWidth="720"
-                FontSize="13"
+                FontSize="{DynamicResource FontPageSubtitle}"
                 Opacity="0.65"
                 TextWrapping="Wrap"
                 Text="{Binding #Root.Description}"/>
@@ -31,6 +36,7 @@
         </StackPanel>
 
         <StackPanel
+            Grid.Row="0"
             Grid.Column="1"
             Orientation="Horizontal"
             HorizontalAlignment="Right"
@@ -38,9 +44,10 @@
             Spacing="10"
             IsVisible="{Binding #Root.ActionCommand, Converter={x:Static conv:ObjectConverters.IsNotNull}}">
 
-            <Button
-                MinWidth="130"
+            <shared:AppButton
+                Classes="ghost"
                 Height="38"
+                MinWidth="96"
                 Padding="18,0"
                 Content="{Binding #Root.ActionText}"
                 Command="{Binding #Root.ActionCommand}"/>

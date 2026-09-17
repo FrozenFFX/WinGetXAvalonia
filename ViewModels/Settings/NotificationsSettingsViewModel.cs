@@ -19,7 +19,7 @@ public partial class NotificationsSettingsViewModel : SettingsCategoryViewModel
     public NotificationsSettingsViewModel(
         ISettingsService settings,
         AutoSaveService autoSave)
-        : base("Notifications", "🔔", settings, autoSave)
+        : base("Notifications", "notification", settings, autoSave)
     {
         BeginInit();
 

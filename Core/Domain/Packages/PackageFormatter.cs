@@ -22,8 +22,8 @@ public static class PackageFormatter
     public static string AvailableVersion(string? version)
         => $"Available {version}";
 
-    public static string UpdateMarker(string? version)
-        => $"▲ {version}";
+public static string UpdateMarker(string? version)
+        => $"Update {version}";
 
     public static string Version(string? version)
         => $"Version {version}";

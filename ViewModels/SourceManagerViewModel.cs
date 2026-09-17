@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using WinGetXAvalonia.Core.State;
 using WinGetXAvalonia.Models;
+using WinGetXAvalonia.Services.Dialogs;
 using WinGetXAvalonia.Services.Sources;
 
 namespace WinGetXAvalonia.ViewModels;
@@ -15,15 +16,17 @@ namespace WinGetXAvalonia.ViewModels;
 public partial class SourceManagerViewModel : AsyncViewModel
 {
     private readonly ISourceManagerService _service;
+    private readonly IDialogService _dialogService;
 
     public ObservableCollection<WingetSource> Sources { get; } = new();
 
     [ObservableProperty]
     private WingetSource? selectedSource;
 
-    public SourceManagerViewModel(ISourceManagerService service)
+    public SourceManagerViewModel(ISourceManagerService service, IDialogService dialogService)
     {
         _service = service;
+        _dialogService = dialogService;
     }
 
     [RelayCommand]
@@ -53,7 +56,9 @@ public partial class SourceManagerViewModel : AsyncViewModel
 
     [RelayCommand]
     private Task Reset()
-        => _service.ResetAsync();
+    {
+        return _service.ResetAsync();
+    }
 
     [RelayCommand]
     private Task Remove()

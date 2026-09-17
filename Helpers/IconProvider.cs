@@ -10,29 +10,29 @@ public static class IconProvider
         package = package.ToLower();
 
         if (package.Contains("chrome"))
-            return "🌐";
+            return "source";
 
         if (package.Contains("firefox"))
-            return "🦊";
+            return "developer";
 
         if (package.Contains("edge"))
-            return "🌎";
+            return "source";
 
         if (package.Contains("discord"))
-            return "💬";
+            return "notification";
 
         if (package.Contains("spotify"))
-            return "🎵";
+            return "studio";
 
         if (package.Contains("steam"))
-            return "🎮";
+            return "automation";
 
         if (package.Contains("visual"))
-            return "💻";
+            return "workspace";
 
         if (package.Contains("docker"))
-            return "🐳";
+            return "enterprise";
 
-        return "📦";
+        return "package";
     }
 }

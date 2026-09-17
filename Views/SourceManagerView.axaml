@@ -62,6 +62,12 @@
                                     Text="{Binding Name}"/>
 
                                 <TextBlock
+                                    FontSize="{DynamicResource FontMicro}"
+                                    Opacity="0.6"
+                                    Text="{Binding StatusString}"/>
+
+                                <TextBlock
+                                    FontSize="{DynamicResource FontMicro}"
                                     Opacity="0.6"
                                     Text="{Binding Argument}"/>
 
@@ -104,11 +110,18 @@
         <shared:AppEmptyState
             Grid.Row="2"
             IsVisible="{Binding HasError}"
-            Icon="⚠️"
+            Icon="warning"
             Title="Couldn't load sources"
             Description="{Binding ErrorMessage}"
             ActionText="Retry"
             ActionCommand="{Binding RefreshCommand}"/>
+
+        <shared:AppEmptyState
+            Grid.Row="2"
+            IsVisible="{Binding IsEmpty}"
+            Icon="source"
+            Title="No sources configured"
+            Description="Add a package source to get started."/>
 
         <shared:LoadingOverlay
             Grid.RowSpan="3"

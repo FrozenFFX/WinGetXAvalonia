@@ -2,6 +2,7 @@
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
 using Avalonia.Platform.Storage;
+using WinGetXAvalonia.Core.State;
 using WinGetXAvalonia.Core.Operations;
 using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Models;
@@ -121,7 +122,7 @@ public class EnterpriseViewModelTests
             dialogs,
             notifications,
             history,
-            new WinGetXAvalonia.Services.Performance.SystemInfoService(),
+            new SystemInformation(),
             new FakeProvider(),
             new LoggerService());
 
@@ -153,7 +154,7 @@ public class EnterpriseViewModelTests
             new FakeDialogService(),
             new FakeNotificationService(),
             new FakeHistoryService(),
-            new WinGetXAvalonia.Services.Performance.SystemInfoService(),
+            new SystemInformation(),
             new FakeProvider(),
             new LoggerService());
 

@@ -42,6 +42,8 @@ public partial class StudioViewModel : AsyncViewModel
 
     public bool IsToolSelected => SelectedTool is not null;
 
+    public bool IsFilteredEmpty => IsLoaded && _allTools.Count > 0 && Tools.Count == 0;
+
     partial void OnSelectedToolChanged(StudioToolViewModel? value)
         => OnPropertyChanged(nameof(IsToolSelected));
 
@@ -95,8 +97,6 @@ public partial class StudioViewModel : AsyncViewModel
             foreach (var tool in tools.OrderBy(t => t.Title))
                 _allTools.Add(new StudioToolViewModel(tool));
 
-            ToolCount = _allTools.Count;
-
             ApplyFilter();
 
             State = _allTools.Count == 0 ? LoadState.Empty : LoadState.Loaded;
@@ -127,6 +127,10 @@ public partial class StudioViewModel : AsyncViewModel
 
         foreach (var tool in filtered)
             Tools.Add(tool);
+
+        ToolCount = Tools.Count;
+
+        OnPropertyChanged(nameof(IsFilteredEmpty));
     }
 
     private void SeedFilters()

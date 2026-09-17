@@ -3,17 +3,63 @@
 
 <Styles xmlns="https://github.com/avaloniaui">
 
-    <Style Selector="TextBlock.title">
-
-        <Setter Property="FontSize" Value="34"/>
+    <Style Selector="TextBlock.display">
+        <Setter Property="FontFamily" Value="{DynamicResource FontPrimary}"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontDisplay}"/>
         <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
 
+    <Style Selector="TextBlock.title">
+        <Setter Property="FontFamily" Value="{DynamicResource FontPrimary}"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontPageTitle}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <Style Selector="TextBlock.hero">
+        <Setter Property="FontFamily" Value="{DynamicResource FontPrimary}"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontHero}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
     </Style>
 
     <Style Selector="TextBlock.subtitle">
+        <Setter Property="FontFamily" Value="{DynamicResource FontPrimary}"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontSection}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
 
-        <Setter Property="FontSize" Value="20"/>
+    <Style Selector="TextBlock.section-title">
+        <Setter Property="FontFamily" Value="{DynamicResource FontPrimary}"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontSubtitle}"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+    </Style>
 
+    <Style Selector="TextBlock.card-title">
+        <Setter Property="FontFamily" Value="{DynamicResource FontPrimary}"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontCardTitle}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <Style Selector="TextBlock.body">
+        <Setter Property="FontFamily" Value="{DynamicResource FontPrimary}"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontBody}"/>
+    </Style>
+
+    <Style Selector="TextBlock.caption">
+        <Setter Property="FontFamily" Value="{DynamicResource FontPrimary}"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontCaption}"/>
+        <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}"/>
+    </Style>
+
+    <Style Selector="TextBlock.secondary">
+        <Setter Property="FontFamily" Value="{DynamicResource FontPrimary}"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontSecondary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}"/>
+    </Style>
+
+    <Style Selector="TextBlock.metric">
+        <Setter Property="FontFamily" Value="{DynamicResource FontPrimary}"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontMetric}"/>
+        <Setter Property="FontWeight" Value="Bold"/>
     </Style>
 
 </Styles>

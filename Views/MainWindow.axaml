@@ -39,7 +39,7 @@
         RowSpacing="0">
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="256"/>
+            <ColumnDefinition Width="232"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="{ReflectionBinding IsVisible, ElementName=DetailHost, Converter={StaticResource DetailColumnWidthConverter}}"/>
             <ColumnDefinition Width="{ReflectionBinding IsVisible, ElementName=OperationsHost, Converter={StaticResource OperationsColumnWidthConverter}}" MaxWidth="260"/>
@@ -64,13 +64,20 @@
                 Margin="24,0"
                 ColumnDefinitions="Auto,*,Auto">
 
-                <StackPanel
+                    <StackPanel
                     Orientation="Horizontal"
                     Spacing="10"
                     VerticalAlignment="Center">
 
+                    <Path
+                        Width="20"
+                        Height="20"
+                        Data="{StaticResource IconPackage}"
+                        Fill="{DynamicResource AccentBrush}"
+                        Stretch="Uniform"/>
+
                     <TextBlock
-                        FontSize="16"
+                        FontSize="{DynamicResource FontCardTitle}"
                         FontWeight="SemiBold"
                         Text="WinGetX Studio"/>
 
@@ -87,7 +94,7 @@
                     Grid.Column="2"
                     Height="26"
                     Padding="10,0"
-                    CornerRadius="13"
+                    CornerRadius="{DynamicResource RadiusLarge}"
                     VerticalAlignment="Center"
                     BorderBrush="{DynamicResource BorderBrush}"
                     BorderThickness="1"
@@ -104,7 +111,7 @@
                             Fill="{Binding Status, Converter={StaticResource StatusToBrush}}"/>
 
                         <TextBlock
-                            FontSize="12"
+                            FontSize="{DynamicResource FontSecondary}"
                             FontWeight="SemiBold"
                             Opacity="0.8"
                             Text="{Binding StatusLabel}"/>
@@ -148,9 +155,9 @@
                     <CompositePageTransition>
                         <CompositePageTransition.PageTransitions>
                             <PageSlide
-                                Duration="0:0:0.15"
+                                Duration="0:0:0.160"
                                 Orientation="Horizontal"/>
-                            <CrossFade Duration="0:0:0.15"/>
+                            <CrossFade Duration="0:0:0.160"/>
                         </CompositePageTransition.PageTransitions>
                     </CompositePageTransition>
                 </TransitioningContentControl.PageTransition>

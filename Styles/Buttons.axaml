@@ -4,75 +4,72 @@
 <Styles xmlns="https://github.com/avaloniaui">
 
     <Style Selector="Button">
-
         <Setter Property="Height" Value="36"/>
-        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RadiusSmall}"/>
         <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="{DynamicResource FontPrimary}"/>
         <Setter Property="Background" Value="{DynamicResource ButtonBackgroundBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Padding" Value="15,0"/>
+        <Setter Property="Padding" Value="16,0"/>
         <Setter Property="RenderTransform" Value="scale(1)"/>
         <Setter Property="RenderTransformOrigin" Value="50%,50%"/>
         <Setter Property="Transitions">
             <Transitions>
                 <TransformOperationsTransition
                     Property="RenderTransform"
-                    Duration="0:0:0.12"/>
+                    Duration="{DynamicResource MotionDurationFast}"/>
             </Transitions>
         </Setter>
-
     </Style>
 
     <Style Selector="Button:pointerover">
-
         <Setter Property="Background" Value="{DynamicResource ButtonHoverBrush}"/>
-
     </Style>
 
     <Style Selector="Button:pressed">
-
         <Setter Property="Background" Value="{DynamicResource ButtonPressedBrush}"/>
-        <Setter Property="RenderTransform" Value="scale(0.96)"/>
+        <Setter Property="RenderTransform" Value="scale(0.97)"/>
+    </Style>
 
+    <Style Selector="Button:focus-visible">
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+
+    <Style Selector="Button:disabled">
+        <Setter Property="Opacity" Value="0.5"/>
     </Style>
 
     <Style Selector="Button.Danger">
-
         <Setter Property="Background" Value="{DynamicResource DangerBrush}"/>
-        <Setter Property="Foreground" Value="White"/>
-
+        <Setter Property="Foreground" Value="{DynamicResource TextOnAccentBrush}"/>
     </Style>
 
     <Style Selector="Button.Danger:pointerover">
-
-        <Setter Property="Background" Value="#C0392B"/>
-
+        <Setter Property="Background" Value="{DynamicResource DangerHoverBrush}"/>
     </Style>
 
     <Style Selector="Button.Danger:pressed">
-
-        <Setter Property="Background" Value="#922B21"/>
-
+        <Setter Property="Background" Value="{DynamicResource DangerPressedBrush}"/>
     </Style>
 
     <Style Selector="Button.Accent">
-
         <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
-        <Setter Property="Foreground" Value="White"/>
-
+        <Setter Property="Foreground" Value="{DynamicResource TextOnAccentBrush}"/>
     </Style>
 
     <Style Selector="Button.Accent:pointerover">
-
-        <Setter Property="Background" Value="#3D78E8"/>
-
+        <Setter Property="Background" Value="{DynamicResource PrimaryHoverBrush}"/>
     </Style>
 
     <Style Selector="Button.Accent:pressed">
+        <Setter Property="Background" Value="{DynamicResource AccentPressed}"/>
+    </Style>
 
-        <Setter Property="Background" Value="#3364C9"/>
-
+    <Style Selector="Button.Accent:focus-visible">
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="BorderThickness" Value="2"/>
     </Style>
 
 </Styles>

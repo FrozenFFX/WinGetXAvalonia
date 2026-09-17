@@ -10,7 +10,7 @@ namespace WinGetXAvalonia.Controls.Shared;
 public partial class ErrorState : UserControl
 {
     public static readonly StyledProperty<string?> IconProperty =
-        AvaloniaProperty.Register<ErrorState, string?>(nameof(Icon), "⚠️");
+        AvaloniaProperty.Register<ErrorState, string?>(nameof(Icon), "warning");
 
     public static readonly StyledProperty<string?> TitleProperty =
         AvaloniaProperty.Register<ErrorState, string?>(nameof(Title), "Something went wrong");

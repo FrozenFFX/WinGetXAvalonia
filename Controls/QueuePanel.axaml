@@ -17,7 +17,7 @@
             <Grid ColumnDefinitions="*,Auto">
 
                 <TextBlock
-                    FontSize="16"
+                    FontSize="{DynamicResource FontCardTitle}"
                     FontWeight="SemiBold"
                     Text="Operations"/>
 
@@ -74,7 +74,7 @@
                             <TextBlock
                                 Grid.Row="1"
                                 Grid.ColumnSpan="2"
-                                FontSize="11"
+                                FontSize="{DynamicResource FontMicro}"
                                 Opacity="0.5"
                                 Text="{Binding Request.Operation}"/>
 

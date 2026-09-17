@@ -4,38 +4,52 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <SolidColorBrush x:Key="Background" Color="#1B1D23"/>
-    <SolidColorBrush x:Key="BackgroundBrush" Color="#1B1D23"/>
-    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#1B1D23"/>
+    <!-- Background -->
+    <SolidColorBrush x:Key="Background" Color="#17191F"/>
+    <SolidColorBrush x:Key="BackgroundBrush" Color="#17191F"/>
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#17191F"/>
 
     <SolidColorBrush x:Key="ScrimBrush" Color="#A6000000"/>
 
-    <SolidColorBrush x:Key="Surface" Color="#20242C"/>
-    <SolidColorBrush x:Key="SurfaceBrush" Color="#20242C"/>
-    <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#252A34"/>
-    <SolidColorBrush x:Key="SidebarBrush" Color="#252A34"/>
-    <SolidColorBrush x:Key="TitleBarBrush" Color="#20242C"/>
+    <!-- Surface -->
+    <SolidColorBrush x:Key="Surface" Color="#20242D"/>
+    <SolidColorBrush x:Key="SurfaceBrush" Color="#20242D"/>
+    <SolidColorBrush x:Key="SurfaceElevatedBrush" Color="#262B35"/>
+    <SolidColorBrush x:Key="SurfaceHoverBrush" Color="#2D3440"/>
 
-    <SolidColorBrush x:Key="Card" Color="#262B34"/>
-    <SolidColorBrush x:Key="CardBrush" Color="#262B34"/>
-    <SolidColorBrush x:Key="CardBackgroundBrush" Color="#262B34"/>
-    <SolidColorBrush x:Key="DataGridBackgroundBrush" Color="#262B34"/>
+    <!-- Sidebar -->
+    <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#1C1E26"/>
+    <SolidColorBrush x:Key="SidebarBrush" Color="#1C1E26"/>
+    <SolidColorBrush x:Key="TitleBarBrush" Color="#1C1E26"/>
 
-    <SolidColorBrush x:Key="Hover" Color="#2C3340"/>
-    <SolidColorBrush x:Key="CardHoverBrush" Color="#2C3340"/>
+    <!-- Cards -->
+    <SolidColorBrush x:Key="Card" Color="#262B35"/>
+    <SolidColorBrush x:Key="CardBrush" Color="#262B35"/>
+    <SolidColorBrush x:Key="CardBackgroundBrush" Color="#262B35"/>
+    <SolidColorBrush x:Key="DataGridBackgroundBrush" Color="#262B35"/>
 
-    <SolidColorBrush x:Key="Border" Color="#3A4150"/>
-    <SolidColorBrush x:Key="BorderBrush" Color="#3A4150"/>
+    <!-- Hover -->
+    <SolidColorBrush x:Key="Hover" Color="#2D3440"/>
+    <SolidColorBrush x:Key="CardHoverBrush" Color="#2D3440"/>
 
-    <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="#2B313C"/>
-    <SolidColorBrush x:Key="ButtonHoverBrush" Color="#3C4452"/>
-    <SolidColorBrush x:Key="ButtonPressedBrush" Color="#4B5568"/>
-    <SolidColorBrush x:Key="NavHoverBrush" Color="#2B313C"/>
-    <SolidColorBrush x:Key="NavSelectedBrush" Color="#3C4452"/>
+    <!-- Border -->
+    <SolidColorBrush x:Key="Border" Color="#394250"/>
+    <SolidColorBrush x:Key="BorderBrush" Color="#394250"/>
 
-    <SolidColorBrush x:Key="TextBrush" Color="#FFFFFF"/>
-    <Color x:Key="TextColor">#FFFFFF</Color>
-    <SolidColorBrush x:Key="SubtextBrush" Color="#B3FFFFFF"/>
-    <SolidColorBrush x:Key="SecondaryTextBrush" Color="#B3FFFFFF"/>
+    <!-- Button -->
+    <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="#2D3440"/>
+    <SolidColorBrush x:Key="ButtonHoverBrush" Color="#394250"/>
+    <SolidColorBrush x:Key="ButtonPressedBrush" Color="#454E5C"/>
+    <SolidColorBrush x:Key="NavHoverBrush" Color="#2D3440"/>
+    <SolidColorBrush x:Key="NavSelectedBrush" Color="#394250"/>
+
+    <!-- Text -->
+    <SolidColorBrush x:Key="TextBrush" Color="#F5F7FA"/>
+    <Color x:Key="TextColor">#F5F7FA</Color>
+    <SolidColorBrush x:Key="PrimaryTextBrush" Color="#F5F7FA"/>
+    <SolidColorBrush x:Key="SecondaryTextBrush" Color="#B4BCC8"/>
+    <SolidColorBrush x:Key="SubtextBrush" Color="#B4BCC8"/>
+    <SolidColorBrush x:Key="MutedTextBrush" Color="#7F8998"/>
+    <SolidColorBrush x:Key="DisabledTextBrush" Color="#5F6875"/>
 
 </ResourceDictionary>

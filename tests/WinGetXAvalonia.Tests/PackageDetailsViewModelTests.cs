@@ -92,8 +92,8 @@ public class PackageDetailsViewModelTests
         Assert.Equal("100%", vm.HealthScoreLabel);
         Assert.Equal("High", vm.SourceTrustLabel);
         Assert.Equal("Good", vm.UpdateFrequencyLabel);
-        Assert.Equal("✔ Latest", vm.LatestVersionLabel);
-        Assert.Equal("✔ Verified", vm.PublisherLabel);
+Assert.Equal("Latest", vm.LatestVersionLabel);
+        Assert.Equal("Verified", vm.PublisherLabel);
     }
 
     [Fact]

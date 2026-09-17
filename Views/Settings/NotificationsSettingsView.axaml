@@ -28,7 +28,7 @@
                 <StackPanel Spacing="20">
 
                     <TextBlock
-                        FontSize="22"
+                        FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
                         Text="Alerts"/>
 

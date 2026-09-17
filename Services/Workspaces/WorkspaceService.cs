@@ -186,13 +186,13 @@ public class WorkspaceService : IWorkspaceService
 
     public static IReadOnlyList<WorkspaceModel> CreateExampleWorkspaces()
     {
-        var gaming = Preset("Gaming", "Essential gaming setup", "🎮",
+        var gaming = Preset("Gaming", "Essential gaming setup", "automation",
             ("Valve.Steam", "Steam"),
             ("EpicGames.EpicGamesLauncher", "Epic Games Launcher"),
             ("Discord.Discord", "Discord"),
             ("OBSProject.OBSStudio", "OBS Studio"));
 
-        var developer = Preset("Developer", "Coding tools and runtimes", "💻",
+        var developer = Preset("Developer", "Coding tools and runtimes", "workspace",
             ("Git.Git", "Git"),
             ("Microsoft.VisualStudioCode", "Visual Studio Code"),
             ("Microsoft.PowerShell", "PowerShell"),
@@ -200,7 +200,7 @@ public class WorkspaceService : IWorkspaceService
             ("Docker.DockerDesktop", "Docker Desktop"),
             ("OpenJS.NodeJS.LTS", "Node.js LTS"));
 
-        var designer = Preset("Designer", "Creative and design tools", "🎨",
+        var designer = Preset("Designer", "Creative and design tools", "studio",
             ("Figma.Figma", "Figma"),
             ("BlenderFoundation.Blender", "Blender"),
             ("GIMP.GIMP", "GIMP"),

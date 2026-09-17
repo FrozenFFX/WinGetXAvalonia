@@ -46,9 +46,16 @@
                 <shared:AppButton
                     Grid.Column="1"
                     Width="44"
-                    Content="⟳"
                     ToolTip.Tip="Refresh"
-                    Command="{Binding LoadCommand}"/>
+                    Command="{Binding LoadCommand}">
+
+                    <Path
+                        Width="18"
+                        Height="18"
+                        Data="{StaticResource IconRefresh}"
+                        Fill="{DynamicResource TextBrush}"
+                        Stretch="Uniform"/>
+                </shared:AppButton>
 
                 <shared:AppButton
                     Grid.Column="2"
@@ -70,13 +77,13 @@
 
                             <shared:AppEmptyState
                                 IsVisible="{Binding IsEmpty}"
-                                Icon="🧬"
+                                Icon="info"
                                 Title="No software profiles yet"
                                 Description="Install software or record an install to start tracking identities."/>
 
                             <shared:AppEmptyState
                                 IsVisible="{Binding HasError}"
-                                Icon="⚠️"
+                                Icon="warning"
                                 Title="Failed to load identities"
                                 Description="{Binding ErrorMessage}"/>
 

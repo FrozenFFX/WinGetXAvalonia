@@ -95,9 +95,16 @@
                         Grid.Column="1"
                         Width="42"
                         Padding="0"
-                        Content="🔄"
                         ToolTip.Tip="Refresh history (F5)"
-                        Command="{Binding RefreshCommand}"/>
+                        Command="{Binding RefreshCommand}">
+
+                        <Path
+                            Width="18"
+                            Height="18"
+                            Data="{StaticResource IconRefresh}"
+                            Fill="{DynamicResource TextBrush}"
+                            Stretch="Uniform"/>
+                    </shared:AppButton>
 
                     <shared:AppButton
                         Grid.Column="2"
@@ -150,7 +157,7 @@
             Grid.Row="3"
             IsLoading="{Binding IsLoading}"
             LoadingMessage="Loading history..."
-            DetailWidth="0.8*">
+            DetailWidth="0.5*">
 
             <shared:MasterDetailPage.MasterContent>
 
@@ -180,7 +187,7 @@
 
                                             <TextBlock
                                                 Margin="5,0,0,0"
-                                                FontSize="16"
+                                                FontSize="{DynamicResource FontCardTitle}"
                                                 FontWeight="SemiBold"
                                                 Text="{Binding Title}"/>
 
@@ -212,7 +219,7 @@
                     <!-- Empty state -->
                     <shared:AppEmptyState
                         IsVisible="{Binding IsEmpty}"
-                        Icon="📜"
+                        Icon="history"
                         Title="No history available"
                         Description="Operations you run will appear here.">
 
@@ -227,7 +234,7 @@
                     <!-- Error state -->
                     <shared:AppEmptyState
                         IsVisible="{Binding HasError}"
-                        Icon="⚠️"
+                        Icon="warning"
                         Title="Couldn't load history"
                         Description="{Binding ErrorMessage}"
                         ActionText="Retry"
@@ -240,45 +247,92 @@
             <shared:MasterDetailPage.DetailContent>
 
                 <Border
-                    Padding="18"
-                    CornerRadius="{DynamicResource RadiusMedium}"
+                    Padding="20"
+                    CornerRadius="{DynamicResource RadiusLarge}"
                     Background="{DynamicResource CardBrush}"
                     BorderBrush="{DynamicResource BorderBrush}"
                     BorderThickness="1">
 
-                    <StackPanel Spacing="14">
+                    <StackPanel Spacing="18">
 
                         <TextBlock
-                            FontSize="20"
+                            FontSize="{DynamicResource FontSectionLarge}"
                             FontWeight="SemiBold"
                             Text="Statistics"/>
 
                         <Grid
                             ColumnDefinitions="*,Auto"
                             RowDefinitions="Auto,Auto,Auto,Auto"
-                            RowSpacing="10">
+                            RowSpacing="12">
 
-                            <TextBlock Grid.Row="0" Text="Total"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1"
-                                       FontWeight="SemiBold"
-                                       Text="{Binding TotalOperations}"/>
+                            <TextBlock
+                                Grid.Row="0"
+                                FontSize="{DynamicResource FontBody}"
+                                Foreground="{DynamicResource SubtextBrush}"
+                                Text="Total"/>
 
-                            <TextBlock Grid.Row="1" Text="Successful"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1"
-                                       FontWeight="SemiBold"
-                                       Text="{Binding SuccessfulOperations}"/>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                FontSize="{DynamicResource FontBody}"
+                                FontWeight="SemiBold"
+                                Text="{Binding TotalOperations}"/>
 
-                            <TextBlock Grid.Row="2" Text="Failed"/>
-                            <TextBlock Grid.Row="2" Grid.Column="1"
-                                       FontWeight="SemiBold"
-                                       Text="{Binding FailedOperations}"/>
+                            <TextBlock
+                                Grid.Row="1"
+                                FontSize="{DynamicResource FontBody}"
+                                Foreground="{DynamicResource SubtextBrush}"
+                                Text="Successful"/>
 
-                            <TextBlock Grid.Row="3" Text="Today"/>
-                            <TextBlock Grid.Row="3" Grid.Column="1"
-                                       FontWeight="SemiBold"
-                                       Text="{Binding TodayOperations}"/>
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                FontSize="{DynamicResource FontBody}"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource SuccessBrush}"
+                                Text="{Binding SuccessfulOperations}"/>
+
+                            <TextBlock
+                                Grid.Row="2"
+                                FontSize="{DynamicResource FontBody}"
+                                Foreground="{DynamicResource SubtextBrush}"
+                                Text="Failed"/>
+
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                FontSize="{DynamicResource FontBody}"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource DangerBrush}"
+                                Text="{Binding FailedOperations}"/>
+
+                            <TextBlock
+                                Grid.Row="3"
+                                FontSize="{DynamicResource FontBody}"
+                                Foreground="{DynamicResource SubtextBrush}"
+                                Text="Today"/>
+
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                FontSize="{DynamicResource FontBody}"
+                                FontWeight="SemiBold"
+                                Text="{Binding TodayOperations}"/>
 
                         </Grid>
+
+                        <shared:AppSeparator/>
+
+                        <shared:AppButton
+                            HorizontalAlignment="Stretch"
+                            Content="Export History"
+                            Command="{Binding ExportCommand}"/>
+
+                        <shared:AppButton
+                            HorizontalAlignment="Stretch"
+                            Classes="Danger"
+                            Content="Clear History"
+                            Command="{Binding ClearCommand}"/>
 
                     </StackPanel>
 

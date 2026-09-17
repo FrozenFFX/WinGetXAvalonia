@@ -27,7 +27,7 @@ public partial class MarketplaceItem : ObservableObject
     private string category = "";
 
     [ObservableProperty]
-    private string icon = "📦";
+    private string icon = "package";
 
     [ObservableProperty]
     private string version = "1.0";

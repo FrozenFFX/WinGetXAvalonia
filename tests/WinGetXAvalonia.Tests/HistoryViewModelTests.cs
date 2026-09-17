@@ -337,10 +337,10 @@ public class HistoryViewModelTests
         Assert.Equal("Installed", installed.Title);
         Assert.Equal("Updated", updated.Title);
         Assert.Equal("Removed", removed.Title);
-        Assert.Equal("Install Failed", failed.Title);
+Assert.Equal("Install Failed", failed.Title);
 
-        Assert.Equal("✓", installed.Icon);
-        Assert.Equal("✕", failed.Icon);
+        Assert.Equal("success", installed.Icon);
+        Assert.Equal("error", failed.Icon);
         Assert.Equal("Success", installed.Status);
         Assert.Equal("Exit code 1603", failed.Status);
     }

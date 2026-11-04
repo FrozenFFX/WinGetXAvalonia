@@ -23,7 +23,9 @@
         <ControlTemplate TargetType="local:MasterDetailPage">
 
             <Grid
+                x:Name="PART_LayoutRoot"
                 Margin="{TemplateBinding Margin}"
+                RowDefinitions="*,Auto"
                 ClipToBounds="True">
 
                 <Grid.ColumnDefinitions>
@@ -34,6 +36,7 @@
 
                 <!-- Master list -->
                 <ContentPresenter
+                    x:Name="PART_Master"
                     Grid.Column="0"
                     Content="{TemplateBinding MasterContent}"
                     ContentTemplate="{TemplateBinding MasterContentTemplate}"/>
@@ -43,6 +46,7 @@
 
                 <!-- Detail panel -->
                 <ContentPresenter
+                    x:Name="PART_Detail"
                     Grid.Column="2"
                     Content="{TemplateBinding DetailContent}"
                     ContentTemplate="{TemplateBinding DetailContentTemplate}"/>

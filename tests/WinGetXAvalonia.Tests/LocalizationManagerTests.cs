@@ -98,8 +98,19 @@ public class LocalizationManagerTests
                 "Windows 11", "Winget", "v0.2.0-alpha"
             };
             var keyPattern = new Regex(
-                "^\\{loc:Translate Key=\"(?<key>.*)\"\\}$",
+                "^\\{loc:Translate Key=(?:\"(?<key>.*)\"|'(?<key>.*)')\\}$",
                 RegexOptions.CultureInvariant);
+            var userFacingAttributes = new HashSet<string>(StringComparer.Ordinal)
+            {
+                "Content", "Description", "Header", "LoadingMessage", "OffContent",
+                "OnContent", "PlaceholderText", "Secondary", "Subtitle", "Text", "Tip",
+                "Title", "Watermark"
+            };
+            var interactiveControlNames = new HashSet<string>(StringComparer.Ordinal)
+            {
+                "AppButton", "Button", "DropDownButton", "HyperlinkButton",
+                "MenuItem", "RepeatButton", "SplitButton", "ToggleButton"
+            };
 
             var uiDirectories = new[] { "Views", "Controls", "Dialogs" };
             foreach (var directory in uiDirectories)
@@ -110,17 +121,57 @@ public class LocalizationManagerTests
                              SearchOption.AllDirectories))
                 {
                     var document = XDocument.Load(file);
-                    foreach (var attribute in document.Descendants().Attributes())
+                    foreach (var element in document.Descendants())
                     {
-                        var match = keyPattern.Match(attribute.Value);
-                        if (!match.Success)
+                        foreach (var attribute in element.Attributes())
+                        {
+                            var value = attribute.Value;
+                            var match = keyPattern.Match(value);
+                            if (match.Success)
+                            {
+                                var key = match.Groups["key"].Value;
+                                if (!technicalTerms.Contains(key)
+                                    && localization.TranslateValue(key) == key)
+                                {
+                                    untranslated.Add(key);
+                                }
+                            }
+                            else if (userFacingAttributes.Contains(attribute.Name.LocalName)
+                                     && !value.StartsWith('{')
+                                     && !string.IsNullOrWhiteSpace(value)
+                                     && value.Any(char.IsLetter)
+                                     && !technicalTerms.Contains(value)
+                                     && localization.TranslateValue(value) == value)
+                            {
+                                untranslated.Add($"{value} ({Path.GetFileName(file)})");
+                            }
+                        }
+
+                        if (!interactiveControlNames.Contains(element.Name.LocalName))
                             continue;
 
-                        var key = match.Groups["key"].Value;
-                        if (!technicalTerms.Contains(key)
-                            && localization.TranslateValue(key) == key)
+                        var attributes = element.Attributes().ToArray();
+                        var hasClickAction = attributes.Any(attribute =>
+                                attribute.Name.LocalName is "Command" or "Click" or "Tapped"
+                                    or "PointerPressed" or "NavigateUri" or "IsChecked")
+                            || element.Elements().Any(child =>
+                                child.Name.LocalName.EndsWith(".Command", StringComparison.Ordinal));
+                        var isDisabled = attributes.Any(attribute =>
+                            attribute.Name.LocalName == "IsEnabled"
+                            && string.Equals(attribute.Value, "False", StringComparison.OrdinalIgnoreCase));
+                        var isTemplatePart = attributes.Any(attribute =>
+                            attribute.Name.LocalName == "Name"
+                            && attribute.Value.StartsWith("PART_", StringComparison.Ordinal));
+                        var isCodeBehindToggle = element.Name.LocalName == "ToggleButton"
+                            && string.Equals(Path.GetFileName(file), "NotificationBell.axaml", StringComparison.Ordinal)
+                            && attributes.Any(attribute =>
+                                attribute.Name.LocalName == "Name"
+                                && attribute.Value == "BellButton");
+
+                        if (!hasClickAction && !isDisabled && !isTemplatePart && !isCodeBehindToggle)
                         {
-                            untranslated.Add(key);
+                            untranslated.Add(
+                                $"Unwired {element.Name.LocalName} ({Path.GetFileName(file)})");
                         }
                     }
 

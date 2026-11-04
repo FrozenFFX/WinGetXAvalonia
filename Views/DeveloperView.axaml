@@ -8,6 +8,7 @@
     xmlns:controls="using:WinGetXAvalonia.Controls"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     x:Class="WinGetXAvalonia.Views.DeveloperView"
+    x:Name="Root"
     x:DataType="vm:DeveloperViewModel">
 
     <Grid
@@ -40,7 +41,7 @@
 
                     <shared:AppCard>
 
-                        <Grid ColumnDefinitions="*,*,*,*">
+                        <UniformGrid Columns="{Binding #Root.Bounds.Width, Converter={StaticResource StatColumnsConverter}}">
 
                             <StackPanel Spacing="4">
                                 <TextBlock Opacity="0.6" Text="{loc:Translate Key=&quot;Running&quot;}"/>
@@ -50,7 +51,7 @@
                                     Text="{loc:TranslateBinding Path=Queue.RunningCount}"/>
                             </StackPanel>
 
-                            <StackPanel Grid.Column="1" Spacing="4">
+                            <StackPanel Spacing="4">
                                 <TextBlock Opacity="0.6" Text="{loc:Translate Key=&quot;Completed&quot;}"/>
                                 <TextBlock
                                     FontSize="28"
@@ -58,7 +59,7 @@
                                     Text="{loc:TranslateBinding Path=Queue.CompletedCount}"/>
                             </StackPanel>
 
-                            <StackPanel Grid.Column="2" Spacing="4">
+                            <StackPanel Spacing="4">
                                 <TextBlock Opacity="0.6" Text="{loc:Translate Key=&quot;Failed&quot;}"/>
                                 <TextBlock
                                     FontSize="28"
@@ -66,7 +67,7 @@
                                     Text="{loc:TranslateBinding Path=Queue.FailedCount}"/>
                             </StackPanel>
 
-                            <StackPanel Grid.Column="3" Spacing="4">
+                            <StackPanel Spacing="4">
                                 <TextBlock Opacity="0.6" Text="{loc:Translate Key=&quot;Cancelled&quot;}"/>
                                 <TextBlock
                                     FontSize="28"
@@ -74,7 +75,7 @@
                                     Text="{loc:TranslateBinding Path=Queue.CancelledCount}"/>
                             </StackPanel>
 
-                        </Grid>
+                        </UniformGrid>
 
                     </shared:AppCard>
 

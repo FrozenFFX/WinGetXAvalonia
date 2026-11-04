@@ -12,8 +12,12 @@ WinGetX Studio, Windows'u değiştiren bir araç değil; Windows'u daha anlaşı
 daha güvenli ve daha yönetilebilir hale getiren bir platformdur. Vizyon ve
 Altın Kural: `docs/vision.md`.
 
-A modern, open-source package manager client for Windows, built on Avalonia UI and
+A modern package manager client for Windows, built on Avalonia UI and
 the Windows Package Manager (winget).
+
+The interface adapts to narrow windows, but WinGetX Studio is a Windows
+application; it is not a native Android or iOS app because it relies on winget
+and Windows management APIs.
 
 ## Owner
 
@@ -34,7 +38,8 @@ All source files carry an attribution header. Do not remove or modify it.
 - Automation, blueprints and security views
 - Search history, favorites and notifications
 - Full dark / light theming from a single token system
-- Localization-ready views (no hardcoded UI text)
+- Turkish and English interface with live language switching
+- Adaptive navigation and layouts for narrow windows
 
 ## Tech Stack
 
@@ -98,4 +103,5 @@ open-source edition. See `docs/founder-vision.md` and `docs/founder-roadmap.md`.
 
 ## License
 
-This project is owned by FrozenFFX. See `AGENTS.md` for ownership rules.
+No license has been assigned to this repository. Public visibility does not grant
+permission to reuse or redistribute the code. See `AGENTS.md` for ownership rules.

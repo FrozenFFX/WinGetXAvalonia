@@ -49,7 +49,7 @@
         <shared:MasterDetailPage
             Grid.Row="3"
             IsLoading="{Binding IsLoading}"
-            LoadingMessage="Loading workspaces..."
+            LoadingMessage="{loc:Translate Key=&quot;Loading workspaces...&quot;}"
             DetailWidth="0.5*">
 
             <shared:MasterDetailPage.MasterContent>

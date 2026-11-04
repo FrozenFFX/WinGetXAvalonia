@@ -115,7 +115,7 @@
     HorizontalAlignment="Stretch"
     VerticalAlignment="Stretch"
     IsLoading="{Binding IsLoading}"
-    LoadingMessage="Loading installed packages..."
+    LoadingMessage="{loc:Translate Key=&quot;Loading installed packages...&quot;}"
     DetailWidth="{Binding SelectedPackage,
     Converter={StaticResource DetailWidthConverter}}">
 

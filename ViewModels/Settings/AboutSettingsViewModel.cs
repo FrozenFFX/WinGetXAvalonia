@@ -80,6 +80,10 @@ public partial class AboutSettingsViewModel : SettingsCategoryViewModel
     private void OpenGitHub()
         => _ = _launcher.OpenUrlAsync(AppInfo.Repository);
 
+    [RelayCommand]
+    private void ReportIssue()
+        => _ = _launcher.OpenUrlAsync($"{AppInfo.Repository}/issues/new");
+
     private async Task LoadWingetVersionAsync()
     {
         try

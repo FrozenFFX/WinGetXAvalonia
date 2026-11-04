@@ -14,16 +14,44 @@
     <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
 
     <Style Selector="TextBlock">
-        <Setter Property="FontFamily" Value="Segoe UI Variable, Inter, sans-serif"/>
+        <Setter Property="FontFamily" Value="Inter, Segoe UI Variable, sans-serif"/>
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
     </Style>
 
     <Style Selector="Button">
-        <Setter Property="FontFamily" Value="Segoe UI Variable, Inter, sans-serif"/>
+        <Setter Property="FontFamily" Value="Inter, Segoe UI Variable, sans-serif"/>
+        <Setter Property="RenderTransform">
+            <ScaleTransform ScaleX="1" ScaleY="1"/>
+        </Setter>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background"
+                                 Duration="{DynamicResource MotionDurationFast}"
+                                 Easing="{DynamicResource MotionEasingOut}"/>
+                <BrushTransition Property="BorderBrush"
+                                 Duration="{DynamicResource MotionDurationFast}"
+                                 Easing="{DynamicResource MotionEasingOut}"/>
+                <TransformOperationsTransition Property="RenderTransform"
+                                               Duration="{DynamicResource MotionDurationFast}"
+                                               Easing="{DynamicResource MotionEasingOut}"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button:pointerover">
+        <Setter Property="RenderTransform">
+            <ScaleTransform ScaleX="1.02" ScaleY="1.02"/>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button:pressed">
+        <Setter Property="RenderTransform">
+            <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
+        </Setter>
     </Style>
 
     <Style Selector="ToggleSwitch">
-        <Setter Property="FontFamily" Value="Segoe UI Variable, Inter, sans-serif"/>
+        <Setter Property="FontFamily" Value="Inter, Segoe UI Variable, sans-serif"/>
     </Style>
 
     <Style Selector="Button.fluent">
@@ -33,7 +61,7 @@
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
-        <Setter Property="FontFamily" Value="Segoe UI Variable, Inter, sans-serif"/>
+        <Setter Property="FontFamily" Value="Inter, Segoe UI Variable, sans-serif"/>
     </Style>
 
     <Style Selector="Button.fluent:pointerover">
@@ -51,7 +79,7 @@
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
-        <Setter Property="FontFamily" Value="Segoe UI Variable, Inter, sans-serif"/>
+        <Setter Property="FontFamily" Value="Inter, Segoe UI Variable, sans-serif"/>
     </Style>
 
     <Style Selector="ScrollViewer.fluent">

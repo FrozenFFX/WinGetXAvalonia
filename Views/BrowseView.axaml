@@ -12,7 +12,9 @@
              x:DataType="vm:BrowseViewModel"
              x:CompileBindings="False">
 
-    <Grid Margin="24"
+    <Grid x:Name="BrowseLayout"
+          Margin="24"
+          RowDefinitions="*,Auto"
           HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch"
           ClipToBounds="True"
@@ -208,6 +210,7 @@
         </Grid>
 
         <GridSplitter
+            x:Name="BrowseDetailSplitter"
             Grid.Column="1"
             Width="6"
             ResizeDirection="Columns"
@@ -215,6 +218,7 @@
 
         <!-- sağ tarafta seçilen paketin detay paneli -->
         <Border
+            x:Name="BrowseDetails"
             Grid.Column="2"
             Margin="16,0,0,0"
             VerticalAlignment="Stretch"

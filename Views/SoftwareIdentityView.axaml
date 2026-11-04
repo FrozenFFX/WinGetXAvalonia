@@ -68,7 +68,7 @@
 
                 <shared:MasterDetailPage
                     IsLoading="{Binding IsLoading}"
-                    LoadingMessage="Loading identities..."
+                    LoadingMessage="{loc:Translate Key=&quot;Loading identities...&quot;}"
                     DetailWidth="0.65*">
 
                     <shared:MasterDetailPage.MasterContent>

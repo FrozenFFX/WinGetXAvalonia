@@ -156,7 +156,7 @@
         <shared:MasterDetailPage
             Grid.Row="3"
             IsLoading="{Binding IsLoading}"
-            LoadingMessage="Loading history..."
+            LoadingMessage="{loc:Translate Key=&quot;Loading history...&quot;}"
             DetailWidth="0.5*">
 
             <shared:MasterDetailPage.MasterContent>

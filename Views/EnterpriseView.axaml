@@ -9,6 +9,7 @@
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     xmlns:cards="using:WinGetXAvalonia.Controls.Cards"
     x:Class="WinGetXAvalonia.Views.EnterpriseView"
+    x:Name="Root"
     x:DataType="vm:EnterpriseViewModel"
     x:CompileBindings="False">
 
@@ -116,7 +117,7 @@
 
                     <StackPanel Grid.Row="2" Spacing="10">
 
-                        <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10">
+                        <UniformGrid Columns="{Binding #Root.Bounds.Width, Converter={StaticResource StatColumnsConverter}}">
 
                             <shared:AppCard>
                                 <StackPanel Spacing="2">
@@ -125,28 +126,28 @@
                                 </StackPanel>
                             </shared:AppCard>
 
-                            <shared:AppCard Grid.Column="1">
+                            <shared:AppCard>
                                 <StackPanel Spacing="2">
                                     <TextBlock Text="{loc:Translate Key=&quot;Threads&quot;}" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
                                     <TextBlock Text="{loc:TranslateBinding Path=LocalCpuThreads}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
                                 </StackPanel>
                             </shared:AppCard>
 
-                            <shared:AppCard Grid.Column="2">
+                            <shared:AppCard>
                                 <StackPanel Spacing="2">
                                     <TextBlock Text="{loc:Translate Key=&quot;RAM&quot;}" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
                                     <TextBlock Text="{loc:TranslateBinding Path=LocalRam}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
                                 </StackPanel>
                             </shared:AppCard>
 
-                            <shared:AppCard Grid.Column="3">
+                            <shared:AppCard>
                                 <StackPanel Spacing="2">
                                     <TextBlock Text="{loc:Translate Key=&quot;GPU&quot;}" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
                                     <TextBlock Text="{loc:TranslateBinding Path=LocalGpu}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </shared:AppCard>
 
-                        </Grid>
+                        </UniformGrid>
 
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
 
@@ -239,52 +240,46 @@
 
                 <Grid RowDefinitions="Auto,16,*">
 
-                    <Grid
+                    <UniformGrid
                         Grid.Row="0"
-                        ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
-                        ColumnSpacing="12">
+                        Columns="{Binding #Root.Bounds.Width, Converter={StaticResource StatColumnsConverter}}">
 
                         <cards:StatCard
                             Icon="windows"
-                            Subtitle="Total Computers"
+                            Subtitle="{loc:Translate Key=&quot;Total Computers&quot;}"
                             Value="{Binding Total}"/>
 
                         <cards:StatCard
-                            Grid.Column="1"
                             Icon="success"
-                            Subtitle="Online"
+                            Subtitle="{loc:Translate Key=&quot;Online&quot;}"
                             Value="{Binding Online}"/>
 
                         <cards:StatCard
-                            Grid.Column="2"
                             Icon="error"
-                            Subtitle="Offline"
+                            Subtitle="{loc:Translate Key=&quot;Offline&quot;}"
                             Value="{Binding Offline}"/>
 
                         <cards:StatCard
-                            Grid.Column="3"
                             Icon="update"
-                            Subtitle="Pending Updates"
+                            Subtitle="{loc:Translate Key=&quot;Pending Updates&quot;}"
                             Value="{Binding PendingUpdates}"/>
 
                         <cards:StatCard
-                            Grid.Column="4"
                             Icon="warning"
-                            Subtitle="Critical Updates"
+                            Subtitle="{loc:Translate Key=&quot;Critical Updates&quot;}"
                             Value="{Binding CriticalUpdates}"/>
 
                         <cards:StatCard
-                            Grid.Column="5"
                             Icon="error"
-                            Subtitle="Failed Installations"
+                            Subtitle="{loc:Translate Key=&quot;Failed Installations&quot;}"
                             Value="{Binding FailedInstallations}"/>
 
-                    </Grid>
+                    </UniformGrid>
 
                     <shared:MasterDetailPage
                         Grid.Row="2"
                         IsLoading="{Binding IsLoading}"
-                        LoadingMessage="Loading fleet..."
+                        LoadingMessage="{loc:Translate Key=&quot;Loading fleet...&quot;}"
                         DetailWidth="0.7*">
 
                         <shared:MasterDetailPage.MasterContent>
@@ -467,37 +462,37 @@
 
                                             </Grid>
 
-                                            <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10">
+                                            <UniformGrid Columns="{Binding #Root.Bounds.Width, Converter={StaticResource StatColumnsConverter}}">
 
-                                                <shared:AppCard Grid.Column="0">
+                                                <shared:AppCard>
                                                     <StackPanel Spacing="2">
                                                         <TextBlock Text="{loc:Translate Key=&quot;CPU&quot;}" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
                                                         <TextBlock Text="{loc:TranslateBinding Path=SelectedComputer.Cpu}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold" TextWrapping="Wrap"/>
                                                     </StackPanel>
                                                 </shared:AppCard>
 
-                                                <shared:AppCard Grid.Column="1">
+                                                <shared:AppCard>
                                                     <StackPanel Spacing="2">
                                                         <TextBlock Text="{loc:Translate Key=&quot;RAM&quot;}" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
                                                         <TextBlock Text="{loc:TranslateBinding Path=SelectedComputer.Ram}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
                                                     </StackPanel>
                                                 </shared:AppCard>
 
-                                                <shared:AppCard Grid.Column="2">
+                                                <shared:AppCard>
                                                     <StackPanel Spacing="2">
                                                         <TextBlock Text="{loc:Translate Key=&quot;Pending Updates&quot;}" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
                                                         <TextBlock Text="{loc:TranslateBinding Path=SelectedComputer.PendingUpdates}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
                                                     </StackPanel>
                                                 </shared:AppCard>
 
-                                                <shared:AppCard Grid.Column="3">
+                                                <shared:AppCard>
                                                     <StackPanel Spacing="2">
                                                         <TextBlock Text="{loc:Translate Key=&quot;Critical&quot;}" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
                                                         <TextBlock Text="{loc:TranslateBinding Path=SelectedComputer.CriticalUpdates}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
                                                     </StackPanel>
                                                 </shared:AppCard>
 
-                                            </Grid>
+                                            </UniformGrid>
 
                                             <shared:AppSeparator/>
 
@@ -505,7 +500,7 @@
 
                                                 <TextBlock FontSize="{DynamicResource FontButton}" FontWeight="SemiBold" Text="{loc:Translate Key=&quot;Remote Installation&quot;}"/>
 
-                                                <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10">
+                                                <UniformGrid Columns="{Binding #Root.Bounds.Width, Converter={StaticResource StatColumnsConverter}}">
 
                                                     <shared:AppButton
                                                         Classes="Accent"
@@ -514,26 +509,23 @@
                                                         CommandParameter="Google Chrome"/>
 
                                                     <shared:AppButton
-                                                        Grid.Column="1"
                                                         Classes="Accent"
                                                         Content="{loc:Translate Key=&quot;Git&quot;}"
                                                         Command="{Binding InstallPackageCommand}"
                                                         CommandParameter="Git"/>
 
                                                     <shared:AppButton
-                                                        Grid.Column="2"
                                                         Classes="Accent"
                                                         Content="{loc:Translate Key=&quot;VSCode&quot;}"
                                                         Command="{Binding InstallPackageCommand}"
                                                         CommandParameter="Visual Studio Code"/>
 
                                                     <shared:AppButton
-                                                        Grid.Column="3"
                                                         Classes="Danger"
                                                         Content="{loc:Translate Key=&quot;Restart&quot;}"
                                                         Command="{Binding RestartCommand}"/>
 
-                                                </Grid>
+                                                </UniformGrid>
 
                                             </StackPanel>
 

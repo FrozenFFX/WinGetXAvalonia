@@ -18,10 +18,9 @@
         <Grid>
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50"/>
-                <ColumnDefinition Width="220"/>
+                <ColumnDefinition Width="40"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <Path
@@ -41,10 +40,6 @@
                 Grid.Column="2"
                 VerticalAlignment="Center"
                 Text="{loc:TranslateBinding Path=Version}"/>
-
-            <shared:AppButton
-                Grid.Column="3"
-                Content="{loc:Translate Key=&quot;Remove&quot;}"/>
 
         </Grid>
 

@@ -128,12 +128,12 @@
                     <shared:AppButton
                         Content="{loc:Translate Key=&quot;Report Issue&quot;}"
                         HorizontalAlignment="Stretch"
-                        IsEnabled="False"/>
+                        Command="{Binding ReportIssueCommand}"/>
 
-                    <shared:AppButton
-                        Content="{loc:Translate Key=&quot;License&quot;}"
-                        HorizontalAlignment="Stretch"
-                        IsEnabled="False"/>
+                    <TextBlock
+                        Opacity="0.7"
+                        TextWrapping="Wrap"
+                        Text="{loc:Translate Key=&quot;No license has been assigned to this repository.&quot;}"/>
 
                 </StackPanel>
 

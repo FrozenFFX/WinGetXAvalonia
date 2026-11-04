@@ -8,6 +8,13 @@
     <SolidColorBrush x:Key="Background" Color="#17191F"/>
     <SolidColorBrush x:Key="BackgroundBrush" Color="#17191F"/>
     <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#17191F"/>
+    <LinearGradientBrush x:Key="BackgroundAmbientBrush"
+                         StartPoint="0%,0%"
+                         EndPoint="100%,100%">
+        <GradientStop Color="#1C2A22" Offset="0"/>
+        <GradientStop Color="#17191F" Offset="0.58"/>
+        <GradientStop Color="#1C2028" Offset="1"/>
+    </LinearGradientBrush>
 
     <SolidColorBrush x:Key="ScrimBrush" Color="#A6000000"/>
 

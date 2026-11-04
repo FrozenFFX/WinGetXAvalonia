@@ -58,13 +58,15 @@
         <!-- Main Content | System -->
 
         <Grid
-            Grid.Row="2">
+            x:Name="DashboardContent"
+            Grid.Row="2"
+            RowDefinitions="*,Auto">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="0"/>
                 <ColumnDefinition Width="16"/>
                 <ColumnDefinition
-                    Width="{Binding SystemPanelVisible, Converter={StaticResource SystemPanelWidthConverter}}"
+                    Width="0"
                     MaxWidth="360"/>
             </Grid.ColumnDefinitions>
 
@@ -89,27 +91,27 @@
                         <cards:StatCard
                             Icon="package"
                             Secondary="{Binding FavoritesDisplay, StringFormat='{}{0} favorites'}"
-                            Subtitle="Installed"
+                            Subtitle="{loc:Translate Key=&quot;Installed&quot;}"
                             Value="{Binding InstalledDisplay}"
                             Command="{Binding OpenPackagesCommand}"/>
 
                         <cards:StatCard
                             Icon="update"
                             Secondary="{Binding UpdatesDisplay, StringFormat='{}{0} pending'}"
-                            Subtitle="Updates"
+                            Subtitle="{loc:Translate Key=&quot;Updates&quot;}"
                             Value="{Binding UpdatesDisplay}"
                             Command="{Binding OpenUpdatesCommand}"/>
 
                         <cards:StatCard
                             Icon="history"
-                            Subtitle="History"
+                            Subtitle="{loc:Translate Key=&quot;History&quot;}"
                             Value="{Binding HistoryDisplay}"
                             Command="{Binding OpenHistoryCommand}"/>
 
                         <cards:StatCard
                             Icon="source"
                             Secondary="{Binding FavoritesDisplay, StringFormat='{}{0} pinned'}"
-                            Subtitle="Sources"
+                            Subtitle="{loc:Translate Key=&quot;Sources&quot;}"
                             Value="{Binding SourcesDisplay}"
                             Command="{Binding RefreshSourcesCommand}"/>
 
@@ -316,6 +318,7 @@
                         </cards:AppCard>
 
                         <Border
+                            x:Name="SystemPanelSeparator"
                             Grid.Column="1"
                             Width="1"
                             Margin="0,8"
@@ -572,7 +575,9 @@
             <!-- ======================= SYSTEM ======================= -->
 
             <Border
+                x:Name="SystemPanel"
                 Grid.Column="2"
+                IsVisible="{Binding SystemPanelVisible}"
                 CornerRadius="16"
                 BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="1"

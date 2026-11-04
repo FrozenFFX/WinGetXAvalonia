@@ -7,24 +7,24 @@
 
     <Styles.Resources>
 
-        <FontFamily x:Key="FontPrimary">Segoe UI Variable, Inter, sans-serif</FontFamily>
+        <FontFamily x:Key="FontPrimary">Inter, Segoe UI Variable, sans-serif</FontFamily>
 
         <!-- Display / Hero -->
-        <x:Double x:Key="FontDisplay">44</x:Double>
+        <x:Double x:Key="FontDisplay">40</x:Double>
         <FontWeight x:Key="FontDisplayWeight">Bold</FontWeight>
 
-        <x:Double x:Key="FontHero">36</x:Double>
+        <x:Double x:Key="FontHero">32</x:Double>
 
         <!-- Page Titles -->
-        <x:Double x:Key="FontPageTitle">28</x:Double>
+        <x:Double x:Key="FontPageTitle">26</x:Double>
         <FontWeight x:Key="FontPageTitleWeight">SemiBold</FontWeight>
 
-        <x:Double x:Key="FontTitle">28</x:Double>
+        <x:Double x:Key="FontTitle">26</x:Double>
 
         <x:Double x:Key="FontPageSubtitle">14</x:Double>
 
         <!-- Section Headers -->
-        <x:Double x:Key="FontSection">20</x:Double>
+        <x:Double x:Key="FontSection">18</x:Double>
         <FontWeight x:Key="FontSectionWeight">SemiBold</FontWeight>
 
         <x:Double x:Key="FontSectionLarge">18</x:Double>

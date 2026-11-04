@@ -3,6 +3,7 @@
 
 using System;
 using Avalonia;
+using Avalonia.Fonts.Inter;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WinGetXAvalonia.Core.Events;
@@ -84,6 +85,7 @@ internal sealed class Program
     {
         return AppBuilder.Configure<App>()
             .UsePlatformDetect()
+            .WithInterFont()
             .LogToTrace();
     }
 

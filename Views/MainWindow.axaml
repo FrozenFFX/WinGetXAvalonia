@@ -12,12 +12,14 @@
     xmlns:operation="using:WinGetXAvalonia.Controls.Operation"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     xmlns:conv="using:WinGetXAvalonia.Converters"
+    xmlns:svg="using:Avalonia.Svg"
     mc:Ignorable="d"
     x:Class="WinGetXAvalonia.Views.MainWindow"
     x:DataType="vm:MainViewModel"
-    Width="1600"
-    MinWidth="1100"
-    MinHeight="800"
+    Width="1440"
+    Height="900"
+    MinWidth="360"
+    MinHeight="560"
     CanResize="True"
     WindowState="Maximized"
     WindowStartupLocation="CenterScreen"
@@ -32,6 +34,7 @@
     </Window.KeyBindings>
 
     <Grid
+        x:Name="ShellRoot"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
         ClipToBounds="True"
@@ -43,8 +46,8 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="232"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="{ReflectionBinding IsVisible, ElementName=DetailHost, Converter={StaticResource DetailColumnWidthConverter}}"/>
-            <ColumnDefinition Width="{ReflectionBinding IsVisible, ElementName=OperationsHost, Converter={StaticResource OperationsColumnWidthConverter}}" MaxWidth="260"/>
+            <ColumnDefinition Width="0"/>
+            <ColumnDefinition Width="0" MaxWidth="260"/>
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
@@ -64,20 +67,42 @@
             BorderThickness="0,0,0,1">
 
             <Grid
-                Margin="24,0"
+                Margin="16,0,24,0"
                 ColumnDefinitions="Auto,*,Auto">
 
                     <StackPanel
                     Orientation="Horizontal"
-                    Spacing="10"
+                    Spacing="8"
                     VerticalAlignment="Center">
 
-                    <Path
-                        Width="20"
-                        Height="20"
-                        Data="{StaticResource IconPackage}"
-                        Fill="{DynamicResource AccentBrush}"
-                        Stretch="Uniform"/>
+                    <shared:AppButton
+                        x:Name="MobileMenuButton"
+                        Width="36"
+                        Height="36"
+                        Padding="0"
+                        IsVisible="False"
+                        ToolTip.Tip="{loc:Translate Key=&quot;Open navigation menu&quot;}"
+                        Click="OnMobileMenuClick">
+                        <Path
+                            Width="18"
+                            Height="18"
+                            Data="{StaticResource IconMenu}"
+                            Fill="{DynamicResource AccentBrush}"
+                            Stretch="Uniform"/>
+                    </shared:AppButton>
+
+                    <Border
+                        Width="30"
+                        Height="30"
+                        CornerRadius="9"
+                        Background="{DynamicResource AccentSubtle}">
+                        <svg:Svg
+                            Width="26"
+                            Height="26"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Path="avares://WinGetXAvalonia/Assets/WinGetXStudio.svg"/>
+                    </Border>
 
                     <TextBlock
                         FontSize="{DynamicResource FontCardTitle}"
@@ -123,14 +148,25 @@
         <!-- Sidebar -->
 
         <layout:LeftSidebar
+            x:Name="DesktopSidebar"
             Grid.Row="1"
             Grid.Column="0"
+            ZIndex="20"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"/>
+
+        <Border
+            Grid.Row="1"
+            Grid.Column="1"
+            Grid.ColumnSpan="3"
+            Background="{DynamicResource BackgroundAmbientBrush}"
+            IsHitTestVisible="False"
+            ZIndex="-1"/>
 
         <!-- Main Content -->
 
         <ScrollViewer
+            x:Name="MainContentScroller"
             Grid.Row="1"
             Grid.Column="1"
             Margin="28,24,28,20"
@@ -188,6 +224,15 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             DataContext="{Binding OperationDrawer}"/>
+
+        <Border
+            x:Name="MobileScrim"
+            Grid.Row="1"
+            Grid.ColumnSpan="4"
+            Background="{DynamicResource ScrimBrush}"
+            IsVisible="False"
+            ZIndex="19"
+            PointerPressed="OnMobileScrimPressed"/>
 
         <!-- Status Bar -->
 

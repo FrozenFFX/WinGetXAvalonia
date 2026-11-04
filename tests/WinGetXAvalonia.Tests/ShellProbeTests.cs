@@ -3,10 +3,12 @@
 
 using System.Linq;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Microsoft.Extensions.DependencyInjection;
 using WinGetXAvalonia;
+using WinGetXAvalonia.Controls.Shared;
 using WinGetXAvalonia.ViewModels;
 using WinGetXAvalonia.Views;
 
@@ -17,6 +19,63 @@ namespace WinGetXAvalonia.Tests;
 [Collection("UiDispatcher")]
 public class ShellProbeTests
 {
+    [Fact]
+    public async Task MainWindow_AdaptsNavigationToNarrowWindows()
+    {
+        using var host = Program.CreateHost();
+        var viewModel = await Dispatcher.UIThread.InvokeAsync(() =>
+            host.Services.GetRequiredService<MainViewModel>());
+
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            var window = new MainWindow
+            {
+                DataContext = viewModel,
+                Width = 390,
+                Height = 700,
+                WindowState = WindowState.Normal
+            };
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var menuButton = window.FindControl<Button>("MobileMenuButton");
+            var sidebar = window.FindControl<Control>("DesktopSidebar");
+            var scrim = window.FindControl<Control>("MobileScrim");
+            var content = window.FindControl<ScrollViewer>("MainContentScroller");
+            var shell = window.FindControl<Grid>("ShellRoot");
+
+            Assert.NotNull(menuButton);
+            Assert.NotNull(sidebar);
+            Assert.NotNull(scrim);
+            Assert.NotNull(content);
+            Assert.NotNull(shell);
+            Assert.True(menuButton.IsVisible);
+            Assert.False(sidebar.IsVisible);
+            Assert.Equal(0, Grid.GetColumn(content));
+            Assert.Equal(4, Grid.GetColumnSpan(content));
+
+            menuButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            Dispatcher.UIThread.RunJobs();
+            Assert.True(sidebar.IsVisible);
+            Assert.True(scrim.IsVisible);
+
+            viewModel.SelectedMenuItem = viewModel.Menu.First(item =>
+                !item.IsCategoryHeader && item != viewModel.SelectedMenuItem);
+            Dispatcher.UIThread.RunJobs();
+            Assert.False(sidebar.IsVisible);
+            Assert.False(scrim.IsVisible);
+
+            window.Width = 1600;
+            Dispatcher.UIThread.RunJobs();
+            Assert.False(menuButton.IsVisible);
+            Assert.True(sidebar.IsVisible);
+            Assert.Equal(1, Grid.GetColumn(content));
+            Assert.Equal(1, Grid.GetColumnSpan(content));
+
+            window.Close();
+        });
+    }
+
     [Fact]
     public async Task EveryPage_Navigates_And_TextboxesAreActive()
     {
@@ -108,6 +167,25 @@ public class ShellProbeTests
                         failures.Add($"{item.Title}: TextBox '{box.Name}' metin kabul etmiyor");
 
                     box.Text = original;
+                }
+
+                probe.Width = 390;
+                probe.Height = 840;
+                Dispatcher.UIThread.RunJobs();
+
+                if (probe.Bounds.Width >= 760)
+                    failures.Add($"{item.Title}: dar pencere boyutu uygulanmadı");
+
+                if (view is DashboardView dashboard && !dashboard.IsCompactLayout)
+                    failures.Add($"{item.Title}: pano dar ekran düzenine geçmedi");
+
+                if (view is BrowseView browse && !browse.IsCompactLayout)
+                    failures.Add($"{item.Title}: paket keşfi dar ekran düzenine geçmedi");
+
+                if (view.GetVisualDescendants().OfType<MasterDetailPage>()
+                    .Any(masterDetail => !masterDetail.IsCompactLayout))
+                {
+                    failures.Add($"{item.Title}: ayrıntı paneli dar ekran düzenine geçmedi");
                 }
 
                 Dispatcher.UIThread.RunJobs();

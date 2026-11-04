@@ -140,7 +140,7 @@
         <shared:MasterDetailPage
             Grid.Row="3"
             IsLoading="{Binding IsLoading}"
-            LoadingMessage="Checking for package updates..."
+            LoadingMessage="{loc:Translate Key=&quot;Checking for package updates...&quot;}"
             DetailWidth="{Binding SelectedPackage,
             Converter={StaticResource DetailWidthConverter}}">
 

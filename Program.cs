@@ -23,6 +23,7 @@ using WinGetXAvalonia.Services.Enterprise;
 using WinGetXAvalonia.Services.History;
 using WinGetXAvalonia.Services.Identity;
 using WinGetXAvalonia.Services.Interfaces;
+using WinGetXAvalonia.Services.Localization;
 using WinGetXAvalonia.Services.Marketplace;
 using WinGetXAvalonia.Services.Notifications;
 using WinGetXAvalonia.Services.Operations;
@@ -121,6 +122,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ISourceManagerService, SourceManagerService>();
         services.AddSingleton<IWingetProcess, WingetProcess>();
         services.AddSingleton<ISettingsService, SettingsService>();
+        services.AddSingleton<LocalizationManager>();
         services.AddSingleton<SettingsStore>();
         services.AddSingleton<IPackageProvider, WingetProvider>();
         services.AddSingleton<IPackageEngine, PackageEngine>();

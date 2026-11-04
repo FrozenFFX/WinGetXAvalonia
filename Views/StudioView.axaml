@@ -7,6 +7,7 @@
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     xmlns:studio="using:WinGetXAvalonia.Controls.Studio"
+    xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     x:Class="WinGetXAvalonia.Views.StudioView"
     x:Name="Root"
     x:DataType="vm:StudioViewModel">
@@ -62,7 +63,7 @@
         </Grid.RowDefinitions>
 
         <shared:SectionHeader
-            Title="Studio"
+            Title="{loc:Translate Key=Studio}"
             Description="{Binding ToolsSummary}"/>
 
         <!-- Toolbar -->
@@ -75,20 +76,36 @@
             BorderBrush="{DynamicResource BorderBrush}"
             BorderThickness="1">
 
-            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="10">
 
                 <shared:SearchBox
                     MinWidth="320"
                     MaxWidth="560"
                     HorizontalAlignment="Stretch"
-                    Watermark="Search studio tools..."
+                    Watermark="{loc:Translate Key='Search studio tools...'}"
                     Text="{Binding SearchText}"/>
 
-                <shared:AppButton
+                <ComboBox
                     Grid.Column="1"
+                    Width="180"
+                    VerticalAlignment="Center"
+                    ItemsSource="{Binding Categories}"
+                    SelectedValue="{Binding SelectedCategory}"
+                    SelectedValueBinding="{Binding Key}"
+                    ToolTip.Tip="{loc:Translate Key='Filter by category'}">
+
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Label}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <shared:AppButton
+                    Grid.Column="2"
                     Width="42"
                     Padding="0"
-                    ToolTip.Tip="Refresh studio tools (F5)"
+                    ToolTip.Tip="{loc:Translate Key='Refresh studio tools (F5)'}"
                     Command="{Binding RefreshCommand}">
 
                     <Path
@@ -100,7 +117,7 @@
                 </shared:AppButton>
 
                 <Border
-                    Grid.Column="2"
+                    Grid.Column="3"
                     Padding="10,5"
                     CornerRadius="{DynamicResource RadiusSmall}"
                     Background="{DynamicResource SurfaceBrush}"
@@ -119,7 +136,8 @@
         <!-- Filter chips -->
         <ItemsControl
             Grid.Row="2"
-            ItemsSource="{Binding Filters}">
+            ItemsSource="{Binding Filters}"
+            ToolTip.Tip="{loc:Translate Key='Filter by status'}">
 
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -204,7 +222,7 @@
                             <TextBlock
                                 FontSize="{DynamicResource FontSection}"
                                 FontWeight="SemiBold"
-                                Text="Tool Details"/>
+                                Text="{loc:Translate Key='Tool Details'}"/>
 
                             <ContentControl
                                 Content="{Binding SelectedTool}">
@@ -269,7 +287,7 @@
                                                 <TextBlock
                                                     FontSize="{DynamicResource FontBody}"
                                                     Foreground="{DynamicResource SubtextBrush}"
-                                                    Text="Category"/>
+                                                    Text="{loc:Translate Key=Category}"/>
 
                                                 <TextBlock
                                                     Grid.Column="1"
@@ -281,7 +299,7 @@
                                                     Grid.Row="1"
                                                     FontSize="{DynamicResource FontBody}"
                                                     Foreground="{DynamicResource SubtextBrush}"
-                                                    Text="Status"/>
+                                                    Text="{loc:Translate Key=Status}"/>
 
                                                 <TextBlock
                                                     Grid.Row="1"
@@ -295,6 +313,29 @@
                                 </ContentControl.ContentTemplate>
 
                             </ContentControl>
+
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <shared:AppButton
+                                    Content="{loc:Translate Key='Open tool'}"
+                                    IsEnabled="{Binding SelectedTool.CanOpen}"
+                                    Command="{Binding OpenToolCommand}"
+                                    CommandParameter="{Binding SelectedTool}"/>
+
+                                <ToggleButton
+                                    Classes="FilterChip"
+                                    IsChecked="{Binding SelectedTool.IsFavorite, Mode=OneWay}"
+                                    Command="{Binding ToggleFavoriteCommand}"
+                                    CommandParameter="{Binding SelectedTool}"
+                                    ToolTip.Tip="{loc:Translate Key='Toggle favorite'}"
+                                    AutomationProperties.Name="{loc:Translate Key='Toggle favorite'}">
+                                    <Path
+                                        Width="16"
+                                        Height="16"
+                                        Data="{StaticResource IconStar}"
+                                        Fill="{DynamicResource StudioAccentBrush}"
+                                        Stretch="Uniform"/>
+                                </ToggleButton>
+                            </StackPanel>
 
                         </StackPanel>
 
@@ -313,11 +354,11 @@
                                 <TextBlock
                                     FontSize="{DynamicResource FontSection}"
                                     FontWeight="SemiBold"
-                                    Text="Studio"/>
+                                    Text="{loc:Translate Key=Studio}"/>
                                 <TextBlock
                                     Opacity="0.6"
                                     TextWrapping="Wrap"
-                                    Text="Select a tool from the list to open its details."/>
+                                    Text="{loc:Translate Key='Select a tool from the list to open its details.'}"/>
 
                             </StackPanel>
 
@@ -331,13 +372,13 @@
                                     FontSize="{DynamicResource FontCaption}"
                                     FontWeight="SemiBold"
                                     Foreground="{DynamicResource AccentBrush}"
-                                    Text="Keyboard Shortcuts"/>
+                                    Text="{loc:Translate Key='Keyboard Shortcuts'}"/>
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                                     <TextBlock
                                         Opacity="0.7"
                                         VerticalAlignment="Center"
-                                        Text="Open command palette"/>
+                                        Text="{loc:Translate Key='Open command palette'}"/>
                                     <Border
                                         Grid.Column="1"
                                         Padding="8,3"
@@ -356,7 +397,7 @@
                                     <TextBlock
                                         Opacity="0.7"
                                         VerticalAlignment="Center"
-                                        Text="Refresh studio tools"/>
+                                        Text="{loc:Translate Key='Refresh studio tools'}"/>
                                     <Border
                                         Grid.Column="1"
                                         Padding="8,3"
@@ -383,16 +424,16 @@
                                     FontSize="{DynamicResource FontCaption}"
                                     FontWeight="SemiBold"
                                     Foreground="{DynamicResource AccentBrush}"
-                                    Text="Tips"/>
+                                    Text="{loc:Translate Key=Tips}"/>
 
                                 <TextBlock
                                     Opacity="0.7"
                                     TextWrapping="Wrap"
-                                    Text="Use filters to focus on Ready or Experimental tools."/>
+                                    Text="{loc:Translate Key='Use filters to focus on Ready or Experimental tools.'}"/>
                                 <TextBlock
                                     Opacity="0.7"
                                     TextWrapping="Wrap"
-                                    Text="Search by name, description or category."/>
+                                    Text="{loc:Translate Key='Search by name, description or category.'}"/>
 
                             </StackPanel>
 
@@ -409,23 +450,23 @@
                 Grid.Column="0"
                 IsVisible="{Binding IsFilteredEmpty}"
                 Icon="search"
-                Title="No tools match"
-                Description="Try a different search term or filter."/>
+                Title="{loc:Translate Key='No tools match'}"
+                Description="{loc:Translate Key='Try a different search term or filter.'}"/>
 
             <!-- Empty state -->
             <shared:AppEmptyState
                 IsVisible="{Binding IsEmpty}"
                 Icon="studio"
-                Title="No studio tools found"
-                Description="Try a different search or filter."/>
+                Title="{loc:Translate Key='No studio tools found'}"
+                Description="{loc:Translate Key='Try a different search or filter.'}"/>
 
             <!-- Error state -->
             <shared:AppEmptyState
                 IsVisible="{Binding HasError}"
                 Icon="warning"
-                Title="Couldn't load studio tools"
+                Title="{loc:Translate Key='Unable to load studio tools'}"
                 Description="{Binding ErrorMessage}"
-                ActionText="Retry"
+                ActionText="{loc:Translate Key=Retry}"
                 ActionCommand="{Binding RefreshCommand}"/>
 
         </Grid>
@@ -433,7 +474,7 @@
         <shared:LoadingOverlay
             Grid.RowSpan="5"
             IsLoading="{Binding IsLoading}"
-            Message="Loading studio tools..."/>
+            Message="{loc:Translate Key='Loading studio tools...'}"/>
 
     </Grid>
 

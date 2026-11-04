@@ -13,7 +13,9 @@ using WinGetXAvalonia.Core.State;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Interfaces;
+using WinGetXAvalonia.Services.Localization;
 using WinGetXAvalonia.Services.Updates;
+using WinGetXAvalonia.ViewModels.Settings;
 
 namespace WinGetXAvalonia.ViewModels;
 
@@ -32,6 +34,10 @@ public partial class MainViewModel : ViewModelBase
     private readonly IUpdateService _updateService;
 
     private readonly ISettingsService _settingsService;
+
+    private readonly LocalizationManager _localization;
+
+    private readonly Dictionary<NavigationItem, string> _menuLabels = new();
 
     [ObservableProperty]
     private bool showFounderSignature = true;
@@ -119,6 +125,7 @@ public partial class MainViewModel : ViewModelBase
         IUpdateService updateService,
         LoggerService logger,
         ISettingsService settingsService,
+        LocalizationManager localization,
         IErrorHandlingService errorHandling)
     {
         Navigation = navigation;
@@ -128,6 +135,7 @@ public partial class MainViewModel : ViewModelBase
         _errorHandling = errorHandling;
         _updateService = updateService;
         _settingsService = settingsService;
+        _localization = localization;
 
         ShowFounderSignature = _settingsService.Settings.ShowFounderSignature;
         _settingsService.SettingsChanged += OnSettingsChanged;
@@ -312,6 +320,10 @@ public partial class MainViewModel : ViewModelBase
 
         BuildMenuGrouped();
         RebuildVisibleMenu();
+        foreach (var item in Menu)
+            _menuLabels[item] = item.IsCategoryHeader ? item.Category : item.Title;
+        ApplyLocalization();
+        _localization.LanguageChanged += OnLanguageChanged;
 
         SelectedMenuItem = Menu.FirstOrDefault(m => !m.IsCategoryHeader);
 
@@ -336,6 +348,31 @@ public partial class MainViewModel : ViewModelBase
 
             browse.SearchText = query;
             browse.SearchCommand.Execute(null);
+        };
+
+        studio.OpenToolRequested += (_, toolId) =>
+        {
+            var pageType = toolId switch
+            {
+                "diagnostics" => typeof(DiagnosticsViewModel),
+                "logs" => typeof(HistoryViewModel),
+                "security" => typeof(SecurityViewModel),
+                "collections" => typeof(WorkspacesViewModel),
+                "automation" => typeof(AutomationViewModel),
+                "themes" => typeof(SettingsViewModel),
+                _ => null
+            };
+
+            if (pageType is null)
+                return;
+
+            if (toolId == "themes")
+            {
+                settings.SelectedCategory =
+                    settings.Categories.OfType<AppearanceSettingsViewModel>().FirstOrDefault();
+            }
+
+            SelectedMenuItem = Menu.FirstOrDefault(item => item.Page == pageType);
         };
 
         // Installed listesi boşken Discover'a geç.
@@ -522,6 +559,23 @@ public partial class MainViewModel : ViewModelBase
             Apply();
         else
             Dispatcher.UIThread.Post(Apply);
+    }
+
+    private void OnLanguageChanged(object? sender, EventArgs e)
+        => Dispatcher.UIThread.Post(ApplyLocalization);
+
+    private void ApplyLocalization()
+    {
+        foreach (var (item, key) in _menuLabels)
+        {
+            var label = _localization.TranslateValue(key);
+            item.Title = item.IsCategoryHeader
+                ? label.ToUpperInvariant()
+                : label;
+        }
+
+        OnPropertyChanged(nameof(StatusText));
+        OnPropertyChanged(nameof(StatusBarContext));
     }
 
     public void ShowDetail(object content, string title, string? subtitle = null)

@@ -47,7 +47,29 @@ public static class SettingsValidator
 
         settings.Theme = Normalize(settings.Theme, "Dark");
         settings.AccentColor = Normalize(settings.AccentColor, "Blue");
-        settings.Language = Normalize(settings.Language, "English");
+        settings.Language =
+            string.Equals(settings.Language, "Turkish", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(settings.Language, "Türkçe", StringComparison.OrdinalIgnoreCase)
+                ? "Turkish"
+                : "English";
+        if (settings.FavoriteStudioTools is null)
+        {
+            settings.FavoriteStudioTools = new();
+        }
+        else
+        {
+            var validFavorites = settings.FavoriteStudioTools
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (!settings.FavoriteStudioTools.SequenceEqual(
+                    validFavorites,
+                    StringComparer.OrdinalIgnoreCase))
+            {
+                settings.FavoriteStudioTools = validFavorites;
+            }
+        }
     }
 
     private static string Normalize(string? value, string fallback)

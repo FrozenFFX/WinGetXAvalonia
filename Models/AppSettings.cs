@@ -13,6 +13,8 @@ public class AppSettings
 
     public string Language { get; set; } = "English";
 
+    public List<string> FavoriteStudioTools { get; set; } = new();
+
     public bool StartWithWindows { get; set; }
 
     public bool StartMinimized { get; set; }

@@ -6,6 +6,7 @@
              xmlns:vm="using:WinGetXAvalonia.ViewModels"
              xmlns:vms="using:WinGetXAvalonia.ViewModels.Settings"
              xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+             xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
              x:Class="WinGetXAvalonia.Views.SettingsView"
              x:DataType="vm:SettingsViewModel">
 
@@ -50,7 +51,7 @@
                         <TextBlock
                             FontSize="{DynamicResource FontPageTitle}"
                             FontWeight="SemiBold"
-                            Text="Settings"/>
+                            Text="{loc:Translate Key=Settings}"/>
 
                         <shared:AppSeparator Margin="0,12"/>
 
@@ -99,17 +100,17 @@
 
                         <shared:AppButton
                             HorizontalAlignment="Stretch"
-                            Content="Toggle Theme"
+                            Content="{loc:Translate Key='Toggle Theme'}"
                             Command="{Binding ToggleThemeCommand}"/>
 
                         <shared:AppButton
                             HorizontalAlignment="Stretch"
-                            Content="Create Backup"
+                            Content="{loc:Translate Key='Create Backup'}"
                             Command="{Binding BackupCommand}"/>
 
                         <shared:AppButton
                             HorizontalAlignment="Stretch"
-                            Content="Restore Backup"
+                            Content="{loc:Translate Key='Restore Backup'}"
                             Command="{Binding RestoreCommand}"/>
 
                         <shared:AppSeparator Margin="0,8"/>

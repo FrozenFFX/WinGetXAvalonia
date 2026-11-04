@@ -25,8 +25,8 @@ public class StudioService : IStudioService
         {
             Id = "logs",
             Icon = "history",
-            Title = "Log Viewer",
-            Description = "App and operation logs",
+            Title = "Operation History",
+            Description = "Review package operations and their results",
             Category = "System",
             Status = StudioToolStatus.Ready
         },
@@ -37,7 +37,7 @@ public class StudioService : IStudioService
             Title = "Reports",
             Description = "Package and usage reports",
             Category = "System",
-            Status = StudioToolStatus.Experimental
+            Status = StudioToolStatus.ComingSoon
         },
         new()
         {
@@ -46,7 +46,7 @@ public class StudioService : IStudioService
             Title = "Queue Scheduler",
             Description = "Schedule and prioritize operations",
             Category = "System",
-            Status = StudioToolStatus.Experimental
+            Status = StudioToolStatus.ComingSoon
         },
         new()
         {
@@ -55,7 +55,7 @@ public class StudioService : IStudioService
             Title = "Security",
             Description = "Package and system security checks",
             Category = "System",
-            Status = StudioToolStatus.Experimental
+            Status = StudioToolStatus.Ready
         },
         new()
         {

@@ -4,6 +4,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
+             xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
              xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
              x:Class="WinGetXAvalonia.Views.Settings.GeneralSettingsView"
              x:DataType="vm:GeneralSettingsViewModel">
@@ -21,7 +22,7 @@
 
             <TextBlock
                 Classes="title"
-                Text="General"/>
+                Text="{loc:Translate Key=General}"/>
 
             <shared:AppCard>
 
@@ -30,27 +31,56 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
-                        Text="Startup"/>
+                        Text="{loc:Translate Key=Startup}"/>
 
                     <ToggleSwitch
-                        OffContent="Run when Windows starts"
-                        OnContent="Run when Windows starts"
+                        OffContent="{loc:Translate Key='Run when Windows starts'}"
+                        OnContent="{loc:Translate Key='Run when Windows starts'}"
                         IsChecked="{Binding StartWithWindows}"/>
 
                     <ToggleSwitch
-                        OffContent="Start minimized"
-                        OnContent="Start minimized"
+                        OffContent="{loc:Translate Key='Start minimized'}"
+                        OnContent="{loc:Translate Key='Start minimized'}"
                         IsChecked="{Binding StartMinimized}"/>
 
                     <ToggleSwitch
-                        OffContent="Minimize to tray"
-                        OnContent="Minimize to tray"
+                        OffContent="{loc:Translate Key='Minimize to tray'}"
+                        OnContent="{loc:Translate Key='Minimize to tray'}"
                         IsChecked="{Binding MinimizeToTray}"/>
 
                     <ToggleSwitch
-                        OffContent="Close to tray"
-                        OnContent="Close to tray"
+                        OffContent="{loc:Translate Key='Close to tray'}"
+                        OnContent="{loc:Translate Key='Close to tray'}"
                         IsChecked="{Binding CloseToTray}"/>
+
+                </StackPanel>
+
+            </shared:AppCard>
+
+            <shared:AppCard>
+
+                <StackPanel Spacing="12">
+
+                    <TextBlock
+                        FontSize="{DynamicResource FontSection}"
+                        FontWeight="Bold"
+                        Text="{loc:Translate Key=Language}"/>
+
+                    <TextBlock
+                        Foreground="{DynamicResource SubtextBrush}"
+                        TextWrapping="Wrap"
+                        Text="{loc:Translate Key='Select the interface language. Pages not yet localized remain in English.'}"/>
+
+                    <ComboBox
+                        Width="180"
+                        HorizontalAlignment="Left"
+                        ItemsSource="{Binding Languages}"
+                        SelectedItem="{Binding Language}"/>
+
+                    <TextBlock
+                        FontSize="{DynamicResource FontCaption}"
+                        Foreground="{DynamicResource MutedTextBrush}"
+                        Text="{loc:Translate Key='The selected language is saved automatically.'}"/>
 
                 </StackPanel>
 
@@ -63,11 +93,11 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
-                        Text="Updates"/>
+                        Text="{loc:Translate Key=Updates}"/>
 
                     <ToggleSwitch
-                        OffContent="Check for updates automatically"
-                        OnContent="Check for updates automatically"
+                        OffContent="{loc:Translate Key='Check for updates automatically'}"
+                        OnContent="{loc:Translate Key='Check for updates automatically'}"
                         IsChecked="{Binding CheckUpdates}"/>
 
                 </StackPanel>
@@ -84,8 +114,8 @@
                         Text="Founder"/>
 
                     <ToggleSwitch
-                        OffContent="Show Founder Signature"
-                        OnContent="Show Founder Signature"
+                        OffContent="{loc:Translate Key='Show Founder Signature'}"
+                        OnContent="{loc:Translate Key='Show Founder Signature'}"
                         IsChecked="{Binding ShowFounderSignature}"/>
 
                 </StackPanel>

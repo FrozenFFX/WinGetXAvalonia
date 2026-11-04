@@ -2,6 +2,8 @@
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
 using WinGetXAvalonia.Models;
+using WinGetXAvalonia.Services.Backup;
+using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Studio;
 using WinGetXAvalonia.ViewModels;
 
@@ -164,6 +166,101 @@ vm.SearchText = "zzz";
         vm.SearchText = "plugins";
 
         Assert.Empty(vm.Tools);
+    }
+
+    [Fact]
+    public async Task CategoryFilter_CombinesWithStatusAndSearch()
+    {
+        var service = new FakeStudioService();
+        service.Items.Add(new StudioTool
+        {
+            Title = "Diagnostics",
+            Id = "diagnostics",
+            Category = "System",
+            Status = StudioToolStatus.Ready
+        });
+        service.Items.Add(new StudioTool
+        {
+            Title = "Automation",
+            Id = "automation",
+            Category = "Workflow",
+            Status = StudioToolStatus.Ready
+        });
+        var vm = Create(service);
+        await vm.InitializeAsync();
+
+        vm.SelectedCategory = "System";
+
+        Assert.Single(vm.Tools);
+        Assert.Equal("Diagnostics", vm.Tools[0].Title);
+    }
+
+    [Fact]
+    public async Task OpenTool_RaisesRequestOnlyForReadyTools()
+    {
+        var service = new FakeStudioService();
+        service.Items.Add(new StudioTool
+        {
+            Title = "Diagnostics",
+            Id = "diagnostics",
+            Status = StudioToolStatus.Ready
+        });
+        service.Items.Add(new StudioTool
+        {
+            Title = "Plugins",
+            Id = "plugins",
+            Status = StudioToolStatus.ComingSoon
+        });
+        var vm = Create(service);
+        await vm.InitializeAsync();
+        var requested = new List<string>();
+        vm.OpenToolRequested += (_, id) => requested.Add(id);
+
+        vm.OpenToolCommand.Execute(vm.Tools.Single(tool => tool.Tool.Id == "diagnostics"));
+        vm.OpenToolCommand.Execute(vm.Tools.Single(tool => tool.Tool.Id == "plugins"));
+
+        Assert.Single(requested);
+        Assert.Equal("diagnostics", requested[0]);
+    }
+
+    [Fact]
+    public async Task FavoriteFilter_PersistsFavoriteToolIds()
+    {
+        var path = Path.Combine(
+            Path.GetTempPath(),
+            "WinGetXAvalonia.Tests",
+            Guid.NewGuid().ToString("N"),
+            "settings.json");
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+
+        try
+        {
+            var settings = new SettingsService(new SettingsStore(path));
+            await settings.LoadAsync();
+            var service = new FakeStudioService();
+            service.Items.Add(new StudioTool { Title = "Diagnostics", Id = "diagnostics" });
+            service.Items.Add(new StudioTool { Title = "Logs", Id = "logs" });
+            var autoSave = new AutoSaveService(settings, TimeSpan.FromMilliseconds(20));
+            var vm = new StudioViewModel(service, settings, autoSave);
+            await vm.InitializeAsync();
+
+            vm.ToggleFavoriteCommand.Execute(vm.Tools[0]);
+            vm.SelectFilterCommand.Execute(vm.Filters.Single(filter => filter.FavoritesOnly));
+            await Task.Delay(100);
+
+            Assert.Single(vm.Tools);
+            Assert.True(vm.Tools[0].IsFavorite);
+            Assert.Contains("diagnostics", settings.Settings.FavoriteStudioTools);
+
+            var reloaded = new SettingsStore(path);
+            await reloaded.LoadAsync();
+            Assert.Contains("diagnostics", reloaded.Settings.FavoriteStudioTools);
+        }
+        finally
+        {
+            if (File.Exists(path))
+                File.Delete(path);
+        }
     }
 
     [Fact]

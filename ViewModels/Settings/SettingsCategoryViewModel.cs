@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Backup;
+using WinGetXAvalonia.Services.Localization;
 using WinGetXAvalonia.Services.Interfaces;
 
 namespace WinGetXAvalonia.ViewModels.Settings;
@@ -19,7 +20,10 @@ public abstract partial class SettingsCategoryViewModel : ObservableObject
 
     protected bool IsInitializing => _isInitializing;
 
-    public string Title { get; }
+    private readonly string _title;
+
+    public string Title
+        => LocalizationManager.Current?.TranslateValue(_title) ?? _title;
 
     public string Icon { get; }
 
@@ -29,10 +33,12 @@ public abstract partial class SettingsCategoryViewModel : ObservableObject
         ISettingsService settings,
         AutoSaveService autoSave)
     {
-        Title = title;
+        _title = title;
         Icon = icon;
         Settings = settings;
         _autoSave = autoSave;
+        if (LocalizationManager.Current is { } localization)
+            localization.LanguageChanged += OnLanguageChanged;
     }
 
     protected void BeginInit()
@@ -48,4 +54,7 @@ public abstract partial class SettingsCategoryViewModel : ObservableObject
 
         _autoSave.Schedule(update);
     }
+
+    private void OnLanguageChanged(object? sender, EventArgs e)
+        => OnPropertyChanged(nameof(Title));
 }

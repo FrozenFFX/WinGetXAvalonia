@@ -51,12 +51,15 @@ public class StudioServiceTests
     }
 
     [Fact]
-    public async Task GetToolsAsync_EveryStatusIsRepresented()
+    public async Task GetToolsAsync_UnimplementedToolsAreMarkedComingSoon()
     {
         var tools = await _service.GetToolsAsync();
 
         Assert.Contains(tools, t => t.Status == StudioToolStatus.Ready);
-        Assert.Contains(tools, t => t.Status == StudioToolStatus.Experimental);
         Assert.Contains(tools, t => t.Status == StudioToolStatus.ComingSoon);
+        Assert.DoesNotContain(tools, t => t.Status == StudioToolStatus.Experimental);
+        Assert.All(
+            tools.Where(t => t.Id is "reports" or "queue" or "plugins" or "founder"),
+            tool => Assert.Equal(StudioToolStatus.ComingSoon, tool.Status));
     }
 }

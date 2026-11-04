@@ -21,6 +21,7 @@
     CanResize="True"
     WindowState="Maximized"
     WindowStartupLocation="CenterScreen"
+    Icon="/Assets/WinGetXStudio.ico"
     Background="{DynamicResource Background}"
     Title="WinGetX Studio">
 

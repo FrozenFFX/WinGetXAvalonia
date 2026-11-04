@@ -8,9 +8,14 @@ namespace WinGetXAvalonia.ViewModels;
 
 public partial class StudioFilterOption : ObservableObject
 {
+    public string Key { get; init; } = "";
+
     public StudioToolStatus? Mode { get; init; }
 
-    public string Label { get; init; } = "";
+    [ObservableProperty]
+    private string label = "";
+
+    public bool FavoritesOnly { get; init; }
 
     [ObservableProperty]
     private bool isActive;

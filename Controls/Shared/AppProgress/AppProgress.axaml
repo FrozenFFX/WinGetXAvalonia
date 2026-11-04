@@ -7,13 +7,13 @@
     x:Class="WinGetXAvalonia.Controls.Shared.AppProgress"
     x:Name="Root">
 
-    <StackPanel Spacing="8">
+    <StackPanel Spacing="8" DataContext="{Binding #Root}">
 
         <Grid ColumnDefinitions="*,Auto">
 
             <TextBlock
                 FontWeight="SemiBold"
-                Text="{loc:TranslateBinding Path=#Root.Title}"/>
+                Text="{loc:TranslateBinding Path=Title}"/>
 
             <TextBlock
                 Grid.Column="1"

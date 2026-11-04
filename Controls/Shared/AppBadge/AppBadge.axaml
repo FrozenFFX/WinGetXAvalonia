@@ -12,12 +12,13 @@
         CornerRadius="{DynamicResource RadiusXL}"
         Background="{DynamicResource SurfaceBrush}"
         BorderBrush="{DynamicResource BorderBrush}"
-        BorderThickness="1">
+        BorderThickness="1"
+        DataContext="{Binding #Root}">
 
         <TextBlock
             FontSize="{DynamicResource FontSecondary}"
             FontWeight="SemiBold"
-            Text="{loc:TranslateBinding Path=#Root.Text}"/>
+            Text="{loc:TranslateBinding Path=Text}"/>
 
     </Border>
 

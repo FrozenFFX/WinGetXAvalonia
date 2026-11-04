@@ -16,6 +16,7 @@
         Spacing="8"
         MaxWidth="460"
         Opacity="0"
+        DataContext="{Binding #Root}"
         RenderTransform="translate(0,12px)">
 
         <StackPanel.Transitions>
@@ -57,14 +58,14 @@
             TextAlignment="Center"
             FontSize="{DynamicResource FontSectionLarge}"
             FontWeight="SemiBold"
-            Text="{loc:TranslateBinding Path=#Root.Title}"/>
+            Text="{loc:TranslateBinding Path=Title}"/>
 
         <TextBlock
             HorizontalAlignment="Center"
             TextAlignment="Center"
             TextWrapping="Wrap"
             Foreground="{DynamicResource SubtextBrush}"
-            Text="{loc:TranslateBinding Path=#Root.Description}"/>
+            Text="{loc:TranslateBinding Path=Description}"/>
 
         <ItemsControl
             HorizontalAlignment="Center"
@@ -116,7 +117,7 @@
         <shared:AppButton
             Margin="0,18,0,0"
             HorizontalAlignment="Center"
-            Content="{loc:TranslateBinding Path=#Root.ActionText}"
+            Content="{loc:TranslateBinding Path=ActionText}"
             Command="{Binding #Root.ActionCommand}"
             IsVisible="{Binding #Root.ActionCommand,
             Converter={x:Static conv:ObjectConverters.IsNotNull}}"/>

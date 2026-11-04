@@ -41,7 +41,8 @@
 
         <StackPanel
             Spacing="8"
-            VerticalAlignment="Top">
+            VerticalAlignment="Top"
+            DataContext="{Binding #Root}">
 
             <Border
                 Width="36"
@@ -66,12 +67,12 @@
                     FontSize="{DynamicResource FontCardTitle}"
                     FontWeight="SemiBold"
                     TextTrimming="CharacterEllipsis"
-                    Text="{loc:TranslateBinding Path=#Root.Title}"/>
+                    Text="{loc:TranslateBinding Path=Title}"/>
 
                 <TextBlock
                     FontSize="{DynamicResource FontCaption}"
                     Opacity="0.6"
-                    Text="{loc:TranslateBinding Path=#Root.Description}"
+                    Text="{loc:TranslateBinding Path=Description}"
                     TextWrapping="Wrap"/>
 
             </StackPanel>

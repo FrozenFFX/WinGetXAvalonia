@@ -13,7 +13,8 @@
         RowDefinitions="Auto,Auto"
         RowSpacing="12"
         ColumnDefinitions="*,Auto"
-        ColumnSpacing="20">
+        ColumnSpacing="20"
+        DataContext="{Binding #Root}">
 
         <StackPanel
             Grid.Row="0"
@@ -24,14 +25,14 @@
             <TextBlock
                 FontSize="{DynamicResource FontPageTitle}"
                 FontWeight="SemiBold"
-                Text="{loc:TranslateBinding Path=#Root.Title}"/>
+                Text="{loc:TranslateBinding Path=Title}"/>
 
             <TextBlock
                 MaxWidth="720"
                 FontSize="{DynamicResource FontPageSubtitle}"
                 Opacity="0.65"
                 TextWrapping="Wrap"
-                Text="{loc:TranslateBinding Path=#Root.Description}"/>
+                Text="{loc:TranslateBinding Path=Description}"/>
 
         </StackPanel>
 
@@ -49,7 +50,7 @@
                 Height="38"
                 MinWidth="96"
                 Padding="18,0"
-                Content="{loc:TranslateBinding Path=#Root.ActionText}"
+                Content="{loc:TranslateBinding Path=ActionText}"
                 Command="{Binding #Root.ActionCommand}"/>
 
         </StackPanel>

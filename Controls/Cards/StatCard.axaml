@@ -39,7 +39,8 @@
 
             <StackPanel
                 Margin="20"
-                Spacing="4">
+                Spacing="4"
+                DataContext="{Binding #Root}">
 
                 <Border
                     Width="40"
@@ -62,7 +63,7 @@
                 <TextBlock
                     FontSize="{DynamicResource FontMetric}"
                     FontWeight="Bold"
-                    Text="{loc:TranslateBinding Path=#Root.Value}"/>
+                    Text="{loc:TranslateBinding Path=Value}"/>
 
                 <StackPanel Spacing="1">
 
@@ -70,12 +71,12 @@
                         FontSize="{DynamicResource FontCaption}"
                         FontWeight="SemiBold"
                         Opacity="0.75"
-                        Text="{loc:TranslateBinding Path=#Root.Subtitle}"/>
+                        Text="{loc:TranslateBinding Path=Subtitle}"/>
 
                     <TextBlock
                         FontSize="{DynamicResource FontMicro}"
                         Opacity="0.45"
-                        Text="{loc:TranslateBinding Path=#Root.Secondary}"/>
+                        Text="{loc:TranslateBinding Path=Secondary}"/>
 
                 </StackPanel>
 

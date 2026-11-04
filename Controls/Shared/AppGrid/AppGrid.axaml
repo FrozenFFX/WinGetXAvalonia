@@ -8,10 +8,11 @@
     x:Name="Root">
 
     <UniformGrid
-        Columns="2">
+        Columns="2"
+        DataContext="{Binding #Root}">
 
         <ContentPresenter
-            Content="{loc:TranslateBinding Path=#Root.Content}"
+            Content="{loc:TranslateBinding Path=Content}"
             ContentTemplate="{Binding #Root.ContentTemplate}"/>
 
     </UniformGrid>

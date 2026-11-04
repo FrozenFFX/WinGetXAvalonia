@@ -80,7 +80,16 @@ public class BrowseViewModelTests
 
         public Task RemoveAsync(string packageId) => Task.CompletedTask;
 
-        public Task UpgradeAllAsync() => Task.CompletedTask;
+        public Task<BulkUpdateResult> UpgradeAllAsync(
+            IProgress<BulkUpdateProgress>? progress = null,
+            CancellationToken ct = default)
+            => Task.FromResult(BulkUpdateResult.None);
+
+        public Task<BulkUpdateResult> UpdateAllAsync(
+            IReadOnlyList<string> packageIds,
+            IProgress<BulkUpdateProgress>? progress = null,
+            CancellationToken ct = default)
+            => Task.FromResult(BulkUpdateResult.None);
     }
 
     private static BrowseViewModel Create(

@@ -39,6 +39,14 @@
 
     <conv:BooleanToSystemPanelWidthConverter x:Key="SystemPanelWidthConverter"/>
 
+    <conv:ResponsiveColumnsConverter
+        x:Key="StatColumnsConverter"
+        Wide="4"
+        Medium="2"
+        Narrow="1"
+        WideThreshold="1000"
+        MediumThreshold="620"/>
+
     <sys:String x:Key="DisplaySecurity">Security</sys:String>
     <sys:String x:Key="DisplayWarning">Warnings</sys:String>
     <sys:String x:Key="DisplayError">Blocked</sys:String>

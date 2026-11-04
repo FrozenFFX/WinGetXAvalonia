@@ -2,6 +2,7 @@
 // https://github.com/FrozenFFX/WinGetXAvalonia
 
 using WinGetXAvalonia.Core.PackageEngine;
+using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Operations;
 
 namespace WinGetXAvalonia.Tests;
@@ -38,10 +39,25 @@ public class PackageEngineTests
             return Done();
         }
 
-        public Task UpgradeAllAsync()
+        public Task<BulkUpdateResult> UpgradeAllAsync(
+            IProgress<BulkUpdateProgress>? progress = null,
+            CancellationToken ct = default)
         {
             UpgradeAllCalls++;
-            return Done();
+            return ThrowOnCall
+                ? Task.FromException<BulkUpdateResult>(new InvalidOperationException("boom"))
+                : Task.FromResult(BulkUpdateResult.None);
+        }
+
+        public Task<BulkUpdateResult> UpdateAllAsync(
+            IReadOnlyList<string> packageIds,
+            IProgress<BulkUpdateProgress>? progress = null,
+            CancellationToken ct = default)
+        {
+            Updates.AddRange(packageIds);
+            return ThrowOnCall
+                ? Task.FromException<BulkUpdateResult>(new InvalidOperationException("boom"))
+                : Task.FromResult(BulkUpdateResult.None);
         }
 
         private Task Done()

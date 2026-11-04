@@ -25,6 +25,9 @@ public partial class GeneralSettingsViewModel : SettingsCategoryViewModel
     [ObservableProperty]
     private bool checkUpdates = true;
 
+    [ObservableProperty]
+    private bool showFounderSignature = true;
+
     public GeneralSettingsViewModel(
         ISettingsService settings,
         AutoSaveService autoSave)
@@ -39,6 +42,7 @@ public partial class GeneralSettingsViewModel : SettingsCategoryViewModel
         MinimizeToTray = s.MinimizeToTray;
         CloseToTray = s.CloseToTray;
         CheckUpdates = s.CheckUpdates;
+        ShowFounderSignature = s.ShowFounderSignature;
 
         EndInit();
     }
@@ -57,4 +61,7 @@ public partial class GeneralSettingsViewModel : SettingsCategoryViewModel
 
     partial void OnCheckUpdatesChanged(bool value)
         => Queue(s => s.CheckUpdates = value);
+
+    partial void OnShowFounderSignatureChanged(bool value)
+        => Queue(s => s.ShowFounderSignature = value);
 }

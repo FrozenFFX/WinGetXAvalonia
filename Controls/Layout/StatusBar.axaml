@@ -20,8 +20,9 @@
 
             <TextBlock
                 Grid.Column="0"
+                FontSize="{DynamicResource FontSecondary}"
                 VerticalAlignment="Center"
-                Text="{Binding StatusText}"/>
+                Text="{Binding StatusBarContext}"/>
 
             <StackPanel
                 Grid.Column="2"
@@ -30,26 +31,10 @@
                 VerticalAlignment="Center">
 
                 <TextBlock
-                    VerticalAlignment="Center"
+                    FontSize="{DynamicResource FontSecondary}"
                     Opacity="0.6"
-                    Text="WinGetX Studio"/>
-
-                <Border
-                    Width="6"
-                    Height="6"
-                    CornerRadius="3"
                     VerticalAlignment="Center"
-                    Background="{Binding Status, Converter={StaticResource StatusToBrush}}"/>
-
-                <TextBlock
-                    VerticalAlignment="Center"
-                    FontWeight="SemiBold"
-                    Text="{Binding Version}"/>
-
-                <TextBlock
-                    VerticalAlignment="Center"
-                    Opacity="0.6"
-                    Text="{Binding BuildDate}"/>
+                    Text="{Binding Version, StringFormat='WinGetX Studio • {0}'}"/>
 
             </StackPanel>
 

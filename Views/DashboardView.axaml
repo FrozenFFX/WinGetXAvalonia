@@ -11,10 +11,11 @@
     xmlns:cards="using:WinGetXAvalonia.Controls.Cards"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
     x:Class="WinGetXAvalonia.Views.DashboardView"
+    x:Name="Root"
     x:DataType="vm:DashboardViewModel">
 
     <Grid
-        RowDefinitions="Auto,16,*">
+        RowDefinitions="Auto,12,*">
 
         <!-- Header + Notification Bell -->
 
@@ -60,9 +61,11 @@
             Grid.Row="2">
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" MinWidth="0"/>
                 <ColumnDefinition Width="16"/>
-                <ColumnDefinition Width="{Binding SystemPanelVisible, Converter={StaticResource SystemPanelWidthConverter}}"/>
+                <ColumnDefinition
+                    Width="{Binding SystemPanelVisible, Converter={StaticResource SystemPanelWidthConverter}}"
+                    MaxWidth="360"/>
             </Grid.ColumnDefinitions>
 
             <!-- ======================= MAIN CONTENT ======================= -->
@@ -80,8 +83,7 @@
                     <!-- Stats (responsive grid with minimum widths) -->
 
                     <UniformGrid
-                        Columns="4"
-                        Rows="1"
+                        Columns="{Binding #Root.Bounds.Width, Converter={StaticResource StatColumnsConverter}}"
                         HorizontalAlignment="Stretch">
 
                         <cards:StatCard
@@ -96,7 +98,7 @@
                             Secondary="{Binding UpdatesDisplay, StringFormat='{}{0} pending'}"
                             Subtitle="Updates"
                             Value="{Binding UpdatesDisplay}"
-                            Command="{Binding UpdateAllCommand}"/>
+                            Command="{Binding OpenUpdatesCommand}"/>
 
                         <cards:StatCard
                             Icon="history"
@@ -113,6 +115,73 @@
 
                     </UniformGrid>
 
+                    <!-- Update All: progress strip -->
+
+                    <Border
+                        IsVisible="{Binding IsUpdateAllRunning}"
+                        Padding="16,12"
+                        CornerRadius="12"
+                        BorderThickness="1"
+                        Background="{DynamicResource SurfaceBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}">
+
+                        <Grid
+                            ColumnDefinitions="Auto,*,Auto"
+                            ColumnSpacing="14">
+
+                            <ProgressBar
+                                Grid.Column="0"
+                                Width="22"
+                                Height="22"
+                                VerticalAlignment="Center"
+                                IsIndeterminate="True"/>
+
+                            <StackPanel
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Spacing="2">
+
+                                <TextBlock
+                                    FontSize="{DynamicResource FontCaption}"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding UpdateAllStatus}"/>
+
+                                <TextBlock
+                                    FontSize="{DynamicResource FontSecondary}"
+                                    Opacity="0.6"
+                                    TextTrimming="CharacterEllipsis"
+                                    Text="{Binding UpdateAllCurrentPackage}"/>
+
+                            </StackPanel>
+
+                            <shared:AppButton
+                                Grid.Column="2"
+                                VerticalAlignment="Center"
+                                Classes="ghost"
+                                Content="Cancel"
+                                Command="{Binding CancelUpdateAllCommand}"/>
+
+                        </Grid>
+
+                    </Border>
+
+                    <!-- Update All: result -->
+
+                    <Border
+                        IsVisible="{Binding UpdateAllResultText, Converter={StaticResource NullToBoolConverter}}"
+                        Padding="16,12"
+                        CornerRadius="12"
+                        BorderThickness="1"
+                        Background="{DynamicResource SurfaceBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}">
+
+                        <TextBlock
+                            FontSize="{DynamicResource FontCaption}"
+                            Text="{Binding UpdateAllResultText}"
+                            TextWrapping="Wrap"/>
+
+                    </Border>
+
                     <!-- Recent Activity | Notifications -->
 
                     <Grid
@@ -121,7 +190,9 @@
 
                         <!-- Recent Activity -->
 
-                        <cards:AppCard Grid.Column="0">
+                        <cards:AppCard
+                            Grid.Column="0"
+                            VerticalAlignment="Stretch">
 
                             <StackPanel Spacing="16">
 
@@ -255,6 +326,7 @@
 
                         <cards:InfoCard
                             Grid.Column="2"
+                            VerticalAlignment="Stretch"
                             Command="{Binding ShowNotificationsDetailsCommand}">
 
                             <StackPanel Spacing="14">
@@ -344,7 +416,9 @@
 
                         <!-- Quick Actions -->
 
-                        <cards:AppCard Grid.Column="0">
+                        <cards:AppCard
+                            Grid.Column="0"
+                            VerticalAlignment="Stretch">
 
                             <StackPanel Spacing="16">
 
@@ -353,33 +427,45 @@
                                     FontWeight="SemiBold"
                                     Text="Quick Actions"/>
 
-                                <WrapPanel Orientation="Horizontal" ItemSpacing="10">
+                                <Grid
+                                    ColumnDefinitions="*,*"
+                                    RowDefinitions="Auto,Auto"
+                                    ColumnSpacing="10"
+                                    RowSpacing="10">
 
                                     <cards:ActionCard
+                                        Grid.Row="0"
+                                        Grid.Column="0"
                                         Icon="package"
                                         Title="Installed"
                                         Description="Manage packages"
                                         Command="{Binding OpenPackagesCommand}"/>
 
                                     <cards:ActionCard
+                                        Grid.Row="0"
+                                        Grid.Column="1"
                                         Icon="update"
                                         Title="Update All"
                                         Description="Upgrade packages"
                                         Command="{Binding UpdateAllCommand}"/>
 
                                     <cards:ActionCard
+                                        Grid.Row="1"
+                                        Grid.Column="0"
                                         Icon="search"
                                         Title="Browse"
                                         Description="Search packages"
                                         Command="{Binding BrowseCommand}"/>
 
                                     <cards:ActionCard
+                                        Grid.Row="1"
+                                        Grid.Column="1"
                                         Icon="history"
                                         Title="History"
                                         Description="Recent operations"
                                         Command="{Binding OpenHistoryCommand}"/>
 
-                                </WrapPanel>
+                                </Grid>
 
                             </StackPanel>
 
@@ -394,7 +480,9 @@
 
                         <!-- Favorite Sources -->
 
-                        <cards:InfoCard Grid.Column="2">
+                        <cards:InfoCard
+                            Grid.Column="2"
+                            VerticalAlignment="Stretch">
 
                             <StackPanel Spacing="14">
 
@@ -558,47 +646,52 @@
                             Spacing="16"
                             Margin="20,0,20,20">
 
-                            <!-- System hero -->
+                            <!-- OS summary (compact) -->
 
-                            <cards:InfoCard
-                                Command="{Binding ShowSystemDetailsCommand}">
-
-                                <StackPanel Spacing="14">
+                            <Border
+                                Padding="12"
+                                CornerRadius="{DynamicResource RadiusMedium}"
+                                Background="{DynamicResource SurfaceBrush}">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
 
                                     <Border
-                                        Width="52"
-                                        Height="52"
-                                        CornerRadius="26"
-                                        HorizontalAlignment="Left"
-                                         Background="{DynamicResource AccentSubtle}">
+                                        Width="38"
+                                        Height="38"
+                                        CornerRadius="19"
+                                        VerticalAlignment="Center"
+                                        Background="{DynamicResource AccentSubtle}">
 
                                         <Path
-                                            Width="28"
-                                            Height="28"
-                                            Margin="12"
+                                            Width="20"
+                                            Height="20"
+                                            Margin="9"
                                             Data="{StaticResource IconWindows}"
                                             Fill="{DynamicResource AccentBrush}"
                                             Stretch="Uniform"/>
 
                                     </Border>
 
-                                    <StackPanel Spacing="2">
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        Spacing="1">
 
                                         <TextBlock
-                                            FontSize="{DynamicResource FontPageTitle}"
+                                            FontSize="{DynamicResource FontCardTitle}"
                                             FontWeight="SemiBold"
                                             Text="{Binding OsDisplayName}"/>
 
                                         <TextBlock
-                                            FontSize="{DynamicResource FontSecondary}"
+                                            FontSize="{DynamicResource FontCaption}"
                                             Opacity="0.6"
+                                            TextTrimming="CharacterEllipsis"
                                             Text="{Binding OsSubtitle}"/>
 
                                     </StackPanel>
 
-                                </StackPanel>
+                                </Grid>
 
-                            </cards:InfoCard>
+                            </Border>
 
                             <!-- Hero Info Chips -->
 
@@ -666,18 +759,18 @@
                                     <DataTemplate x:DataType="models:SystemCardModel">
 
                                         <Border
-                                            Margin="0,0,0,8"
-                                            Padding="10"
+                                            Margin="0,0,0,6"
+                                            Padding="8,7"
                                             CornerRadius="10"
                                             Background="{DynamicResource SurfaceBrush}">
 
                                             <Grid
                                                 ColumnDefinitions="Auto,*"
-                                                ColumnSpacing="10">
+                                                ColumnSpacing="8">
 
                                                 <Path
-                                                    Width="18"
-                                                    Height="18"
+                                                    Width="16"
+                                                    Height="16"
                                                     VerticalAlignment="Center"
                                                     Data="{Binding Icon, Converter={StaticResource IconGeometry}}"
                                                     Fill="{DynamicResource SubtextBrush}"
@@ -685,7 +778,7 @@
 
                                                 <StackPanel
                                                     Grid.Column="1"
-                                                    Spacing="2">
+                                                    Spacing="1">
 
                                                     <TextBlock
                                                         FontSize="{DynamicResource FontMicro}"
@@ -693,7 +786,7 @@
                                                         Text="{Binding Title}"/>
 
                                                     <TextBlock
-                                                        FontSize="{DynamicResource FontButton}"
+                                                        FontSize="{DynamicResource FontSecondary}"
                                                         FontWeight="SemiBold"
                                                         TextTrimming="CharacterEllipsis"
                                                         ToolTip.Tip="{Binding Value}"
@@ -715,7 +808,7 @@
                             <cards:InfoCard
                                 Command="{Binding ShowHealthDetailsCommand}">
 
-                                <StackPanel Spacing="14">
+                                <StackPanel Spacing="12">
 
                                     <TextBlock
                                         FontSize="{DynamicResource FontSectionLarge}"
@@ -745,6 +838,13 @@
                                         Opacity="0.6"
                                         Text="{Binding HealthStatusText}"
                                         TextWrapping="Wrap"/>
+
+                                    <TextBlock
+                                        FontSize="{DynamicResource FontCaption}"
+                                        Opacity="0.6"
+                                        Text="{Binding HealthFactorsText}"
+                                        TextWrapping="Wrap"
+                                        IsVisible="{Binding IsHealthLoaded}"/>
 
                                 </StackPanel>
 

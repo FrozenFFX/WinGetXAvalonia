@@ -12,6 +12,7 @@ using CommunityToolkit.Mvvm.Input;
 using WinGetXAvalonia.Core.State;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
+using WinGetXAvalonia.Services.Interfaces;
 using WinGetXAvalonia.Services.Updates;
 
 namespace WinGetXAvalonia.ViewModels;
@@ -29,6 +30,11 @@ public partial class MainViewModel : ViewModelBase
     private readonly IErrorHandlingService _errorHandling;
 
     private readonly IUpdateService _updateService;
+
+    private readonly ISettingsService _settingsService;
+
+    [ObservableProperty]
+    private bool showFounderSignature = true;
 
     public string Version =>
         Assembly.GetExecutingAssembly()
@@ -51,6 +57,11 @@ public partial class MainViewModel : ViewModelBase
 
     public string StatusLabel => Status.ToString();
 
+    // Status çubuğu bağlamı: üst bardaki durum metnini tekrar etmez,
+    // yalnızca aktif sayfayı gösterir.
+    public string StatusBarContext =>
+        SelectedMenuItem?.Title ?? "Overview";
+
     public ObservableCollection<NavigationItem> Menu { get; } = new();
 
     // Görünür menü; daraltılmış kategorilerin öğelerini içermez
@@ -60,6 +71,7 @@ public partial class MainViewModel : ViewModelBase
     private readonly Dictionary<Type, ViewModelBase> _pages;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(StatusBarContext))]
     private NavigationItem? selectedMenuItem;
 
     [ObservableProperty]
@@ -106,6 +118,7 @@ public partial class MainViewModel : ViewModelBase
         GameModeViewModel gameMode,
         IUpdateService updateService,
         LoggerService logger,
+        ISettingsService settingsService,
         IErrorHandlingService errorHandling)
     {
         Navigation = navigation;
@@ -114,6 +127,10 @@ public partial class MainViewModel : ViewModelBase
         _logger = logger;
         _errorHandling = errorHandling;
         _updateService = updateService;
+        _settingsService = settingsService;
+
+        ShowFounderSignature = _settingsService.Settings.ShowFounderSignature;
+        _settingsService.SettingsChanged += OnSettingsChanged;
 
         CloseDetailCommand = new RelayCommand(() => IsDetailVisible = false);
 
@@ -365,6 +382,7 @@ public partial class MainViewModel : ViewModelBase
             return;
 
         OnPropertyChanged(nameof(StatusText));
+        OnPropertyChanged(nameof(StatusBarContext));
 
         // Sayfa ilk ziyarette yüklenir; hata zincire aktarılır (ARTICLE VII).
         _ = InitializePageSafelyAsync(page);
@@ -486,6 +504,24 @@ public partial class MainViewModel : ViewModelBase
             if (item.IsCategoryHeader || item.IsVisible)
                 VisibleMenu.Add(item);
         }
+    }
+
+    private void OnSettingsChanged(object? sender, SettingsChangedEventArgs e)
+    {
+        if (!e.ChangedProperties.Contains(nameof(AppSettings.ShowFounderSignature)))
+            return;
+
+        bool show = e.Settings.ShowFounderSignature;
+
+        void Apply()
+        {
+            ShowFounderSignature = show;
+        }
+
+        if (Dispatcher.UIThread.CheckAccess())
+            Apply();
+        else
+            Dispatcher.UIThread.Post(Apply);
     }
 
     public void ShowDetail(object content, string title, string? subtitle = null)

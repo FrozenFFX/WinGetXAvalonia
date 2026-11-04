@@ -1,0 +1,29 @@
+<!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
+<!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
+
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="WinGetXAvalonia.Controls.Shared.FounderSignature">
+
+    <TextBlock
+        x:Name="SignatureText"
+        FontFamily="{DynamicResource FontPrimary}"
+        FontSize="{DynamicResource FontCaption}"
+        FontWeight="Medium"
+        LetterSpacing="2"
+        Foreground="{DynamicResource AccentBrush}"
+        Opacity="0.15"
+        Text="Görkem Yıldız">
+
+        <TextBlock.Transitions>
+            <Transitions>
+                <DoubleTransition
+                    Property="Opacity"
+                    Duration="0:0:0.160"/>
+            </Transitions>
+        </TextBlock.Transitions>
+
+    </TextBlock>
+
+</UserControl>

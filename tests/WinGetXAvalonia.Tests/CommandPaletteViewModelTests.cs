@@ -8,6 +8,7 @@ using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.History;
 using WinGetXAvalonia.Services.Notifications;
 using WinGetXAvalonia.Services.Operations;
+using WinGetXAvalonia.Services.Updates;
 using WinGetXAvalonia.ViewModels;
 
 namespace WinGetXAvalonia.Tests;
@@ -76,10 +77,21 @@ public class CommandPaletteViewModelTests
             return Task.CompletedTask;
         }
 
-        public Task UpgradeAllAsync()
+        public Task<BulkUpdateResult> UpgradeAllAsync(
+            IProgress<BulkUpdateProgress>? progress = null,
+            CancellationToken ct = default)
         {
             UpgradeAllCalls++;
-            return Task.CompletedTask;
+            return Task.FromResult(BulkUpdateResult.None);
+        }
+
+        public Task<BulkUpdateResult> UpdateAllAsync(
+            IReadOnlyList<string> packageIds,
+            IProgress<BulkUpdateProgress>? progress = null,
+            CancellationToken ct = default)
+        {
+            Updated.AddRange(packageIds);
+            return Task.FromResult(BulkUpdateResult.None);
         }
     }
 
@@ -117,6 +129,7 @@ public class CommandPaletteViewModelTests
             provider,
             new PackageSearchCache(TimeSpan.Zero),
             operations,
+            new UpdateService(provider, operations),
             history,
             new LoggerService(),
             new NotificationService())

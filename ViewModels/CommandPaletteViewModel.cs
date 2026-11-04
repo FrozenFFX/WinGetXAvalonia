@@ -17,6 +17,7 @@ using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.History;
 using WinGetXAvalonia.Services.Notifications;
 using WinGetXAvalonia.Services.Operations;
+using WinGetXAvalonia.Services.Updates;
 
 namespace WinGetXAvalonia.ViewModels;
 
@@ -26,6 +27,7 @@ public partial class CommandPaletteViewModel : ViewModelBase
     private readonly IPackageProvider _provider;
     private readonly PackageSearchCache _cache;
     private readonly IOperationService _operations;
+    private readonly IUpdateService _updates;
     private readonly IHistoryService _history;
     private readonly LoggerService _logger;
     private readonly NotificationService _notifications;
@@ -67,6 +69,7 @@ public partial class CommandPaletteViewModel : ViewModelBase
         IPackageProvider provider,
         PackageSearchCache cache,
         IOperationService operations,
+        IUpdateService updates,
         IHistoryService history,
         LoggerService logger,
         NotificationService notifications)
@@ -75,6 +78,7 @@ public partial class CommandPaletteViewModel : ViewModelBase
         _provider = provider;
         _cache = cache;
         _operations = operations;
+        _updates = updates;
         _history = history;
         _logger = logger;
         _notifications = notifications;
@@ -214,7 +218,7 @@ public partial class CommandPaletteViewModel : ViewModelBase
                 return;
 
             case CommandPaletteAction.UpgradeAll:
-                await RunSafelyAsync(() => _operations.UpgradeAllAsync());
+                await RunSafelyAsync(() => _updates.UpdateAllAsync());
                 Close();
                 return;
 

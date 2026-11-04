@@ -36,8 +36,8 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
     private readonly HashSet<string> _selectedIds = new(StringComparer.OrdinalIgnoreCase);
     private IDisposable? _subscription;
     private bool _refreshing;
-    private bool _bulkUpdating;
     private CancellationTokenSource? _searchCts;
+    private CancellationTokenSource? _bulkCts;
 
     [ObservableProperty]
     private string searchText = "";
@@ -54,9 +54,25 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
     [ObservableProperty]
     private PackageDetailsViewModel? details;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanUpdateAll))]
+    [NotifyPropertyChangedFor(nameof(HasBulkStatus))]
+    [NotifyCanExecuteChangedFor(nameof(UpgradeAllCommand))]
+    [NotifyCanExecuteChangedFor(nameof(UpdateSelectedCommand))]
+    private bool isBulkUpdating;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasBulkStatus))]
+    private string bulkUpdateStatus = "";
+
     public int SelectedCount => Updates.Count(p => p.Selected);
 
     public bool HasSelection => SelectedCount > 0;
+
+    public bool HasBulkStatus =>
+        IsBulkUpdating || !string.IsNullOrEmpty(BulkUpdateStatus);
+
+    public bool CanUpdateAll => !IsBulkUpdating && PackageCount > 0;
 
     public ObservableRangeCollection<PackageModel> Updates { get; } = new();
 
@@ -87,6 +103,9 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
         Updates.CollectionChanged += (_, _) =>
         {
             OnPropertyChanged(nameof(PackageCount));
+            OnPropertyChanged(nameof(CanUpdateAll));
+            UpgradeAllCommand.NotifyCanExecuteChanged();
+            RaiseSelectionChanged();
         };
     }
 
@@ -112,53 +131,162 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
         RaiseSelectionChanged();
     }
 
+    // Update Selected: YALNIZCA kullanıcının işaretlediği paketleri günceller.
     [RelayCommand(CanExecute = nameof(CanUpdateSelected))]
     private async Task UpdateSelected()
     {
-        if (!HasSelection)
+        if (!HasSelection || IsBulkUpdating)
             return;
 
-        _bulkUpdating = true;
-        UpdateSelectedCommand.NotifyCanExecuteChanged();
+        var ids = Updates
+            .Where(p => p.Selected && !string.IsNullOrWhiteSpace(p.Id))
+            .Select(p => p.Id)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (ids.Count == 0)
+            return;
+
+        await RunBulkAsync(ids);
+    }
+
+    private bool CanUpdateSelected()
+        => HasSelection && !IsBulkUpdating;
+
+    // Update All: Dashboard ile aynı otoriter listeyi kullanır; kullanıcı
+    // seçimini yok sayar ve TÜM mevcut güncellemeleri uygular.
+    [RelayCommand(CanExecute = nameof(CanUpgradeAll))]
+    private async Task UpgradeAll()
+    {
+        if (IsBulkUpdating)
+            return;
+
+        var cts = new CancellationTokenSource();
+
+        _bulkCts?.Dispose();
+        _bulkCts = cts;
+
+        IsBulkUpdating = true;
+        BulkUpdateStatus = "Starting...";
+
+        BulkUpdateResult? result = null;
+        string? failure = null;
 
         try
         {
-            var ids = Updates
-                .Where(p => p.Selected && !string.IsNullOrWhiteSpace(p.Id))
-                .Select(p => p.Id)
-                .ToList();
+            var progress = new Progress<BulkUpdateProgress>(p =>
+                BulkUpdateStatus = ProgressText(p));
 
-            foreach (var id in ids)
-            {
-                var live = Updates.FirstOrDefault(p =>
-                    p.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
-
-                if (live is not null)
-                    live.InstallState = PackageInstallState.Updating;
-
-                await _operations.UpdateAsync(id);
-            }
-
-            foreach (var item in Updates)
-                item.Selected = false;
-
-            _selectedIds.Clear();
+            result = await _updates.UpdateAllAsync(progress, cts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            failure = "Update cancelled.";
+        }
+        catch (Exception)
+        {
+            failure = "Unable to update packages.";
         }
         finally
         {
             _updates.Invalidate();
-            _bulkUpdating = false;
-            UpdateSelectedCommand.NotifyCanExecuteChanged();
-            RaiseSelectionChanged();
+            IsBulkUpdating = false;
+
+            if (ReferenceEquals(_bulkCts, cts))
+            {
+                cts.Dispose();
+                _bulkCts = null;
+            }
         }
 
         await Refresh();
 
         Details?.Clear();
+
+        BulkUpdateStatus = failure ?? DescribeResult(result!);
     }
 
-    private bool CanUpdateSelected()
-        => HasSelection && !_bulkUpdating;
+    private bool CanUpgradeAll()
+        => !IsBulkUpdating && PackageCount > 0;
+
+    [RelayCommand]
+    private void CancelBulk()
+    {
+        _bulkCts?.Cancel();
+    }
+
+    private async Task RunBulkAsync(IReadOnlyList<string> ids)
+    {
+        var cts = new CancellationTokenSource();
+
+        _bulkCts?.Dispose();
+        _bulkCts = cts;
+
+        IsBulkUpdating = true;
+        BulkUpdateStatus = "Starting...";
+
+        foreach (var id in ids)
+        {
+            var live = Updates.FirstOrDefault(p =>
+                p.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
+
+            if (live is not null)
+                live.InstallState = PackageInstallState.Updating;
+        }
+
+        BulkUpdateResult? result = null;
+        string? failure = null;
+
+        try
+        {
+            var progress = new Progress<BulkUpdateProgress>(p =>
+                BulkUpdateStatus = ProgressText(p));
+
+            result = await _operations.UpdateAllAsync(ids, progress, cts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            failure = "Update cancelled.";
+        }
+        catch (Exception)
+        {
+            failure = "Unable to update packages.";
+        }
+        finally
+        {
+            _updates.Invalidate();
+
+            foreach (var item in Updates)
+                item.Selected = false;
+
+            _selectedIds.Clear();
+            IsBulkUpdating = false;
+
+            if (ReferenceEquals(_bulkCts, cts))
+            {
+                cts.Dispose();
+                _bulkCts = null;
+            }
+        }
+
+        await Refresh();
+
+        Details?.Clear();
+
+        BulkUpdateStatus = failure ?? DescribeResult(result!);
+    }
+
+    private static string ProgressText(BulkUpdateProgress progress)
+        => progress.Total > 0
+            ? $"Updating packages… {progress.Completed} / {progress.Total}"
+            : "Updating packages…";
+
+    private static string DescribeResult(BulkUpdateResult result)
+        => result.Total == 0
+            ? "No updates available."
+            : result.SucceededAll
+                ? $"Update complete — {result.Succeeded} updated."
+                : $"Update complete — {result.Succeeded} successful, {result.Failed} failed, {result.CancelledCount} cancelled.";
 
     public override Task InitializeAsync()
         => Refresh();
@@ -249,35 +377,6 @@ public partial class UpdatesViewModel : AsyncViewModel, IDisposable
         {
         }
     }
-
-    [RelayCommand(CanExecute = nameof(CanUpgradeAll))]
-    private async Task UpgradeAll()
-    {
-        _bulkUpdating = true;
-        UpgradeAllCommand.NotifyCanExecuteChanged();
-
-        try
-        {
-            await _operations.UpgradeAllAsync();
-
-            _updates.Invalidate();
-        }
-        finally
-        {
-            _bulkUpdating = false;
-            UpgradeAllCommand.NotifyCanExecuteChanged();
-            RaiseSelectionChanged();
-        }
-
-        await Refresh();
-
-        Details?.Clear();
-
-        SelectedPackage = null;
-    }
-
-    private bool CanUpgradeAll()
-        => !_bulkUpdating;
 
     [RelayCommand]
     private async Task Update(PackageModel? package)

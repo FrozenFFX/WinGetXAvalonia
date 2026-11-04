@@ -74,6 +74,24 @@
 
             </shared:AppCard>
 
+            <shared:AppCard>
+
+                <StackPanel Spacing="20">
+
+                    <TextBlock
+                        FontSize="{DynamicResource FontSection}"
+                        FontWeight="Bold"
+                        Text="Founder"/>
+
+                    <ToggleSwitch
+                        OffContent="Show Founder Signature"
+                        OnContent="Show Founder Signature"
+                        IsChecked="{Binding ShowFounderSignature}"/>
+
+                </StackPanel>
+
+            </shared:AppCard>
+
         </StackPanel>
 
     </ScrollViewer>

@@ -14,7 +14,10 @@ using WinGetXAvalonia.Core.Providers;
 using WinGetXAvalonia.Interfaces;
 using WinGetXAvalonia.Models;
 using WinGetXAvalonia.Services.Core;
+using WinGetXAvalonia.Services.Dialogs;
 using WinGetXAvalonia.Services.History;
+using WinGetXAvalonia.Services.Interfaces;
+using WinGetXAvalonia.Services.Notifications;
 using WinGetXAvalonia.Services.Operations;
 using WinGetXAvalonia.Services.Performance;
 using WinGetXAvalonia.Services.Sources;
@@ -29,8 +32,10 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     private readonly IPackageProvider _provider;
     private readonly ISourceManagerService _sources;
     private readonly WingetService _winget;
-    private readonly IOperationService _operations;
     private readonly IUpdateService _updates;
+    private readonly IDialogService _dialogs;
+    private readonly ISettingsService _settings;
+    private readonly NotificationService _notificationService;
     private readonly ISystemMonitorService _monitor;
     private readonly ITimeService _time;
     private readonly FavoritesService _favorites;
@@ -62,9 +67,11 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     private readonly WorkspacesViewModel _workspacesPage;
     private readonly BrowseViewModel _browsePage;
     private readonly HistoryViewModel _historyPage;
+    private readonly UpdatesViewModel _updatesPage;
 
     private IDisposable? _subscription;
     private CancellationTokenSource? _loadCts;
+    private CancellationTokenSource? _updateAllCts;
 
     private SystemCardModel? _cpuCard;
     private SystemCardModel? _ramCard;
@@ -92,6 +99,8 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     [NotifyPropertyChangedFor(nameof(StatusText))]
     [NotifyPropertyChangedFor(nameof(TotalPackages))]
     [NotifyPropertyChangedFor(nameof(HasUpdates))]
+    [NotifyPropertyChangedFor(nameof(CanUpdateAll))]
+    [NotifyCanExecuteChangedFor(nameof(UpdateAllCommand))]
     [NotifyPropertyChangedFor(nameof(UpdatesDisplay))]
     private int updates;
 
@@ -144,6 +153,20 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     [ObservableProperty]
     private string? historyError;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanUpdateAll))]
+    [NotifyCanExecuteChangedFor(nameof(UpdateAllCommand))]
+    private bool isUpdateAllRunning;
+
+    [ObservableProperty]
+    private string updateAllStatus = "";
+
+    [ObservableProperty]
+    private string updateAllCurrentPackage = "";
+
+    [ObservableProperty]
+    private string? updateAllResultText;
+
     public event Action? SearchRequested;
 
     public event Action<object, string, string?>? DetailRequested;
@@ -170,6 +193,9 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
 
     public bool HasUpdates =>
         Updates > 0;
+
+    public bool CanUpdateAll =>
+        !IsUpdateAllRunning && HasUpdates && _wingetStatsLoaded;
 
     public bool IsHealthy =>
         HealthSummary.Failed == 0;
@@ -234,6 +260,37 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         }
     }
 
+    // Sağlık puanının nereden geldiğini açıklar; yalnızca gerçekten
+    // var olan faktörler gösterilir (ARTICLE: uydurma veri yok).
+    public string HealthFactorsText
+    {
+        get
+        {
+            if (!IsHealthLoaded || HealthSummary.Total == 0)
+                return "";
+
+            var factors = new List<string>
+            {
+                $"{HealthSummary.Healthy} healthy"
+            };
+
+            if (HealthSummary.Outdated > 0)
+                factors.Add($"{HealthSummary.Outdated} outdated");
+
+            if (HealthSummary.Deprecated > 0)
+                factors.Add($"{HealthSummary.Deprecated} deprecated");
+
+            if (HealthSummary.UnknownSource > 0)
+                factors.Add($"{HealthSummary.UnknownSource} unknown source");
+
+            if (HealthSummary.Failed > 0)
+                factors.Add($"{HealthSummary.Failed} failed operations");
+
+            return $"Based on {HealthSummary.Total} installed packages: "
+                + string.Join(", ", factors) + ".";
+        }
+    }
+
     public ObservableCollection<SystemCardModel> SystemCards { get; } = new();
 
     public ObservableCollection<FavoriteSource> FavoriteSources { get; } = new();
@@ -259,7 +316,6 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         IPackageProvider provider,
         ISourceManagerService sources,
         WingetService winget,
-        IOperationService operations,
         IUpdateService updates,
         ISystemMonitorService monitor,
         ITimeService time,
@@ -277,13 +333,19 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         SettingsViewModel settingsPage,
         WorkspacesViewModel workspacesPage,
         BrowseViewModel browsePage,
-        HistoryViewModel historyPage)
+        HistoryViewModel historyPage,
+        UpdatesViewModel updatesPage,
+        IDialogService dialogs,
+        ISettingsService settings,
+        NotificationService notificationService)
     {
         _provider = provider;
         _sources = sources;
         _winget = winget;
-        _operations = operations;
         _updates = updates;
+        _dialogs = dialogs;
+        _settings = settings;
+        _notificationService = notificationService;
         _monitor = monitor;
         _time = time;
         _favorites = favorites;
@@ -299,6 +361,7 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         _workspacesPage = workspacesPage;
         _browsePage = browsePage;
         _historyPage = historyPage;
+        _updatesPage = updatesPage;
 
         Time = time;
         Queue = queue;
@@ -615,7 +678,10 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         OnPropertyChanged(nameof(HealthScoreDisplay));
         OnPropertyChanged(nameof(HealthProgressValue));
         OnPropertyChanged(nameof(HealthStatusText));
+        OnPropertyChanged(nameof(HealthFactorsText));
+        OnPropertyChanged(nameof(CanUpdateAll));
         OnPropertyChanged(nameof(StatusText));
+        UpdateAllCommand.NotifyCanExecuteChanged();
     }
 
     private void BuildHeroInfo()
@@ -832,6 +898,13 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     }
 
     [RelayCommand]
+    private void OpenUpdates()
+    {
+        _navigation.Navigate(_updatesPage);
+        _ = _updatesPage.InitializeAsync();
+    }
+
+    [RelayCommand]
     private void OpenSettings()
         => _navigation.Navigate(_settingsPage);
 
@@ -914,12 +987,97 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     private void OpenWorkspace()
         => _navigation.Navigate(_workspacesPage);
 
-    [RelayCommand]
+    // Update All: otoriter güncelleme listesini (IUpdateService) kullanır,
+    // kullanıcı seçiminden bağımsızdır ve Update Selected ile karışmaz.
+    [RelayCommand(CanExecute = nameof(CanUpdateAll))]
     private async Task UpdateAll()
     {
-        await _operations.UpgradeAllAsync();
-        _updates.Invalidate();
-        await Refresh();
+        if (IsUpdateAllRunning)
+            return;
+
+        var available = await _updates.GetUpdatesAsync();
+
+        if (available.Count == 0)
+        {
+            _notificationService.Notify(
+                NotificationType.Information,
+                "No updates available",
+                "All packages are up to date.");
+            return;
+        }
+
+        if (_settings.Settings.ConfirmUpdate)
+        {
+            var confirmed = await _dialogs.ConfirmAsync(
+                "Update all packages?",
+                $"{available.Count} packages have updates available.\n\n" +
+                "This operation will update all currently available packages.",
+                "Update All",
+                "Cancel");
+
+            if (!confirmed)
+                return;
+        }
+
+        IsUpdateAllRunning = true;
+        UpdateAllResultText = null;
+        UpdateAllStatus = "Starting...";
+        UpdateAllCurrentPackage = "";
+
+        _updateAllCts?.Dispose();
+        _updateAllCts = new CancellationTokenSource();
+
+        var progress = new Progress<BulkUpdateProgress>(p =>
+        {
+            UpdateAllStatus = p.Total > 0
+                ? $"Updating packages… {p.Completed} / {p.Total}"
+                : "Updating packages…";
+
+            UpdateAllCurrentPackage = p.CurrentPackage;
+
+            if (p.Failed > 0 || p.CancelledCount > 0)
+                UpdateAllStatus += $"  ({p.Succeeded} ok, {p.Failed} failed)";
+        });
+
+        try
+        {
+            var result = await _updates.UpdateAllAsync(progress, _updateAllCts.Token);
+
+            _updates.Invalidate();
+            await Refresh();
+
+            UpdateAllResultText = result.Total == 0
+                ? "No updates were applied."
+                : result.SucceededAll
+                    ? $"Update complete — {result.Succeeded} updated."
+                    : $"Update complete — {result.Succeeded} successful, {result.Failed} failed, {result.CancelledCount} cancelled.";
+        }
+        catch (OperationCanceledException)
+        {
+            UpdateAllResultText = "Update cancelled.";
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Update All failed");
+            UpdateAllResultText = "Unable to update packages. Reason: WinGet operation failed.";
+        }
+        finally
+        {
+            IsUpdateAllRunning = false;
+            UpdateAllCurrentPackage = "";
+
+            _updateAllCts?.Dispose();
+            _updateAllCts = null;
+
+            UpdateAllCommand.NotifyCanExecuteChanged();
+        }
+    }
+
+    [RelayCommand]
+    private void CancelUpdateAll()
+    {
+        _updateAllCts?.Cancel();
+        _logger.Log("Update All cancellation requested");
     }
 
     [RelayCommand]
@@ -934,6 +1092,9 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     {
         _loadCts?.Cancel();
         _loadCts?.Dispose();
+
+        _updateAllCts?.Cancel();
+        _updateAllCts?.Dispose();
 
         _time.PropertyChanged -= OnTimeChanged;
         _monitor.PropertyChanged -= OnMonitorChanged;

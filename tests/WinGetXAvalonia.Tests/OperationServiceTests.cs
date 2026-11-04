@@ -27,6 +27,18 @@ public class OperationServiceTests
 
         public List<UpdatePackage> Updates { get; set; } = new();
 
+        public HashSet<string> FailingUpgrades { get; } = new(StringComparer.OrdinalIgnoreCase);
+
+        public bool HoldUpgrades { get; set; }
+
+        public TaskCompletionSource UpgradeStarted { get; } =
+            new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public TaskCompletionSource UpgradeRelease { get; } =
+            new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public Action<string>? OnUpgrade { get; set; }
+
         public Task<IReadOnlyList<PackageModel>> SearchAsync(string query)
             => Task.FromResult<IReadOnlyList<PackageModel>>(Array.Empty<PackageModel>());
 
@@ -44,10 +56,19 @@ public class OperationServiceTests
                 throw new InvalidOperationException("boom");
         }
 
-        public Task UpgradeAsync(string id, IOperationProgress? progress = null)
+        public async Task UpgradeAsync(string id, IOperationProgress? progress = null)
         {
             Upgraded.Add(id);
-            return Task.CompletedTask;
+
+            OnUpgrade?.Invoke(id);
+
+            UpgradeStarted.TrySetResult();
+
+            if (HoldUpgrades)
+                await UpgradeRelease.Task;
+
+            if (FailingUpgrades.Contains(id))
+                throw new InvalidOperationException($"upgrade failed: {id}");
         }
 
         public Task UninstallAsync(string id, IOperationProgress? progress = null)
@@ -275,5 +296,116 @@ public class OperationServiceTests
         var operation = Assert.Single(center.Operations);
         Assert.Equal(OperationStatus.Failed, operation.Status);
         Assert.Equal("boom", operation.StatusMessage);
+    }
+
+    [Fact]
+    public async Task UpdateAllAsync_UpdatesExactlyRequestedIds()
+    {
+        var (service, provider, history, _, _, _) = Create();
+        provider.Updates =
+        [
+            new UpdatePackage { Id = "Git.Git" },
+            new UpdatePackage { Id = "Microsoft.VSCode" },
+            new UpdatePackage { Id = "Mozilla.Firefox" }
+        ];
+
+        var result = await service.UpdateAllAsync(new[] { "Git.Git", "Mozilla.Firefox" });
+
+        Assert.Equal(2, result.Succeeded);
+        Assert.False(result.IsCancelled);
+        Assert.True(result.SucceededAll);
+
+        Assert.Equal(2, provider.Upgraded.Count);
+        Assert.Contains("Git.Git", provider.Upgraded);
+        Assert.Contains("Mozilla.Firefox", provider.Upgraded);
+        Assert.DoesNotContain("Microsoft.VSCode", provider.Upgraded);
+
+        var entries = await GetEntriesAsync(history);
+        Assert.Equal(2, entries.Count);
+        Assert.All(entries, e => Assert.True(e.Success));
+    }
+
+    [Fact]
+    public async Task UpdateAllAsync_DuplicateAndBlankIds_AreIgnored()
+    {
+        var (service, provider, _, _, _, _) = Create();
+
+        var result = await service.UpdateAllAsync(
+            new[] { "Git.Git", "Git.Git", " ", "  " });
+
+        Assert.Equal(1, result.Succeeded);
+        Assert.Equal("Git.Git", Assert.Single(provider.Upgraded));
+    }
+
+    [Fact]
+    public async Task UpdateAllAsync_PartialFailure_IsNotReportedAsSuccess()
+    {
+        var (service, provider, history, _, notifications, _) = Create();
+        provider.FailingUpgrades.Add("Microsoft.VSCode");
+
+        var result = await service.UpdateAllAsync(
+            new[] { "Git.Git", "Microsoft.VSCode", "Mozilla.Firefox" });
+
+        Assert.Equal(2, result.Succeeded);
+        Assert.Equal(1, result.Failed);
+        Assert.False(result.SucceededAll);
+
+        var entries = await GetEntriesAsync(history);
+        Assert.Equal(3, entries.Count);
+        Assert.Equal(2, entries.Count(e => e.Success));
+        Assert.Equal(1, entries.Count(e => !e.Success));
+
+        var summary = Assert.Single(notifications.Notifications);
+        Assert.Equal(NotificationType.Warning, summary.Type);
+    }
+
+    [Fact]
+    public async Task UpdateAllAsync_Cancelled_StopsBeforeRemainingPackages()
+    {
+        var (service, provider, _, _, _, _) = Create();
+
+        using var cts = new CancellationTokenSource();
+        provider.OnUpgrade = _ => cts.Cancel();
+
+        var result = await service.UpdateAllAsync(
+            new[] { "Git.Git", "Microsoft.VSCode", "Mozilla.Firefox" },
+            ct: cts.Token);
+
+        Assert.True(result.IsCancelled);
+        Assert.Equal(1, result.Succeeded);
+        Assert.Equal(1, result.CancelledCount);
+        Assert.Equal("Git.Git", Assert.Single(provider.Upgraded));
+    }
+
+    [Fact]
+    public async Task UpdateAllAsync_ConcurrentRun_Throws()
+    {
+        var (service, provider, _, _, _, _) = Create();
+        provider.HoldUpgrades = true;
+
+        var first = service.UpdateAllAsync(new[] { "Git.Git" });
+
+        await provider.UpgradeStarted.Task;
+
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => service.UpdateAllAsync(new[] { "Microsoft.VSCode" }));
+
+        provider.UpgradeRelease.TrySetResult();
+
+        var result = await first;
+
+        Assert.Equal(1, result.Succeeded);
+    }
+
+    [Fact]
+    public async Task UpdateAllAsync_EmptyIds_ReturnsNone()
+    {
+        var (service, provider, history, _, _, _) = Create();
+
+        var result = await service.UpdateAllAsync(Array.Empty<string>());
+
+        Assert.Equal(0, result.Total);
+        Assert.Empty(provider.Upgraded);
+        Assert.Empty(await GetEntriesAsync(history));
     }
 }

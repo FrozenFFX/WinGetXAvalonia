@@ -8,10 +8,9 @@
     x:Name="Root">
 
     <Button
-        MinWidth="160"
-        MaxWidth="200"
-        MinHeight="100"
-        Padding="16"
+        MinWidth="0"
+        MinHeight="104"
+        Padding="0"
         Background="Transparent"
         BorderThickness="0"
         HorizontalAlignment="Stretch"
@@ -40,19 +39,21 @@
             </ControlTemplate>
         </Button.Template>
 
-        <StackPanel Spacing="8">
+        <StackPanel
+            Spacing="8"
+            VerticalAlignment="Top">
 
             <Border
-                Width="40"
-                Height="40"
+                Width="36"
+                Height="36"
                 CornerRadius="{DynamicResource RadiusSmall}"
                 Background="{DynamicResource AccentBrush}"
                 HorizontalAlignment="Left">
 
                 <Path
-                    Width="22"
-                    Height="22"
-                    Margin="9"
+                    Width="20"
+                    Height="20"
+                    Margin="8"
                     Data="{Binding #Root.Icon, Converter={StaticResource IconGeometry}}"
                     Fill="White"
                     Stretch="Uniform"/>
@@ -64,6 +65,7 @@
                 <TextBlock
                     FontSize="{DynamicResource FontCardTitle}"
                     FontWeight="SemiBold"
+                    TextTrimming="CharacterEllipsis"
                     Text="{Binding #Root.Title}"/>
 
                 <TextBlock

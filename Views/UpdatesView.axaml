@@ -44,7 +44,7 @@
         <Grid
             Grid.Row="1"
             HorizontalAlignment="Stretch"
-            RowDefinitions="Auto,Auto">
+            RowDefinitions="Auto,Auto,Auto">
 
             <package:PackageToolbar
                 Grid.Row="0"
@@ -90,6 +90,46 @@
                         Content="{Binding SelectedCount,
                         StringFormat=Update Selected ({0})}"
                         Command="{Binding UpdateSelectedCommand}"/>
+                </Grid>
+
+            </Border>
+
+            <!-- Bulk update status / progress -->
+            <Border
+                Grid.Row="2"
+                Margin="0,12,0,0"
+                Padding="14,10"
+                Background="{DynamicResource CardBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="{DynamicResource RadiusMedium}"
+                IsVisible="{Binding HasBulkStatus}">
+
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
+
+                    <ProgressBar
+                        Grid.Column="0"
+                        Width="22"
+                        Height="22"
+                        VerticalAlignment="Center"
+                        IsIndeterminate="True"
+                        IsVisible="{Binding IsBulkUpdating}"/>
+
+                    <TextBlock
+                        Grid.Column="1"
+                        FontSize="{DynamicResource FontCaption}"
+                        VerticalAlignment="Center"
+                        TextTrimming="CharacterEllipsis"
+                        Text="{Binding BulkUpdateStatus}"/>
+
+                    <shared:AppButton
+                        Grid.Column="3"
+                        Classes="ghost"
+                        MinWidth="110"
+                        Content="Cancel"
+                        IsVisible="{Binding IsBulkUpdating}"
+                        Command="{Binding CancelBulkCommand}"/>
+
                 </Grid>
 
             </Border>

@@ -62,7 +62,16 @@ public class PackageDetailsViewModelTests
             return Task.CompletedTask;
         }
 
-        public Task UpgradeAllAsync() => Task.CompletedTask;
+        public Task<BulkUpdateResult> UpgradeAllAsync(
+            IProgress<BulkUpdateProgress>? progress = null,
+            CancellationToken ct = default)
+            => Task.FromResult(BulkUpdateResult.None);
+
+        public Task<BulkUpdateResult> UpdateAllAsync(
+            IReadOnlyList<string> packageIds,
+            IProgress<BulkUpdateProgress>? progress = null,
+            CancellationToken ct = default)
+            => Task.FromResult(BulkUpdateResult.None);
     }
 
     private static PackageDetailsViewModel Create(FakeProvider? provider = null)

@@ -17,7 +17,7 @@ public sealed class ThemeManager
     public IReadOnlyList<AccentDefinition> Accents { get; } =
     [
         new("Blue", "#3B82F6"),
-        new("Green", "#10B981"),
+        new("Green", "#15803D"),
         new("Orange", "#F59E0B"),
         new("Purple", "#8B5CF6"),
         new("Red", "#EF4444"),

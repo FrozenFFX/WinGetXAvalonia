@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
@@ -24,14 +24,14 @@
             <TextBlock
                 FontSize="{DynamicResource FontPageTitle}"
                 FontWeight="SemiBold"
-                Text="{Binding #Root.Title}"/>
+                Text="{loc:TranslateBinding Path=#Root.Title}"/>
 
             <TextBlock
                 MaxWidth="720"
                 FontSize="{DynamicResource FontPageSubtitle}"
                 Opacity="0.65"
                 TextWrapping="Wrap"
-                Text="{Binding #Root.Description}"/>
+                Text="{loc:TranslateBinding Path=#Root.Description}"/>
 
         </StackPanel>
 
@@ -49,7 +49,7 @@
                 Height="38"
                 MinWidth="96"
                 Padding="18,0"
-                Content="{Binding #Root.ActionText}"
+                Content="{loc:TranslateBinding Path=#Root.ActionText}"
                 Command="{Binding #Root.ActionCommand}"/>
 
         </StackPanel>

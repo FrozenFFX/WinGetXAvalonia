@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization" xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
              xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
@@ -41,7 +41,7 @@
 
             <TextBlock
                 Classes="title"
-                Text="Appearance"/>
+                Text="{loc:Translate Key=&quot;Appearance&quot;}"/>
 
             <shared:AppCard>
 
@@ -50,11 +50,16 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
-                        Text="Theme"/>
+                        Text="{loc:Translate Key=&quot;Theme&quot;}"/>
 
                     <ComboBox
                         Width="220"
                         SelectedItem="{Binding SelectedTheme}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{loc:TranslateBinding Path=.}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
                         <x:String>Dark</x:String>
                         <x:String>Light</x:String>
                         <x:String>System</x:String>
@@ -71,11 +76,11 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
-                        Text="Accent Color"/>
+                        Text="{loc:Translate Key=&quot;Accent Color&quot;}"/>
 
                     <TextBlock
                         Opacity="0.7"
-                        Text="{Binding SelectedAccent.Name}"/>
+                        Text="{loc:TranslateBinding Path=SelectedAccent.Name}"/>
 
                     <ListBox
                         Classes="accent"
@@ -119,26 +124,26 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
-                        Text="Effects"/>
+                        Text="{loc:Translate Key=&quot;Effects&quot;}"/>
 
                     <ToggleSwitch
-                        OffContent="Enable animations"
-                        OnContent="Enable animations"
+                        OffContent="{loc:Translate Key=&quot;Enable animations&quot;}"
+                        OnContent="{loc:Translate Key=&quot;Enable animations&quot;}"
                         IsChecked="{Binding EnableAnimations}"/>
 
                     <ToggleSwitch
-                        OffContent="Enable Mica"
-                        OnContent="Enable Mica"
+                        OffContent="{loc:Translate Key=&quot;Enable Mica&quot;}"
+                        OnContent="{loc:Translate Key=&quot;Enable Mica&quot;}"
                         IsChecked="{Binding EnableMica}"/>
 
                     <ToggleSwitch
-                        OffContent="Enable Acrylic"
-                        OnContent="Enable Acrylic"
+                        OffContent="{loc:Translate Key=&quot;Enable Acrylic&quot;}"
+                        OnContent="{loc:Translate Key=&quot;Enable Acrylic&quot;}"
                         IsChecked="{Binding EnableAcrylic}"/>
 
                     <ToggleSwitch
-                        OffContent="Rounded corners"
-                        OnContent="Rounded corners"
+                        OffContent="{loc:Translate Key=&quot;Rounded corners&quot;}"
+                        OnContent="{loc:Translate Key=&quot;Rounded corners&quot;}"
                         IsChecked="{Binding RoundedCorners}"/>
 
                 </StackPanel>

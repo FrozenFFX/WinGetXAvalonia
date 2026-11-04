@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     x:Class="WinGetXAvalonia.Controls.Workspace.WorkspaceToolbar"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -22,24 +22,24 @@
                 MinWidth="200"
                 MaxWidth="360"
                 HorizontalAlignment="Stretch"
-                Watermark="Search workspaces..."
+                Watermark="{loc:Translate Key=&quot;Search workspaces...&quot;}"
                 Text="{Binding SearchText, ElementName=Root}"/>
 
             <shared:AppButton
                 Grid.Column="1"
-                Content="+ New Workspace"
+                Content="{loc:Translate Key=&quot;+ New Workspace&quot;}"
                 Command="{Binding CreateCommand, ElementName=Root}"/>
 
             <shared:AppButton
                 Grid.Column="2"
-                Content="Import"
+                Content="{loc:Translate Key=&quot;Import&quot;}"
                 Command="{Binding ImportCommand, ElementName=Root}"/>
 
             <shared:AppButton
                 Grid.Column="3"
                 Width="42"
                 Padding="0"
-                ToolTip.Tip="Refresh workspaces (F5)"
+                ToolTip.Tip="{loc:Translate Key=&quot;Refresh workspaces (F5)&quot;}"
                 Command="{Binding RefreshCommand, ElementName=Root}">
 
                 <Path

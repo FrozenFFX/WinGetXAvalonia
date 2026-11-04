@@ -7,7 +7,7 @@ public class AppSettings
 {
     public string Theme { get; set; } = "Dark";
 
-    public string AccentColor { get; set; } = "Blue";
+    public string AccentColor { get; set; } = "Green";
 
     public List<AccentDefinition> InstalledAccents { get; set; } = new();
 

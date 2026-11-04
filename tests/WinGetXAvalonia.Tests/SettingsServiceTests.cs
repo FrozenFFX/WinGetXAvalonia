@@ -90,7 +90,7 @@ public class SettingsServiceTests
         await service.UpdateAsync(s =>
         {
             s.Theme = "Light";
-            s.AccentColor = "Green";
+            s.AccentColor = "Blue";
         });
 
         Assert.NotNull(changed);

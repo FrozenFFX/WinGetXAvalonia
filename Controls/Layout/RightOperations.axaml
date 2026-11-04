@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:operation="using:WinGetXAvalonia.Controls.Operation"
@@ -33,13 +33,13 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSectionLarge}"
                         FontWeight="SemiBold"
-                        Text="Operations"/>
+                        Text="{loc:Translate Key=&quot;Operations&quot;}"/>
 
                     <TextBlock
                         Margin="0,2,0,0"
                         FontSize="{DynamicResource FontCaption}"
                         Opacity="0.60"
-                        Text="{Binding Summary}"/>
+                        Text="{loc:TranslateBinding Path=Summary}"/>
 
                 </StackPanel>
 
@@ -48,8 +48,8 @@
                     Height="34"
                     Padding="12,0"
                     VerticalAlignment="Center"
-                    Content="Clear Completed"
-                    ToolTip.Tip="Remove completed operations"
+                    Content="{loc:Translate Key=&quot;Clear Completed&quot;}"
+                    ToolTip.Tip="{loc:Translate Key=&quot;Remove completed operations&quot;}"
                     Command="{Binding ClearCompletedCommand}"
                     IsEnabled="{Binding HasCompleted}"/>
 

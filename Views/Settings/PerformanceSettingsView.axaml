@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization" xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
              xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
@@ -21,7 +21,7 @@
 
             <TextBlock
                 Classes="title"
-                Text="Performance"/>
+                Text="{loc:Translate Key=&quot;Performance&quot;}"/>
 
             <shared:AppCard>
 
@@ -30,21 +30,21 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
-                        Text="Rendering"/>
+                        Text="{loc:Translate Key=&quot;Rendering&quot;}"/>
 
                     <ToggleSwitch
-                        OffContent="Hardware acceleration"
-                        OnContent="Hardware acceleration"
+                        OffContent="{loc:Translate Key=&quot;Hardware acceleration&quot;}"
+                        OnContent="{loc:Translate Key=&quot;Hardware acceleration&quot;}"
                         IsChecked="{Binding HardwareAcceleration}"/>
 
                     <ToggleSwitch
-                        OffContent="UI virtualization"
-                        OnContent="UI virtualization"
+                        OffContent="{loc:Translate Key=&quot;UI virtualization&quot;}"
+                        OnContent="{loc:Translate Key=&quot;UI virtualization&quot;}"
                         IsChecked="{Binding Virtualization}"/>
 
                     <ToggleSwitch
-                        OffContent="Cache package lists"
-                        OnContent="Cache package lists"
+                        OffContent="{loc:Translate Key=&quot;Cache package lists&quot;}"
+                        OnContent="{loc:Translate Key=&quot;Cache package lists&quot;}"
                         IsChecked="{Binding CachePackages}"/>
 
                 </StackPanel>
@@ -58,10 +58,10 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
-                        Text="Downloads"/>
+                        Text="{loc:Translate Key=&quot;Downloads&quot;}"/>
 
                     <Grid ColumnDefinitions="Auto,*,Auto">
-                        <TextBlock Text="Parallel downloads"/>
+                        <TextBlock Text="{loc:Translate Key=&quot;Parallel downloads&quot;}"/>
                         <Slider Grid.Column="1"
                                 Margin="15,0"
                                 Minimum="{Binding MinParallelDownloads}"
@@ -69,11 +69,11 @@
                                 TickFrequency="1"
                                 IsSnapToTickEnabled="True"
                                 Value="{Binding ParallelDownloads}"/>
-                        <TextBlock Grid.Column="2" Text="{Binding ParallelDownloads}"/>
+                        <TextBlock Grid.Column="2" Text="{loc:TranslateBinding Path=ParallelDownloads}"/>
                     </Grid>
 
                     <Grid ColumnDefinitions="Auto,*,Auto">
-                        <TextBlock Text="Cache size (MB)"/>
+                        <TextBlock Text="{loc:Translate Key=&quot;Cache size (MB)&quot;}"/>
                         <Slider Grid.Column="1"
                                 Margin="15,0"
                                 Minimum="{Binding MinCacheSize}"
@@ -81,7 +81,7 @@
                                 TickFrequency="64"
                                 IsSnapToTickEnabled="True"
                                 Value="{Binding CacheSize}"/>
-                        <TextBlock Grid.Column="2" Text="{Binding CacheSize}"/>
+                        <TextBlock Grid.Column="2" Text="{loc:TranslateBinding Path=CacheSize}"/>
                     </Grid>
 
                 </StackPanel>
@@ -95,10 +95,10 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
-                        Text="Window"/>
+                        Text="{loc:Translate Key=&quot;Window&quot;}"/>
 
                     <Grid ColumnDefinitions="Auto,*,Auto">
-                        <TextBlock Text="Window opacity"/>
+                        <TextBlock Text="{loc:Translate Key=&quot;Window opacity&quot;}"/>
                         <Slider Grid.Column="1"
                                 Margin="15,0"
                                 Minimum="{Binding MinWindowOpacity}"
@@ -106,7 +106,7 @@
                                 TickFrequency="5"
                                 IsSnapToTickEnabled="True"
                                 Value="{Binding WindowOpacity}"/>
-                        <TextBlock Grid.Column="2" Text="{Binding WindowOpacity}"/>
+                        <TextBlock Grid.Column="2" Text="{loc:TranslateBinding Path=WindowOpacity}"/>
                     </Grid>
 
                 </StackPanel>

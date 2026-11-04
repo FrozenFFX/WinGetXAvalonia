@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization" xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
              xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
@@ -21,7 +21,7 @@
 
             <TextBlock
                 Classes="title"
-                Text="Winget"/>
+                Text="{loc:Translate Key=&quot;Winget&quot;}"/>
 
             <shared:AppCard>
 
@@ -30,21 +30,21 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
-                        Text="Confirmations"/>
+                        Text="{loc:Translate Key=&quot;Confirmations&quot;}"/>
 
                     <ToggleSwitch
-                        OffContent="Confirm before install"
-                        OnContent="Confirm before install"
+                        OffContent="{loc:Translate Key=&quot;Confirm before install&quot;}"
+                        OnContent="{loc:Translate Key=&quot;Confirm before install&quot;}"
                         IsChecked="{Binding ConfirmInstall}"/>
 
                     <ToggleSwitch
-                        OffContent="Confirm before update"
-                        OnContent="Confirm before update"
+                        OffContent="{loc:Translate Key=&quot;Confirm before update&quot;}"
+                        OnContent="{loc:Translate Key=&quot;Confirm before update&quot;}"
                         IsChecked="{Binding ConfirmUpdate}"/>
 
                     <ToggleSwitch
-                        OffContent="Confirm before uninstall"
-                        OnContent="Confirm before uninstall"
+                        OffContent="{loc:Translate Key=&quot;Confirm before uninstall&quot;}"
+                        OnContent="{loc:Translate Key=&quot;Confirm before uninstall&quot;}"
                         IsChecked="{Binding ConfirmUninstall}"/>
 
                 </StackPanel>
@@ -58,11 +58,11 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
-                        Text="Refresh"/>
+                        Text="{loc:Translate Key=&quot;Refresh&quot;}"/>
 
                     <ToggleSwitch
-                        OffContent="Auto refresh package lists"
-                        OnContent="Auto refresh package lists"
+                        OffContent="{loc:Translate Key=&quot;Auto refresh package lists&quot;}"
+                        OnContent="{loc:Translate Key=&quot;Auto refresh package lists&quot;}"
                         IsChecked="{Binding AutoRefreshPackages}"/>
 
                 </StackPanel>

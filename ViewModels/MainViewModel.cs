@@ -58,10 +58,10 @@ public partial class MainViewModel : ViewModelBase
 
     public string StatusText =>
         SelectedMenuItem is null
-            ? Status.ToString()
-            : $"{Status} • {SelectedMenuItem.Title}";
+            ? _localization.TranslateValue(Status.ToString())
+            : $"{_localization.TranslateValue(Status.ToString())} • {SelectedMenuItem.Title}";
 
-    public string StatusLabel => Status.ToString();
+    public string StatusLabel => _localization.TranslateValue(Status.ToString());
 
     // Status çubuğu bağlamı: üst bardaki durum metnini tekrar etmez,
     // yalnızca aktif sayfayı gösterir.

@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<ContentControl
+<ContentControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:WinGetXAvalonia.Controls.Layout"
@@ -67,7 +67,7 @@
                             Height="38"
                             HorizontalAlignment="Stretch"
                             Command="{ReflectionBinding CloseDetailCommand}"
-                            Content="Close"/>
+                            Content="{loc:Translate Key=&quot;Close&quot;}"/>
 
                     </Border>
 

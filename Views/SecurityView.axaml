@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -21,8 +21,8 @@
         </Grid.RowDefinitions>
 
         <shared:SectionHeader
-            Title="Security"
-            Description="Security status and package verification."/>
+            Title="{loc:Translate Key=&quot;Security&quot;}"
+            Description="{loc:Translate Key=&quot;Security status and package verification.&quot;}"/>
 
         <ScrollViewer
             Grid.Row="2"
@@ -36,32 +36,32 @@
                     <shared:AppCard>
                         <StackPanel Spacing="4">
                             <TextBlock FontSize="{DynamicResource FontSection}" Text="{DynamicResource DisplaySecurity}"/>
-                            <TextBlock FontWeight="SemiBold" Text="Trusted"/>
-                            <TextBlock FontSize="{DynamicResource FontCardTitle}" FontWeight="SemiBold" Text="{Binding Trusted}"/>
+                            <TextBlock FontWeight="SemiBold" Text="{loc:Translate Key=&quot;Trusted&quot;}"/>
+                            <TextBlock FontSize="{DynamicResource FontCardTitle}" FontWeight="SemiBold" Text="{loc:TranslateBinding Path=Trusted}"/>
                         </StackPanel>
                     </shared:AppCard>
 
                     <shared:AppCard>
                         <StackPanel Spacing="4">
                             <TextBlock FontSize="{DynamicResource FontSection}" Text="{DynamicResource DisplayWarning}"/>
-                            <TextBlock FontWeight="SemiBold" Text="Warnings"/>
-                            <TextBlock FontSize="{DynamicResource FontCardTitle}" FontWeight="SemiBold" Text="{Binding Warnings}"/>
+                            <TextBlock FontWeight="SemiBold" Text="{loc:Translate Key=&quot;Warnings&quot;}"/>
+                            <TextBlock FontSize="{DynamicResource FontCardTitle}" FontWeight="SemiBold" Text="{loc:TranslateBinding Path=Warnings}"/>
                         </StackPanel>
                     </shared:AppCard>
 
                     <shared:AppCard>
                         <StackPanel Spacing="4">
                             <TextBlock FontSize="{DynamicResource FontSection}" Text="{DynamicResource DisplayError}"/>
-                            <TextBlock FontWeight="SemiBold" Text="Blocked"/>
-                            <TextBlock FontSize="{DynamicResource FontCardTitle}" FontWeight="SemiBold" Text="{Binding Blocked}"/>
+                            <TextBlock FontWeight="SemiBold" Text="{loc:Translate Key=&quot;Blocked&quot;}"/>
+                            <TextBlock FontSize="{DynamicResource FontCardTitle}" FontWeight="SemiBold" Text="{loc:TranslateBinding Path=Blocked}"/>
                         </StackPanel>
                     </shared:AppCard>
 
                     <shared:AppCard>
                         <StackPanel Spacing="4">
                             <TextBlock FontSize="{DynamicResource FontSection}" Text="{DynamicResource DisplaySuccess}"/>
-                            <TextBlock FontWeight="SemiBold" Text="Verified"/>
-                            <TextBlock FontSize="{DynamicResource FontCardTitle}" FontWeight="SemiBold" Text="{Binding Verified}"/>
+                            <TextBlock FontWeight="SemiBold" Text="{loc:Translate Key=&quot;Verified&quot;}"/>
+                            <TextBlock FontSize="{DynamicResource FontCardTitle}" FontWeight="SemiBold" Text="{loc:TranslateBinding Path=Verified}"/>
                         </StackPanel>
                     </shared:AppCard>
 
@@ -72,13 +72,13 @@
                     <StackPanel Spacing="10">
 
                         <StackPanel Orientation="Horizontal" Spacing="8">
-                            <TextBlock FontSize="{DynamicResource FontSection}" Text="security"/>
+                            <TextBlock FontSize="{DynamicResource FontSection}" Text="{loc:Translate Key=&quot;security&quot;}"/>
                             <StackPanel Spacing="2">
-                                <TextBlock FontSize="{DynamicResource FontCardTitle}" FontWeight="SemiBold" Text="{Binding StatusTitle}"/>
+                                <TextBlock FontSize="{DynamicResource FontCardTitle}" FontWeight="SemiBold" Text="{loc:TranslateBinding Path=StatusTitle}"/>
                                 <TextBlock
                                     FontSize="{DynamicResource FontSecondary}"
                                     Opacity="0.6"
-                                    Text="WinGetX does not currently have a real package-signature/security scanner connected."
+                                    Text="{loc:Translate Key=&quot;WinGetX does not currently have a real package-signature/security scanner connected.&quot;}"
                                     TextWrapping="Wrap"/>
                             </StackPanel>
                         </StackPanel>
@@ -89,7 +89,7 @@
                             FontSize="{DynamicResource FontCaption}"
                             Opacity="0.75"
                             TextWrapping="Wrap"
-                            Text="A real security pipeline needs Publisher, Signature, Hash, Source and Verification steps. None of these are wired up yet, so showing fake Trust or Health percentages would be misleading."/>
+                            Text="{loc:Translate Key=&quot;A real security pipeline needs Publisher, Signature, Hash, Source and Verification steps. None of these are wired up yet, so showing fake Trust or Health percentages would be misleading.&quot;}"/>
 
                     </StackPanel>
 

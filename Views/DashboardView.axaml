@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -26,8 +26,8 @@
 
             <shared:PageHeader
                 Grid.Column="0"
-                Title="{Binding GreetingText}"
-                Description="Manage packages and monitor your system."/>
+                Title="{loc:TranslateBinding Path=GreetingText}"
+                Description="{loc:Translate Key=&quot;Manage packages and monitor your system.&quot;}"/>
 
             <StackPanel
                 Grid.Column="1"
@@ -39,7 +39,7 @@
                     Height="38"
                     MinWidth="96"
                     Classes="ghost"
-                    Content="Refresh"
+                    Content="{loc:Translate Key=&quot;Refresh&quot;}"
                     Command="{Binding RefreshCommand}"/>
 
                 <ProgressBar
@@ -144,13 +144,13 @@
                                 <TextBlock
                                     FontSize="{DynamicResource FontCaption}"
                                     FontWeight="SemiBold"
-                                    Text="{Binding UpdateAllStatus}"/>
+                                    Text="{loc:TranslateBinding Path=UpdateAllStatus}"/>
 
                                 <TextBlock
                                     FontSize="{DynamicResource FontSecondary}"
                                     Opacity="0.6"
                                     TextTrimming="CharacterEllipsis"
-                                    Text="{Binding UpdateAllCurrentPackage}"/>
+                                    Text="{loc:TranslateBinding Path=UpdateAllCurrentPackage}"/>
 
                             </StackPanel>
 
@@ -158,7 +158,7 @@
                                 Grid.Column="2"
                                 VerticalAlignment="Center"
                                 Classes="ghost"
-                                Content="Cancel"
+                                Content="{loc:Translate Key=&quot;Cancel&quot;}"
                                 Command="{Binding CancelUpdateAllCommand}"/>
 
                         </Grid>
@@ -177,7 +177,7 @@
 
                         <TextBlock
                             FontSize="{DynamicResource FontCaption}"
-                            Text="{Binding UpdateAllResultText}"
+                            Text="{loc:TranslateBinding Path=UpdateAllResultText}"
                             TextWrapping="Wrap"/>
 
                     </Border>
@@ -201,7 +201,7 @@
                                     <TextBlock
                                         FontSize="{DynamicResource FontSectionLarge}"
                                         FontWeight="SemiBold"
-                                        Text="Recent Activity"/>
+                                        Text="{loc:Translate Key=&quot;Recent Activity&quot;}"/>
 
                                     <shared:AppButton
                                         Grid.Column="1"
@@ -209,7 +209,7 @@
                                         Width="34"
                                         Height="34"
                                         Padding="0"
-                                        ToolTip.Tip="Refresh"
+                                        ToolTip.Tip="{loc:Translate Key=&quot;Refresh&quot;}"
                                         Command="{Binding RefreshCommand}">
 
                                         <Path
@@ -271,7 +271,7 @@
                                                             FontSize="{DynamicResource FontButton}"
                                                             FontWeight="SemiBold"
                                                             TextTrimming="CharacterEllipsis"
-                                                            Text="{Binding Title}"/>
+                                                            Text="{loc:TranslateBinding Path=Title}"/>
 
                                                         <TextBlock
                                                             FontSize="{DynamicResource FontSecondary}"
@@ -291,7 +291,7 @@
                                                             FontSize="{DynamicResource FontMicro}"
                                                             FontWeight="SemiBold"
                                                             Foreground="White"
-                                                            Text="{Binding Type}"/>
+                                                            Text="{loc:TranslateBinding Path=Type}"/>
 
                                                     </Border>
 
@@ -308,8 +308,8 @@
                                     IsVisible="{Binding HasNoActivity}"
                                     HorizontalAlignment="Center"
                                     Icon="package"
-                                    Title="No recent activity"
-                                    Description="Install a package to begin."/>
+                                    Title="{loc:Translate Key=&quot;No recent activity&quot;}"
+                                    Description="{loc:Translate Key=&quot;Install a package to begin.&quot;}"/>
 
                             </StackPanel>
 
@@ -336,14 +336,14 @@
                                     <TextBlock
                                         FontSize="{DynamicResource FontSectionLarge}"
                                         FontWeight="SemiBold"
-                                        Text="Notifications"/>
+                                        Text="{loc:Translate Key=&quot;Notifications&quot;}"/>
 
                                     <shared:AppButton
                                         Grid.Column="1"
                                         Classes="ghost"
                                         Height="34"
                                         Padding="12,0"
-                                        Content="View all →"
+                                        Content="{loc:Translate Key=&quot;View all →&quot;}"
                                         Command="{Binding ShowNotificationsDetailsCommand}"/>
 
                                 </Grid>
@@ -370,12 +370,12 @@
                                                         <TextBlock
                                                             FontSize="{DynamicResource FontCaption}"
                                                             FontWeight="SemiBold"
-                                                            Text="{Binding Title}"/>
+                                                            Text="{loc:TranslateBinding Path=Title}"/>
 
                                                         <TextBlock
                                                             FontSize="{DynamicResource FontSecondary}"
                                                             Opacity="0.6"
-                                                            Text="{Binding Message}"
+                                                            Text="{loc:TranslateBinding Path=Message}"
                                                             TextWrapping="Wrap"/>
 
                                                     </StackPanel>
@@ -400,8 +400,8 @@
                                     IsVisible="{Binding HasNoNotifications}"
                                     HorizontalAlignment="Center"
                                     Icon="notification"
-                                    Title="No notifications"
-                                    Description="Everything is working normally."/>
+                                    Title="{loc:Translate Key=&quot;No notifications&quot;}"
+                                    Description="{loc:Translate Key=&quot;Everything is working normally.&quot;}"/>
 
                             </StackPanel>
 
@@ -425,7 +425,7 @@
                                 <TextBlock
                                     FontSize="{DynamicResource FontSectionLarge}"
                                     FontWeight="SemiBold"
-                                    Text="Quick Actions"/>
+                                    Text="{loc:Translate Key=&quot;Quick Actions&quot;}"/>
 
                                 <Grid
                                     ColumnDefinitions="*,*"
@@ -437,32 +437,32 @@
                                         Grid.Row="0"
                                         Grid.Column="0"
                                         Icon="package"
-                                        Title="Installed"
-                                        Description="Manage packages"
+                                        Title="{loc:Translate Key=&quot;Installed&quot;}"
+                                        Description="{loc:Translate Key=&quot;Manage packages&quot;}"
                                         Command="{Binding OpenPackagesCommand}"/>
 
                                     <cards:ActionCard
                                         Grid.Row="0"
                                         Grid.Column="1"
                                         Icon="update"
-                                        Title="Update All"
-                                        Description="Upgrade packages"
+                                        Title="{loc:Translate Key=&quot;Update All&quot;}"
+                                        Description="{loc:Translate Key=&quot;Upgrade packages&quot;}"
                                         Command="{Binding UpdateAllCommand}"/>
 
                                     <cards:ActionCard
                                         Grid.Row="1"
                                         Grid.Column="0"
                                         Icon="search"
-                                        Title="Browse"
-                                        Description="Search packages"
+                                        Title="{loc:Translate Key=&quot;Browse&quot;}"
+                                        Description="{loc:Translate Key=&quot;Search packages&quot;}"
                                         Command="{Binding BrowseCommand}"/>
 
                                     <cards:ActionCard
                                         Grid.Row="1"
                                         Grid.Column="1"
                                         Icon="history"
-                                        Title="History"
-                                        Description="Recent operations"
+                                        Title="{loc:Translate Key=&quot;History&quot;}"
+                                        Description="{loc:Translate Key=&quot;Recent operations&quot;}"
                                         Command="{Binding OpenHistoryCommand}"/>
 
                                 </Grid>
@@ -489,7 +489,7 @@
                                 <TextBlock
                                     FontSize="{DynamicResource FontSectionLarge}"
                                     FontWeight="SemiBold"
-                                    Text="Favorite Sources"/>
+                                    Text="{loc:Translate Key=&quot;Favorite Sources&quot;}"/>
 
                                 <ItemsControl
                                     ItemsSource="{Binding FavoriteSources}"
@@ -505,7 +505,7 @@
                                                 <TextBlock
                                                     FontWeight="SemiBold"
                                                     VerticalAlignment="Center"
-                                                    Text="{Binding Name}"/>
+                                                    Text="{loc:TranslateBinding Path=Name}"/>
 
                                                 <Border
                                                     Grid.Column="1"
@@ -530,7 +530,7 @@
                                                             Grid.Column="1"
                                                             FontSize="{DynamicResource FontMicro}"
                                                             Opacity="0.6"
-                                                            Text="Online"/>
+                                                            Text="{loc:Translate Key=&quot;Online&quot;}"/>
 
                                                     </Grid>
 
@@ -547,8 +547,8 @@
                                     IsVisible="{Binding HasNoFavoriteSources}"
                                     HorizontalAlignment="Center"
                                     Icon="favorite"
-                                    Title="No pinned sources"
-                                    Description="Pin frequently used sources here."/>
+                                    Title="{loc:Translate Key=&quot;No pinned sources&quot;}"
+                                    Description="{loc:Translate Key=&quot;Pin frequently used sources here.&quot;}"/>
 
                             </StackPanel>
 
@@ -596,12 +596,12 @@
                             <TextBlock
                                 FontSize="{DynamicResource FontSectionLarge}"
                                 FontWeight="SemiBold"
-                                Text="System"/>
+                                Text="{loc:Translate Key=&quot;System&quot;}"/>
 
                             <TextBlock
                                 FontSize="{DynamicResource FontSecondary}"
                                 Opacity="0.6"
-                                Text="{Binding OsSubtitle}"/>
+                                Text="{loc:TranslateBinding Path=OsSubtitle}"/>
 
                         </StackPanel>
 
@@ -616,7 +616,7 @@
                             Background="Transparent"
                             BorderThickness="0"
                             Command="{Binding CloseSystemPanelCommand}"
-                            ToolTip.Tip="Close">
+                            ToolTip.Tip="{loc:Translate Key=&quot;Close&quot;}">
 
                             <Path
                                 Width="14"
@@ -679,13 +679,13 @@
                                         <TextBlock
                                             FontSize="{DynamicResource FontCardTitle}"
                                             FontWeight="SemiBold"
-                                            Text="{Binding OsDisplayName}"/>
+                                            Text="{loc:TranslateBinding Path=OsDisplayName}"/>
 
                                         <TextBlock
                                             FontSize="{DynamicResource FontCaption}"
                                             Opacity="0.6"
                                             TextTrimming="CharacterEllipsis"
-                                            Text="{Binding OsSubtitle}"/>
+                                            Text="{loc:TranslateBinding Path=OsSubtitle}"/>
 
                                     </StackPanel>
 
@@ -728,13 +728,13 @@
                                                     FontSize="{DynamicResource FontMicro}"
                                                     Opacity="0.6"
                                                     VerticalAlignment="Center"
-                                                    Text="{Binding Label}"/>
+                                                    Text="{loc:TranslateBinding Path=Label}"/>
 
                                                 <TextBlock
                                                     FontSize="{DynamicResource FontMicro}"
                                                     FontWeight="SemiBold"
                                                     VerticalAlignment="Center"
-                                                    Text="{Binding Value}"/>
+                                                    Text="{loc:TranslateBinding Path=Value}"/>
 
                                             </StackPanel>
 
@@ -783,14 +783,14 @@
                                                     <TextBlock
                                                         FontSize="{DynamicResource FontMicro}"
                                                         Opacity="0.6"
-                                                        Text="{Binding Title}"/>
+                                                        Text="{loc:TranslateBinding Path=Title}"/>
 
                                                     <TextBlock
                                                         FontSize="{DynamicResource FontSecondary}"
                                                         FontWeight="SemiBold"
                                                         TextTrimming="CharacterEllipsis"
-                                                        ToolTip.Tip="{Binding Value}"
-                                                        Text="{Binding Value}"/>
+                                                        ToolTip.Tip="{loc:TranslateBinding Path=Value}"
+                                                        Text="{loc:TranslateBinding Path=Value}"/>
 
                                                 </StackPanel>
 
@@ -813,7 +813,7 @@
                                     <TextBlock
                                         FontSize="{DynamicResource FontSectionLarge}"
                                         FontWeight="SemiBold"
-                                        Text="System Health"/>
+                                        Text="{loc:Translate Key=&quot;System Health&quot;}"/>
 
                                     <ProgressBar
                                         Height="8"
@@ -824,25 +824,25 @@
 
                                         <TextBlock
                                             Opacity="0.6"
-                                            Text="Health Score"/>
+                                            Text="{loc:Translate Key=&quot;Health Score&quot;}"/>
 
                                         <TextBlock
                                             Grid.Column="1"
                                             FontWeight="SemiBold"
-                                            Text="{Binding HealthScoreDisplay}"/>
+                                            Text="{loc:TranslateBinding Path=HealthScoreDisplay}"/>
 
                                     </Grid>
 
                                     <TextBlock
                                         FontSize="{DynamicResource FontCaption}"
                                         Opacity="0.6"
-                                        Text="{Binding HealthStatusText}"
+                                        Text="{loc:TranslateBinding Path=HealthStatusText}"
                                         TextWrapping="Wrap"/>
 
                                     <TextBlock
                                         FontSize="{DynamicResource FontCaption}"
                                         Opacity="0.6"
-                                        Text="{Binding HealthFactorsText}"
+                                        Text="{loc:TranslateBinding Path=HealthFactorsText}"
                                         TextWrapping="Wrap"
                                         IsVisible="{Binding IsHealthLoaded}"/>
 
@@ -863,14 +863,14 @@
         <shared:AppEmptyState
             IsVisible="{Binding HasError}"
             Icon="warning"
-            Title="Something went wrong"
-            Description="{Binding ErrorMessage}"
-            ActionText="Retry"
+            Title="{loc:Translate Key=&quot;Something went wrong&quot;}"
+            Description="{loc:TranslateBinding Path=ErrorMessage}"
+            ActionText="{loc:Translate Key=&quot;Retry&quot;}"
             ActionCommand="{Binding RefreshCommand}"/>
 
         <shared:LoadingOverlay
             IsLoading="{Binding IsLoading}"
-            Message="Loading dashboard..."/>
+            Message="{loc:Translate Key=&quot;Loading dashboard...&quot;}"/>
 
     </Grid>
 

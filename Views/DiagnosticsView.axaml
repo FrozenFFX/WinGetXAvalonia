@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -21,8 +21,8 @@
         </Grid.RowDefinitions>
 
         <shared:SectionHeader
-            Title="Diagnostics"
-            Description="Real system and environment information."/>
+            Title="{loc:Translate Key=&quot;Diagnostics&quot;}"
+            Description="{loc:Translate Key=&quot;Real system and environment information.&quot;}"/>
 
         <ScrollViewer
             Grid.Row="2"
@@ -38,36 +38,36 @@
                         <TextBlock
                             FontSize="{DynamicResource FontSectionLarge}"
                             FontWeight="SemiBold"
-                            Text="System"/>
+                            Text="{loc:Translate Key=&quot;System&quot;}"/>
 
                         <Grid
                             ColumnDefinitions="160,*"
                             RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
                             RowSpacing="8">
 
-                            <TextBlock Opacity="0.6" Text="Windows"/>
-                            <TextBlock Grid.Column="1" Text="{Binding Report.WindowsVersion}" TextWrapping="Wrap"/>
+                            <TextBlock Opacity="0.6" Text="{loc:Translate Key=&quot;Windows&quot;}"/>
+                            <TextBlock Grid.Column="1" Text="{loc:TranslateBinding Path=Report.WindowsVersion}" TextWrapping="Wrap"/>
 
-                            <TextBlock Grid.Row="1" Opacity="0.6" Text="Architecture"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Report.Architecture}"/>
+                            <TextBlock Grid.Row="1" Opacity="0.6" Text="{loc:Translate Key=&quot;Architecture&quot;}"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{loc:TranslateBinding Path=Report.Architecture}"/>
 
-                            <TextBlock Grid.Row="2" Opacity="0.6" Text="Machine"/>
-                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Report.MachineName}"/>
+                            <TextBlock Grid.Row="2" Opacity="0.6" Text="{loc:Translate Key=&quot;Machine&quot;}"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{loc:TranslateBinding Path=Report.MachineName}"/>
 
-                            <TextBlock Grid.Row="3" Opacity="0.6" Text="User"/>
-                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Report.UserName}"/>
+                            <TextBlock Grid.Row="3" Opacity="0.6" Text="{loc:Translate Key=&quot;User&quot;}"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{loc:TranslateBinding Path=Report.UserName}"/>
 
-                            <TextBlock Grid.Row="4" Opacity="0.6" Text="CPU"/>
-                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Report.CpuName}" TextWrapping="Wrap"/>
+                            <TextBlock Grid.Row="4" Opacity="0.6" Text="{loc:Translate Key=&quot;CPU&quot;}"/>
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{loc:TranslateBinding Path=Report.CpuName}" TextWrapping="Wrap"/>
 
-                            <TextBlock Grid.Row="5" Opacity="0.6" Text="Threads"/>
-                            <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding Report.ProcessorCount}"/>
+                            <TextBlock Grid.Row="5" Opacity="0.6" Text="{loc:Translate Key=&quot;Threads&quot;}"/>
+                            <TextBlock Grid.Row="5" Grid.Column="1" Text="{loc:TranslateBinding Path=Report.ProcessorCount}"/>
 
-                            <TextBlock Grid.Row="6" Opacity="0.6" Text="RAM"/>
-                            <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding Report.Ram}"/>
+                            <TextBlock Grid.Row="6" Opacity="0.6" Text="{loc:Translate Key=&quot;RAM&quot;}"/>
+                            <TextBlock Grid.Row="6" Grid.Column="1" Text="{loc:TranslateBinding Path=Report.Ram}"/>
 
-                            <TextBlock Grid.Row="7" Opacity="0.6" Text="Disk (C:)"/>
-                            <TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding Report.Disk}"/>
+                            <TextBlock Grid.Row="7" Opacity="0.6" Text="{loc:Translate Key=&quot;Disk (C:)&quot;}"/>
+                            <TextBlock Grid.Row="7" Grid.Column="1" Text="{loc:TranslateBinding Path=Report.Disk}"/>
 
                         </Grid>
 
@@ -82,21 +82,21 @@
                         <TextBlock
                             FontSize="{DynamicResource FontSectionLarge}"
                             FontWeight="SemiBold"
-                            Text="Runtime"/>
+                            Text="{loc:Translate Key=&quot;Runtime&quot;}"/>
 
                         <Grid
                             ColumnDefinitions="160,*"
                             RowDefinitions="Auto,Auto,Auto"
                             RowSpacing="8">
 
-                            <TextBlock Opacity="0.6" Text=".NET"/>
-                            <TextBlock Grid.Column="1" Text="{Binding Report.DotNetVersion}"/>
+                            <TextBlock Opacity="0.6" Text="{loc:Translate Key=&quot;.NET&quot;}"/>
+                            <TextBlock Grid.Column="1" Text="{loc:TranslateBinding Path=Report.DotNetVersion}"/>
 
-                            <TextBlock Grid.Row="1" Opacity="0.6" Text="64-bit OS"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Report.Is64Bit}"/>
+                            <TextBlock Grid.Row="1" Opacity="0.6" Text="{loc:Translate Key=&quot;64-bit OS&quot;}"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{loc:TranslateBinding Path=Report.Is64Bit}"/>
 
-                            <TextBlock Grid.Row="2" Opacity="0.6" Text="Winget"/>
-                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Report.WingetInstalled}"/>
+                            <TextBlock Grid.Row="2" Opacity="0.6" Text="{loc:Translate Key=&quot;Winget&quot;}"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{loc:TranslateBinding Path=Report.WingetInstalled}"/>
 
                         </Grid>
 
@@ -112,22 +112,22 @@
             Grid.Row="2"
             IsVisible="{Binding IsEmpty}"
             Icon="diagnostics"
-            Title="No diagnostics available"
-            Description="Run a diagnostic scan to see results."/>
+            Title="{loc:Translate Key=&quot;No diagnostics available&quot;}"
+            Description="{loc:Translate Key=&quot;Run a diagnostic scan to see results.&quot;}"/>
 
         <shared:AppEmptyState
             Grid.Row="2"
             IsVisible="{Binding HasError}"
             Icon="warning"
-            Title="Couldn't load diagnostics"
-            Description="{Binding ErrorMessage}"
-            ActionText="Retry"
+            Title="{loc:Translate Key=&quot;Couldn&apos;t load diagnostics&quot;}"
+            Description="{loc:TranslateBinding Path=ErrorMessage}"
+            ActionText="{loc:Translate Key=&quot;Retry&quot;}"
             ActionCommand="{Binding RefreshCommand}"/>
 
         <shared:LoadingOverlay
             Grid.RowSpan="3"
             IsLoading="{Binding IsLoading}"
-            Message="Collecting diagnostics..."/>
+            Message="{loc:Translate Key=&quot;Collecting diagnostics...&quot;}"/>
 
     </Grid>
 

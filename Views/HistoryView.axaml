@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -65,8 +65,8 @@
         <!-- Header -->
         <shared:SectionHeader
             Grid.Row="0"
-            Title="History"
-            Description="{Binding OperationsSummary}"/>
+            Title="{loc:Translate Key=&quot;History&quot;}"
+            Description="{loc:TranslateBinding Path=OperationsSummary}"/>
 
         <!-- Toolbar -->
         <Grid
@@ -88,14 +88,14 @@
                         MinWidth="0"
                         MaxWidth="1200"
                         HorizontalAlignment="Stretch"
-                        Watermark="Search history..."
+                        Watermark="{loc:Translate Key=&quot;Search history...&quot;}"
                         Text="{Binding SearchText}"/>
 
                     <shared:AppButton
                         Grid.Column="1"
                         Width="42"
                         Padding="0"
-                        ToolTip.Tip="Refresh history (F5)"
+                        ToolTip.Tip="{loc:Translate Key=&quot;Refresh history (F5)&quot;}"
                         Command="{Binding RefreshCommand}">
 
                         <Path
@@ -109,14 +109,14 @@
                     <shared:AppButton
                         Grid.Column="2"
                         MinWidth="110"
-                        Content="Export"
+                        Content="{loc:Translate Key=&quot;Export&quot;}"
                         Command="{Binding ExportCommand}"/>
 
                     <shared:AppButton
                         Grid.Column="3"
                         Classes="Danger"
                         MinWidth="110"
-                        Content="Clear"
+                        Content="{loc:Translate Key=&quot;Clear&quot;}"
                         Command="{Binding ClearCommand}"/>
 
                 </Grid>
@@ -142,7 +142,7 @@
                             Command="{Binding $parent[ItemsControl].DataContext.SelectFilterCommand}"
                             CommandParameter="{Binding}">
 
-                            <TextBlock Text="{Binding Label}"/>
+                            <TextBlock Text="{loc:TranslateBinding Path=Label}"/>
 
                         </ToggleButton>
                     </DataTemplate>
@@ -189,7 +189,7 @@
                                                 Margin="5,0,0,0"
                                                 FontSize="{DynamicResource FontCardTitle}"
                                                 FontWeight="SemiBold"
-                                                Text="{Binding Title}"/>
+                                                Text="{loc:TranslateBinding Path=Title}"/>
 
                                             <ItemsControl ItemsSource="{Binding Items}">
                                                 <ItemsControl.ItemsPanel>
@@ -220,8 +220,8 @@
                     <shared:AppEmptyState
                         IsVisible="{Binding IsEmpty}"
                         Icon="history"
-                        Title="No history available"
-                        Description="Operations you run will appear here.">
+                        Title="{loc:Translate Key=&quot;No history available&quot;}"
+                        Description="{loc:Translate Key=&quot;Operations you run will appear here.&quot;}">
 
                         <shared:AppEmptyState.Examples>
                             <sys:String>Installs, updates and removals in one place</sys:String>
@@ -235,9 +235,9 @@
                     <shared:AppEmptyState
                         IsVisible="{Binding HasError}"
                         Icon="warning"
-                        Title="Couldn't load history"
-                        Description="{Binding ErrorMessage}"
-                        ActionText="Retry"
+                        Title="{loc:Translate Key=&quot;Couldn&apos;t load history&quot;}"
+                        Description="{loc:TranslateBinding Path=ErrorMessage}"
+                        ActionText="{loc:Translate Key=&quot;Retry&quot;}"
                         ActionCommand="{Binding RefreshCommand}"/>
 
                 </Grid>
@@ -258,7 +258,7 @@
                         <TextBlock
                             FontSize="{DynamicResource FontSectionLarge}"
                             FontWeight="SemiBold"
-                            Text="Statistics"/>
+                            Text="{loc:Translate Key=&quot;Statistics&quot;}"/>
 
                         <Grid
                             ColumnDefinitions="*,Auto"
@@ -269,20 +269,20 @@
                                 Grid.Row="0"
                                 FontSize="{DynamicResource FontBody}"
                                 Foreground="{DynamicResource SubtextBrush}"
-                                Text="Total"/>
+                                Text="{loc:Translate Key=&quot;Total&quot;}"/>
 
                             <TextBlock
                                 Grid.Row="0"
                                 Grid.Column="1"
                                 FontSize="{DynamicResource FontBody}"
                                 FontWeight="SemiBold"
-                                Text="{Binding TotalOperations}"/>
+                                Text="{loc:TranslateBinding Path=TotalOperations}"/>
 
                             <TextBlock
                                 Grid.Row="1"
                                 FontSize="{DynamicResource FontBody}"
                                 Foreground="{DynamicResource SubtextBrush}"
-                                Text="Successful"/>
+                                Text="{loc:Translate Key=&quot;Successful&quot;}"/>
 
                             <TextBlock
                                 Grid.Row="1"
@@ -290,13 +290,13 @@
                                 FontSize="{DynamicResource FontBody}"
                                 FontWeight="SemiBold"
                                 Foreground="{DynamicResource SuccessBrush}"
-                                Text="{Binding SuccessfulOperations}"/>
+                                Text="{loc:TranslateBinding Path=SuccessfulOperations}"/>
 
                             <TextBlock
                                 Grid.Row="2"
                                 FontSize="{DynamicResource FontBody}"
                                 Foreground="{DynamicResource SubtextBrush}"
-                                Text="Failed"/>
+                                Text="{loc:Translate Key=&quot;Failed&quot;}"/>
 
                             <TextBlock
                                 Grid.Row="2"
@@ -304,20 +304,20 @@
                                 FontSize="{DynamicResource FontBody}"
                                 FontWeight="SemiBold"
                                 Foreground="{DynamicResource DangerBrush}"
-                                Text="{Binding FailedOperations}"/>
+                                Text="{loc:TranslateBinding Path=FailedOperations}"/>
 
                             <TextBlock
                                 Grid.Row="3"
                                 FontSize="{DynamicResource FontBody}"
                                 Foreground="{DynamicResource SubtextBrush}"
-                                Text="Today"/>
+                                Text="{loc:Translate Key=&quot;Today&quot;}"/>
 
                             <TextBlock
                                 Grid.Row="3"
                                 Grid.Column="1"
                                 FontSize="{DynamicResource FontBody}"
                                 FontWeight="SemiBold"
-                                Text="{Binding TodayOperations}"/>
+                                Text="{loc:TranslateBinding Path=TodayOperations}"/>
 
                         </Grid>
 
@@ -325,13 +325,13 @@
 
                         <shared:AppButton
                             HorizontalAlignment="Stretch"
-                            Content="Export History"
+                            Content="{loc:Translate Key=&quot;Export History&quot;}"
                             Command="{Binding ExportCommand}"/>
 
                         <shared:AppButton
                             HorizontalAlignment="Stretch"
                             Classes="Danger"
-                            Content="Clear History"
+                            Content="{loc:Translate Key=&quot;Clear History&quot;}"
                             Command="{Binding ClearCommand}"/>
 
                     </StackPanel>

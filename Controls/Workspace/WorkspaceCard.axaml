@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:models="using:WinGetXAvalonia.Models"
@@ -60,13 +60,13 @@
                         <TextBlock
                             FontWeight="SemiBold"
                             FontSize="{DynamicResource FontCardTitle}"
-                            Text="{Binding Name}"
+                            Text="{loc:TranslateBinding Path=Name}"
                             TextTrimming="CharacterEllipsis"/>
 
                         <TextBlock
                             Opacity="0.7"
                             FontSize="{DynamicResource FontCaption}"
-                            Text="{Binding Description}"
+                            Text="{loc:TranslateBinding Path=Description}"
                             TextWrapping="Wrap"
                             TextTrimming="CharacterEllipsis"
                             MaxLines="2"/>
@@ -108,7 +108,7 @@
                     <shared:AppButton
                         HorizontalAlignment="Left"
                         MinWidth="64"
-                        Content="Open"
+                        Content="{loc:Translate Key=&quot;Open&quot;}"
                         Command="{Binding $parent[ListBox].DataContext.OpenCommand}"
                         CommandParameter="{Binding}"/>
 
@@ -119,7 +119,7 @@
                         Height="36"
                         Padding="4,0"
                         HorizontalAlignment="Right"
-                        ToolTip.Tip="More actions"
+                        ToolTip.Tip="{loc:Translate Key=&quot;More actions&quot;}"
                         Click="ShowContextMenu">
 
                         <Path
@@ -161,19 +161,19 @@
         <ContextMenu>
 
             <MenuItem
-                Header="Open"
+                Header="{loc:Translate Key=&quot;Open&quot;}"
                 Command="{Binding $parent[ListBox].DataContext.OpenCommand}"
                 CommandParameter="{Binding}"/>
 
             <Separator/>
 
             <MenuItem
-                Header="Edit"
+                Header="{loc:Translate Key=&quot;Edit&quot;}"
                 Command="{Binding $parent[ListBox].DataContext.EditCommand}"
                 CommandParameter="{Binding}"/>
 
             <MenuItem
-                Header="Export"
+                Header="{loc:Translate Key=&quot;Export&quot;}"
                 Command="{Binding $parent[ListBox].DataContext.ExportCommand}"
                 CommandParameter="{Binding}"/>
 
@@ -181,7 +181,7 @@
 
             <MenuItem
                 Classes="Danger"
-                Header="Delete"
+                Header="{loc:Translate Key=&quot;Delete&quot;}"
                 Command="{Binding $parent[ListBox].DataContext.DeleteWorkspaceCommand}"
                 CommandParameter="{Binding}"/>
 

@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -24,8 +24,8 @@
 
         <shared:SectionHeader
             Grid.Row="0"
-            Title="Game Mode"
-            Description="Gaming essentials for streaming and play."/>
+            Title="{loc:Translate Key=&quot;Game Mode&quot;}"
+            Description="{loc:Translate Key=&quot;Gaming essentials for streaming and play.&quot;}"/>
 
         <ScrollViewer
             Grid.Row="2"
@@ -37,7 +37,7 @@
                 <shared:AppButton
                     Classes="Accent"
                     HorizontalAlignment="Left"
-                    Content="Install All"
+                    Content="{loc:Translate Key=&quot;Install All&quot;}"
                     Command="{Binding InstallAllCommand}"/>
 
                 <ItemsControl
@@ -80,13 +80,13 @@
 
                                         <TextBlock
                                             FontWeight="SemiBold"
-                                            Text="{Binding DisplayName}"
+                                            Text="{loc:TranslateBinding Path=DisplayName}"
                                             TextTrimming="CharacterEllipsis"/>
 
                                         <TextBlock
                                             Opacity="0.6"
                                             FontSize="{DynamicResource FontCaption}"
-                                            Text="{Binding StateText}"
+                                            Text="{loc:TranslateBinding Path=StateText}"
                                             TextTrimming="CharacterEllipsis"/>
 
                                     </StackPanel>
@@ -95,14 +95,14 @@
                                         Grid.Column="2"
                                         Opacity="0.6"
                                         FontSize="{DynamicResource FontCaption}"
-                                        Text="{Binding Id}"
+                                        Text="{loc:TranslateBinding Path=Id}"
                                         TextTrimming="CharacterEllipsis"/>
 
                                     <shared:AppButton
                                         Grid.Column="3"
                                         IsEnabled="{Binding CanInstall}"
                                         MinWidth="76"
-                                        Content="Install"
+                                        Content="{loc:Translate Key=&quot;Install&quot;}"
                                         Command="{Binding $parent[ItemsControl].DataContext.InstallCommand}"
                                         CommandParameter="{Binding}"/>
 
@@ -124,22 +124,22 @@
             Grid.Row="2"
             IsVisible="{Binding IsEmpty}"
             Icon="automation"
-            Title="No gaming packages found"
-            Description="Install games to see them here."/>
+            Title="{loc:Translate Key=&quot;No gaming packages found&quot;}"
+            Description="{loc:Translate Key=&quot;Install games to see them here.&quot;}"/>
 
         <shared:AppEmptyState
             Grid.Row="2"
             IsVisible="{Binding HasError}"
             Icon="warning"
-            Title="Couldn't load game mode"
-            Description="{Binding ErrorMessage}"
-            ActionText="Retry"
+            Title="{loc:Translate Key=&quot;Couldn&apos;t load game mode&quot;}"
+            Description="{loc:TranslateBinding Path=ErrorMessage}"
+            ActionText="{loc:Translate Key=&quot;Retry&quot;}"
             ActionCommand="{Binding RefreshCommand}"/>
 
         <shared:LoadingOverlay
             Grid.RowSpan="3"
             IsLoading="{Binding IsLoading}"
-            Message="Scanning gaming setup..."/>
+            Message="{loc:Translate Key=&quot;Scanning gaming setup...&quot;}"/>
 
     </Grid>
 

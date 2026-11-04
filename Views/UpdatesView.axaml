@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -35,9 +35,9 @@
         <!-- Header -->
         <shared:SectionHeader
             Grid.Row="0"
-            Title="Updates"
-            Description="Manage available package updates."
-            ActionText="Refresh"
+            Title="{loc:Translate Key=&quot;Updates&quot;}"
+            Description="{loc:Translate Key=&quot;Manage available package updates.&quot;}"
+            ActionText="{loc:Translate Key=&quot;Refresh&quot;}"
             ActionCommand="{Binding RefreshCommand}"/>
 
         <!-- Toolbar + Bulk Actions -->
@@ -54,7 +54,7 @@
                 SelectedSort="{Binding SelectedSort}"
                 SelectedFilter="{Binding SelectedFilter}"
                 CountLabel="Updates"
-                ActionText="Update All"
+                ActionText="{loc:Translate Key=&quot;Update All&quot;}"
                 ActionCommand="{Binding UpgradeAllCommand}"/>
 
             <Border
@@ -80,7 +80,7 @@
                         Grid.Column="2"
                         Classes="ghost"
                         MinWidth="110"
-                        Content="Deselect All"
+                        Content="{loc:Translate Key=&quot;Deselect All&quot;}"
                         Command="{Binding DeselectAllCommand}"/>
 
                     <shared:AppButton
@@ -120,13 +120,13 @@
                         FontSize="{DynamicResource FontCaption}"
                         VerticalAlignment="Center"
                         TextTrimming="CharacterEllipsis"
-                        Text="{Binding BulkUpdateStatus}"/>
+                        Text="{loc:TranslateBinding Path=BulkUpdateStatus}"/>
 
                     <shared:AppButton
                         Grid.Column="3"
                         Classes="ghost"
                         MinWidth="110"
-                        Content="Cancel"
+                        Content="{loc:Translate Key=&quot;Cancel&quot;}"
                         IsVisible="{Binding IsBulkUpdating}"
                         Command="{Binding CancelBulkCommand}"/>
 
@@ -173,16 +173,16 @@
                     <shared:AppEmptyState
                         IsVisible="{Binding IsEmpty}"
                         Icon="update"
-                        Title="No updates available"
-                        Description="All packages are up to date."/>
+                        Title="{loc:Translate Key=&quot;No updates available&quot;}"
+                        Description="{loc:Translate Key=&quot;All packages are up to date.&quot;}"/>
 
                     <!-- Error state -->
                     <shared:AppEmptyState
                         IsVisible="{Binding HasError}"
                         Icon="warning"
-                        Title="Couldn't load updates"
-                        Description="{Binding ErrorMessage}"
-                        ActionText="Retry"
+                        Title="{loc:Translate Key=&quot;Couldn&apos;t load updates&quot;}"
+                        Description="{loc:TranslateBinding Path=ErrorMessage}"
+                        ActionText="{loc:Translate Key=&quot;Retry&quot;}"
                         ActionCommand="{Binding RefreshCommand}"/>
 
                 </Grid>

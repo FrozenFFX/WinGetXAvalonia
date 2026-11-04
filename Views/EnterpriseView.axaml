@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -32,8 +32,8 @@
 
         <shared:SectionHeader
             Grid.Row="0"
-            Title="Enterprise"
-            Description="Manage your company fleet — remotely."/>
+            Title="{loc:Translate Key=&quot;Enterprise&quot;}"
+            Description="{loc:Translate Key=&quot;Manage your company fleet — remotely.&quot;}"/>
 
         <TabControl
             Grid.Row="2"
@@ -43,7 +43,7 @@
 
             <!-- ─────────── This Computer ─────────── -->
 
-            <TabItem Header="workspace This Computer">
+            <TabItem Header="{loc:Translate Key=&quot;workspace This Computer&quot;}">
 
                 <Grid RowDefinitions="Auto,12,Auto,12,*">
 
@@ -63,7 +63,7 @@
                                 CornerRadius="26"
                                 Background="{DynamicResource SurfaceBrush}">
                                 <TextBlock
-                                    Text="windows"
+                                    Text="{loc:Translate Key=&quot;windows&quot;}"
                                     FontSize="26"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"/>
@@ -77,7 +77,7 @@
                                 <TextBlock
                                     FontSize="{DynamicResource FontSubtitle}"
                                     FontWeight="SemiBold"
-                                    Text="{Binding LocalMachineName}"/>
+                                    Text="{loc:TranslateBinding Path=LocalMachineName}"/>
 
                                 <TextBlock
                                     FontSize="{DynamicResource FontSecondary}"
@@ -101,12 +101,12 @@
                                     FontSize="{DynamicResource FontCaption}"
                                     FontWeight="SemiBold"
                                     Foreground="{DynamicResource AccentBrush}"
-                                    Text="Local machine only"/>
+                                    Text="{loc:Translate Key=&quot;Local machine only&quot;}"/>
 
                                 <TextBlock
                                     FontSize="{DynamicResource FontMicro}"
                                     Opacity="0.6"
-                                    Text="Remote management is not configured."/>
+                                    Text="{loc:Translate Key=&quot;Remote management is not configured.&quot;}"/>
 
                             </StackPanel>
 
@@ -120,29 +120,29 @@
 
                             <shared:AppCard>
                                 <StackPanel Spacing="2">
-                                    <TextBlock Text="CPU" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
-                                    <TextBlock Text="{Binding LocalCpuName}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{loc:Translate Key=&quot;CPU&quot;}" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
+                                    <TextBlock Text="{loc:TranslateBinding Path=LocalCpuName}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </shared:AppCard>
 
                             <shared:AppCard Grid.Column="1">
                                 <StackPanel Spacing="2">
-                                    <TextBlock Text="Threads" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
-                                    <TextBlock Text="{Binding LocalCpuThreads}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{loc:Translate Key=&quot;Threads&quot;}" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
+                                    <TextBlock Text="{loc:TranslateBinding Path=LocalCpuThreads}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
                                 </StackPanel>
                             </shared:AppCard>
 
                             <shared:AppCard Grid.Column="2">
                                 <StackPanel Spacing="2">
-                                    <TextBlock Text="RAM" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
-                                    <TextBlock Text="{Binding LocalRam}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{loc:Translate Key=&quot;RAM&quot;}" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
+                                    <TextBlock Text="{loc:TranslateBinding Path=LocalRam}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
                                 </StackPanel>
                             </shared:AppCard>
 
                             <shared:AppCard Grid.Column="3">
                                 <StackPanel Spacing="2">
-                                    <TextBlock Text="GPU" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
-                                    <TextBlock Text="{Binding LocalGpu}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{loc:Translate Key=&quot;GPU&quot;}" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
+                                    <TextBlock Text="{loc:TranslateBinding Path=LocalGpu}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </shared:AppCard>
 
@@ -152,15 +152,15 @@
 
                             <shared:AppCard>
                                 <StackPanel Spacing="2">
-                                    <TextBlock Text="Pending Updates (winget)" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
-                                    <TextBlock Text="{Binding PendingUpdateCount}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{loc:Translate Key=&quot;Pending Updates (winget)&quot;}" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
+                                    <TextBlock Text="{loc:TranslateBinding Path=PendingUpdateCount}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
                                 </StackPanel>
                             </shared:AppCard>
 
                             <shared:AppCard Grid.Column="1">
                                 <StackPanel Spacing="2">
-                                    <TextBlock Text="Failed Operations (history)" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
-                                    <TextBlock Text="{Binding FailedOperationsCount}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{loc:Translate Key=&quot;Failed Operations (history)&quot;}" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
+                                    <TextBlock Text="{loc:TranslateBinding Path=FailedOperationsCount}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
                                 </StackPanel>
                             </shared:AppCard>
 
@@ -174,13 +174,13 @@
 
                             <Grid ColumnDefinitions="*,Auto">
 
-                                <TextBlock FontSize="{DynamicResource FontButton}" FontWeight="SemiBold" Text="System Details"/>
+                                <TextBlock FontSize="{DynamicResource FontButton}" FontWeight="SemiBold" Text="{loc:Translate Key=&quot;System Details&quot;}"/>
 
                                 <TextBlock
                                     Grid.Column="1"
                                     FontSize="{DynamicResource FontSecondary}"
                                     Opacity="0.6"
-                                    Text="Read from Windows"/>
+                                    Text="{loc:Translate Key=&quot;Read from Windows&quot;}"/>
 
                             </Grid>
 
@@ -209,13 +209,13 @@
                                                 Grid.Column="1"
                                                 FontSize="{DynamicResource FontCaption}"
                                                 Opacity="0.6"
-                                                Text="{Binding Label}"/>
+                                                Text="{loc:TranslateBinding Path=Label}"/>
 
                                             <TextBlock
                                                 Grid.Column="2"
                                                 FontSize="{DynamicResource FontCaption}"
                                                 FontWeight="SemiBold"
-                                                Text="{Binding Value}"
+                                                Text="{loc:TranslateBinding Path=Value}"
                                                 TextWrapping="Wrap"/>
 
                                         </Grid>
@@ -235,7 +235,7 @@
 
             <!-- ─────────── Dashboard ─────────── -->
 
-            <TabItem Header="enterprise Dashboard">
+            <TabItem Header="{loc:Translate Key=&quot;enterprise Dashboard&quot;}">
 
                 <Grid RowDefinitions="Auto,16,*">
 
@@ -295,13 +295,13 @@
 
                                     <shared:SearchBox
                                         Grid.Column="0"
-                                        Watermark="Search computers..."
+                                        Watermark="{loc:Translate Key=&quot;Search computers...&quot;}"
                                         Text="{Binding SearchText}"/>
 
                                 <shared:AppButton
                                     Grid.Column="2"
                                     Width="44"
-                                    ToolTip.Tip="Refresh"
+                                    ToolTip.Tip="{loc:Translate Key=&quot;Refresh&quot;}"
                                     Command="{Binding LoadCommand}">
 
                                     <Path
@@ -347,7 +347,7 @@
                                                             Background="{DynamicResource SurfaceBrush}">
 
                                                             <TextBlock
-                                                                Text="windows"
+                                                                Text="{loc:Translate Key=&quot;windows&quot;}"
                                                                 FontSize="{DynamicResource FontSectionLarge}"
                                                                 HorizontalAlignment="Center"
                                                                 VerticalAlignment="Center"/>
@@ -359,13 +359,13 @@
                                                             Spacing="2">
 
                                                             <TextBlock
-                                                                Text="{Binding Name}"
+                                                                Text="{loc:TranslateBinding Path=Name}"
                                                                 FontWeight="SemiBold"
                                                                 TextTrimming="CharacterEllipsis"
                                                                 MaxLines="1"/>
 
                                                             <TextBlock
-                                                                Text="{Binding Os}"
+                                                                Text="{loc:TranslateBinding Path=Os}"
                                                                 FontSize="{DynamicResource FontSecondary}"
                                                                 Opacity="0.6"
                                                                 TextTrimming="CharacterEllipsis"
@@ -388,7 +388,7 @@
                                                             <TextBlock
                                                                 FontSize="{DynamicResource FontSecondary}"
                                                                 FontWeight="SemiBold"
-                                                                Text="{Binding StateText}"/>
+                                                                Text="{loc:TranslateBinding Path=StateText}"/>
 
                                                             <TextBlock
                                                                 FontSize="{DynamicResource FontMicro}"
@@ -410,15 +410,15 @@
                                     <shared:AppEmptyState
                                         IsVisible="{Binding IsEmpty}"
                                         Icon="enterprise"
-                                        Title="No computers in the fleet"
-                                        Description="Add managed devices to start using Enterprise."/>
+                                        Title="{loc:Translate Key=&quot;No computers in the fleet&quot;}"
+                                        Description="{loc:Translate Key=&quot;Add managed devices to start using Enterprise.&quot;}"/>
 
                                     <shared:AppEmptyState
                                         IsVisible="{Binding HasError}"
                                         Icon="warning"
-                                        Title="Couldn't load the fleet"
-                                        Description="{Binding ErrorMessage}"
-                                        ActionText="Retry"
+                                        Title="{loc:Translate Key=&quot;Couldn&apos;t load the fleet&quot;}"
+                                        Description="{loc:TranslateBinding Path=ErrorMessage}"
+                                        ActionText="{loc:Translate Key=&quot;Retry&quot;}"
                                         ActionCommand="{Binding LoadCommand}"/>
 
                                 </Grid>
@@ -449,12 +449,12 @@
                                                     <TextBlock
                                                         FontSize="{DynamicResource FontSectionLarge}"
                                                         FontWeight="SemiBold"
-                                                        Text="{Binding SelectedComputer.Name}"/>
+                                                        Text="{loc:TranslateBinding Path=SelectedComputer.Name}"/>
 
                                                     <TextBlock
                                                         FontSize="{DynamicResource FontSecondary}"
                                                         Opacity="0.6"
-                                                        Text="{Binding SelectedComputer.Os}"/>
+                                                        Text="{loc:TranslateBinding Path=SelectedComputer.Os}"/>
 
                                                 </StackPanel>
 
@@ -463,7 +463,7 @@
                                                     FontSize="{DynamicResource FontCaption}"
                                                     FontWeight="SemiBold"
                                                     VerticalAlignment="Center"
-                                                    Text="{Binding SelectedComputer.StateText}"/>
+                                                    Text="{loc:TranslateBinding Path=SelectedComputer.StateText}"/>
 
                                             </Grid>
 
@@ -471,29 +471,29 @@
 
                                                 <shared:AppCard Grid.Column="0">
                                                     <StackPanel Spacing="2">
-                                                        <TextBlock Text="CPU" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
-                                                        <TextBlock Text="{Binding SelectedComputer.Cpu}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                                        <TextBlock Text="{loc:Translate Key=&quot;CPU&quot;}" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
+                                                        <TextBlock Text="{loc:TranslateBinding Path=SelectedComputer.Cpu}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold" TextWrapping="Wrap"/>
                                                     </StackPanel>
                                                 </shared:AppCard>
 
                                                 <shared:AppCard Grid.Column="1">
                                                     <StackPanel Spacing="2">
-                                                        <TextBlock Text="RAM" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
-                                                        <TextBlock Text="{Binding SelectedComputer.Ram}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{loc:Translate Key=&quot;RAM&quot;}" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
+                                                        <TextBlock Text="{loc:TranslateBinding Path=SelectedComputer.Ram}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
                                                     </StackPanel>
                                                 </shared:AppCard>
 
                                                 <shared:AppCard Grid.Column="2">
                                                     <StackPanel Spacing="2">
-                                                        <TextBlock Text="Pending Updates" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
-                                                        <TextBlock Text="{Binding SelectedComputer.PendingUpdates}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{loc:Translate Key=&quot;Pending Updates&quot;}" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
+                                                        <TextBlock Text="{loc:TranslateBinding Path=SelectedComputer.PendingUpdates}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
                                                     </StackPanel>
                                                 </shared:AppCard>
 
                                                 <shared:AppCard Grid.Column="3">
                                                     <StackPanel Spacing="2">
-                                                        <TextBlock Text="Critical" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
-                                                        <TextBlock Text="{Binding SelectedComputer.CriticalUpdates}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{loc:Translate Key=&quot;Critical&quot;}" FontSize="{DynamicResource FontMicro}" Opacity="0.6"/>
+                                                        <TextBlock Text="{loc:TranslateBinding Path=SelectedComputer.CriticalUpdates}" FontSize="{DynamicResource FontCaption}" FontWeight="SemiBold"/>
                                                     </StackPanel>
                                                 </shared:AppCard>
 
@@ -503,34 +503,34 @@
 
                                             <StackPanel Spacing="6">
 
-                                                <TextBlock FontSize="{DynamicResource FontButton}" FontWeight="SemiBold" Text="Remote Installation"/>
+                                                <TextBlock FontSize="{DynamicResource FontButton}" FontWeight="SemiBold" Text="{loc:Translate Key=&quot;Remote Installation&quot;}"/>
 
                                                 <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10">
 
                                                     <shared:AppButton
                                                         Classes="Accent"
-                                                        Content="Chrome"
+                                                        Content="{loc:Translate Key=&quot;Chrome&quot;}"
                                                         Command="{Binding InstallPackageCommand}"
                                                         CommandParameter="Google Chrome"/>
 
                                                     <shared:AppButton
                                                         Grid.Column="1"
                                                         Classes="Accent"
-                                                        Content="Git"
+                                                        Content="{loc:Translate Key=&quot;Git&quot;}"
                                                         Command="{Binding InstallPackageCommand}"
                                                         CommandParameter="Git"/>
 
                                                     <shared:AppButton
                                                         Grid.Column="2"
                                                         Classes="Accent"
-                                                        Content="VSCode"
+                                                        Content="{loc:Translate Key=&quot;VSCode&quot;}"
                                                         Command="{Binding InstallPackageCommand}"
                                                         CommandParameter="Visual Studio Code"/>
 
                                                     <shared:AppButton
                                                         Grid.Column="3"
                                                         Classes="Danger"
-                                                        Content="Restart"
+                                                        Content="{loc:Translate Key=&quot;Restart&quot;}"
                                                         Command="{Binding RestartCommand}"/>
 
                                                 </Grid>
@@ -539,7 +539,7 @@
 
                                             <StackPanel Spacing="6">
 
-                                                <TextBlock FontSize="{DynamicResource FontButton}" FontWeight="SemiBold" Text="Send PowerShell"/>
+                                                <TextBlock FontSize="{DynamicResource FontButton}" FontWeight="SemiBold" Text="{loc:Translate Key=&quot;Send PowerShell&quot;}"/>
 
                                                 <TextBox
                                                     AcceptsReturn="True"
@@ -551,7 +551,7 @@
                                                 <shared:AppButton
                                                     HorizontalAlignment="Right"
                                                     MinWidth="140"
-                                                    Content="Send Script"
+                                                    Content="{loc:Translate Key=&quot;Send Script&quot;}"
                                                     Command="{Binding SendPowerShellCommand}"/>
 
                                             </StackPanel>
@@ -562,13 +562,13 @@
 
                                                 <Grid ColumnDefinitions="*,Auto">
 
-                                                    <TextBlock FontSize="{DynamicResource FontButton}" FontWeight="SemiBold" Text="Command Log"/>
+                                                    <TextBlock FontSize="{DynamicResource FontButton}" FontWeight="SemiBold" Text="{loc:Translate Key=&quot;Command Log&quot;}"/>
 
                                                     <TextBlock
                                                         Grid.Column="1"
                                                         FontSize="{DynamicResource FontSecondary}"
                                                         Opacity="0.6"
-                                                        Text="Last actions"/>
+                                                        Text="{loc:Translate Key=&quot;Last actions&quot;}"/>
 
                                                 </Grid>
 
@@ -587,7 +587,7 @@
 
                                                                     <TextBlock
                                                                         Grid.Column="0"
-                                                                     Text="update"
+                                                                     Text="{loc:Translate Key=&quot;update&quot;}"
                                                                      VerticalAlignment="Center"/>
 
                                                                     <StackPanel Grid.Column="1" Spacing="1">
@@ -595,7 +595,7 @@
                                                                         <TextBlock
                                                                             FontSize="{DynamicResource FontCaption}"
                                                                             FontWeight="SemiBold"
-                                                                            Text="{Binding Payload}"
+                                                                            Text="{loc:TranslateBinding Path=Payload}"
                                                                             TextTrimming="CharacterEllipsis"
                                                                             MaxLines="1"/>
 
@@ -615,7 +615,7 @@
                                                                         Grid.Column="2"
                                                                         FontSize="{DynamicResource FontSecondary}"
                                                                         VerticalAlignment="Center"
-                                                                        Text="{Binding Status}"/>
+                                                                        Text="{loc:TranslateBinding Path=Status}"/>
 
                                                                 </Grid>
 
@@ -635,8 +635,8 @@
                                     <shared:AppEmptyState
                                         IsVisible="{Binding IsNothingSelected}"
                                         Icon="windows"
-                                        Title="Select a computer"
-                                        Description="Choose a device to run remote commands."/>
+                                        Title="{loc:Translate Key=&quot;Select a computer&quot;}"
+                                        Description="{loc:Translate Key=&quot;Choose a device to run remote commands.&quot;}"/>
 
                                 </Panel>
 
@@ -652,7 +652,7 @@
 
             <!-- ─────────── Policies ─────────── -->
 
-            <TabItem Header="history Policies">
+            <TabItem Header="{loc:Translate Key=&quot;history Policies&quot;}">
 
                 <Grid RowDefinitions="Auto,10,*" Margin="0,4,0,0">
 
@@ -661,18 +661,18 @@
                         <shared:AppButton
                             Classes="Accent"
                             HorizontalAlignment="Stretch"
-                            Content="New Policy"
+                            Content="{loc:Translate Key=&quot;New Policy&quot;}"
                             Command="{Binding NewPolicyCommand}"/>
 
                         <shared:AppButton
                             Grid.Column="1"
-                            Content="Check Violations"
+                            Content="{loc:Translate Key=&quot;Check Violations&quot;}"
                             Command="{Binding EvaluatePoliciesCommand}"/>
 
                         <shared:AppButton
                             Grid.Column="2"
                             Width="44"
-                            ToolTip.Tip="Refresh"
+                            ToolTip.Tip="{loc:Translate Key=&quot;Refresh&quot;}"
                             Command="{Binding LoadCommand}">
 
                             <Path
@@ -710,12 +710,12 @@
 
                                                     <TextBlock
                                                         FontWeight="SemiBold"
-                                                        Text="{Binding Name}"/>
+                                                        Text="{loc:TranslateBinding Path=Name}"/>
 
                                                     <TextBlock
                                                         FontSize="{DynamicResource FontSecondary}"
                                                         Opacity="0.6"
-                                                        Text="{Binding Description}"
+                                                        Text="{loc:TranslateBinding Path=Description}"
                                                         TextTrimming="CharacterEllipsis"
                                                         MaxLines="1"/>
 
@@ -731,8 +731,8 @@
                                 <shared:AppEmptyState
                                     IsVisible="{Binding IsEmpty}"
                                     Icon="history"
-                                    Title="No policies"
-                                    Description="Create your first company policy."/>
+                                    Title="{loc:Translate Key=&quot;No policies&quot;}"
+                                    Description="{loc:Translate Key=&quot;Create your first company policy.&quot;}"/>
 
                             </Grid>
 
@@ -752,28 +752,28 @@
                                     <TextBlock
                                         FontSize="{DynamicResource FontSectionLarge}"
                                         FontWeight="SemiBold"
-                                        Text="{Binding EditorPolicyTitle}"/>
+                                        Text="{loc:TranslateBinding Path=EditorPolicyTitle}"/>
 
                                     <TextBlock
                                         FontSize="{DynamicResource FontSecondary}"
                                         Opacity="0.6"
-                                        Text="Policies are enforced across the fleet."/>
+                                        Text="{loc:Translate Key=&quot;Policies are enforced across the fleet.&quot;}"/>
 
                                 </StackPanel>
 
                                 <StackPanel Spacing="6">
 
-                                    <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="Name"/>
+                                    <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="{loc:Translate Key=&quot;Name&quot;}"/>
 
                                     <TextBox
-                                        PlaceholderText="e.g. No Steam"
+                                        PlaceholderText="{loc:Translate Key=&quot;e.g. No Steam&quot;}"
                                         Text="{Binding PolicyName}"/>
 
                                 </StackPanel>
 
                                 <StackPanel Spacing="6">
 
-                                    <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="Action"/>
+                                    <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="{loc:Translate Key=&quot;Action&quot;}"/>
 
                                     <ComboBox
                                         ItemsSource="{Binding PolicyActionOptions}"
@@ -784,24 +784,24 @@
 
                                 <StackPanel Spacing="6">
 
-                                    <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="Package"/>
+                                    <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="{loc:Translate Key=&quot;Package&quot;}"/>
 
                                     <TextBox
-                                        PlaceholderText="e.g. Steam"
+                                        PlaceholderText="{loc:Translate Key=&quot;e.g. Steam&quot;}"
                                         Text="{Binding PolicyPackage}"/>
 
                                 </StackPanel>
 
                                 <StackPanel Spacing="6">
 
-                                    <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="Description"/>
+                                    <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="{loc:Translate Key=&quot;Description&quot;}"/>
 
                                     <TextBox
                                         AcceptsReturn="True"
                                         MinHeight="70"
                                         TextWrapping="Wrap"
                                         VerticalContentAlignment="Top"
-                                        PlaceholderText="What does this policy do?"
+                                        PlaceholderText="{loc:Translate Key=&quot;What does this policy do?&quot;}"
                                         Text="{Binding PolicyDescription}"/>
 
                                 </StackPanel>
@@ -809,7 +809,7 @@
                                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
 
                                     <CheckBox
-                                        Content="Enabled"
+                                        Content="{loc:Translate Key=&quot;Enabled&quot;}"
                                         IsChecked="{Binding PolicyEnabled}"
                                         VerticalAlignment="Center"/>
 
@@ -822,14 +822,14 @@
                                     <shared:AppButton
                                         Classes="Accent"
                                         MinWidth="120"
-                                        Content="Save"
+                                        Content="{loc:Translate Key=&quot;Save&quot;}"
                                         Command="{Binding SavePolicyCommand}"/>
 
                                     <shared:AppButton
                                         Grid.Column="1"
                                         Classes="Danger"
                                         MinWidth="110"
-                                        Content="Delete"
+                                        Content="{loc:Translate Key=&quot;Delete&quot;}"
                                         Command="{Binding DeletePolicyCommand}"
                                         IsVisible="{Binding IsEditingPolicy}"/>
 
@@ -841,7 +841,7 @@
 
                                     <Grid ColumnDefinitions="*,Auto">
 
-                                        <TextBlock FontSize="{DynamicResource FontButton}" FontWeight="SemiBold" Text="Violations"/>
+                                        <TextBlock FontSize="{DynamicResource FontButton}" FontWeight="SemiBold" Text="{loc:Translate Key=&quot;Violations&quot;}"/>
 
                                         <TextBlock
                                             Grid.Column="1"
@@ -875,7 +875,7 @@
                                                         <TextBlock
                                                             FontSize="{DynamicResource FontSecondary}"
                                                             Opacity="0.7"
-                                                            Text="{Binding Message}"
+                                                            Text="{loc:TranslateBinding Path=Message}"
                                                             TextWrapping="Wrap"/>
 
                                                     </StackPanel>
@@ -890,8 +890,8 @@
                                     <shared:AppEmptyState
                                         IsVisible="{Binding !HasViolations}"
                                         Icon="success"
-                                        Title="No violations"
-                                        Description="Run Check Violations to scan the fleet."/>
+                                        Title="{loc:Translate Key=&quot;No violations&quot;}"
+                                        Description="{loc:Translate Key=&quot;Run Check Violations to scan the fleet.&quot;}"/>
 
                                 </StackPanel>
 
@@ -907,7 +907,7 @@
 
             <!-- ─────────── Reports ─────────── -->
 
-            <TabItem Header="diagnostics Reports">
+            <TabItem Header="{loc:Translate Key=&quot;diagnostics Reports&quot;}">
 
                 <StackPanel Spacing="14" Margin="0,4,0,0">
 
@@ -917,12 +917,12 @@
 
                             <StackPanel Spacing="2">
 
-                                <TextBlock FontSize="{DynamicResource FontSubtitle}" FontWeight="SemiBold" Text="Weekly Fleet Report"/>
+                                <TextBlock FontSize="{DynamicResource FontSubtitle}" FontWeight="SemiBold" Text="{loc:Translate Key=&quot;Weekly Fleet Report&quot;}"/>
 
                                 <TextBlock
                                     FontSize="{DynamicResource FontSecondary}"
                                     Opacity="0.6"
-                                    Text="Export the current state of your fleet in multiple formats."/>
+                                    Text="{loc:Translate Key=&quot;Export the current state of your fleet in multiple formats.&quot;}"/>
 
                             </StackPanel>
 
@@ -932,7 +932,7 @@
                                 <Run Text="{Binding FleetSummary, Mode=OneWay}"/>
                                 <Run Text="•"/>
                                 <Run Text="{Binding PendingUpdates, Mode=OneWay}"/>
-                                <Run Text=" pending updates"/>
+                                <Run Text="{loc:Translate Key=&quot; pending updates&quot;}"/>
                             </TextBlock>
 
                             <shared:AppSeparator/>
@@ -940,27 +940,27 @@
                             <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="10">
 
                                 <shared:AppButton
-                                    Content="JSON"
+                                    Content="{loc:Translate Key=&quot;JSON&quot;}"
                                     Command="{Binding ExportJsonCommand}"/>
 
                                 <shared:AppButton
                                     Grid.Column="1"
-                                    Content="CSV"
+                                    Content="{loc:Translate Key=&quot;CSV&quot;}"
                                     Command="{Binding ExportCsvCommand}"/>
 
                                 <shared:AppButton
                                     Grid.Column="2"
-                                    Content="HTML"
+                                    Content="{loc:Translate Key=&quot;HTML&quot;}"
                                     IsEnabled="False"/>
 
                                 <shared:AppButton
                                     Grid.Column="3"
-                                    Content="Excel"
+                                    Content="{loc:Translate Key=&quot;Excel&quot;}"
                                     IsEnabled="False"/>
 
                                 <shared:AppButton
                                     Grid.Column="4"
-                                    Content="PDF"
+                                    Content="{loc:Translate Key=&quot;PDF&quot;}"
                                     IsEnabled="False"/>
 
                             </Grid>
@@ -968,7 +968,7 @@
                             <TextBlock
                                 FontSize="{DynamicResource FontMicro}"
                                 Opacity="0.5"
-                                Text="HTML, Excel and PDF exports are planned for an upcoming release."/>
+                                Text="{loc:Translate Key=&quot;HTML, Excel and PDF exports are planned for an upcoming release.&quot;}"/>
 
                         </StackPanel>
 
@@ -983,7 +983,7 @@
         <shared:LoadingOverlay
             Grid.Row="2"
             IsLoading="{Binding IsLoading}"
-            Message="Loading enterprise data..."/>
+            Message="{loc:Translate Key=&quot;Loading enterprise data...&quot;}"/>
 
     </Grid>
 

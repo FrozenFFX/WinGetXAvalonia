@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -24,8 +24,8 @@
         </Grid.RowDefinitions>
 
         <shared:SectionHeader
-            Title="Automation"
-            Description="Create automatic package workflows triggered by events."/>
+            Title="{loc:Translate Key=&quot;Automation&quot;}"
+            Description="{loc:Translate Key=&quot;Create automatic package workflows triggered by events.&quot;}"/>
 
         <Grid
             Grid.Row="2"
@@ -44,24 +44,24 @@
                             Grid.Column="0"
                             Classes="Accent"
                             HorizontalAlignment="Stretch"
-                            Content="New Automation"
+                            Content="{loc:Translate Key=&quot;New Automation&quot;}"
                             Command="{Binding NewCommand}"/>
 
                         <shared:AppButton
                             Grid.Column="1"
-                            Content="Import"
+                            Content="{loc:Translate Key=&quot;Import&quot;}"
                             Command="{Binding ImportCommand}"/>
 
                         <shared:AppButton
                             Grid.Column="2"
-                            Content="Export"
+                            Content="{loc:Translate Key=&quot;Export&quot;}"
                             Command="{Binding ExportCommand}"/>
 
                     </Grid>
 
                     <shared:SearchBox
                         Grid.Row="2"
-                        Watermark="Search automations..."
+                        Watermark="{loc:Translate Key=&quot;Search automations...&quot;}"
                         Text="{Binding SearchText}"/>
 
                     <Grid Grid.Row="4">
@@ -91,13 +91,13 @@
                                         <StackPanel Spacing="2">
 
                                             <TextBlock
-                                                Text="{Binding Name}"
+                                                Text="{loc:TranslateBinding Path=Name}"
                                                 FontWeight="SemiBold"
                                                 TextTrimming="CharacterEllipsis"
                                                 MaxLines="1"/>
 
                                             <TextBlock
-                                                Text="{Binding Trigger}"
+                                                Text="{loc:TranslateBinding Path=Trigger}"
                                                 FontSize="{DynamicResource FontSecondary}"
                                                 Opacity="0.6"
                                                 TextTrimming="CharacterEllipsis"
@@ -118,9 +118,9 @@
                         <shared:AppEmptyState
                             IsVisible="{Binding HasNoItems}"
                             Icon="automation"
-                            Title="No automations"
-                            Description="Create your first automation to get started."
-                            ActionText="New Automation"
+                            Title="{loc:Translate Key=&quot;No automations&quot;}"
+                            Description="{loc:Translate Key=&quot;Create your first automation to get started.&quot;}"
+                            ActionText="{loc:Translate Key=&quot;New Automation&quot;}"
                             ActionCommand="{Binding NewCommand}">
 
                             <shared:AppEmptyState.Examples>
@@ -163,50 +163,50 @@
                             <TextBlock
                                 FontSize="{DynamicResource FontSection}"
                                 FontWeight="SemiBold"
-                                Text="{Binding EditorTitle}"/>
+                                Text="{loc:TranslateBinding Path=EditorTitle}"/>
 
                             <TextBlock
                                 Opacity="0.65"
-                                Text="{Binding EditorDescription}"/>
+                                Text="{loc:TranslateBinding Path=EditorDescription}"/>
 
                         </StackPanel>
 
                         <StackPanel Spacing="6">
 
-                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="Name"/>
+                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="{loc:Translate Key=&quot;Name&quot;}"/>
 
                             <TextBox
-                                PlaceholderText="Automation name"
+                                PlaceholderText="{loc:Translate Key=&quot;Automation name&quot;}"
                                 Text="{Binding Name}"/>
 
                         </StackPanel>
 
                         <StackPanel Spacing="6">
 
-                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="Trigger"/>
+                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="{loc:Translate Key=&quot;Trigger&quot;}"/>
 
                             <TextBox
-                                PlaceholderText="e.g. On update available, On startup"
+                                PlaceholderText="{loc:Translate Key=&quot;e.g. On update available, On startup&quot;}"
                                 Text="{Binding Trigger}"/>
 
                         </StackPanel>
 
                         <StackPanel Spacing="6">
 
-                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="Condition"/>
+                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="{loc:Translate Key=&quot;Condition&quot;}"/>
 
                             <TextBox
-                                PlaceholderText="When this condition is met"
+                                PlaceholderText="{loc:Translate Key=&quot;When this condition is met&quot;}"
                                 Text="{Binding Condition}"/>
 
                         </StackPanel>
 
                         <StackPanel Spacing="6">
 
-                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="Action"/>
+                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="{loc:Translate Key=&quot;Action&quot;}"/>
 
                             <TextBox
-                                PlaceholderText="What to run, e.g. upgrade all packages"
+                                PlaceholderText="{loc:Translate Key=&quot;What to run, e.g. upgrade all packages&quot;}"
                                 Text="{Binding Action}"/>
 
                         </StackPanel>
@@ -218,14 +218,14 @@
                             <shared:AppButton
                                 Classes="Accent"
                                 MinWidth="120"
-                                Content="Save"
+                                Content="{loc:Translate Key=&quot;Save&quot;}"
                                 Command="{Binding SaveCommand}"/>
 
                             <shared:AppButton
                                 Grid.Column="1"
                                 Classes="Danger"
                                 MinWidth="110"
-                                Content="Delete"
+                                Content="{loc:Translate Key=&quot;Delete&quot;}"
                                 Command="{Binding DeleteCommand}"
                                 IsVisible="{Binding IsEditing}"/>
 
@@ -243,15 +243,15 @@
             Grid.Row="2"
             IsVisible="{Binding HasError}"
             Icon="warning"
-            Title="Couldn't load automations"
-            Description="{Binding ErrorMessage}"
-            ActionText="Retry"
+            Title="{loc:Translate Key=&quot;Couldn&apos;t load automations&quot;}"
+            Description="{loc:TranslateBinding Path=ErrorMessage}"
+            ActionText="{loc:Translate Key=&quot;Retry&quot;}"
             ActionCommand="{Binding RefreshCommand}"/>
 
         <shared:LoadingOverlay
             Grid.RowSpan="3"
             IsLoading="{Binding IsLoading}"
-            Message="Loading automations..."/>
+            Message="{loc:Translate Key=&quot;Loading automations...&quot;}"/>
 
     </Grid>
 

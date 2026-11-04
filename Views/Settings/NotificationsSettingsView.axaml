@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization" xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
              xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
@@ -21,7 +21,7 @@
 
             <TextBlock
                 Classes="title"
-                Text="Notifications"/>
+                Text="{loc:Translate Key=&quot;Notifications&quot;}"/>
 
             <shared:AppCard>
 
@@ -30,16 +30,16 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
-                        Text="Alerts"/>
+                        Text="{loc:Translate Key=&quot;Alerts&quot;}"/>
 
                     <ToggleSwitch
-                        OffContent="Toast notifications"
-                        OnContent="Toast notifications"
+                        OffContent="{loc:Translate Key=&quot;Toast notifications&quot;}"
+                        OnContent="{loc:Translate Key=&quot;Toast notifications&quot;}"
                         IsChecked="{Binding ToastNotifications}"/>
 
                     <ToggleSwitch
-                        OffContent="Sound notifications"
-                        OnContent="Sound notifications"
+                        OffContent="{loc:Translate Key=&quot;Sound notifications&quot;}"
+                        OnContent="{loc:Translate Key=&quot;Sound notifications&quot;}"
                         IsChecked="{Binding SoundNotifications}"/>
 
                 </StackPanel>

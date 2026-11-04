@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization" xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
              xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
@@ -21,7 +21,7 @@
 
             <TextBlock
                 Classes="title"
-                Text="Developer"/>
+                Text="{loc:Translate Key=&quot;Developer&quot;}"/>
 
             <shared:AppCard>
 
@@ -30,16 +30,16 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
-                        Text="Debugging"/>
+                        Text="{loc:Translate Key=&quot;Debugging&quot;}"/>
 
                     <ToggleSwitch
-                        OffContent="Developer mode"
-                        OnContent="Developer mode"
+                        OffContent="{loc:Translate Key=&quot;Developer mode&quot;}"
+                        OnContent="{loc:Translate Key=&quot;Developer mode&quot;}"
                         IsChecked="{Binding DeveloperMode}"/>
 
                     <ToggleSwitch
-                        OffContent="Verbose logs"
-                        OnContent="Verbose logs"
+                        OffContent="{loc:Translate Key=&quot;Verbose logs&quot;}"
+                        OnContent="{loc:Translate Key=&quot;Verbose logs&quot;}"
                         IsChecked="{Binding VerboseLogs}"/>
 
                 </StackPanel>

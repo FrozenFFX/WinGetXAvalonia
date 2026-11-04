@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization" xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:WinGetXAvalonia.ViewModels"
              xmlns:controls="using:WinGetXAvalonia.Controls"
@@ -26,7 +26,7 @@
 
         <shared:SectionHeader
             Grid.Row="0"
-            Title="Favorites"
+            Title="{loc:Translate Key=&quot;Favorites&quot;}"
             Description="{Binding FavoriteCount,
             StringFormat={}{0} favorite packages}"/>
 
@@ -56,21 +56,21 @@
                 Grid.Row="2"
                 IsVisible="{Binding IsEmpty}"
                 Icon="heart"
-                Title="No favorites yet"
-                Description="Add packages to your favorites to see them here."/>
+                Title="{loc:Translate Key=&quot;No favorites yet&quot;}"
+                Description="{loc:Translate Key=&quot;Add packages to your favorites to see them here.&quot;}"/>
 
             <shared:AppEmptyState
                 Grid.Row="2"
                 IsVisible="{Binding HasError}"
                 Icon="warning"
-                Title="Couldn't load favorites"
-                Description="{Binding ErrorMessage}"
-                ActionText="Retry"
+                Title="{loc:Translate Key=&quot;Couldn&apos;t load favorites&quot;}"
+                Description="{loc:TranslateBinding Path=ErrorMessage}"
+                ActionText="{loc:Translate Key=&quot;Retry&quot;}"
                 ActionCommand="{Binding RefreshCommand}"/>
 
             <shared:LoadingOverlay
                 IsLoading="{Binding IsLoading}"
-                Message="Loading favorites..."/>
+                Message="{loc:Translate Key=&quot;Loading favorites...&quot;}"/>
 
         </Grid>
 

@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -22,8 +22,8 @@
         </Grid.RowDefinitions>
 
         <shared:SectionHeader
-            Title="Sources"
-            Description="Manage WinGet sources."/>
+            Title="{loc:Translate Key=&quot;Sources&quot;}"
+            Description="{loc:Translate Key=&quot;Manage WinGet sources.&quot;}"/>
 
         <Grid
             Grid.Row="2"
@@ -59,17 +59,17 @@
 
                                 <TextBlock
                                     FontWeight="SemiBold"
-                                    Text="{Binding Name}"/>
+                                    Text="{loc:TranslateBinding Path=Name}"/>
 
                                 <TextBlock
                                     FontSize="{DynamicResource FontMicro}"
                                     Opacity="0.6"
-                                    Text="{Binding StatusString}"/>
+                                    Text="{loc:TranslateBinding Path=StatusString}"/>
 
                                 <TextBlock
                                     FontSize="{DynamicResource FontMicro}"
                                     Opacity="0.6"
-                                    Text="{Binding Argument}"/>
+                                    Text="{loc:TranslateBinding Path=Argument}"/>
 
                             </StackPanel>
 
@@ -91,16 +91,16 @@
                 Spacing="10">
 
                 <shared:AppButton
-                    Content="Update"
+                    Content="{loc:Translate Key=&quot;Update&quot;}"
                     Command="{Binding UpdateCommand}"/>
 
                 <shared:AppButton
-                    Content="Reset"
+                    Content="{loc:Translate Key=&quot;Reset&quot;}"
                     Command="{Binding ResetCommand}"/>
 
                 <shared:AppButton
                     Classes="Danger"
-                    Content="Remove"
+                    Content="{loc:Translate Key=&quot;Remove&quot;}"
                     Command="{Binding RemoveCommand}"/>
 
             </StackPanel>
@@ -111,22 +111,22 @@
             Grid.Row="2"
             IsVisible="{Binding HasError}"
             Icon="warning"
-            Title="Couldn't load sources"
-            Description="{Binding ErrorMessage}"
-            ActionText="Retry"
+            Title="{loc:Translate Key=&quot;Couldn&apos;t load sources&quot;}"
+            Description="{loc:TranslateBinding Path=ErrorMessage}"
+            ActionText="{loc:Translate Key=&quot;Retry&quot;}"
             ActionCommand="{Binding RefreshCommand}"/>
 
         <shared:AppEmptyState
             Grid.Row="2"
             IsVisible="{Binding IsEmpty}"
             Icon="source"
-            Title="No sources configured"
-            Description="Add a package source to get started."/>
+            Title="{loc:Translate Key=&quot;No sources configured&quot;}"
+            Description="{loc:Translate Key=&quot;Add a package source to get started.&quot;}"/>
 
         <shared:LoadingOverlay
             Grid.RowSpan="3"
             IsLoading="{Binding IsLoading}"
-            Message="Loading sources..."/>
+            Message="{loc:Translate Key=&quot;Loading sources...&quot;}"/>
 
     </Grid>
 

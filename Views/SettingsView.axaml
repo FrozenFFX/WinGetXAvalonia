@@ -83,7 +83,7 @@
                                     <TextBlock
                                         VerticalAlignment="Center"
                                         FontSize="{DynamicResource FontBody}"
-                                        Text="{Binding Title}"/>
+                                        Text="{loc:TranslateBinding Path=Title}"/>
 
                                 </StackPanel>
 
@@ -119,12 +119,12 @@
                             FontSize="{DynamicResource FontCaption}"
                             FontWeight="SemiBold"
                             Foreground="{DynamicResource MutedTextBrush}"
-                            Text="WinGetX"/>
+                            Text="{loc:Translate Key=&quot;WinGetX&quot;}"/>
 
                         <TextBlock
                             FontSize="{DynamicResource FontMicro}"
                             Foreground="{DynamicResource MutedTextBrush}"
-                            Text="v0.2.0-alpha"/>
+                            Text="{loc:Translate Key=&quot;v0.2.0-alpha&quot;}"/>
 
                     </StackPanel>
 
@@ -140,13 +140,13 @@
 
             <ContentControl
                 Grid.Column="2"
-                Content="{Binding SelectedCategory}"/>
+                Content="{loc:TranslateBinding Path=SelectedCategory}"/>
 
         </Grid>
 
         <shared:LoadingOverlay
             IsLoading="{Binding IsLoading}"
-            Message="Loading settings..."/>
+            Message="{loc:Translate Key=&quot;Loading settings...&quot;}"/>
 
     </Grid>
 

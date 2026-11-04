@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization" xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
              xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
@@ -21,7 +21,7 @@
 
             <TextBlock
                 Classes="title"
-                Text="Backup"/>
+                Text="{loc:Translate Key=&quot;Backup&quot;}"/>
 
             <shared:AppCard>
 
@@ -30,16 +30,16 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
-                        Text="Automation"/>
+                        Text="{loc:Translate Key=&quot;Automation&quot;}"/>
 
                     <ToggleSwitch
-                        OffContent="Auto backup settings"
-                        OnContent="Auto backup settings"
+                        OffContent="{loc:Translate Key=&quot;Auto backup settings&quot;}"
+                        OnContent="{loc:Translate Key=&quot;Auto backup settings&quot;}"
                         IsChecked="{Binding AutoBackup}"/>
 
                     <TextBlock
                         Opacity="0.7"
-                        Text="Settings are stored locally in settings.json. Export a copy before reinstalling Windows."/>
+                        Text="{loc:Translate Key=&quot;Settings are stored locally in settings.json. Export a copy before reinstalling Windows.&quot;}"/>
 
                 </StackPanel>
 
@@ -52,25 +52,25 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
-                        Text="Manual"/>
+                        Text="{loc:Translate Key=&quot;Manual&quot;}"/>
 
                     <StackPanel Orientation="Horizontal" Spacing="10">
 
                         <shared:AppButton
-                            Content="Export Settings"
+                            Content="{loc:Translate Key=&quot;Export Settings&quot;}"
                             Command="{Binding ExportSettingsCommand}"/>
                         <shared:AppButton
-                            Content="Import Settings"
+                            Content="{loc:Translate Key=&quot;Import Settings&quot;}"
                             Command="{Binding ImportSettingsCommand}"/>
                         <shared:AppButton
-                            Content="Reset Settings"
+                            Content="{loc:Translate Key=&quot;Reset Settings&quot;}"
                             Command="{Binding ResetSettingsCommand}"/>
 
                     </StackPanel>
 
                     <TextBlock
                         Opacity="0.7"
-                        Text="{Binding StatusMessage}"/>
+                        Text="{loc:TranslateBinding Path=StatusMessage}"/>
 
                 </StackPanel>
 

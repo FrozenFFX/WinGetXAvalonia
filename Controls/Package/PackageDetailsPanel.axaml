@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -44,20 +44,20 @@
                 <TextBlock
                     FontSize="{DynamicResource FontSubtitle}"
                     FontWeight="SemiBold"
-                    Text="{Binding Name}"
+                    Text="{loc:TranslateBinding Path=Name}"
                     TextWrapping="Wrap"/>
 
                 <TextBlock
                     FontSize="{DynamicResource FontCaption}"
                     Foreground="{DynamicResource MutedTextBrush}"
-                    Text="{Binding SelectedPackage.Id}"
+                    Text="{loc:TranslateBinding Path=SelectedPackage.Id}"
                     TextWrapping="Wrap"/>
 
                 <TextBlock
                     FontSize="{DynamicResource FontMicro}"
                     Foreground="{DynamicResource MutedTextBrush}"
                     Opacity="0.7"
-                    Text="{Binding SelectedPackage.Source}"/>
+                    Text="{loc:TranslateBinding Path=SelectedPackage.Source}"/>
             </StackPanel>
         </Grid>
 
@@ -80,7 +80,7 @@
                 Command="{Binding InstallCommand}"
                 Classes="Accent"
                 IsVisible="{Binding CanInstall}"
-                Content="{Binding InstallButtonText}"
+                Content="{loc:TranslateBinding Path=InstallButtonText}"
                 HorizontalAlignment="Stretch"/>
         </StackPanel>
 
@@ -96,25 +96,25 @@
             <TextBlock
                 FontSize="{DynamicResource FontMicro}"
                 Foreground="{DynamicResource MutedTextBrush}"
-                Text="Installed"/>
+                Text="{loc:Translate Key=&quot;Installed&quot;}"/>
 
             <TextBlock
                 Grid.Column="1"
                 FontSize="{DynamicResource FontMicro}"
                 Foreground="{DynamicResource MutedTextBrush}"
-                Text="Available"/>
+                Text="{loc:Translate Key=&quot;Available&quot;}"/>
 
             <TextBlock
                 Grid.Row="1"
                 FontWeight="SemiBold"
-                Text="{Binding InstalledVersion}"/>
+                Text="{loc:TranslateBinding Path=InstalledVersion}"/>
 
             <TextBlock
                 Grid.Row="1"
                 Grid.Column="1"
                 FontWeight="SemiBold"
                 Foreground="{DynamicResource AccentBrush}"
-                Text="{Binding LatestVersion}"/>
+                Text="{loc:TranslateBinding Path=LatestVersion}"/>
         </Grid>
 
         <shared:AppSeparator/>
@@ -127,7 +127,7 @@
                 <TextBlock
                     FontSize="{DynamicResource FontMicro}"
                     Foreground="{DynamicResource MutedTextBrush}"
-                    Text="Health Score"
+                    Text="{loc:Translate Key=&quot;Health Score&quot;}"
                     VerticalAlignment="Center"/>
 
                 <ProgressBar
@@ -141,7 +141,7 @@
                 <TextBlock
                     Grid.Column="3"
                     FontWeight="SemiBold"
-                    Text="{Binding HealthScoreLabel}"
+                    Text="{loc:TranslateBinding Path=HealthScoreLabel}"
                     VerticalAlignment="Center"/>
             </Grid>
 
@@ -152,50 +152,50 @@
                 <TextBlock
                     FontSize="{DynamicResource FontMicro}"
                     Foreground="{DynamicResource MutedTextBrush}"
-                    Text="Source Trust"/>
+                    Text="{loc:Translate Key=&quot;Source Trust&quot;}"/>
 
                 <TextBlock
                     Grid.Column="1"
                     FontSize="{DynamicResource FontMicro}"
                     Foreground="{DynamicResource MutedTextBrush}"
-                    Text="Update Frequency"/>
+                    Text="{loc:Translate Key=&quot;Update Frequency&quot;}"/>
 
                 <TextBlock
                     Grid.Row="1"
                     FontWeight="SemiBold"
-                    Text="{Binding SourceTrustLabel}"/>
+                    Text="{loc:TranslateBinding Path=SourceTrustLabel}"/>
 
                 <TextBlock
                     Grid.Row="1"
                     Grid.Column="1"
                     FontWeight="SemiBold"
-                    Text="{Binding UpdateFrequencyLabel}"/>
+                    Text="{loc:TranslateBinding Path=UpdateFrequencyLabel}"/>
 
                 <TextBlock
                     Grid.Row="2"
                     FontSize="{DynamicResource FontMicro}"
                     Foreground="{DynamicResource MutedTextBrush}"
-                    Text="Latest Version"/>
+                    Text="{loc:Translate Key=&quot;Latest Version&quot;}"/>
 
                 <TextBlock
                     Grid.Row="2"
                     Grid.Column="1"
                     FontSize="{DynamicResource FontMicro}"
                     Foreground="{DynamicResource MutedTextBrush}"
-                    Text="Publisher"/>
+                    Text="{loc:Translate Key=&quot;Publisher&quot;}"/>
 
                 <TextBlock
                     Grid.Row="3"
                     FontWeight="SemiBold"
                     Foreground="{DynamicResource AccentBrush}"
-                    Text="{Binding LatestVersion}"/>
+                    Text="{loc:TranslateBinding Path=LatestVersion}"/>
 
                 <TextBlock
                     Grid.Row="3"
                     Grid.Column="1"
                     FontWeight="SemiBold"
                     Foreground="{DynamicResource AccentBrush}"
-                    Text="{Binding Publisher}"/>
+                    Text="{loc:TranslateBinding Path=Publisher}"/>
             </Grid>
         </StackPanel>
 
@@ -207,12 +207,12 @@
             <TextBlock
                 FontSize="{DynamicResource FontMicro}"
                 Foreground="{DynamicResource MutedTextBrush}"
-                Text="Description"/>
+                Text="{loc:Translate Key=&quot;Description&quot;}"/>
 
             <TextBlock
                 FontSize="{DynamicResource FontBody}"
                 Foreground="{DynamicResource SubtextBrush}"
-                Text="{Binding DescriptionDisplay}"
+                Text="{loc:TranslateBinding Path=DescriptionDisplay}"
                 TextWrapping="Wrap"/>
         </StackPanel>
 
@@ -222,12 +222,12 @@
             <TextBlock
                 FontSize="{DynamicResource FontMicro}"
                 Foreground="{DynamicResource MutedTextBrush}"
-                Text="Publisher"/>
+                Text="{loc:Translate Key=&quot;Publisher&quot;}"/>
 
             <TextBlock
                 FontSize="{DynamicResource FontBody}"
                 Foreground="{DynamicResource SubtextBrush}"
-                Text="{Binding PublisherDisplay}"
+                Text="{loc:TranslateBinding Path=PublisherDisplay}"
                 TextWrapping="Wrap"/>
         </StackPanel>
 
@@ -235,7 +235,7 @@
         <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
 
             <shared:AppButton
-                Content="Open Homepage"
+                Content="{loc:Translate Key=&quot;Open Homepage&quot;}"
                 Height="36"
                 Command="{Binding OpenHomepageCommand}"
                 IsVisible="{Binding HasHomepage}"/>
@@ -243,7 +243,7 @@
             <shared:AppButton
                 Grid.Column="1"
                 Height="36"
-                Content="Copy ID"
+                Content="{loc:Translate Key=&quot;Copy ID&quot;}"
                 Command="{Binding CopyIdCommand}"
                 CommandParameter="{Binding SelectedPackage}"/>
         </Grid>
@@ -254,12 +254,12 @@
             <TextBlock
                 FontSize="{DynamicResource FontMicro}"
                 Foreground="{DynamicResource MutedTextBrush}"
-                Text="License"/>
+                Text="{loc:Translate Key=&quot;License&quot;}"/>
 
             <TextBlock
                 FontSize="{DynamicResource FontBody}"
                 Foreground="{DynamicResource SubtextBrush}"
-                Text="{Binding LicenseDisplay}"
+                Text="{loc:TranslateBinding Path=LicenseDisplay}"
                 TextWrapping="Wrap"/>
         </StackPanel>
 
@@ -269,12 +269,12 @@
             <TextBlock
                 FontSize="{DynamicResource FontMicro}"
                 Foreground="{DynamicResource MutedTextBrush}"
-                Text="Release Notes"/>
+                Text="{loc:Translate Key=&quot;Release Notes&quot;}"/>
 
             <TextBlock
                 FontSize="{DynamicResource FontBody}"
                 Foreground="{DynamicResource SubtextBrush}"
-                Text="{Binding ReleaseNotesDisplay}"
+                Text="{loc:TranslateBinding Path=ReleaseNotesDisplay}"
                 TextWrapping="Wrap"/>
         </StackPanel>
 

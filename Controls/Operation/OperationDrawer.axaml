@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization" xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
              xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -24,7 +24,7 @@
                 <TextBlock
                     FontSize="{DynamicResource FontSection}"
                     FontWeight="Bold"
-                    Text="Operations"/>
+                    Text="{loc:Translate Key=&quot;Operations&quot;}"/>
 
                 <Grid
                     ColumnDefinitions="Auto,14,Auto,14,Auto,14,Auto">
@@ -36,11 +36,11 @@
                         <TextBlock
                             FontWeight="SemiBold"
                             Foreground="{DynamicResource AccentBrush}"
-                            Text="{Binding RunningCount}"/>
+                            Text="{loc:TranslateBinding Path=RunningCount}"/>
 
                         <TextBlock
                             Opacity="0.7"
-                            Text="Running"/>
+                            Text="{loc:Translate Key=&quot;Running&quot;}"/>
 
                     </StackPanel>
 
@@ -52,11 +52,11 @@
                         <TextBlock
                             FontWeight="SemiBold"
                             Foreground="{DynamicResource WarningBrush}"
-                            Text="{Binding PendingCount}"/>
+                            Text="{loc:TranslateBinding Path=PendingCount}"/>
 
                         <TextBlock
                             Opacity="0.7"
-                            Text="Pending"/>
+                            Text="{loc:Translate Key=&quot;Pending&quot;}"/>
 
                     </StackPanel>
 
@@ -68,11 +68,11 @@
                         <TextBlock
                             FontWeight="SemiBold"
                             Foreground="{DynamicResource SuccessBrush}"
-                            Text="{Binding CompletedCount}"/>
+                            Text="{loc:TranslateBinding Path=CompletedCount}"/>
 
                         <TextBlock
                             Opacity="0.7"
-                            Text="Completed"/>
+                            Text="{loc:Translate Key=&quot;Completed&quot;}"/>
 
                     </StackPanel>
 
@@ -86,11 +86,11 @@
                         <TextBlock
                             FontWeight="SemiBold"
                             Foreground="{DynamicResource DangerBrush}"
-                            Text="{Binding FailedCount}"/>
+                            Text="{loc:TranslateBinding Path=FailedCount}"/>
 
                         <TextBlock
                             Opacity="0.7"
-                            Text="Failed"/>
+                            Text="{loc:Translate Key=&quot;Failed&quot;}"/>
 
                     </StackPanel>
 
@@ -125,7 +125,7 @@
 
             <shared:AppButton Grid.Row="3"
                     Margin="12"
-                    Content="Clear Completed"
+                    Content="{loc:Translate Key=&quot;Clear Completed&quot;}"
                     Command="{Binding ClearCompletedCommand}"
                     IsEnabled="{Binding HasCompleted}"/>
 

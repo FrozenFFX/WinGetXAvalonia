@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -33,8 +33,8 @@
         <!-- Header -->
         <shared:SectionHeader
             Grid.Row="0"
-            Title="Workspaces"
-            Description="{Binding WorkspacesSummary}"/>
+            Title="{loc:Translate Key=&quot;Workspaces&quot;}"
+            Description="{loc:TranslateBinding Path=WorkspacesSummary}"/>
 
         <!-- Toolbar -->
         <workspace:WorkspaceToolbar
@@ -85,8 +85,8 @@
                     <shared:AppEmptyState
                         IsVisible="{Binding IsEmpty}"
                         Icon="workspace"
-                        Title="No workspaces"
-                        Description="Create your first workspace to group package installs.">
+                        Title="{loc:Translate Key=&quot;No workspaces&quot;}"
+                        Description="{loc:Translate Key=&quot;Create your first workspace to group package installs.&quot;}">
 
                         <shared:AppEmptyState.Examples>
                             <sys:String>Group related apps into one workspace</sys:String>
@@ -100,9 +100,9 @@
                     <shared:AppEmptyState
                         IsVisible="{Binding HasError}"
                         Icon="warning"
-                        Title="Couldn't load workspaces"
-                        Description="{Binding ErrorMessage}"
-                        ActionText="Retry"
+                        Title="{loc:Translate Key=&quot;Couldn&apos;t load workspaces&quot;}"
+                        Description="{loc:TranslateBinding Path=ErrorMessage}"
+                        ActionText="{loc:Translate Key=&quot;Retry&quot;}"
                         ActionCommand="{Binding RefreshCommand}"/>
 
                 </Grid>
@@ -126,8 +126,8 @@
                         <shared:AppEmptyState
                             IsVisible="{Binding IsNothingSelected}"
                             Icon="workspace"
-                            Title="Select a workspace"
-                            Description="Choose a workspace from the list to view its packages and details."/>
+                            Title="{loc:Translate Key=&quot;Select a workspace&quot;}"
+                            Description="{loc:Translate Key=&quot;Choose a workspace from the list to view its packages and details.&quot;}"/>
 
                     </Panel>
 
@@ -141,12 +141,12 @@
         <shared:AppDialog
             Grid.RowSpan="4"
             IsOpen="{Binding IsEditorOpen, Mode=TwoWay}"
-            Title="{Binding EditorTitle}"
+            Title="{loc:TranslateBinding Path=EditorTitle}"
             ShowCloseButton="True">
 
             <workspace:WorkspaceEditor
                 Name="{Binding NewWorkspaceName}"
-                Description="{Binding NewWorkspaceDescription}"
+                Description="{loc:TranslateBinding Path=NewWorkspaceDescription}"
                 SaveCommand="{Binding SaveWorkspaceCommand}"
                 SaveButtonText="{Binding EditorAction}"
                 CancelCommand="{Binding CancelWorkspaceEditorCommand}"/>
@@ -157,7 +157,7 @@
         <shared:AppDialog
             Grid.RowSpan="4"
             IsOpen="{Binding IsPackageEditorOpen, Mode=TwoWay}"
-            Title="Add Package"
+            Title="{loc:Translate Key=&quot;Add Package&quot;}"
             ShowCloseButton="True">
 
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
@@ -166,7 +166,7 @@
 
                     <TextBox
                         Text="{Binding NewPackageId, Mode=TwoWay}"
-                        PlaceholderText="Package ID / name">
+                        PlaceholderText="{loc:Translate Key=&quot;Package ID / name&quot;}">
                         <TextBox.KeyBindings>
                             <KeyBinding Gesture="Enter" Command="{Binding AddPackageCommand}"/>
                         </TextBox.KeyBindings>
@@ -174,7 +174,7 @@
 
                     <TextBox
                         Text="{Binding NewPackageName, Mode=TwoWay}"
-                        PlaceholderText="Display name (optional)"/>
+                        PlaceholderText="{loc:Translate Key=&quot;Display name (optional)&quot;}"/>
                 </StackPanel>
 
                 <StackPanel
@@ -185,12 +185,12 @@
 
                     <shared:AppButton
                         Classes="ghost"
-                        Content="Cancel"
+                        Content="{loc:Translate Key=&quot;Cancel&quot;}"
                         Command="{Binding CancelPackageEditorCommand}"/>
 
                     <shared:AppButton
                         Classes="Accent"
-                        Content="Add"
+                        Content="{loc:Translate Key=&quot;Add&quot;}"
                         Command="{Binding AddPackageCommand}"/>
 
                 </StackPanel>

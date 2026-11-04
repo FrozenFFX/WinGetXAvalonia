@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<Window
+<Window xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -23,7 +23,7 @@
     WindowStartupLocation="CenterScreen"
     Icon="/Assets/WinGetXStudio.ico"
     Background="{DynamicResource Background}"
-    Title="WinGetX Studio">
+    Title="{loc:Translate Key=&quot;WinGetX Studio&quot;}">
 
     <Window.KeyBindings>
         <KeyBinding
@@ -82,7 +82,7 @@
                     <TextBlock
                         FontSize="{DynamicResource FontCardTitle}"
                         FontWeight="SemiBold"
-                        Text="WinGetX Studio"/>
+                        Text="{loc:Translate Key=&quot;WinGetX Studio&quot;}"/>
 
                 </StackPanel>
 
@@ -110,7 +110,7 @@
                             FontSize="{DynamicResource FontSecondary}"
                             FontWeight="SemiBold"
                             Opacity="0.8"
-                            Text="{Binding StatusLabel}"/>
+                            Text="{loc:TranslateBinding Path=StatusLabel}"/>
 
                     </StackPanel>
 
@@ -147,7 +147,7 @@
                 HorizontalContentAlignment="Stretch"
                 VerticalAlignment="Top"
                 ClipToBounds="False"
-                Content="{Binding Navigation.CurrentPage}">
+                Content="{loc:TranslateBinding Path=Navigation.CurrentPage}">
 
                 <TransitioningContentControl.PageTransition>
                     <CompositePageTransition>
@@ -173,9 +173,9 @@
             Margin="0,28,0,28"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            Title="{Binding DetailTitle}"
-            Subtitle="{Binding DetailSubtitle}"
-            Content="{Binding DetailContent}"
+            Title="{loc:TranslateBinding Path=DetailTitle}"
+            Subtitle="{loc:TranslateBinding Path=DetailSubtitle}"
+            Content="{loc:TranslateBinding Path=DetailContent}"
             IsVisible="{Binding IsDetailVisible}"/>
 
         <!-- Operations -->

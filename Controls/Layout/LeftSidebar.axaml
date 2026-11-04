@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -59,7 +59,7 @@
                                 <TextBlock
                                     Grid.Column="2"
                                     VerticalAlignment="Center"
-                                    Text="{Binding Title}"
+                                    Text="{loc:TranslateBinding Path=Title}"
                                     TextTrimming="CharacterEllipsis"
                                     TextWrapping="NoWrap"/>
 
@@ -79,7 +79,7 @@
                                         FontWeight="Bold"
                                         Foreground="White"
                                         HorizontalAlignment="Center"
-                                        Text="{Binding BadgeCount}"/>
+                                        Text="{loc:TranslateBinding Path=BadgeCount}"/>
 
                                 </Border>
 
@@ -94,7 +94,7 @@
                                 <TextBlock
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
-                                    Text="{Binding Title}"
+                                    Text="{loc:TranslateBinding Path=Title}"
                                     TextTrimming="CharacterEllipsis"
                                     TextWrapping="NoWrap"/>
 
@@ -144,12 +144,12 @@
                 BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="0,1,0,0">
 
-                <shared:AppSidebarSection Title="Version">
+                <shared:AppSidebarSection Title="{loc:Translate Key=&quot;Version&quot;}">
 
                     <TextBlock
                         FontSize="{DynamicResource FontButton}"
                         FontWeight="SemiBold"
-                        Text="{Binding Version}"/>
+                        Text="{loc:TranslateBinding Path=Version}"/>
 
                 </shared:AppSidebarSection>
 

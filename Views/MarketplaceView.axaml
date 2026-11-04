@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -32,8 +32,8 @@
 
         <shared:SectionHeader
             Grid.Row="0"
-            Title="Marketplace"
-            Description="{Binding ResultSummary}"/>
+            Title="{loc:Translate Key=&quot;Marketplace&quot;}"
+            Description="{loc:TranslateBinding Path=ResultSummary}"/>
 
         <!-- Sekmeler -->
 
@@ -79,12 +79,12 @@
                                 <StackPanel Spacing="1">
 
                                     <TextBlock
-                                        Text="{Binding Title}"
+                                        Text="{loc:TranslateBinding Path=Title}"
                                         FontWeight="SemiBold"
                                         FontSize="{DynamicResource FontButton}"/>
 
                                     <TextBlock
-                                        Text="{Binding Description}"
+                                        Text="{loc:TranslateBinding Path=Description}"
                                         FontSize="{DynamicResource FontMicro}"
                                         Opacity="0.6"/>
 
@@ -114,13 +114,13 @@
 
                 <shared:SearchBox
                     Grid.Column="0"
-                    Watermark="Search the marketplace..."
+                    Watermark="{loc:Translate Key=&quot;Search the marketplace...&quot;}"
                     Text="{Binding SearchText}"/>
 
                 <shared:AppButton
                     Grid.Column="1"
                     Width="44"
-                    ToolTip.Tip="Refresh"
+                    ToolTip.Tip="{loc:Translate Key=&quot;Refresh&quot;}"
                     Command="{Binding LoadCommand}">
 
                     <Path
@@ -195,7 +195,7 @@
                                             <StackPanel Orientation="Horizontal" Spacing="8">
 
                                                 <TextBlock
-                                                    Text="{Binding Name}"
+                                                    Text="{loc:TranslateBinding Path=Name}"
                                                     FontWeight="SemiBold"
                                                     FontSize="{DynamicResource FontBody}"
                                                     TextTrimming="CharacterEllipsis"
@@ -205,7 +205,7 @@
                                                     Background="{DynamicResource AccentBrush}"
                                                     IsVisible="{Binding Verified}">
                                                     <TextBlock
-                                                        Text="Verified"
+                                                        Text="{loc:Translate Key=&quot;Verified&quot;}"
                                         FontSize="{DynamicResource FontMicro}"
                                                         FontWeight="SemiBold"
                                                         Foreground="{DynamicResource AccentForegroundBrush}"/>
@@ -214,7 +214,7 @@
                                             </StackPanel>
 
                                             <TextBlock
-                                                Text="{Binding Author}"
+                                                Text="{loc:TranslateBinding Path=Author}"
                                                 FontSize="{DynamicResource FontSecondary}"
                                                 Opacity="0.6"/>
 
@@ -222,7 +222,7 @@
 
                                         <TextBlock
                                             Grid.Column="2"
-                                            Text="{Binding Version}"
+                                            Text="{loc:TranslateBinding Path=Version}"
                                             FontSize="{DynamicResource FontSecondary}"
                                             Opacity="0.6"
                                             VerticalAlignment="Top"/>
@@ -230,7 +230,7 @@
                                     </Grid>
 
                                     <TextBlock
-                                        Text="{Binding Description}"
+                                        Text="{loc:TranslateBinding Path=Description}"
                                         FontSize="{DynamicResource FontCaption}"
                                         Opacity="0.75"
                                         TextWrapping="Wrap"
@@ -281,7 +281,7 @@
                                     </StackPanel>
 
                                         <TextBlock
-                                            Text="{Binding Category}"
+                                            Text="{loc:TranslateBinding Path=Category}"
                                             FontSize="{DynamicResource FontSecondary}"
                                             Opacity="0.6"/>
 
@@ -296,7 +296,7 @@
                                         IsEnabled="{Binding CanInstall}">
 
                                         <TextBlock
-                                            Text="{Binding InstallText}"/>
+                                            Text="{loc:TranslateBinding Path=InstallText}"/>
 
                                     </shared:AppButton>
 
@@ -312,8 +312,8 @@
                 <shared:AppEmptyState
                     IsVisible="{Binding IsEmpty}"
                     Icon="marketplace"
-                    Title="Nothing here yet"
-                    Description="No marketplace items match this search. Try a different keyword."/>
+                    Title="{loc:Translate Key=&quot;Nothing here yet&quot;}"
+                    Description="{loc:Translate Key=&quot;No marketplace items match this search. Try a different keyword.&quot;}"/>
 
             </Grid>
 
@@ -321,15 +321,15 @@
                 Grid.Row="2"
                 IsVisible="{Binding HasError}"
                 Icon="warning"
-                Title="Couldn't load the marketplace"
-                Description="{Binding ErrorMessage}"
-                ActionText="Retry"
+                Title="{loc:Translate Key=&quot;Couldn&apos;t load the marketplace&quot;}"
+                Description="{loc:TranslateBinding Path=ErrorMessage}"
+                ActionText="{loc:Translate Key=&quot;Retry&quot;}"
                 ActionCommand="{Binding LoadCommand}"/>
 
             <shared:LoadingOverlay
                 Grid.Row="2"
                 IsLoading="{Binding IsLoading}"
-                Message="Loading marketplace..."/>
+                Message="{loc:Translate Key=&quot;Loading marketplace...&quot;}"/>
 
         </Grid>
 

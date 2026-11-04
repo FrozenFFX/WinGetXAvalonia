@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -31,8 +31,8 @@
 
         <shared:SectionHeader
             Grid.Row="0"
-            Title="Software Identity"
-            Description="Living profiles for every piece of software on your machine."/>
+            Title="{loc:Translate Key=&quot;Software Identity&quot;}"
+            Description="{loc:Translate Key=&quot;Living profiles for every piece of software on your machine.&quot;}"/>
 
         <Grid Grid.Row="2" RowDefinitions="Auto,12,*">
 
@@ -40,13 +40,13 @@
 
                 <shared:SearchBox
                     Grid.Column="0"
-                    Watermark="Search software..."
+                    Watermark="{loc:Translate Key=&quot;Search software...&quot;}"
                     Text="{Binding SearchText}"/>
 
                 <shared:AppButton
                     Grid.Column="1"
                     Width="44"
-                    ToolTip.Tip="Refresh"
+                    ToolTip.Tip="{loc:Translate Key=&quot;Refresh&quot;}"
                     Command="{Binding LoadCommand}">
 
                     <Path
@@ -59,7 +59,7 @@
 
                 <shared:AppButton
                     Grid.Column="2"
-                    Content="Export JSON"
+                    Content="{loc:Translate Key=&quot;Export JSON&quot;}"
                     Command="{Binding ExportJsonCommand}"/>
 
             </Grid>
@@ -78,14 +78,14 @@
                             <shared:AppEmptyState
                                 IsVisible="{Binding IsEmpty}"
                                 Icon="info"
-                                Title="No software profiles yet"
-                                Description="Install software or record an install to start tracking identities."/>
+                                Title="{loc:Translate Key=&quot;No software profiles yet&quot;}"
+                                Description="{loc:Translate Key=&quot;Install software or record an install to start tracking identities.&quot;}"/>
 
                             <shared:AppEmptyState
                                 IsVisible="{Binding HasError}"
                                 Icon="warning"
-                                Title="Failed to load identities"
-                                Description="{Binding ErrorMessage}"/>
+                                Title="{loc:Translate Key=&quot;Failed to load identities&quot;}"
+                                Description="{loc:TranslateBinding Path=ErrorMessage}"/>
 
                             <ListBox
                                 IsVisible="{Binding IsLoaded}"
@@ -109,12 +109,12 @@
                                                     <TextBlock
                                                         FontSize="{DynamicResource FontCardTitle}"
                                                         FontWeight="SemiBold"
-                                                        Text="{Binding Name}"/>
+                                                        Text="{loc:TranslateBinding Path=Name}"/>
 
                                                     <TextBlock
                                                         FontSize="{DynamicResource FontCaption}"
                                                         Opacity="0.65"
-                                                        Text="{Binding Publisher}"/>
+                                                        Text="{loc:TranslateBinding Path=Publisher}"/>
 
                                                 </StackPanel>
 
@@ -125,15 +125,15 @@
 
                                                     <TextBlock
                                                         FontSize="{DynamicResource FontCaption}"
-                                                        Text="{Binding Version}"/>
+                                                        Text="{loc:TranslateBinding Path=Version}"/>
 
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
 
                                                         <shared:AppBadge Text="{Binding TrustText}"
-                                                            ToolTip.Tip="Trust Score"/>
+                                                            ToolTip.Tip="{loc:Translate Key=&quot;Trust Score&quot;}"/>
 
                                                         <shared:AppBadge Text="{Binding HealthText}"
-                                                            ToolTip.Tip="Health"/>
+                                                            ToolTip.Tip="{loc:Translate Key=&quot;Health&quot;}"/>
 
                                                     </StackPanel>
 
@@ -159,8 +159,8 @@
                             <shared:AppEmptyState
                                 IsVisible="{Binding IsNothingSelected}"
                                 Icon="🪪"
-                                Title="Select a software"
-                                Description="Choose an identity to view its living profile."/>
+                                Title="{loc:Translate Key=&quot;Select a software&quot;}"
+                                Description="{loc:Translate Key=&quot;Choose an identity to view its living profile.&quot;}"/>
 
                             <Grid
                                 IsVisible="{Binding !IsNothingSelected}"
@@ -179,17 +179,17 @@
                                             <TextBlock
                                                 FontSize="{DynamicResource FontPageTitle}"
                                                 FontWeight="Bold"
-                                                Text="{Binding SelectedIdentity.Name}"/>
+                                                Text="{loc:TranslateBinding Path=SelectedIdentity.Name}"/>
 
                                             <TextBlock
                                                 FontSize="{DynamicResource FontBody}"
                                                 Opacity="0.65"
-                                                Text="{Binding SelectedIdentity.Publisher}"/>
+                                                Text="{loc:TranslateBinding Path=SelectedIdentity.Publisher}"/>
 
                                             <TextBlock
                                                 FontSize="{DynamicResource FontCaption}"
                                                 Opacity="0.55"
-                                                Text="{Binding SelectedIdentity.Version}"/>
+                                                Text="{loc:TranslateBinding Path=SelectedIdentity.Version}"/>
 
                                         </StackPanel>
 
@@ -220,7 +220,7 @@
                                             <TextBlock
                                                 FontSize="{DynamicResource FontCaption}"
                                                 Opacity="0.65"
-                                                Text="{Binding SelectedIdentity.Source}"/>
+                                                Text="{loc:TranslateBinding Path=SelectedIdentity.Source}"/>
 
                                         </StackPanel>
 
@@ -235,15 +235,15 @@
                                 <StackPanel Grid.Row="4" Orientation="Horizontal" Spacing="10">
 
                                     <shared:AppButton
-                                        Content="Record Update"
+                                        Content="{loc:Translate Key=&quot;Record Update&quot;}"
                                         Command="{Binding RecordUpdateCommand}"/>
 
                                     <shared:AppButton
-                                        Content="Record Rollback"
+                                        Content="{loc:Translate Key=&quot;Record Rollback&quot;}"
                                         Command="{Binding RecordRollbackCommand}"/>
 
                                     <shared:AppButton
-                                        Content="Delete Identity"
+                                        Content="{loc:Translate Key=&quot;Delete Identity&quot;}"
                                         Command="{Binding DeleteCommand}"/>
 
                                 </StackPanel>

@@ -17,6 +17,7 @@ using WinGetXAvalonia.Services.Core;
 using WinGetXAvalonia.Services.Dialogs;
 using WinGetXAvalonia.Services.History;
 using WinGetXAvalonia.Services.Interfaces;
+using WinGetXAvalonia.Services.Localization;
 using WinGetXAvalonia.Services.Notifications;
 using WinGetXAvalonia.Services.Operations;
 using WinGetXAvalonia.Services.Performance;
@@ -36,6 +37,7 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     private readonly IDialogService _dialogs;
     private readonly ISettingsService _settings;
     private readonly NotificationService _notificationService;
+    private readonly LocalizationManager? _localization;
     private readonly ISystemMonitorService _monitor;
     private readonly ITimeService _time;
     private readonly FavoritesService _favorites;
@@ -172,7 +174,7 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
     public event Action<object, string, string?>? DetailRequested;
 
     public string GreetingText =>
-        $"{Time.Greeting}, {Environment.UserName}";
+        $"{Translate(Time.Greeting)}, {Environment.UserName}";
 
     public string StatusText =>
         !_wingetStatsLoaded
@@ -246,16 +248,16 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         get
         {
             if (!IsHealthLoaded)
-                return "Calculating health score…";
+                return Translate("Calculating health score…");
 
             if (HealthSummary.Total == 0)
-                return "No installed packages to evaluate.";
+                return Translate("No installed packages to evaluate.");
 
             return HealthScore switch
             {
-                >= 70 => "Everything is working normally.",
-                >= 40 => "Some packages need attention.",
-                _ => "Your package setup needs attention."
+                >= 70 => Translate("Everything is working normally."),
+                >= 40 => Translate("Some packages need attention."),
+                _ => Translate("Your package setup needs attention.")
             };
         }
     }
@@ -271,22 +273,22 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
 
             var factors = new List<string>
             {
-                $"{HealthSummary.Healthy} healthy"
+                Translate($"{HealthSummary.Healthy} healthy")
             };
 
             if (HealthSummary.Outdated > 0)
-                factors.Add($"{HealthSummary.Outdated} outdated");
+                factors.Add(Translate($"{HealthSummary.Outdated} outdated"));
 
             if (HealthSummary.Deprecated > 0)
-                factors.Add($"{HealthSummary.Deprecated} deprecated");
+                factors.Add(Translate($"{HealthSummary.Deprecated} deprecated"));
 
             if (HealthSummary.UnknownSource > 0)
-                factors.Add($"{HealthSummary.UnknownSource} unknown source");
+                factors.Add(Translate($"{HealthSummary.UnknownSource} unknown source"));
 
             if (HealthSummary.Failed > 0)
-                factors.Add($"{HealthSummary.Failed} failed operations");
+                factors.Add(Translate($"{HealthSummary.Failed} failed operations"));
 
-            return $"Based on {HealthSummary.Total} installed packages: "
+            return Translate($"Based on {HealthSummary.Total} installed packages: ")
                 + string.Join(", ", factors) + ".";
         }
     }
@@ -337,7 +339,8 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         UpdatesViewModel updatesPage,
         IDialogService dialogs,
         ISettingsService settings,
-        NotificationService notificationService)
+        NotificationService notificationService,
+        LocalizationManager? localization = null)
     {
         _provider = provider;
         _sources = sources;
@@ -346,6 +349,7 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         _dialogs = dialogs;
         _settings = settings;
         _notificationService = notificationService;
+        _localization = localization;
         _monitor = monitor;
         _time = time;
         _favorites = favorites;
@@ -378,7 +382,6 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
 
         BuildSystemCards();
         BuildHeroInfo();
-        BuildMockActivity();
 
         Activity.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasActivity));
         FavoriteSources.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasFavoriteSources));
@@ -387,6 +390,9 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         _time.Start();
         _monitor.Start();
     }
+
+    private string Translate(string value)
+        => _localization?.TranslateValue(value) ?? value;
 
     public override async Task InitializeAsync()
     {
@@ -431,11 +437,6 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
             _logger.Log("Dashboard initialization started");
             HasError = false;
             ErrorMessage = null;
-
-            _logger.Log("Loading system information");
-            _logger.Log("Loading Winget information");
-            _logger.Log("Loading history");
-            _logger.Log("Loading notifications");
 
             var loadTask = Task.WhenAll(
                 LoadWingetInformationAsync(cancellationToken),
@@ -763,11 +764,6 @@ public partial class DashboardViewModel : ViewModelBase, IDisposable
         };
 
         SystemCards.Add(_timeCard);
-    }
-
-    private void BuildMockActivity()
-    {
-        Activity.Clear();
     }
 
     private void BuildFavoriteSources()

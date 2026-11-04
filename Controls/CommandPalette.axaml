@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization" xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
              xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -41,7 +41,7 @@
 
                     <Grid ColumnDefinitions="Auto,*">
 
-                        <TextBlock Text="{Binding Prefix}"
+                        <TextBlock Text="{loc:TranslateBinding Path=Prefix}"
                                    FontSize="{DynamicResource FontCardTitle}"
                                    Opacity="0.7"
                                    VerticalAlignment="Center"/>
@@ -56,7 +56,7 @@
                                  CaretBrush="{DynamicResource PrimaryBrush}"
                                  SelectionBrush="{DynamicResource PrimaryBrush}"
                                  VerticalContentAlignment="Center"
-                                 PlaceholderText="{Binding PlaceholderText}"
+                                 PlaceholderText="{loc:TranslateBinding Path=PlaceholderText}"
                                  Text="{Binding SearchText, Mode=TwoWay}">
 
                             <TextBox.KeyBindings>
@@ -97,7 +97,7 @@
 
                                 <TextBlock IsVisible="{Binding IsHeader}"
                                            Margin="4,12,4,2"
-                                           Text="{Binding Title}"
+                                           Text="{loc:TranslateBinding Path=Title}"
                                            Foreground="{DynamicResource SubtextBrush}"
                                            FontSize="{DynamicResource FontSecondary}"
                                            FontWeight="SemiBold"
@@ -122,12 +122,12 @@
                                                     VerticalAlignment="Center"
                                                     Spacing="2">
 
-                                            <TextBlock Text="{Binding Title}"
+                                            <TextBlock Text="{loc:TranslateBinding Path=Title}"
                                                        FontSize="{DynamicResource FontBody}"
                                                        FontWeight="SemiBold"
                                                        TextTrimming="CharacterEllipsis"/>
 
-                                            <TextBlock Text="{Binding Subtitle}"
+                                            <TextBlock Text="{loc:TranslateBinding Path=Subtitle}"
                                                        FontSize="{DynamicResource FontCaption}"
                                                        Foreground="{DynamicResource SubtextBrush}"
                                                        Opacity="0.85"
@@ -136,7 +136,7 @@
                                         </StackPanel>
 
                                         <TextBlock Grid.Column="2"
-                                                   Text="Enter"
+                                                   Text="{loc:Translate Key=&quot;Enter&quot;}"
                                                    VerticalAlignment="Center"
                                                    Foreground="{DynamicResource SubtextBrush}"
                                                    Opacity="0.5"/>
@@ -157,19 +157,19 @@
                             Orientation="Horizontal"
                             Spacing="18">
 
-                    <TextBlock Text="Up/Down Navigate"
+                    <TextBlock Text="{loc:Translate Key=&quot;Up/Down Navigate&quot;}"
                                FontSize="{DynamicResource FontSecondary}"
                                Foreground="{DynamicResource SubtextBrush}"/>
 
-                    <TextBlock Text="Enter Execute"
+                    <TextBlock Text="{loc:Translate Key=&quot;Enter Execute&quot;}"
                                FontSize="{DynamicResource FontSecondary}"
                                Foreground="{DynamicResource SubtextBrush}"/>
 
-                    <TextBlock Text="Esc Close"
+                    <TextBlock Text="{loc:Translate Key=&quot;Esc Close&quot;}"
                                FontSize="{DynamicResource FontSecondary}"
                                Foreground="{DynamicResource SubtextBrush}"/>
 
-                    <TextBlock Text="Ctrl+K Close"
+                    <TextBlock Text="{loc:Translate Key=&quot;Ctrl+K Close&quot;}"
                                FontSize="{DynamicResource FontSecondary}"
                                Foreground="{DynamicResource SubtextBrush}"/>
 

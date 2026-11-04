@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -24,8 +24,8 @@
         </Grid.RowDefinitions>
 
         <shared:SectionHeader
-            Title="Blueprints"
-            Description="Reusable installation templates with step-by-step actions."/>
+            Title="{loc:Translate Key=&quot;Blueprints&quot;}"
+            Description="{loc:Translate Key=&quot;Reusable installation templates with step-by-step actions.&quot;}"/>
 
         <Grid
             Grid.Row="2"
@@ -44,24 +44,24 @@
                             Grid.Column="0"
                             Classes="Accent"
                             HorizontalAlignment="Stretch"
-                            Content="New Blueprint"
+                            Content="{loc:Translate Key=&quot;New Blueprint&quot;}"
                             Command="{Binding NewCommand}"/>
 
                         <shared:AppButton
                             Grid.Column="1"
-                            Content="Import"
+                            Content="{loc:Translate Key=&quot;Import&quot;}"
                             Command="{Binding ImportCommand}"/>
 
                         <shared:AppButton
                             Grid.Column="2"
-                            Content="Export"
+                            Content="{loc:Translate Key=&quot;Export&quot;}"
                             Command="{Binding ExportCommand}"/>
 
                     </Grid>
 
                     <shared:SearchBox
                         Grid.Row="2"
-                        Watermark="Search blueprints..."
+                        Watermark="{loc:Translate Key=&quot;Search blueprints...&quot;}"
                         Text="{Binding SearchText}"/>
 
                     <Grid Grid.Row="4">
@@ -91,13 +91,13 @@
                                         <StackPanel Spacing="2">
 
                                             <TextBlock
-                                                Text="{Binding Name}"
+                                                Text="{loc:TranslateBinding Path=Name}"
                                                 FontWeight="SemiBold"
                                                 TextTrimming="CharacterEllipsis"
                                                 MaxLines="1"/>
 
                                             <TextBlock
-                                                Text="{Binding Description}"
+                                                Text="{loc:TranslateBinding Path=Description}"
                                                 FontSize="{DynamicResource FontSecondary}"
                                                 Opacity="0.6"
                                                 TextTrimming="CharacterEllipsis"
@@ -118,9 +118,9 @@
                         <shared:AppEmptyState
                             IsVisible="{Binding HasNoItems}"
                             Icon="📜"
-                            Title="No blueprints"
-                            Description="Create your first blueprint to get started."
-                            ActionText="New Blueprint"
+                            Title="{loc:Translate Key=&quot;No blueprints&quot;}"
+                            Description="{loc:Translate Key=&quot;Create your first blueprint to get started.&quot;}"
+                            ActionText="{loc:Translate Key=&quot;New Blueprint&quot;}"
                             ActionCommand="{Binding NewCommand}">
 
                             <shared:AppEmptyState.Examples>
@@ -163,48 +163,48 @@
                             <TextBlock
                                 FontSize="{DynamicResource FontSection}"
                                 FontWeight="SemiBold"
-                                Text="{Binding EditorTitle}"/>
+                                Text="{loc:TranslateBinding Path=EditorTitle}"/>
 
                             <TextBlock
                                 Opacity="0.65"
-                                Text="{Binding EditorDescription}"/>
+                                Text="{loc:TranslateBinding Path=EditorDescription}"/>
 
                         </StackPanel>
 
                         <StackPanel Spacing="6">
 
-                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="Name"/>
+                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="{loc:Translate Key=&quot;Name&quot;}"/>
 
                             <TextBox
-                                PlaceholderText="Blueprint name"
+                                PlaceholderText="{loc:Translate Key=&quot;Blueprint name&quot;}"
                                 Text="{Binding Name}"/>
 
                         </StackPanel>
 
                         <StackPanel Spacing="6">
 
-                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="Description"/>
+                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="{loc:Translate Key=&quot;Description&quot;}"/>
 
                             <TextBox
                                 AcceptsReturn="True"
                                 MinHeight="90"
                                 TextWrapping="Wrap"
                                 VerticalContentAlignment="Top"
-                                PlaceholderText="What does this blueprint do?"
+                                PlaceholderText="{loc:Translate Key=&quot;What does this blueprint do?&quot;}"
                                 Text="{Binding Description}"/>
 
                         </StackPanel>
 
                         <StackPanel Spacing="6">
 
-                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="Steps"/>
+                            <TextBlock FontSize="{DynamicResource FontSecondary}" Opacity="0.7" Text="{loc:Translate Key=&quot;Steps&quot;}"/>
 
                             <TextBox
                                 AcceptsReturn="True"
                                 MinHeight="140"
                                 TextWrapping="Wrap"
                                 VerticalContentAlignment="Top"
-                                PlaceholderText="One action per line — e.g. install 7zip.7zip"
+                                PlaceholderText="{loc:Translate Key=&quot;One action per line — e.g. install 7zip.7zip&quot;}"
                                 Text="{Binding Steps}"/>
 
                         </StackPanel>
@@ -216,14 +216,14 @@
                             <shared:AppButton
                                 Classes="Accent"
                                 MinWidth="120"
-                                Content="Save"
+                                Content="{loc:Translate Key=&quot;Save&quot;}"
                                 Command="{Binding SaveCommand}"/>
 
                             <shared:AppButton
                                 Grid.Column="1"
                                 Classes="Danger"
                                 MinWidth="110"
-                                Content="Delete"
+                                Content="{loc:Translate Key=&quot;Delete&quot;}"
                                 Command="{Binding DeleteCommand}"
                                 IsVisible="{Binding IsEditing}"/>
 

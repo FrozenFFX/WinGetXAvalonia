@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization" xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:WinGetXAvalonia.ViewModels"
              xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
@@ -23,8 +23,8 @@
               RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
 
             <shared:SectionHeader
-                Title="Featured"
-                Description="Hand-picked by the community"/>
+                Title="{loc:Translate Key=&quot;Featured&quot;}"
+                Description="{loc:Translate Key=&quot;Hand-picked by the community&quot;}"/>
 
             <ListBox
                 Grid.Row="1"
@@ -52,8 +52,8 @@
             <shared:SectionHeader
                 Grid.Row="2"
                 Margin="0,20,0,0"
-                Title="Categories"
-                Description="Browse by topic"/>
+                Title="{loc:Translate Key=&quot;Categories&quot;}"
+                Description="{loc:Translate Key=&quot;Browse by topic&quot;}"/>
 
 <ItemsControl
     Grid.Row="3"
@@ -87,7 +87,7 @@
                     <TextBlock
                         FontSize="{DynamicResource FontButton}"
                         VerticalAlignment="Center"
-                        Text="{Binding Name}"/>
+                        Text="{loc:TranslateBinding Path=Name}"/>
                 </StackPanel>
             </shared:AppButton>
         </DataTemplate>
@@ -97,8 +97,8 @@
             <shared:SectionHeader
                 Grid.Row="4"
                 Margin="0,20,0,0"
-                Title="Search"
-                Description="Find packages to install"/>
+                Title="{loc:Translate Key=&quot;Search&quot;}"
+                Description="{loc:Translate Key=&quot;Find packages to install&quot;}"/>
 
             <Grid
                 Grid.Row="5"
@@ -112,7 +112,7 @@
                     SelectedItem="{Binding SelectedSuggestion, Mode=TwoWay}"
                     FilterMode="None"
                     MinimumPrefixLength="2"
-                    PlaceholderText="Search packages...">
+                    PlaceholderText="{loc:Translate Key=&quot;Search packages...&quot;}">
 
                     <AutoCompleteBox.KeyBindings>
                         <KeyBinding
@@ -124,15 +124,15 @@
                 <shared:AppButton
                     Grid.Column="1"
                     MinWidth="110"
-                    Content="Search"
+                    Content="{loc:Translate Key=&quot;Search&quot;}"
                     Command="{Binding SearchCommand}"/>
             </Grid>
 
             <shared:SectionHeader
                 Grid.Row="6"
                 Margin="0,20,0,0"
-                Title="Results"
-                Description="{Binding ResultsSummary}"/>
+                Title="{loc:Translate Key=&quot;Results&quot;}"
+                Description="{loc:TranslateBinding Path=ResultsSummary}"/>
 
             <Grid Grid.Row="7" Margin="0,4,0,0">
 
@@ -160,14 +160,14 @@
 
                 <shared:LoadingOverlay
                     IsLoading="{Binding IsLoading}"
-                    Message="Searching packages..."/>
+                    Message="{loc:Translate Key=&quot;Searching packages...&quot;}"/>
 
                 <!-- Başlangıç durumu: henüz arama yapılmadı -->
                 <shared:AppEmptyState
                     IsVisible="{Binding IsInitial}"
                     Icon="search"
-                    Title="Search to find packages"
-                    Description="Search by name, or pick a category to get started.">
+                    Title="{loc:Translate Key=&quot;Search to find packages&quot;}"
+                    Description="{loc:Translate Key=&quot;Search by name, or pick a category to get started.&quot;}">
 
                     <shared:AppEmptyState.Examples>
                         <sys:String>Find and install apps in one click</sys:String>
@@ -181,9 +181,9 @@
                 <shared:AppEmptyState
                     IsVisible="{Binding IsEmpty}"
                     Icon="search"
-                    Title="{Binding EmptySearchTitle}"
-                    Description="{Binding EmptySearchDescription}"
-                    ActionText="Clear Search"
+                    Title="{loc:TranslateBinding Path=EmptySearchTitle}"
+                    Description="{loc:TranslateBinding Path=EmptySearchDescription}"
+                    ActionText="{loc:Translate Key=&quot;Clear Search&quot;}"
                     ActionCommand="{Binding ClearSearchCommand}">
 
                     <shared:AppEmptyState.Examples>
@@ -198,9 +198,9 @@
                 <shared:AppEmptyState
                     IsVisible="{Binding HasError}"
                     Icon="warning"
-                    Title="Unable to load packages"
-                    Description="{Binding ErrorMessage}"
-                    ActionText="Retry"
+                    Title="{loc:Translate Key=&quot;Unable to load packages&quot;}"
+                    Description="{loc:TranslateBinding Path=ErrorMessage}"
+                    ActionText="{loc:Translate Key=&quot;Retry&quot;}"
                     ActionCommand="{Binding SearchCommand}"/>
 
             </Grid>
@@ -236,8 +236,8 @@
 
                 <shared:AppEmptyState
                     Icon="package"
-                    Title="Select a package to view details."
-                    Description="Choose a package from the catalog or try one of these categories."/>
+                    Title="{loc:Translate Key=&quot;Select a package to view details.&quot;}"
+                    Description="{loc:Translate Key=&quot;Choose a package from the catalog or try one of these categories.&quot;}"/>
 
                 <ItemsControl
                     ItemsSource="{Binding Categories}">
@@ -265,7 +265,7 @@
                                       Data="{Binding Icon, Converter={StaticResource IconGeometry}}"
                                       Fill="{DynamicResource AccentBrush}"
                                       Stretch="Uniform"/>
-                                <TextBlock Text="{Binding Name}"/>
+                                <TextBlock Text="{loc:TranslateBinding Path=Name}"/>
                             </StackPanel>
                             </shared:AppButton>
                         </DataTemplate>
@@ -296,7 +296,7 @@
 
             <shared:LoadingOverlay
                 IsLoading="{Binding SelectedDetails.IsLoading}"
-                Message="Loading package details..."/>
+                Message="{loc:Translate Key=&quot;Loading package details...&quot;}"/>
 
             </Grid>
 

@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
@@ -57,14 +57,14 @@
             TextAlignment="Center"
             FontSize="{DynamicResource FontSectionLarge}"
             FontWeight="SemiBold"
-            Text="{Binding #Root.Title}"/>
+            Text="{loc:TranslateBinding Path=#Root.Title}"/>
 
         <TextBlock
             HorizontalAlignment="Center"
             TextAlignment="Center"
             TextWrapping="Wrap"
             Foreground="{DynamicResource SubtextBrush}"
-            Text="{Binding #Root.Description}"/>
+            Text="{loc:TranslateBinding Path=#Root.Description}"/>
 
         <ItemsControl
             HorizontalAlignment="Center"
@@ -116,7 +116,7 @@
         <shared:AppButton
             Margin="0,18,0,0"
             HorizontalAlignment="Center"
-            Content="{Binding #Root.ActionText}"
+            Content="{loc:TranslateBinding Path=#Root.ActionText}"
             Command="{Binding #Root.ActionCommand}"
             IsVisible="{Binding #Root.ActionCommand,
             Converter={x:Static conv:ObjectConverters.IsNotNull}}"/>

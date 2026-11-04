@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -48,7 +48,7 @@
 
                     <StackPanel Orientation="Horizontal" Spacing="8">
 
-                        <TextBlock Text="{Binding Name}"
+                        <TextBlock Text="{loc:TranslateBinding Path=Name}"
                                    FontSize="{DynamicResource FontSubtitle}"
                                    FontWeight="SemiBold"
                                    TextTrimming="CharacterEllipsis"/>
@@ -69,7 +69,7 @@
                                         Fill="{DynamicResource AccentBrush}"
                                         Stretch="Uniform"/>
 
-                                    <TextBlock Text="Recommended"
+                                    <TextBlock Text="{loc:Translate Key=&quot;Recommended&quot;}"
                                                FontSize="{DynamicResource FontMicro}"
                                                FontWeight="SemiBold"
                                                Foreground="{DynamicResource AccentBrush}"/>
@@ -77,12 +77,12 @@
                             </Border>
                     </StackPanel>
 
-                    <TextBlock Text="{Binding Id}"
+                    <TextBlock Text="{loc:TranslateBinding Path=Id}"
                                FontSize="{DynamicResource FontCaption}"
                                Foreground="{DynamicResource SubtextBrush}"
                                TextTrimming="CharacterEllipsis"/>
 
-                    <TextBlock Text="{Binding Description}"
+                    <TextBlock Text="{loc:TranslateBinding Path=Description}"
                                FontSize="{DynamicResource FontCaption}"
                                Foreground="{DynamicResource SubtextBrush}"
                                TextWrapping="Wrap"
@@ -97,7 +97,7 @@
                                 CornerRadius="20"
                                 Padding="8,3">
 
-                            <TextBlock Text="{Binding Source}"
+                            <TextBlock Text="{loc:TranslateBinding Path=Source}"
                                        FontSize="{DynamicResource FontCaption}"
                                        Foreground="{DynamicResource SubtextBrush}"/>
                         </Border>
@@ -136,13 +136,13 @@
                             Spacing="8"
                             VerticalAlignment="Center">
 
-                    <shared:AppButton Content="Update"
+                    <shared:AppButton Content="{loc:Translate Key=&quot;Update&quot;}"
                             IsVisible="{Binding Available,
                             Converter={x:Static conv:StringConverters.IsNotNullOrEmpty}}"
                             Command="{Binding $parent[ItemsControl].DataContext.UpdateCommand}"
                             CommandParameter="{Binding}"/>
 
-                    <shared:AppButton Content="Install"
+                    <shared:AppButton Content="{loc:Translate Key=&quot;Install&quot;}"
                             IsVisible="{Binding Available,
                             Converter={x:Static conv:StringConverters.IsNullOrEmpty}}"
                             Command="{Binding $parent[ItemsControl].DataContext.InstallCommand}"
@@ -165,11 +165,11 @@
 
     <UserControl.ContextMenu>
         <ContextMenu>
-            <MenuItem Header="Copy ID"
+            <MenuItem Header="{loc:Translate Key=&quot;Copy ID&quot;}"
                       Command="{Binding $parent[ListBox].DataContext.CopyIdCommand}"
                       CommandParameter="{Binding}"/>
 
-            <MenuItem Header="Copy Name"
+            <MenuItem Header="{loc:Translate Key=&quot;Copy Name&quot;}"
                       Command="{Binding $parent[ListBox].DataContext.CopyNameCommand}"
                       CommandParameter="{Binding}"/>
         </ContextMenu>

@@ -46,7 +46,7 @@ public static class SettingsValidator
                 MaxOpacity);
 
         settings.Theme = Normalize(settings.Theme, "Dark");
-        settings.AccentColor = Normalize(settings.AccentColor, "Blue");
+        settings.AccentColor = Normalize(settings.AccentColor, "Green");
         settings.Language =
             string.Equals(settings.Language, "Turkish", StringComparison.OrdinalIgnoreCase)
             || string.Equals(settings.Language, "Türkçe", StringComparison.OrdinalIgnoreCase)

@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -47,8 +47,8 @@
         <!-- Header -->
         <shared:SectionHeader
             Grid.Row="0"
-            Title="Installed Packages"
-            Description="Manage all installed applications."/>
+            Title="{loc:Translate Key=&quot;Installed Packages&quot;}"
+            Description="{loc:Translate Key=&quot;Manage all installed applications.&quot;}"/>
 
         <!-- Toolbar (with bulk actions) -->
         <Grid
@@ -150,18 +150,18 @@
                     <shared:AppEmptyState
                         IsVisible="{Binding IsEmpty}"
                         Icon="package"
-                        Title="No installed packages"
-                        Description="Applications installed with WinGet will appear here."
-                        ActionText="Browse Packages"
+                        Title="{loc:Translate Key=&quot;No installed packages&quot;}"
+                        Description="{loc:Translate Key=&quot;Applications installed with WinGet will appear here.&quot;}"
+                        ActionText="{loc:Translate Key=&quot;Browse Packages&quot;}"
                         ActionCommand="{Binding BrowseCommand}"/>
 
                     <!-- Error state -->
                     <shared:AppEmptyState
                         IsVisible="{Binding HasError}"
                         Icon="warning"
-                        Title="Couldn't load installed packages"
-                        Description="{Binding ErrorMessage}"
-                        ActionText="Retry"
+                        Title="{loc:Translate Key=&quot;Couldn&apos;t load installed packages&quot;}"
+                        Description="{loc:TranslateBinding Path=ErrorMessage}"
+                        ActionText="{loc:Translate Key=&quot;Retry&quot;}"
                         ActionCommand="{Binding RefreshCommand}"/>
 
                 </Grid>

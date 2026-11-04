@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:WinGetXAvalonia.ViewModels"
@@ -50,20 +50,20 @@
                     <TextBlock
                         FontSize="{DynamicResource FontCaption}"
                         FontWeight="SemiBold"
-                        Text=" Packages"/>
+                        Text="{loc:Translate Key=&quot; Packages&quot;}"/>
                 </StackPanel>
             </Border>
 
             <shared:AppButton
                 Grid.Column="1"
-                Content="+ Add Package"
+                Content="{loc:Translate Key=&quot;+ Add Package&quot;}"
                 Command="{Binding OpenPackageEditorCommand, ElementName=Root}"/>
 
             <shared:AppButton
                 Grid.Column="2"
                 Width="42"
                 Padding="0"
-                ToolTip.Tip="Check installed packages"
+                ToolTip.Tip="{loc:Translate Key=&quot;Check installed packages&quot;}"
                 Command="{Binding RefreshInstallStatesCommand, ElementName=Root}">
 
                 <Path
@@ -119,19 +119,19 @@
                                 <TextBlock
                                     FontSize="{DynamicResource FontSecondary}"
                                     FontWeight="SemiBold"
-                                    Text="{Binding StateText}"/>
+                                    Text="{loc:TranslateBinding Path=StateText}"/>
                             </Border>
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="1">
                                 <TextBlock
                                     FontWeight="SemiBold"
-                                    Text="{Binding DisplayName}"
+                                    Text="{loc:TranslateBinding Path=DisplayName}"
                                     TextTrimming="CharacterEllipsis"/>
 
                                 <TextBlock
                                     Opacity="0.7"
                                     FontSize="{DynamicResource FontCaption}"
-                                    Text="{Binding Id}"
+                                    Text="{loc:TranslateBinding Path=Id}"
                                     TextTrimming="CharacterEllipsis"/>
                             </StackPanel>
 
@@ -139,7 +139,7 @@
                                 Grid.Column="2"
                                 IsVisible="{Binding CanInstall}"
                                 MinWidth="72"
-                                Content="Install"
+                                Content="{loc:Translate Key=&quot;Install&quot;}"
                                 Command="{Binding $parent[ListBox].DataContext.InstallPackageCommand}"
                                 CommandParameter="{Binding}"/>
 
@@ -149,7 +149,7 @@
                                 Width="36"
                                 Height="36"
                                 Padding="0"
-                                ToolTip.Tip="Remove from workspace"
+                                ToolTip.Tip="{loc:Translate Key=&quot;Remove from workspace&quot;}"
                                 Command="{Binding $parent[ListBox].DataContext.RemovePackageCommand}"
                                 CommandParameter="{Binding}">
 
@@ -176,8 +176,8 @@
             IsVisible="{Binding !HasPackages, ElementName=Root}"
             HorizontalAlignment="Left"
             Icon="workspace"
-            Title="No packages yet"
-            Description="Add packages to turn this workspace into a one-click setup."/>
+            Title="{loc:Translate Key=&quot;No packages yet&quot;}"
+            Description="{loc:Translate Key=&quot;Add packages to turn this workspace into a one-click setup.&quot;}"/>
 
     </Grid>
 

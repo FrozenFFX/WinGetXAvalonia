@@ -64,7 +64,7 @@
 
         <shared:SectionHeader
             Title="{loc:Translate Key=Studio}"
-            Description="{Binding ToolsSummary}"/>
+            Description="{loc:TranslateBinding Path=ToolsSummary}"/>
 
         <!-- Toolbar -->
         <Border
@@ -96,7 +96,7 @@
 
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Label}"/>
+                            <TextBlock Text="{loc:TranslateBinding Path=Label}"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
@@ -128,7 +128,7 @@
                     <TextBlock
                         FontWeight="SemiBold"
                         VerticalAlignment="Center"
-                        Text="{Binding ToolCount}"/>
+                        Text="{loc:TranslateBinding Path=ToolCount}"/>
                 </Border>
             </Grid>
         </Border>
@@ -154,7 +154,7 @@
                         Command="{Binding $parent[ItemsControl].DataContext.SelectFilterCommand}"
                         CommandParameter="{Binding}">
 
-                        <TextBlock Text="{Binding Label}"/>
+                        <TextBlock Text="{loc:TranslateBinding Path=Label}"/>
                     </ToggleButton>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
@@ -183,8 +183,8 @@
                                 Width="336"
                                 Margin="0,0,8,12"
                                 Icon="{Binding Icon}"
-                                Title="{Binding Title}"
-                                Description="{Binding Description}"
+                                Title="{loc:TranslateBinding Path=Title}"
+                                Description="{loc:TranslateBinding Path=Description}"
                                 Category="{Binding Category}"
                                 Badge="{Binding Badge}"
                                 BadgeStatus="{Binding BadgeStatus}"
@@ -225,7 +225,7 @@
                                 Text="{loc:Translate Key='Tool Details'}"/>
 
                             <ContentControl
-                                Content="{Binding SelectedTool}">
+                                Content="{loc:TranslateBinding Path=SelectedTool}">
 
                                 <ContentControl.ContentTemplate>
                                     <DataTemplate x:DataType="vm:StudioToolViewModel">
@@ -257,7 +257,7 @@
                                                     Spacing="6">
 
                                                     <TextBlock
-                                                        Text="{Binding Title}"
+                                                        Text="{loc:TranslateBinding Path=Title}"
                                                         FontSize="{DynamicResource FontSubtitle}"
                                                         FontWeight="SemiBold"
                                                         TextWrapping="Wrap"/>
@@ -270,7 +270,7 @@
                                             </StackPanel>
 
                                             <TextBlock
-                                                Text="{Binding Description}"
+                                                Text="{loc:TranslateBinding Path=Description}"
                                                 FontSize="{DynamicResource FontBody}"
                                                 Foreground="{DynamicResource SubtextBrush}"
                                                 TextWrapping="Wrap"/>
@@ -293,7 +293,7 @@
                                                     Grid.Column="1"
                                                     FontSize="{DynamicResource FontBody}"
                                                     FontWeight="SemiBold"
-                                                    Text="{Binding Category}"/>
+                                                    Text="{loc:TranslateBinding Path=Category}"/>
 
                                                 <TextBlock
                                                     Grid.Row="1"
@@ -306,7 +306,7 @@
                                                     Grid.Column="1"
                                                     FontSize="{DynamicResource FontBody}"
                                                     FontWeight="SemiBold"
-                                                    Text="{Binding Badge}"/>
+                                                    Text="{loc:TranslateBinding Path=Badge}"/>
                                             </Grid>
                                         </StackPanel>
                                     </DataTemplate>
@@ -389,7 +389,7 @@
                                         <TextBlock
                                             FontSize="{DynamicResource FontSecondary}"
                                             FontWeight="SemiBold"
-                                            Text="Ctrl + K"/>
+                                            Text="{loc:Translate Key=&quot;Ctrl + K&quot;}"/>
                                     </Border>
                                 </Grid>
 
@@ -408,7 +408,7 @@
                                         <TextBlock
                                             FontSize="{DynamicResource FontSecondary}"
                                             FontWeight="SemiBold"
-                                            Text="F5"/>
+                                            Text="{loc:Translate Key=&quot;F5&quot;}"/>
                                     </Border>
                                 </Grid>
 
@@ -465,7 +465,7 @@
                 IsVisible="{Binding HasError}"
                 Icon="warning"
                 Title="{loc:Translate Key='Unable to load studio tools'}"
-                Description="{Binding ErrorMessage}"
+                Description="{loc:TranslateBinding Path=ErrorMessage}"
                 ActionText="{loc:Translate Key=Retry}"
                 ActionCommand="{Binding RefreshCommand}"/>
 

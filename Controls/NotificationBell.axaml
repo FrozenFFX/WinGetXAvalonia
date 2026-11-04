@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
@@ -81,12 +81,12 @@
                         <TextBlock
                             FontSize="{DynamicResource FontCardTitle}"
                             FontWeight="SemiBold"
-                            Text="Notifications"/>
+                            Text="{loc:Translate Key=&quot;Notifications&quot;}"/>
 
                         <shared:AppButton
                             Grid.Column="1"
                             Classes="Danger"
-                            Content="Clear"
+                            Content="{loc:Translate Key=&quot;Clear&quot;}"
                             Command="{Binding ClearCommand}"/>
 
                     </Grid>
@@ -106,7 +106,7 @@
                             <TextBlock
                                 IsVisible="{Binding IsEmpty}"
                                 Opacity="0.5"
-                                Text="No notifications yet."/>
+                                Text="{loc:Translate Key=&quot;No notifications yet.&quot;}"/>
 
                             <ItemsControl ItemsSource="{Binding Items}">
 
@@ -129,13 +129,13 @@
 
                                                 <TextBlock
                                                     FontWeight="SemiBold"
-                                                    Text="{Binding Title}"/>
+                                                    Text="{loc:TranslateBinding Path=Title}"/>
 
                                                 <TextBlock
                                                     Opacity="0.6"
                                                     FontSize="{DynamicResource FontSecondary}"
                                                     TextWrapping="Wrap"
-                                                    Text="{Binding Message}"/>
+                                                    Text="{loc:TranslateBinding Path=Message}"/>
 
                                                 <TextBlock
                                                     Opacity="0.45"

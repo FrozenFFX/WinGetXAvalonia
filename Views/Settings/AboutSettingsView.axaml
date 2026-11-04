@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization" xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
              xmlns:vm="using:WinGetXAvalonia.ViewModels.Settings"
@@ -21,7 +21,7 @@
 
             <TextBlock
                 Classes="title"
-                Text="About"/>
+                Text="{loc:Translate Key=&quot;About&quot;}"/>
 
             <shared:AppCard>
 
@@ -30,7 +30,7 @@
                     <TextBlock
                         FontSize="28"
                         FontWeight="Bold"
-                        Text="{Binding AppName}"/>
+                        Text="{loc:TranslateBinding Path=AppName}"/>
 
                     <TextBlock
                         Opacity="0.7"
@@ -38,7 +38,7 @@
 
                     <TextBlock
                         Opacity="0.7"
-                        Text="{Binding Description}"/>
+                        Text="{loc:TranslateBinding Path=Description}"/>
 
                 </StackPanel>
 
@@ -51,21 +51,21 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
-                        Text="Runtime"/>
+                        Text="{loc:Translate Key=&quot;Runtime&quot;}"/>
 
                     <Grid ColumnDefinitions="110,*">
-                        <TextBlock Opacity="0.7" Text=".NET"/>
-                        <TextBlock Grid.Column="1" Text="{Binding DotNet}"/>
+                        <TextBlock Opacity="0.7" Text="{loc:Translate Key=&quot;.NET&quot;}"/>
+                        <TextBlock Grid.Column="1" Text="{loc:TranslateBinding Path=DotNet}"/>
                     </Grid>
 
                     <Grid ColumnDefinitions="110,*">
-                        <TextBlock Opacity="0.7" Text="Avalonia"/>
-                        <TextBlock Grid.Column="1" Text="{Binding Avalonia}"/>
+                        <TextBlock Opacity="0.7" Text="{loc:Translate Key=&quot;Avalonia&quot;}"/>
+                        <TextBlock Grid.Column="1" Text="{loc:TranslateBinding Path=Avalonia}"/>
                     </Grid>
 
                     <Grid ColumnDefinitions="110,*">
-                        <TextBlock Opacity="0.7" Text="Winget"/>
-                        <TextBlock Grid.Column="1" Text="{Binding WingetVersion}"/>
+                        <TextBlock Opacity="0.7" Text="{loc:Translate Key=&quot;Winget&quot;}"/>
+                        <TextBlock Grid.Column="1" Text="{loc:TranslateBinding Path=WingetVersion}"/>
                     </Grid>
 
                 </StackPanel>
@@ -79,28 +79,28 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
-                        Text="Build Information"/>
+                        Text="{loc:Translate Key=&quot;Build Information&quot;}"/>
 
                     <Grid ColumnDefinitions="110,*">
-                        <TextBlock Opacity="0.7" Text="Commit"/>
+                        <TextBlock Opacity="0.7" Text="{loc:Translate Key=&quot;Commit&quot;}"/>
                         <TextBlock Grid.Column="1"
                                    FontFamily="Consolas"
-                                   Text="{Binding Commit}"/>
+                                   Text="{loc:TranslateBinding Path=Commit}"/>
                     </Grid>
 
                     <Grid ColumnDefinitions="110,*">
-                        <TextBlock Opacity="0.7" Text="Architecture"/>
-                        <TextBlock Grid.Column="1" Text="{Binding Architecture}"/>
+                        <TextBlock Opacity="0.7" Text="{loc:Translate Key=&quot;Architecture&quot;}"/>
+                        <TextBlock Grid.Column="1" Text="{loc:TranslateBinding Path=Architecture}"/>
                     </Grid>
 
                     <Grid ColumnDefinitions="110,*">
-                        <TextBlock Opacity="0.7" Text="OS"/>
-                        <TextBlock Grid.Column="1" Text="{Binding OS}"/>
+                        <TextBlock Opacity="0.7" Text="{loc:Translate Key=&quot;OS&quot;}"/>
+                        <TextBlock Grid.Column="1" Text="{loc:TranslateBinding Path=OS}"/>
                     </Grid>
 
                     <Grid ColumnDefinitions="110,*">
-                        <TextBlock Opacity="0.7" Text="Configuration"/>
-                        <TextBlock Grid.Column="1" Text="{Binding Configuration}"/>
+                        <TextBlock Opacity="0.7" Text="{loc:Translate Key=&quot;Configuration&quot;}"/>
+                        <TextBlock Grid.Column="1" Text="{loc:TranslateBinding Path=Configuration}"/>
                     </Grid>
 
                 </StackPanel>
@@ -114,24 +114,24 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
-                        Text="Links"/>
+                        Text="{loc:Translate Key=&quot;Links&quot;}"/>
 
                     <TextBlock
                         Opacity="0.7"
-                        Text="Resources"/>
+                        Text="{loc:Translate Key=&quot;Resources&quot;}"/>
 
                     <shared:AppButton
-                        Content="GitHub"
+                        Content="{loc:Translate Key=&quot;GitHub&quot;}"
                         HorizontalAlignment="Stretch"
                         Command="{Binding OpenGitHubCommand}"/>
 
                     <shared:AppButton
-                        Content="Report Issue"
+                        Content="{loc:Translate Key=&quot;Report Issue&quot;}"
                         HorizontalAlignment="Stretch"
                         IsEnabled="False"/>
 
                     <shared:AppButton
-                        Content="License"
+                        Content="{loc:Translate Key=&quot;License&quot;}"
                         HorizontalAlignment="Stretch"
                         IsEnabled="False"/>
 

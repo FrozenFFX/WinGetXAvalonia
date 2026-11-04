@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     x:Class="WinGetXAvalonia.Controls.HistoryCard"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -45,12 +45,12 @@
                     FontWeight="SemiBold"
                     Foreground="{Binding IsSuccess,
                     Converter={StaticResource BoolToBrushConverter}}"
-                    Text="{Binding Title}"/>
+                    Text="{loc:TranslateBinding Path=Title}"/>
 
                 <TextBlock
                     FontSize="{DynamicResource FontCaption}"
                     Foreground="{DynamicResource SubtextBrush}"
-                    Text="{Binding PackageName}"
+                    Text="{loc:TranslateBinding Path=PackageName}"
                     TextTrimming="CharacterEllipsis"/>
             </StackPanel>
 
@@ -63,12 +63,12 @@
                 <TextBlock
                     FontSize="{DynamicResource FontCaption}"
                     FontWeight="SemiBold"
-                    Text="{Binding Time}"/>
+                    Text="{loc:TranslateBinding Path=Time}"/>
 
                 <TextBlock
                     FontSize="{DynamicResource FontCaption}"
                     Foreground="{DynamicResource SubtextBrush}"
-                    Text="{Binding Status}"
+                    Text="{loc:TranslateBinding Path=Status}"
                     TextAlignment="Right"
                     MaxWidth="220"
                     TextTrimming="CharacterEllipsis"/>

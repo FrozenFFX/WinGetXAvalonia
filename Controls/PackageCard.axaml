@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns:loc="using:WinGetXAvalonia.Controls.Localization" xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -56,13 +56,13 @@
                     Spacing="4"
                     VerticalAlignment="Center">
 
-                    <TextBlock Text="{Binding Name}"
+                    <TextBlock Text="{loc:TranslateBinding Path=Name}"
                                FontSize="{DynamicResource FontSubtitle}"
                                FontWeight="SemiBold"
                                TextTrimming="CharacterEllipsis"
                                MaxLines="1"/>
 
-                    <TextBlock Text="{Binding Id}"
+                    <TextBlock Text="{loc:TranslateBinding Path=Id}"
                                FontSize="{DynamicResource FontCaption}"
                                Foreground="{DynamicResource SubtextBrush}"
                                Opacity="0.6"
@@ -76,7 +76,7 @@
                                 CornerRadius="20"
                                 Padding="8,2">
 
-                            <TextBlock Text="{Binding Source}"
+                            <TextBlock Text="{loc:TranslateBinding Path=Source}"
                                        FontSize="{DynamicResource FontCaption}"
                                        Foreground="{DynamicResource SubtextBrush}"/>
                         </Border>
@@ -114,7 +114,7 @@
                                 Padding="8,3"
                                 IsVisible="{Binding Selected}">
 
-                            <TextBlock Text="Selected"
+                            <TextBlock Text="{loc:Translate Key=&quot;Selected&quot;}"
                                        FontSize="{DynamicResource FontCaption}"
                                        FontWeight="SemiBold"/>
                         </Border>
@@ -192,15 +192,15 @@
 
     <UserControl.ContextMenu>
         <ContextMenu>
-            <MenuItem Header="Open Homepage"
+            <MenuItem Header="{loc:Translate Key=&quot;Open Homepage&quot;}"
                       Command="{Binding $parent[ListBox].DataContext.OpenHomepageCommand}"
                       CommandParameter="{Binding}"/>
 
-            <MenuItem Header="Copy ID"
+            <MenuItem Header="{loc:Translate Key=&quot;Copy ID&quot;}"
                       Command="{Binding $parent[ListBox].DataContext.CopyIdCommand}"
                       CommandParameter="{Binding}"/>
 
-            <MenuItem Header="Copy Name"
+            <MenuItem Header="{loc:Translate Key=&quot;Copy Name&quot;}"
                       Command="{Binding $parent[ListBox].DataContext.CopyNameCommand}"
                       CommandParameter="{Binding}"/>
         </ContextMenu>

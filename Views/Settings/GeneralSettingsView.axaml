@@ -69,7 +69,7 @@
                     <TextBlock
                         Foreground="{DynamicResource SubtextBrush}"
                         TextWrapping="Wrap"
-                        Text="{loc:Translate Key='Select the interface language. Pages not yet localized remain in English.'}"/>
+                        Text="{loc:Translate Key='Choose the interface language.'}"/>
 
                     <ComboBox
                         Width="180"
@@ -111,7 +111,7 @@
                     <TextBlock
                         FontSize="{DynamicResource FontSection}"
                         FontWeight="Bold"
-                        Text="Founder"/>
+                        Text="{loc:Translate Key=&quot;Founder&quot;}"/>
 
                     <ToggleSwitch
                         OffContent="{loc:Translate Key='Show Founder Signature'}"

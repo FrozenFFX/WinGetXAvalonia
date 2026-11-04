@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 FrozenFFX. All rights reserved. -->
 <!-- https://github.com/FrozenFFX/WinGetXAvalonia -->
 
-<ListBox
+<ListBox xmlns:loc="using:WinGetXAvalonia.Controls.Localization"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shared="using:WinGetXAvalonia.Controls.Shared"
@@ -48,12 +48,12 @@
 
                     <TextBlock
                         FontWeight="SemiBold"
-                        Text="{Binding Title}"/>
+                        Text="{loc:TranslateBinding Path=Title}"/>
 
                     <TextBlock
                         FontSize="{DynamicResource FontMicro}"
                         Opacity="0.6"
-                        Text="{Binding Description}"/>
+                        Text="{loc:TranslateBinding Path=Description}"/>
 
                 </StackPanel>
 

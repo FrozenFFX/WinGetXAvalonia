@@ -12,12 +12,10 @@
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="16,0"/>
-        <Setter Property="RenderTransform" Value="scale(1)"/>
-        <Setter Property="RenderTransformOrigin" Value="50%,50%"/>
         <Setter Property="Transitions">
             <Transitions>
-                <TransformOperationsTransition
-                    Property="RenderTransform"
+                <DoubleTransition
+                    Property="Opacity"
                     Duration="{DynamicResource MotionDurationFast}"/>
             </Transitions>
         </Setter>
@@ -29,7 +27,7 @@
 
     <Style Selector="Button:pressed">
         <Setter Property="Background" Value="{DynamicResource ButtonPressedBrush}"/>
-        <Setter Property="RenderTransform" Value="scale(0.97)"/>
+        <Setter Property="Opacity" Value="0.9"/>
     </Style>
 
     <Style Selector="Button:focus-visible">

@@ -20,9 +20,6 @@
 
     <Style Selector="Button">
         <Setter Property="FontFamily" Value="Inter, Segoe UI Variable, sans-serif"/>
-        <Setter Property="RenderTransform">
-            <ScaleTransform ScaleX="1" ScaleY="1"/>
-        </Setter>
         <Setter Property="Transitions">
             <Transitions>
                 <BrushTransition Property="Background"
@@ -31,23 +28,19 @@
                 <BrushTransition Property="BorderBrush"
                                  Duration="{DynamicResource MotionDurationFast}"
                                  Easing="{DynamicResource MotionEasingOut}"/>
-                <TransformOperationsTransition Property="RenderTransform"
-                                               Duration="{DynamicResource MotionDurationFast}"
-                                               Easing="{DynamicResource MotionEasingOut}"/>
+                <DoubleTransition Property="Opacity"
+                                  Duration="{DynamicResource MotionDurationFast}"
+                                  Easing="{DynamicResource MotionEasingOut}"/>
             </Transitions>
         </Setter>
     </Style>
 
     <Style Selector="Button:pointerover">
-        <Setter Property="RenderTransform">
-            <ScaleTransform ScaleX="1.02" ScaleY="1.02"/>
-        </Setter>
+        <Setter Property="Opacity" Value="0.96"/>
     </Style>
 
     <Style Selector="Button:pressed">
-        <Setter Property="RenderTransform">
-            <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
-        </Setter>
+        <Setter Property="Opacity" Value="0.9"/>
     </Style>
 
     <Style Selector="ToggleSwitch">
